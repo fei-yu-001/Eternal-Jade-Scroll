@@ -1,0 +1,54 @@
+# ============ Unity（GameClient/ 下） ============
+GameClient/*/Library/
+GameClient/*/Temp/
+GameClient/*/Obj/
+GameClient/*/Build/
+GameClient/*/Builds/
+GameClient/*/Logs/
+GameClient/*/UserSettings/
+GameClient/*/MemoryCaptures/
+GameClient/*/Recorded/
+GameClient/*/*.csproj
+GameClient/*/*.sln
+GameClient/*/*.unityproj
+GameClient/*/*.suo
+GameClient/*/*.tmp
+GameClient/*/*.userprefs
+GameClient/*/*.pidb
+GameClient/*/*.booproj
+GameClient/*/*.svd
+GameClient/*/*.pdb
+GameClient/*/*.mdb
+GameClient/*/*.opendb
+GameClient/*/*.apk
+GameClient/*/*.aab
+GameClient/*/*.unitypackage
+GameClient/*/*.app
+GameClient/*/*.unitypackage.meta
+
+# ============ Java / Maven（GameServer/ 下） ============
+GameServer/*/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# ============ 数据库导出（大文件不入库） ============
+*.sql.bak
+*.dump
+
+# ============ IDE ============
+.idea/
+*.iml
+.vs/
+.vscode/
+*.swp
+*.swo
+
+# ============ 操作系统 ============
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============ 日志 ============
+*.log
