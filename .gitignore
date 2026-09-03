@@ -52,3 +52,7 @@ desktop.ini
 
 # ============ 日志 ============
 *.log
+
+# 开发截图（不入库）
+Tools/screenshots/*
+!Tools/screenshots/.gitkeep
