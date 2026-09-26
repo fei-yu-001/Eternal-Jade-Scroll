@@ -56,3 +56,15 @@ desktop.ini
 # 开发截图（不入库）
 Tools/screenshots/*
 !Tools/screenshots/.gitkeep
+
+# Local secrets, generated caches and verification output
+.env
+.env.*
+!.env.example
+**/bin/
+**/obj/
+Tools/TestResults/
+output/
+tmp/
+*.user
+*.bak

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <DefineConstants>UNITY_EDITOR;UNITY_6000_3;ENABLE_INPUT_SYSTEM</DefineConstants>
+    <EditorManaged>D:/ruangong/unity/Editor/6000.3.25f1/Editor/Data/Managed</EditorManaged>
+    <TemplateAssemblies>D:/ruangong/unity/Editor/6000.3.25f1/Editor/Data/Resources/PackageManager/ProjectTemplates/libcache/com.unity.template.2d-cross-platform-2d-6.1.6/ScriptAssemblies</TemplateAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Core/*.cs" Link="Core/%(Filename)%(Extension)" />
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Presentation/*.cs" Link="Presentation/%(Filename)%(Extension)" />
+    <Compile Include="../../GameClient/TwelveJade/Assets/Editor/*.cs" Link="Editor/%(Filename)%(Extension)" />
+    <Reference Include="$(EditorManaged)/UnityEngine.dll" />
+    <Reference Include="$(EditorManaged)/UnityEditor.dll" />
+    <Reference Include="$(EditorManaged)/UnityEngine/*.dll" />
+    <Reference Include="$(TemplateAssemblies)/UnityEngine.UI.dll" />
+    <Reference Include="$(TemplateAssemblies)/Unity.TextMeshPro.dll" />
+    <Reference Include="$(TemplateAssemblies)/Unity.InputSystem.dll" />
+  </ItemGroup>
+</Project>

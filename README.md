@@ -47,4 +47,6 @@ Eternal-Jade-Scroll/
 
 ## 开发状态
 
-阶段 0（项目初始化）进行中 → 详见开发日志。
+2026-09-27：首轮「主菜单与角色展示」正在实现。Unity 6.3 LTS 已安装在 D 盘；客户端工程位于 [`GameClient/TwelveJade`](GameClient/TwelveJade)。菜单、档位与设置代码已建立，存档逻辑的独立检查已通过。Unity Personal 许可和图像生成服务的图像分组仍待激活，故场景编译与美术导入尚未验收。详见 [`Documents/09_开发日志.md`](Documents/09_开发日志.md)。
+
+用户以玩家身份审核体验与剧情关键节点，AI 负责日常实现。每个开发周期结束时记录改动、验证和下一步；完成可玩里程碑后再提供 Windows 包。

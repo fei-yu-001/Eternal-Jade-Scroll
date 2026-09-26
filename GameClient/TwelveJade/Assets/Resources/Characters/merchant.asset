@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a343834f8e5458db75f35df1cafae14, type: 3}
+  m_Name: merchant
+  m_EditorClassIdentifier:
+  id: merchant
+  displayName: 市井商家
+  description: 听惯街市的吆喝，习惯在喧闹里寻找自己的路。
+  detail: 随身的布袋装着家常小物。此造型不赋予钱财优势。
+  accent: {r: 0.769, g: 0.643, b: 0.416, a: 1}
+  front: {fileID: 0}
+  side: {fileID: 0}
+  back: {fileID: 0}

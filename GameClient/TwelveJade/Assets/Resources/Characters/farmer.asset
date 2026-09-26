@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a343834f8e5458db75f35df1cafae14, type: 3}
+  m_Name: farmer
+  m_EditorClassIdentifier:
+  id: farmer
+  displayName: 农家子弟
+  description: 从田垄与灶火间长大，识得四时，也识得人情。
+  detail: 布衣沾着草木气息。此造型不赋予能力加成。
+  accent: {r: 0.259, g: 0.435, b: 0.376, a: 1}
+  front: {fileID: 0}
+  side: {fileID: 0}
+  back: {fileID: 0}

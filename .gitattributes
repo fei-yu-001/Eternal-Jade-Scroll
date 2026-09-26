@@ -1,0 +1,16 @@
+* text=auto
+*.cs text eol=lf
+*.asmdef text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.meta text eol=lf whitespace=-blank-at-eol
+*.asset text eol=lf whitespace=-blank-at-eol
+*.unity text eol=lf whitespace=-blank-at-eol
+*.shader text eol=lf whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab
+*.hlsl text eol=lf
+*.cginc text eol=lf whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.otf binary
+*.ttf binary

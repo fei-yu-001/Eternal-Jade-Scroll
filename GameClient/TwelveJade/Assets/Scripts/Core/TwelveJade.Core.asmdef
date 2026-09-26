@@ -1,0 +1,5 @@
+{
+  "name": "TwelveJade.Core",
+  "rootNamespace": "TwelveJade",
+  "noEngineReferences": true
+}
