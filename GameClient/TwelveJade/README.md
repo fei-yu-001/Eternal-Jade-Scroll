@@ -5,8 +5,8 @@
 ## 打开与运行
 
 1. 在 Unity Hub 登录并激活免费 Personal 许可证。
-2. 从 Hub 打开 `D:\Eternal Jade Scroll\GameClient\TwelveJade`。首次导入后，执行菜单 **Twelve Jade → Prepare project**；该命令补齐 TextMesh Pro 必备资源、三个角色预设和构建场景登记。
-3. 打开 `Assets/Scenes/FrontEnd.unity`，按 Play。入口场景已经加入构建列表。
+2. Editor 是单独安装的，在 Hub 的 **Installs → Locate** 中选 `D:\ruangong\unity\Editor\6000.3.25f1\Editor\Unity.exe`，再从 Hub 打开 `D:\Eternal Jade Scroll\GameClient\TwelveJade`。
+3. 打开 `Assets/Scenes/FrontEnd.unity`，按 Play。入口场景、角色预设、字体资源和构建列表均已在仓库中。必要时可执行 **Twelve Jade → Prepare project** 修复缺失资源。
 
 菜单背景来自公共领域馆藏画作，三套角色画稿仍待图像服务分组开通。角色缺图时页面会明确显示占位文字，角色选择、命名、档位与朝向保存仍可操作。
 
