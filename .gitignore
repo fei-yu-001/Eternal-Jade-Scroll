@@ -75,3 +75,7 @@ GameClient/TwelveJade/*-log.txt
 # Unity 崩溃恢复场景（编辑器自动写入，不入库）
 GameClient/TwelveJade/Assets/_Recovery/
 GameClient/TwelveJade/Assets/_Recovery.meta
+
+# 抠图脚本的临时预览与运行日志
+Tools/art-cleanup-preview/
+Tools/art-cleanup-run.log
