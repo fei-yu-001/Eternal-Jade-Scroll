@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace TwelveJade.Presentation
 {
-    // 主菜单动态氛围：三层程序化柔雾横向漂移、浮尘缓落、背景呼吸式缓动。
+    // 主菜单动态氛围：三层程序化柔雾横向漂移、浮尘如余烬上行、背景呼吸式缓动。
     // 全部用运行时生成的贴图，无外部依赖；reduceMotion 为真时整帧静止。
     public sealed class MenuAmbience : MonoBehaviour
     {
