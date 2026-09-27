@@ -85,6 +85,8 @@ namespace TwelveJade.Presentation
             var root = Rect(parent, title + " slider", x + 260, y + 3, 390, 34);
             var background = Panel(root, "Track", 0, 13, 390, 7, new Color(.35f, .45f, .39f), true);
             var fill = Panel(root, "Fill", 0, 13, 390, 7, Gold);
+            // Slider 用锚点横向拉伸填充条，宽度必须完全交给锚点，否则会叠上 sizeDelta 溢出轨道。
+            fill.rectTransform.sizeDelta = new Vector2(0, fill.rectTransform.sizeDelta.y);
             var handleArea = Rect(root, "Handle area", 0, 0, 390, 34);
             var handle = Panel(handleArea, "Handle", 0, 4, 18, 26, Paper, true);
             var slider = root.gameObject.AddComponent<Slider>();
