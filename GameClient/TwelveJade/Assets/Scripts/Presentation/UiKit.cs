@@ -159,10 +159,10 @@ namespace TwelveJade.Presentation
             // 底纹压得很淡，只留笔触的形；签条文字必须一眼可读。
             stroke.color = enabled ? new Color(.16f, .18f, .17f, .2f) : new Color(.16f, .18f, .17f, .1f);
             var title_ = Label(chip.transform, title, 26, 4, w - 44, h * .56f, 38,
-                enabled ? Ink : new Color(Ink.r, Ink.g, Ink.b, .42f), TextAlignmentOptions.TopLeft, true);
+                enabled ? Ink : new Color(Ink.r, Ink.g, Ink.b, .42f), TextAlignmentOptions.Top, true);
             title_.fontStyle = FontStyles.Bold;
             var caption_ = Label(chip.transform, caption, 27, h * .54f, w - 44, h * .42f, 16,
-                enabled ? Hex("4A5B51") : new Color(.37f, .43f, .39f, .4f));
+                enabled ? Hex("4A5B51") : new Color(.37f, .43f, .39f, .4f), TextAlignmentOptions.Top);
             var hit = chip.gameObject.GetComponent<Button>() ?? chip.gameObject.AddComponent<Button>();
             hit.targetGraphic = chip;
             hit.transition = Selectable.Transition.None;
