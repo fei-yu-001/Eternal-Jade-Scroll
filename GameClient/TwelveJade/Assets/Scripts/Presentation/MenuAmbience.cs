@@ -67,25 +67,30 @@ namespace TwelveJade.Presentation
             return image;
         }
 
-        // 多个高斯团块叠出一条软雾带；alpha 从中心向外衰减。
+        // 多个高斯团块叠出一条软雾带；alpha 从中心向外衰减，四边再整体羽化到 0，
+        // 保证雾层矩形在任何背景下都看不出边界。
         static Texture2D MakeFogTexture()
         {
             const int size = 512;
-            var tex = new Texture2D(size, size / 2, TextureFormat.RGBA32, false);
+            var height = size / 2;
+            var tex = new Texture2D(size, height, TextureFormat.RGBA32, false);
             var blobs = new (float cx, float cy, float rx, float ry)[]
             {
                 (.24f, .55f, .20f, .34f), (.45f, .40f, .26f, .40f), (.68f, .58f, .22f, .36f), (.86f, .44f, .18f, .30f)
             };
-            for (var y = 0; y < size / 2; y++)
+            for (var y = 0; y < height; y++)
             for (var x = 0; x < size; x++)
             {
                 float alpha = 0;
                 foreach (var (cx, cy, rx, ry) in blobs)
                 {
                     var dx = (x / (float)size - cx) / rx;
-                    var dy = (y / (float)(size / 2) - cy) / ry;
+                    var dy = (y / (float)height - cy) / ry;
                     alpha = Mathf.Max(alpha, Mathf.Exp(-(dx * dx + dy * dy) * 1.6f));
                 }
+                var edgeX = Mathf.Min(x, size - 1 - x) / (size * .12f);
+                var edgeY = Mathf.Min(y, height - 1 - y) / (height * .22f);
+                alpha *= Mathf.Clamp01(Mathf.Min(edgeX, edgeY));
                 tex.SetPixel(x, y, new Color(1, 1, 1, alpha));
             }
             tex.Apply(false, true);

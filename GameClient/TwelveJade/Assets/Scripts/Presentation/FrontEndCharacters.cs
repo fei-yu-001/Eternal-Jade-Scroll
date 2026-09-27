@@ -28,7 +28,7 @@ namespace TwelveJade.Presentation
                 var x = 100 + (slot.Slot - 1) * 575;
                 var card = ui.Panel(content, "Slot " + slot.Slot, x, 342, 545, 540, new Color(.045f, .115f, .10f, .96f), true);
                 ui.Label(card.transform, "第 " + new[] { "一", "二", "三" }[slot.Slot - 1] + " 卷", 32, 30, 450, 45, 23, UiKit.Gold);
-                ui.Panel(card.transform, "Rule", 32, 91, 481, 1, UiKit.Jade);
+                ui.Rule(card.transform, "Rule", 32, 91, 481, 2, UiKit.Jade);
                 string title, description;
                 if (slot.CanLoad)
                 {
@@ -120,7 +120,7 @@ namespace TwelveJade.Presentation
             var question = FateDialogue.Questions[fateStep];
             modal = ui.Panel(canvas, "Fate dialogue", 0, 0, 1920, 1080, new Color(0, .035f, .03f, .86f), true).rectTransform;
             var box = ui.Panel(modal, "Dialog", 460, 290, 1000, 490, UiKit.Dark, true);
-            ui.Panel(box.transform, "Rule", 36, 0, 928, 3, UiKit.Gold);
+            ui.Rule(box.transform, "Rule", 36, 0, 928, 3, UiKit.Gold);
             ui.Label(box.transform, "村 口 · 问 命", 48, 34, 500, 40, 20, UiKit.Gold);
             ui.Label(box.transform, string.Format("（{0} / {1}）", fateStep + 1, FateDialogue.Questions.Length),
                 850, 34, 102, 40, 20, UiKit.Muted, TextAlignmentOptions.TopRight);
@@ -149,7 +149,7 @@ namespace TwelveJade.Presentation
             if (modal != null) { modal.gameObject.SetActive(false); Destroy(modal.gameObject); modal = null; }
             modal = ui.Panel(canvas, "Fate result", 0, 0, 1920, 1080, new Color(0, .035f, .03f, .86f), true).rectTransform;
             var box = ui.Panel(modal, "Dialog", 460, 340, 1000, 400, UiKit.Dark, true);
-            ui.Panel(box.transform, "Rule", 36, 0, 928, 3, UiKit.Gold);
+            ui.Rule(box.transform, "Rule", 36, 0, 928, 3, UiKit.Gold);
             ui.Label(box.transform, "卦 成", 48, 34, 300, 44, 22, UiKit.Gold);
             ui.Label(box.transform, "「" + (fate?.Name ?? "无名") + "」", 48, 92, 904, 74, 44, UiKit.Paper);
             ui.Label(box.transform, fate?.Description ?? "卦象古怪，寻常卜算一概算不出。", 48, 178, 904, 56, 24, UiKit.Muted);

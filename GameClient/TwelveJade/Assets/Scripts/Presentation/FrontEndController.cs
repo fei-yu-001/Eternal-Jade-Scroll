@@ -108,9 +108,12 @@ namespace TwelveJade.Presentation
                 backdropImage = image;
             }
             ui.Panel(canvas, "Atmosphere", 0, 0, 1920, 1080, new Color(.025f, .09f, .075f, .30f));
-            ui.Panel(canvas, "Left scrim", 0, 0, 635, 1080, new Color(.02f, .07f, .06f, .72f));
-            ui.Panel(canvas, "Top rule", 75, 60, 1770, 1, new Color(.77f, .65f, .42f, .55f));
-            ui.Panel(canvas, "Bottom rule", 75, 998, 1770, 1, new Color(.77f, .65f, .42f, .55f));
+            // 左侧文字区纱罩：横向渐变代替竖直硬边。
+            var scrim = ui.Rect(canvas, "Left scrim", 0, 0, 900, 1080).gameObject.AddComponent<RawImage>();
+            scrim.texture = UiKit.LeftFadeTexture(); scrim.raycastTarget = false;
+            scrim.color = new Color(.015f, .06f, .05f, .96f);
+            ui.Rule(canvas, "Top rule", 75, 60, 1770, 2, new Color(.77f, .65f, .42f, .5f));
+            ui.Rule(canvas, "Bottom rule", 75, 997, 1770, 2, new Color(.77f, .65f, .42f, .5f));
             ui.Label(canvas, "九 州 界  /  凡 尘 篇", 82, 25, 900, 30, 16, UiKit.Paper);
             ui.Label(canvas, "十二玉楼长生经", 80, 1020, 600, 30, 17, UiKit.Muted);
             ui.Label(canvas, ProductVersion, 1370, 1020, 475, 30, 17, UiKit.Muted, TextAlignmentOptions.TopRight);
@@ -195,7 +198,7 @@ namespace TwelveJade.Presentation
             content.GetComponent<CanvasGroup>().interactable = false;
             modal = ui.Panel(canvas, "Confirmation", 0, 0, 1920, 1080, new Color(0, .035f, .03f, .82f), true).rectTransform;
             var box = ui.Panel(modal, "Dialog", 525, 330, 870, 400, UiKit.Dark, true);
-            ui.Panel(box.transform, "Rule", 36, 0, 798, 3, UiKit.Gold);
+            ui.Rule(box.transform, "Rule", 36, 0, 798, 3, UiKit.Gold);
             ui.Label(box.transform, title, 48, 40, 780, 65, 40, UiKit.Paper);
             ui.Label(box.transform, message, 48, 122, 770, 118, 25, UiKit.Muted);
             var cancel = ui.Button(box.transform, "取消", 48, 292, 350, 62, CloseModal);

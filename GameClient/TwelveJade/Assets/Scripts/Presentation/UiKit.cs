@@ -41,6 +41,49 @@ namespace TwelveJade.Presentation
             return rounded;
         }
 
+        static Texture2D ruleEnvelope;
+        // 金线包络：中间实、两端渐隐，像卷轴留白，避免通栏直线过于生硬。
+        public RawImage Rule(Transform parent, string name, float x, float y, float w, float h, Color color)
+        {
+            if (ruleEnvelope == null)
+            {
+                const int width = 256;
+                ruleEnvelope = new Texture2D(width, 2, TextureFormat.RGBA32, false);
+                for (var i = 0; i < width; i++)
+                {
+                    var t = i / (width - 1f);
+                    var alpha = Mathf.Clamp01(Mathf.Min(t, 1 - t) / .14f);
+                    alpha = Mathf.SmoothStep(0, 1, alpha);
+                    ruleEnvelope.SetPixel(i, 0, new Color(1, 1, 1, alpha));
+                    ruleEnvelope.SetPixel(i, 1, new Color(1, 1, 1, alpha));
+                }
+                ruleEnvelope.Apply(false, true);
+            }
+            var rect = Rect(parent, name, x, y, w, h);
+            var image = rect.gameObject.AddComponent<RawImage>();
+            image.texture = ruleEnvelope; image.color = color; image.raycastTarget = false;
+            return image;
+        }
+
+        static Texture2D leftFade;
+        // 左侧纱罩的横向渐变：左端浓、向右淡出，代替一条竖直硬边。
+        public static Texture2D LeftFadeTexture()
+        {
+            if (leftFade != null) return leftFade;
+            const int width = 256;
+            leftFade = new Texture2D(width, 2, TextureFormat.RGBA32, false);
+            for (var i = 0; i < width; i++)
+            {
+                var t = i / (width - 1f);
+                var alpha = 1 - Mathf.SmoothStep(0, 1, Mathf.Clamp01((t - .08f) / .92f));
+                alpha *= alpha;
+                leftFade.SetPixel(i, 0, new Color(1, 1, 1, alpha));
+                leftFade.SetPixel(i, 1, new Color(1, 1, 1, alpha));
+            }
+            leftFade.Apply(false, true);
+            return leftFade;
+        }
+
         public RectTransform Rect(Transform parent, string name, float x, float y, float width, float height)
         {
             var rect = new GameObject(name, typeof(RectTransform)).GetComponent<RectTransform>();
