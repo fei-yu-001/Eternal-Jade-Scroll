@@ -72,6 +72,8 @@ namespace TwelveJade.Presentation
                 Notify("设置来自更新版本。当前使用默认设置，原文件已保留。");
         }
 
+        static UnityEngine.InputSystem.Controls.KeyControl[] digitKeys;
+
         void Update()
         {
             if (contentFade != null)
@@ -83,6 +85,14 @@ namespace TwelveJade.Presentation
                 else if (page == "menu") ConfirmExit();
                 else if (page == "settings") ShowMenu();
                 else ShowMenu();
+            }
+            if (page == "preview" && Keyboard.current != null)
+            {
+                if (digitKeys == null)
+                    digitKeys = new[] { Keyboard.current.digit1Key, Keyboard.current.digit2Key, Keyboard.current.digit3Key,
+                        Keyboard.current.digit4Key, Keyboard.current.digit5Key, Keyboard.current.digit6Key };
+                for (var i = 0; i < digitKeys.Length; i++)
+                    if (digitKeys[i].wasPressedThisFrame) SetMotion(i + 1);
             }
         }
 
@@ -112,8 +122,6 @@ namespace TwelveJade.Presentation
             var scrim = ui.Rect(canvas, "Left scrim", 0, 0, 900, 1080).gameObject.AddComponent<RawImage>();
             scrim.texture = UiKit.LeftFadeTexture(); scrim.raycastTarget = false;
             scrim.color = new Color(.015f, .06f, .05f, .96f);
-            ui.Rule(canvas, "Top rule", 75, 60, 1770, 2, new Color(.77f, .65f, .42f, .5f));
-            ui.Rule(canvas, "Bottom rule", 75, 997, 1770, 2, new Color(.77f, .65f, .42f, .5f));
             ui.Label(canvas, "九 州 界  /  凡 尘 篇", 82, 25, 900, 30, 16, UiKit.Paper);
             ui.Label(canvas, "十二玉楼长生经", 80, 1020, 600, 30, 17, UiKit.Muted);
             ui.Label(canvas, ProductVersion, 1370, 1020, 475, 30, 17, UiKit.Muted, TextAlignmentOptions.TopRight);
@@ -144,9 +152,8 @@ namespace TwelveJade.Presentation
             BeginPage("menu"); activeSave = null;
             ui.Label(content, "ETERNAL JADE SCROLL", 103, 126, 510, 40, 19, UiKit.Gold);
             ui.Label(content, "十二玉楼\n长生经", 92, 187, 570, 222, 78, UiKit.Paper);
-            var seal = Resources.Load<Texture2D>("Art/Items/seal");
+            var seal = Resources.Load<Texture2D>("Art/Items/seal-stamp");
             if (seal != null) ui.Art(content, seal, 486, 205, 128, 128);
-            ui.Panel(content, "Title accent", 103, 439, 60, 3, UiKit.Gold);
             ui.Label(content, "山河无定数，凡尘亦长生。", 102, 461, 500, 50, 24, UiKit.Muted);
             ui.MenuItem(content, "启  程", "开始一段新的人生", 100, 545, 400, 84, () => ShowSlots(true));
             ui.MenuItem(content, "续  缘", "回到上次的旅程", 100, 637, 400, 84, () => LoadSlot(repository.Latest()),
@@ -198,7 +205,6 @@ namespace TwelveJade.Presentation
             content.GetComponent<CanvasGroup>().interactable = false;
             modal = ui.Panel(canvas, "Confirmation", 0, 0, 1920, 1080, new Color(0, .035f, .03f, .82f), true).rectTransform;
             var box = ui.Panel(modal, "Dialog", 525, 330, 870, 400, UiKit.Dark, true);
-            ui.Rule(box.transform, "Rule", 36, 0, 798, 3, UiKit.Gold);
             ui.Label(box.transform, title, 48, 40, 780, 65, 40, UiKit.Paper);
             ui.Label(box.transform, message, 48, 122, 770, 118, 25, UiKit.Muted);
             var cancel = ui.Button(box.transform, "取消", 48, 292, 350, 62, CloseModal);

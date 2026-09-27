@@ -28,7 +28,6 @@ namespace TwelveJade.Presentation
                 var x = 100 + (slot.Slot - 1) * 575;
                 var card = ui.Panel(content, "Slot " + slot.Slot, x, 342, 545, 540, new Color(.045f, .115f, .10f, .96f), true);
                 ui.Label(card.transform, "第 " + new[] { "一", "二", "三" }[slot.Slot - 1] + " 卷", 32, 30, 450, 45, 23, UiKit.Gold);
-                ui.Rule(card.transform, "Rule", 32, 91, 481, 2, UiKit.Jade);
                 string title, description;
                 if (slot.CanLoad)
                 {
@@ -120,7 +119,6 @@ namespace TwelveJade.Presentation
             var question = FateDialogue.Questions[fateStep];
             modal = ui.Panel(canvas, "Fate dialogue", 0, 0, 1920, 1080, new Color(0, .035f, .03f, .86f), true).rectTransform;
             var box = ui.Panel(modal, "Dialog", 460, 290, 1000, 490, UiKit.Dark, true);
-            ui.Rule(box.transform, "Rule", 36, 0, 928, 3, UiKit.Gold);
             ui.Label(box.transform, "村 口 · 问 命", 48, 34, 500, 40, 20, UiKit.Gold);
             ui.Label(box.transform, string.Format("（{0} / {1}）", fateStep + 1, FateDialogue.Questions.Length),
                 850, 34, 102, 40, 20, UiKit.Muted, TextAlignmentOptions.TopRight);
@@ -149,7 +147,6 @@ namespace TwelveJade.Presentation
             if (modal != null) { modal.gameObject.SetActive(false); Destroy(modal.gameObject); modal = null; }
             modal = ui.Panel(canvas, "Fate result", 0, 0, 1920, 1080, new Color(0, .035f, .03f, .86f), true).rectTransform;
             var box = ui.Panel(modal, "Dialog", 460, 340, 1000, 400, UiKit.Dark, true);
-            ui.Rule(box.transform, "Rule", 36, 0, 928, 3, UiKit.Gold);
             ui.Label(box.transform, "卦 成", 48, 34, 300, 44, 22, UiKit.Gold);
             ui.Label(box.transform, "「" + (fate?.Name ?? "无名") + "」", 48, 92, 904, 74, 44, UiKit.Paper);
             ui.Label(box.transform, fate?.Description ?? "卦象古怪，寻常卜算一概算不出。", 48, 178, 904, 56, 24, UiKit.Muted);
@@ -267,14 +264,25 @@ namespace TwelveJade.Presentation
         {
             BeginPage("preview"); activeSave = data;
             var preset = presets.First(p => p.id == data.characterId);
-            PageHeading("行 旅 小 憩", data.characterName + "的行装", "一身寻常衣衫，一段尚未展开的人生。");
+            PageHeading("行 旅 小 憩", data.characterName + "的行装", "一身寻常衣衫，一段尚未展开的人生。试试他的身手。");
             var art = ui.Panel(content, "Turnaround", 102, 336, 920, 593, new Color(.78f, .76f, .65f, .97f));
-            ShowPortrait(art.transform, preset, data.facing, data.gender, data.faceStyle, 80, 15, 760, 516);
+            var view = preset.Facing(data.facing, data.gender, data.faceStyle);
+            if (view != null)
+            {
+                currentActor = CharacterActor.Create(art.transform, view, data.facing == 3,
+                    new Vector2(460, 160), new Vector2(246, 412));
+                currentActor.SetMotion(currentMotion);
+            }
+            else
+            {
+                ui.Label(art.transform, preset.displayName, 92, 180, 736, 80, 50, UiKit.Ink, TextAlignmentOptions.Center);
+                ui.Label(art.transform, "造型画稿待接入", 92, 280, 736, 45, 24, UiKit.Ink, TextAlignmentOptions.Center);
+            }
             string[] directions = { "正面", "右侧", "背面", "左侧" };
             for (var i = 0; i < 4; i++)
             {
                 var direction = i;
-                ui.Button(art.transform, directions[i], 43 + i * 220, 520, 176, 51, () => Guard(() =>
+                ui.Button(art.transform, directions[i], 43 + i * 220, 438, 200, 52, () => Guard(() =>
                 {
                     var previous = data.facing;
                     data.facing = direction;
@@ -283,6 +291,15 @@ namespace TwelveJade.Presentation
                     ShowPreview(data);
                 }), i == data.facing);
             }
+            ui.Label(art.transform, "动 作", 24, 502, 60, 52, 20, UiKit.Ink, TextAlignmentOptions.MidlineLeft);
+            for (var i = 1; i < CharacterActor.MotionNames.Length; i++)
+            {
+                var motion = (CharacterActor.Motion)i;
+                ui.Button(art.transform, CharacterActor.MotionNames[i], 92 + (i - 1) * 140, 502, 128, 52,
+                    () => SetMotion(i), currentMotion == motion);
+            }
+            ui.Label(art.transform, "键盘 1–6 亦可切换动作", 24, 562, 400, 24, 15,
+                new Color(.24f, .28f, .26f, .55f));
             ui.Panel(content, "Biography", 1074, 336, 746, 593, new Color(.045f, .115f, .10f, .96f));
             ui.Label(content, "第 " + data.slot + " 卷  /  已落笔", 1117, 373, 650, 40, 19, UiKit.Gold);
             ui.Label(content, preset.displayName + " · " + CharacterPreset.GenderName(data.gender), 1110, 424, 650, 60, 38, UiKit.Paper);
@@ -293,6 +310,17 @@ namespace TwelveJade.Presentation
             ui.Button(content, "返回主菜单", 1117, 890, 310, 62, ShowMenu, true);
             ui.Button(content, "查看行迹", 1456, 890, 310, 62, () => ShowSlots(false));
             FocusFirst();
+        }
+
+        CharacterActor currentActor;
+        CharacterActor.Motion currentMotion = CharacterActor.Motion.Walk;
+
+        public void SetMotion(int motion)
+        {
+            if (motion < 1 || motion >= CharacterActor.MotionNames.Length) return;
+            currentMotion = (CharacterActor.Motion)motion;
+            if (currentActor != null) currentActor.SetMotion(currentMotion);
+            else if (activeSave != null && page == "preview") ShowPreview(activeSave);
         }
     }
 }

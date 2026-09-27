@@ -41,28 +41,12 @@ namespace TwelveJade.Presentation
             return rounded;
         }
 
-        static Texture2D ruleEnvelope;
-        // 金线包络：中间实、两端渐隐，像卷轴留白，避免通栏直线过于生硬。
-        public RawImage Rule(Transform parent, string name, float x, float y, float w, float h, Color color)
+        static Texture2D inkStroke;
+        static Texture2D InkStrokeTexture()
         {
-            if (ruleEnvelope == null)
-            {
-                const int width = 256;
-                ruleEnvelope = new Texture2D(width, 2, TextureFormat.RGBA32, false);
-                for (var i = 0; i < width; i++)
-                {
-                    var t = i / (width - 1f);
-                    var alpha = Mathf.Clamp01(Mathf.Min(t, 1 - t) / .14f);
-                    alpha = Mathf.SmoothStep(0, 1, alpha);
-                    ruleEnvelope.SetPixel(i, 0, new Color(1, 1, 1, alpha));
-                    ruleEnvelope.SetPixel(i, 1, new Color(1, 1, 1, alpha));
-                }
-                ruleEnvelope.Apply(false, true);
-            }
-            var rect = Rect(parent, name, x, y, w, h);
-            var image = rect.gameObject.AddComponent<RawImage>();
-            image.texture = ruleEnvelope; image.color = color; image.raycastTarget = false;
-            return image;
+            if (inkStroke == null)
+                inkStroke = Resources.Load<Texture2D>("Art/Fx/ink-stroke");
+            return inkStroke;
         }
 
         static Texture2D leftFade;
@@ -160,47 +144,49 @@ namespace TwelveJade.Presentation
             trigger.triggers.Add(exit);
         }
 
-        // 主菜单条目：金条 + 大字 + 小注，没有填充方块；悬停时金条延展、整行右移。
+        // 主菜单条目：纸质签条 + 水墨笔触底纹 + 墨色文字，没有任何线条装饰；
+        // 悬停时墨迹加深、签条轻移。中国风元素直接来自笔触本身的不规则。
         public Button MenuItem(Transform parent, string title, string caption, float x, float y, float w, float h,
             UnityAction action, bool enabled = true)
         {
             var root = Rect(parent, "MenuItem " + title, x, y, w, h);
-            var bar = Rect(root, "Bar", 2, 6, 4, h - 12).gameObject.AddComponent<Image>();
-            bar.color = new Color(Gold.r, Gold.g, Gold.b, .75f); bar.raycastTarget = false;
-            var title_ = Label(root, title, 34, 2, w - 40, h * .58f, 33, Paper);
-            var caption_ = Label(root, caption, 35, h * .55f, w - 40, h * .4f, 16, Muted);
-            var hit = Rect(root, "Hit", 0, 0, w, h).gameObject.AddComponent<Image>();
-            hit.color = new Color(0, 0, 0, 0); hit.raycastTarget = true;
-            var button = hit.gameObject.AddComponent<Button>();
-            button.transition = Selectable.Transition.None;
+            var chip = Rect(root, "Chip", 0, 0, w, h).gameObject.AddComponent<Image>();
+            chip.sprite = RoundedSprite(); chip.type = Image.Type.Sliced;
+            chip.color = enabled ? new Color(.955f, .937f, .875f, .93f) : new Color(.955f, .937f, .875f, .36f);
+            chip.raycastTarget = true;
+            var stroke = Rect(chip.transform, "Ink stroke", 14, 8, w - 28, h - 16).gameObject.AddComponent<RawImage>();
+            stroke.texture = InkStrokeTexture(); stroke.raycastTarget = false;
+            stroke.color = enabled ? new Color(.16f, .18f, .17f, .34f) : new Color(.16f, .18f, .17f, .16f);
+            var title_ = Label(chip.transform, title, 26, 4, w - 44, h * .56f, 31,
+                enabled ? Ink : new Color(Ink.r, Ink.g, Ink.b, .38f));
+            var caption_ = Label(chip.transform, caption, 27, h * .54f, w - 44, h * .42f, 15,
+                enabled ? Hex("5E6E63") : new Color(.37f, .43f, .39f, .4f));
+            var hit = chip.gameObject.GetComponent<Button>() ?? chip.gameObject.AddComponent<Button>();
+            hit.targetGraphic = chip;
+            hit.transition = Selectable.Transition.None;
             var trigger = hit.gameObject.AddComponent<EventTrigger>();
             var enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
             enter.callback.AddListener(_ =>
             {
                 if (!enabled) return;
-                bar.rectTransform.sizeDelta = new Vector2(7, h - 12);
-                title_.color = White; caption_.color = Gold;
+                stroke.color = new Color(.16f, .18f, .17f, .55f);
+                title_.color = Hex("7A5A22");
                 root.anchoredPosition += new Vector2(10, 0);
             });
             var exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
             exit.callback.AddListener(_ =>
             {
-                bar.rectTransform.sizeDelta = new Vector2(4, h - 12);
-                title_.color = Paper; caption_.color = Muted;
+                if (!enabled) return;
+                stroke.color = new Color(.16f, .18f, .17f, .34f);
+                title_.color = Ink;
                 root.anchoredPosition -= new Vector2(10, 0);
             });
             trigger.triggers.Add(enter);
             trigger.triggers.Add(exit);
-            button.interactable = enabled;
-            if (!enabled)
-            {
-                title_.color = new Color(Paper.r, Paper.g, Paper.b, .38f);
-                caption_.color = new Color(Muted.r, Muted.g, Muted.b, .45f);
-                bar.color = new Color(Gold.r, Gold.g, Gold.b, .25f);
-            }
-            button.onClick.AddListener(() => { if (enabled) click?.Invoke(); });
-            button.onClick.AddListener(() => { if (enabled) action(); });
-            return button;
+            hit.interactable = enabled;
+            hit.onClick.AddListener(() => { if (enabled) click?.Invoke(); });
+            hit.onClick.AddListener(() => { if (enabled) action(); });
+            return hit;
         }
 
         public TMP_InputField Input(Transform parent, string initial, float x, float y, float w)

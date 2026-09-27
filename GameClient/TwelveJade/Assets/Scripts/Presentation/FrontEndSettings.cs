@@ -44,7 +44,6 @@ namespace TwelveJade.Presentation
                 draft.reduceMotion = !draft.reduceMotion;
                 motion.GetComponentInChildren<TextMeshProUGUI>().text = draft.reduceMotion ? "即时切换" : "柔和渐入";
             });
-            ui.Rule(panel.transform, "Rule", 44, 365, 1596, 2, UiKit.Jade);
             ui.Label(panel.transform, "全屏采用显示器原生分辨率。窗口尺寸可循环切换。\nEsc 返回主菜单；未保存的改动将放弃。", 44, 401, 1540, 75, 22, UiKit.Muted);
             ui.Button(panel.transform, "恢复默认并保存", 44, 502, 360, 60, () => Confirm("恢复默认设置？", "音量和画面设置将恢复初始值。角色档位不受影响。", "恢复并保存", () =>
             {
