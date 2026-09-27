@@ -62,9 +62,12 @@ namespace TwelveJade.Presentation
             presets = Resources.LoadAll<CharacterPreset>("Characters").OrderBy(x => x.id).ToArray();
             if (presets.Length != 3) throw new InvalidOperationException("Three character presets are required. Run Twelve Jade/Prepare project.");
             repository = new SaveRepository(Path.Combine(Application.persistentDataPath, "Saves"), new UnityJsonCodec());
-            settings = repository.LoadSettings(out var resetSettings);
+            settings = repository.LoadSettings(out var settingsState);
             SetupAudio(); ApplySettings(settings, true); ShowMenu();
-            if (resetSettings) Notify("设置文件无法读取，已恢复默认设置。");
+            if (settingsState == SettingsLoadState.Recovered) Notify("设置已从备份恢复。");
+            else if (settingsState == SettingsLoadState.Reset) Notify("设置文件无法读取，已使用默认设置。");
+            else if (settingsState == SettingsLoadState.FutureVersion)
+                Notify("设置来自更新版本。当前使用默认设置，原文件已保留。");
         }
 
         void Update()

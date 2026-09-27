@@ -45,6 +45,8 @@ namespace TwelveJade.Core
 
     public enum SlotState { Empty, Ready, Recovered, Corrupt, FutureVersion }
 
+    public enum SettingsLoadState { Default, Ready, Recovered, Reset, FutureVersion }
+
     public sealed class SlotInfo
     {
         public int Slot { get; }

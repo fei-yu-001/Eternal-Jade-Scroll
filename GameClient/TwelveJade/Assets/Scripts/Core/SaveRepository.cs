@@ -96,33 +96,74 @@ namespace TwelveJade.Core
         public void Delete(int slot)
         {
             var path = SlotPath(slot);
-            foreach (var suffix in new[] { ".bak", ".tmp", "" })
+            // Remove the primary first. If it is locked, keep its valid backup intact.
+            foreach (var suffix in new[] { "", ".bak", ".tmp" })
                 if (File.Exists(path + suffix)) File.Delete(path + suffix);
         }
 
-        public UserSettings LoadSettings(out bool reset)
+        public UserSettings LoadSettings(out SettingsLoadState state)
         {
-            reset = false;
             var path = Path.Combine(root, "settings.json");
-            if (!File.Exists(path)) return new UserSettings();
+            var primary = ReadSettingsFile(path);
+            if (primary.State == SettingsFileState.Ready)
+            {
+                state = SettingsLoadState.Ready;
+                return primary.Data;
+            }
+            if (primary.State == SettingsFileState.FutureVersion)
+            {
+                state = SettingsLoadState.FutureVersion;
+                return new UserSettings();
+            }
+            var backup = ReadSettingsFile(path + ".bak");
+            if (backup.State == SettingsFileState.Ready)
+            {
+                state = SettingsLoadState.Recovered;
+                return backup.Data;
+            }
+            if (backup.State == SettingsFileState.FutureVersion)
+            {
+                state = SettingsLoadState.FutureVersion;
+                return new UserSettings();
+            }
+            state = primary.State == SettingsFileState.Missing && backup.State == SettingsFileState.Missing
+                ? SettingsLoadState.Default : SettingsLoadState.Reset;
+            return new UserSettings();
+        }
+
+        enum SettingsFileState { Missing, Ready, Corrupt, FutureVersion }
+
+        (SettingsFileState State, UserSettings Data) ReadSettingsFile(string path)
+        {
+            if (!File.Exists(path)) return (SettingsFileState.Missing, null);
             try
             {
                 var json = File.ReadAllText(path, Encoding.UTF8);
                 var settings = codec.Deserialize<UserSettings>(json);
-                if (!json.Contains("\"schemaVersion\"") || settings == null || settings.schemaVersion != 1)
-                    throw new FormatException();
+                if (!json.Contains("\"schemaVersion\"") || settings == null)
+                    return (SettingsFileState.Corrupt, null);
+                if (settings.schemaVersion > 1) return (SettingsFileState.FutureVersion, null);
+                if (settings.schemaVersion != 1) return (SettingsFileState.Corrupt, null);
                 settings.Normalize();
-                return settings;
+                return (SettingsFileState.Ready, settings);
             }
             catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException ||
                                         ex is ArgumentException || ex is FormatException)
-            { reset = true; return new UserSettings(); }
+            { return (SettingsFileState.Corrupt, null); }
         }
 
         public void SaveSettings(UserSettings settings)
         {
+            if (settings == null) throw new ArgumentNullException(nameof(settings));
+            if (settings.schemaVersion != 1) throw new InvalidOperationException("无法保存其他版本的设置文件。");
+            var path = Path.Combine(root, "settings.json");
+            var primary = ReadSettingsFile(path);
+            if (primary.State == SettingsFileState.FutureVersion ||
+                ReadSettingsFile(path + ".bak").State == SettingsFileState.FutureVersion)
+                throw new InvalidOperationException("设置文件由更新版本创建，当前版本不会覆盖。");
             settings.Normalize();
-            AtomicWrite(Path.Combine(root, "settings.json"), codec.Serialize(settings), true);
+            // A damaged primary must not replace the only valid backup.
+            AtomicWrite(path, codec.Serialize(settings), primary.State == SettingsFileState.Ready);
         }
 
         void AtomicWrite(string path, string json, bool preservePrevious)
