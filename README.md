@@ -47,6 +47,6 @@ Eternal-Jade-Scroll/
 
 ## 开发状态
 
-2026-09-27：首轮「主菜单与角色展示」已在 Unity 内验收通过。Unity 6.3 LTS 位于 D 盘，客户端工程位于 [`GameClient/TwelveJade`](GameClient/TwelveJade)。Unity Personal 许可激活后，批处理 `ProjectSetup.Prepare` 与 Play 模式自动验收（`FrontEndShot.Capture`）全部通过：七个页面渲染正确（截图见 [`Tools/screenshots`](Tools/screenshots)），存档新建/读取/删除的端到端断言零失败。角色三视图仍待图像服务开通图像分组后生成，界面以占位提示明示。详见 [`Documents/09_开发日志.md`](Documents/09_开发日志.md)。
+2026-09-27：首轮「主菜单与角色展示」已在 Unity 内验收通过。Unity 6.3 LTS 位于 D 盘，客户端工程位于 [`GameClient/TwelveJade`](GameClient/TwelveJade)。Unity Personal 许可激活后，批处理 `ProjectSetup.Prepare` 与 Play 模式自动验收（`FrontEndShot.Capture`）全部通过：七个页面渲染正确（截图见 [`Tools/screenshots`](Tools/screenshots)），存档新建/读取/删除的端到端断言零失败。农家、行旅、商家三套角色三视图已经由用户自有 grok2api 网关生成并接入工程（来源见 [`Assets/ArtSource/PROVENANCE.md`](Assets/ArtSource/PROVENANCE.md)），主菜单与角色展示首轮交付完整。详见 [`Documents/09_开发日志.md`](Documents/09_开发日志.md)。
 
 用户以玩家身份审核体验与剧情关键节点，AI 负责日常实现。每个开发周期结束时记录改动、验证和下一步；完成可玩里程碑后再提供 Windows 包。

@@ -68,3 +68,6 @@ output/
 tmp/
 *.user
 *.bak
+
+# Unity 批处理临时日志
+GameClient/TwelveJade/*-log.txt
