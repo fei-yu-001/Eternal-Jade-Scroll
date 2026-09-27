@@ -33,6 +33,38 @@ try
     Check("trait pools sized", CharacterGen.Traits.Count >= 12 && CharacterGen.Destinies.Count >= 8);
     Check("rolled traits distinct", CharacterGen.RollTraits(new Random(7)).Distinct().Count() == CharacterGen.TraitsPerCharacter);
 
+    // 问命：答案加权但不决定结果；权重确定性可复现。
+    var questions = FateDialogue.Questions;
+    Check("fate dialogue shaped", questions.Length == 3 && questions.All(q => q.Options.Length == 3));
+    Check("fate options reference real destinies", questions.SelectMany(q => q.Options)
+        .SelectMany(o => o.Favor).All(id => CharacterGen.FindDestiny(id) != null));
+    // 模拟全部 27 种答案组合：倾向的命运更占优，未倾向的命运也仍可能出现。
+    var combos = questions[0].Options.SelectMany(a => questions[1].Options.SelectMany(b =>
+        questions[2].Options.Select(c => new[] { a, b, c }))).ToArray();
+    var favoredCounts = new System.Collections.Generic.Dictionary<string, int>();
+    var unfavoredSeen = new System.Collections.Generic.HashSet<string>();
+    var simulation = new Random(20260927);
+    foreach (var combo in combos)
+    {
+        var favored = combo.SelectMany(o => o.Favor).Distinct().ToArray();
+        var unfavored = CharacterGen.Destinies.Select(d => d.Id).Where(id => !favored.Contains(id)).ToArray();
+        for (var i = 0; i < 600; i++)
+        {
+            var id = FateDialogue.RollDestiny(favored, simulation);
+            if (favored.Contains(id)) favoredCounts[id] = favoredCounts.GetValueOrDefault(id) + 1;
+            else unfavoredSeen.Add(id);
+        }
+    }
+    Check("every destiny reachable", favoredCounts.Keys.Union(unfavoredSeen).Count() == CharacterGen.Destinies.Count);
+    Check("favored destiny beats most unfavored",
+        CharacterGen.Destinies.Where(d => favoredCounts.ContainsKey(d.Id))
+            .Sum(d => favoredCounts[d.Id]) >
+        CharacterGen.Destinies.Count(d => !favoredCounts.ContainsKey(d.Id)) * 50);
+    var sampleFavored = new[] { "jadeloft", "benefactor", "pledge" };
+    var seeded = Enumerable.Range(0, 50).Select(i => FateDialogue.RollDestiny(sampleFavored, new Random(i))).ToArray();
+    Check("weighted roll deterministic", seeded.SequenceEqual(
+        Enumerable.Range(0, 50).Select(i => FateDialogue.RollDestiny(sampleFavored, new Random(i)))));
+
     // v1 档位读取即迁移：缺省字段取默认值，写回时升级为 v2。
     File.WriteAllText(Path.Combine(root, "slot-2.json"),
         "{\"schemaVersion\":1,\"slot\":2,\"characterId\":\"farmer\",\"characterName\":\"阿禾\"," +

@@ -15,6 +15,7 @@ namespace TwelveJade.Presentation
     {
         UiKit ui;
         RectTransform canvas, content, modal, toast;
+        GameObject canvasObject;
         CanvasGroup contentFade;
         SaveRepository repository;
         UserSettings settings;
@@ -43,9 +44,10 @@ namespace TwelveJade.Presentation
                 2048, 2048, AtlasPopulationMode.Dynamic, true);
             runtimeFont.name = "TwelveJade Noto Serif Dynamic";
             ui = new UiKit(runtimeFont, PlayClick);
-            var canvasObject = new GameObject("Front End Canvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            canvas = canvasObject.GetComponent<RectTransform>();
-            canvasObject.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            var canvas_ = new GameObject("Front End Canvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            canvasObject = canvas_;
+            canvas = canvas_.GetComponent<RectTransform>();
+            canvas_.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
             var scaler = canvasObject.GetComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
@@ -86,8 +88,10 @@ namespace TwelveJade.Presentation
 
         void BuildBackdrop()
         {
-            var background = Resources.Load<Texture2D>("Art/menu-background");
+            var background = Resources.Load<Texture2D>("Art/menu-painting");
+            if (background == null) background = Resources.Load<Texture2D>("Art/menu-background");
             ui.Panel(canvas, "Ink base", 0, 0, 1920, 1080, UiKit.Ink);
+            RawImage backdropImage = null;
             if (background != null)
             {
                 var image = ui.Art(canvas, background, 0, 0, 1920, 1080);
@@ -101,14 +105,17 @@ namespace TwelveJade.Presentation
                     image.uvRect = new Rect(0, (1 - height) / 2, 1, height);
                 }
                 else { var width = screenRatio / imageRatio; image.uvRect = new Rect((1 - width) / 2, 0, width, 1); }
+                backdropImage = image;
             }
-            ui.Panel(canvas, "Atmosphere", 0, 0, 1920, 1080, new Color(.025f, .09f, .075f, .34f));
-            ui.Panel(canvas, "Left scrim", 0, 0, 635, 1080, new Color(.025f, .09f, .075f, .75f));
+            ui.Panel(canvas, "Atmosphere", 0, 0, 1920, 1080, new Color(.025f, .09f, .075f, .30f));
+            ui.Panel(canvas, "Left scrim", 0, 0, 635, 1080, new Color(.02f, .07f, .06f, .72f));
             ui.Panel(canvas, "Top rule", 75, 60, 1770, 1, new Color(.77f, .65f, .42f, .55f));
             ui.Panel(canvas, "Bottom rule", 75, 998, 1770, 1, new Color(.77f, .65f, .42f, .55f));
             ui.Label(canvas, "九 州 界  /  凡 尘 篇", 82, 25, 900, 30, 16, UiKit.Paper);
             ui.Label(canvas, "十二玉楼长生经", 80, 1020, 600, 30, 17, UiKit.Muted);
             ui.Label(canvas, ProductVersion, 1370, 1020, 475, 30, 17, UiKit.Muted, TextAlignmentOptions.TopRight);
+            var ambience = canvasObject.AddComponent<MenuAmbience>();
+            ambience.Configure(backdropImage, () => settings.reduceMotion);
         }
 
         void BeginPage(string name)
@@ -134,14 +141,17 @@ namespace TwelveJade.Presentation
             BeginPage("menu"); activeSave = null;
             ui.Label(content, "ETERNAL JADE SCROLL", 103, 126, 510, 40, 19, UiKit.Gold);
             ui.Label(content, "十二玉楼\n长生经", 92, 187, 570, 222, 78, UiKit.Paper);
+            var seal = Resources.Load<Texture2D>("Art/Items/seal");
+            if (seal != null) ui.Art(content, seal, 486, 205, 128, 128);
             ui.Panel(content, "Title accent", 103, 439, 60, 3, UiKit.Gold);
             ui.Label(content, "山河无定数，凡尘亦长生。", 102, 461, 500, 50, 24, UiKit.Muted);
-            ui.Button(content, "启程  /  开始游戏", 100, 552, 385, 67, () => ShowSlots(true), true);
-            ui.Button(content, "续缘  /  继续游戏", 100, 635, 385, 61, () => LoadSlot(repository.Latest()), false, repository.Latest() != null);
-            ui.Button(content, "行迹  /  档位管理", 100, 712, 385, 61, () => ShowSlots(false));
-            ui.Button(content, "设置", 100, 801, 181, 58, ShowSettings);
-            ui.Button(content, "制作信息", 303, 801, 182, 58, ShowCredits);
-            ui.Button(content, "离去  /  退出游戏", 100, 875, 385, 58, ConfirmExit);
+            ui.MenuItem(content, "启  程", "开始一段新的人生", 100, 545, 400, 84, () => ShowSlots(true));
+            ui.MenuItem(content, "续  缘", "回到上次的旅程", 100, 637, 400, 84, () => LoadSlot(repository.Latest()),
+                repository.Latest() != null);
+            ui.MenuItem(content, "行  迹", "查看与整理三卷存档", 100, 729, 400, 84, () => ShowSlots(false));
+            ui.MenuItem(content, "设  置", "声色与观感", 100, 823, 196, 76, ShowSettings);
+            ui.MenuItem(content, "制作信息", "谁在写这个故事", 310, 823, 196, 76, ShowCredits);
+            ui.MenuItem(content, "离  去", "暂别此间", 100, 907, 400, 76, ConfirmExit);
             ui.Label(content, "卷 一", 1706, 116, 80, 50, 25, UiKit.Paper);
             ui.Label(content, "青\n石\n残\n梦", 1694, 201, 92, 410, 52, UiKit.Paper, TextAlignmentOptions.Top);
             ui.Label(content, "一缕炊烟，一条归路。\n远山之外，旧世正在醒来。", 1040, 817, 720, 110, 28, UiKit.Paper, TextAlignmentOptions.TopRight);

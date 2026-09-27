@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace TwelveJade.Presentation
@@ -17,6 +18,29 @@ namespace TwelveJade.Presentation
 
         public static Color Hex(string hex) { ColorUtility.TryParseHtmlString("#" + hex, out var value); return value; }
 
+        static Sprite rounded;
+        // 程序化圆角矩形（九宫格）：所有面板与按钮共用，染色由 Image.color 负责。
+        public static Sprite RoundedSprite()
+        {
+            if (rounded != null) return rounded;
+            const int size = 96, radius = 26;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            for (var y = 0; y < size; y++)
+            for (var x = 0; x < size; x++)
+            {
+                var cx = Mathf.Max(radius - x, x - (size - 1 - radius), 0);
+                var cy = Mathf.Max(radius - y, y - (size - 1 - radius), 0);
+                var distance = Mathf.Sqrt(cx * cx + cy * cy);
+                var alpha = distance <= radius - 1.5f ? 1f : Mathf.Clamp01((radius + 0.5f - distance) / 2f);
+                tex.SetPixel(x, y, new Color(1, 1, 1, alpha));
+            }
+            tex.Apply(false, true);
+            rounded = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(.5f, .5f), 100, 0, SpriteMeshType.FullRect,
+                new Vector4(radius, radius, radius, radius));
+            rounded.name = "TwelveJade Rounded";
+            return rounded;
+        }
+
         public RectTransform Rect(Transform parent, string name, float x, float y, float width, float height)
         {
             var rect = new GameObject(name, typeof(RectTransform)).GetComponent<RectTransform>();
@@ -31,6 +55,7 @@ namespace TwelveJade.Presentation
         public Image Panel(Transform parent, string name, float x, float y, float w, float h, Color color, bool block = false)
         {
             var image = Rect(parent, name, x, y, w, h).gameObject.AddComponent<Image>();
+            image.sprite = RoundedSprite(); image.type = Image.Type.Sliced;
             image.color = color; image.raycastTarget = block;
             return image;
         }
@@ -50,18 +75,88 @@ namespace TwelveJade.Presentation
         {
             var image = Panel(parent, "Button " + text, x, y, w, h,
                 primary ? Gold : new Color(0.12f, 0.25f, 0.22f, .92f), true);
+            return StyleButton(image, text, w, h, primary ? Ink : Paper, action, enabled);
+        }
+
+        Button StyleButton(Image image, string text, float w, float h, Color textColor, UnityAction action, bool enabled)
+        {
             var button = image.gameObject.AddComponent<Button>();
             button.targetGraphic = image;
             var colors = button.colors;
-            colors.highlightedColor = new Color(1.25f, 1.25f, 1.16f, 1);
-            colors.pressedColor = new Color(.65f, .75f, .68f, 1);
-            colors.selectedColor = new Color(1.2f, 1.2f, 1.12f, 1);
-            colors.disabledColor = new Color(.6f, .6f, .6f, .5f);
+            colors.highlightedColor = new Color(1.3f, 1.26f, 1.1f, 1);
+            colors.pressedColor = new Color(.7f, .78f, .72f, 1);
+            colors.selectedColor = new Color(1.22f, 1.18f, 1.08f, 1);
+            colors.disabledColor = new Color(.55f, .55f, .55f, .45f);
+            colors.fadeDuration = .12f;
             button.colors = colors;
-            Label(image.transform, text, 20, 0, w - 40, h, 25, primary ? Ink : Paper, TextAlignmentOptions.MidlineLeft);
+            var label = Label(image.transform, text, 22, 0, w - 44, h, 25, textColor, TextAlignmentOptions.MidlineLeft);
+            AttachHoverGlow(image.transform, label, textColor);
             button.interactable = enabled;
             button.onClick.AddListener(() => click?.Invoke());
             button.onClick.AddListener(action);
+            return button;
+        }
+
+        // 悬停时文字与描边提亮、轻微右移，给出「活」的反馈而不只是变色。
+        static void AttachHoverGlow(Transform root, TMP_Text label, Color baseColor)
+        {
+            var trigger = root.gameObject.AddComponent<EventTrigger>();
+            var enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+            enter.callback.AddListener(_ =>
+            {
+                label.color = Color.Lerp(baseColor, Color.white, .65f);
+                label.rectTransform.anchoredPosition += new Vector2(5, 0);
+            });
+            var exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+            exit.callback.AddListener(_ =>
+            {
+                label.color = baseColor;
+                label.rectTransform.anchoredPosition -= new Vector2(5, 0);
+            });
+            trigger.triggers.Add(enter);
+            trigger.triggers.Add(exit);
+        }
+
+        // 主菜单条目：金条 + 大字 + 小注，没有填充方块；悬停时金条延展、整行右移。
+        public Button MenuItem(Transform parent, string title, string caption, float x, float y, float w, float h,
+            UnityAction action, bool enabled = true)
+        {
+            var root = Rect(parent, "MenuItem " + title, x, y, w, h);
+            var bar = Rect(root, "Bar", 2, 6, 4, h - 12).gameObject.AddComponent<Image>();
+            bar.color = new Color(Gold.r, Gold.g, Gold.b, .75f); bar.raycastTarget = false;
+            var title_ = Label(root, title, 34, 2, w - 40, h * .58f, 33, Paper);
+            var caption_ = Label(root, caption, 35, h * .55f, w - 40, h * .4f, 16, Muted);
+            var hit = Rect(root, "Hit", 0, 0, w, h).gameObject.AddComponent<Image>();
+            hit.color = new Color(0, 0, 0, 0); hit.raycastTarget = true;
+            var button = hit.gameObject.AddComponent<Button>();
+            button.transition = Selectable.Transition.None;
+            var trigger = hit.gameObject.AddComponent<EventTrigger>();
+            var enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+            enter.callback.AddListener(_ =>
+            {
+                if (!enabled) return;
+                bar.rectTransform.sizeDelta = new Vector2(7, h - 12);
+                title_.color = White; caption_.color = Gold;
+                root.anchoredPosition += new Vector2(10, 0);
+            });
+            var exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+            exit.callback.AddListener(_ =>
+            {
+                bar.rectTransform.sizeDelta = new Vector2(4, h - 12);
+                title_.color = Paper; caption_.color = Muted;
+                root.anchoredPosition -= new Vector2(10, 0);
+            });
+            trigger.triggers.Add(enter);
+            trigger.triggers.Add(exit);
+            button.interactable = enabled;
+            if (!enabled)
+            {
+                title_.color = new Color(Paper.r, Paper.g, Paper.b, .38f);
+                caption_.color = new Color(Muted.r, Muted.g, Muted.b, .45f);
+                bar.color = new Color(Gold.r, Gold.g, Gold.b, .25f);
+            }
+            button.onClick.AddListener(() => { if (enabled) click?.Invoke(); });
+            button.onClick.AddListener(() => { if (enabled) action(); });
             return button;
         }
 

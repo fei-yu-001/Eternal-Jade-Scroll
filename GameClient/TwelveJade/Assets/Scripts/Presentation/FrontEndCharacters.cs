@@ -3,6 +3,7 @@ using System.Linq;
 using TMPro;
 using TwelveJade.Core;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace TwelveJade.Presentation
@@ -101,6 +102,66 @@ namespace TwelveJade.Presentation
             draftDestiny = CharacterGen.RollDestiny(rng);
         }
 
+        // 问命：三相之后按答案倾向加权随机定命运；词条始终纯随机。
+        int fateStep;
+        readonly System.Collections.Generic.List<string> fateFavored = new();
+
+        public void OpenFateDialogue()
+        {
+            CloseModal();
+            content.GetComponent<CanvasGroup>().interactable = false;
+            fateStep = 0;
+            fateFavored.Clear();
+            ShowFateQuestion();
+        }
+
+        void ShowFateQuestion()
+        {
+            var question = FateDialogue.Questions[fateStep];
+            modal = ui.Panel(canvas, "Fate dialogue", 0, 0, 1920, 1080, new Color(0, .035f, .03f, .86f), true).rectTransform;
+            var box = ui.Panel(modal, "Dialog", 460, 290, 1000, 490, UiKit.Dark, true);
+            ui.Panel(box.transform, "Rule", 36, 0, 928, 3, UiKit.Gold);
+            ui.Label(box.transform, "村 口 · 问 命", 48, 34, 500, 40, 20, UiKit.Gold);
+            ui.Label(box.transform, string.Format("（{0} / {1}）", fateStep + 1, FateDialogue.Questions.Length),
+                850, 34, 102, 40, 20, UiKit.Muted, TextAlignmentOptions.TopRight);
+            ui.Label(box.transform, question.Text, 48, 96, 904, 96, 27, UiKit.Paper);
+            for (var i = 0; i < question.Options.Length; i++)
+            {
+                var index = i;
+                ui.Button(box.transform, question.Options[i].Text, 48, 214 + i * 84, 904, 68, () => ChooseFate(index));
+            }
+        }
+
+        void ChooseFate(int optionIndex)
+        {
+            fateFavored.AddRange(FateDialogue.Questions[fateStep].Options[optionIndex].Favor);
+            fateStep++;
+            if (fateStep < FateDialogue.Questions.Length) ShowFateQuestion();
+            else FinishFateDialogue();
+        }
+
+        void FinishFateDialogue()
+        {
+            var rng = new System.Random();
+            draftTraits = CharacterGen.RollTraits(rng);
+            draftDestiny = FateDialogue.RollDestiny(fateFavored.ToArray(), rng);
+            var fate = CharacterGen.FindDestiny(draftDestiny);
+            if (modal != null) { modal.gameObject.SetActive(false); Destroy(modal.gameObject); modal = null; }
+            modal = ui.Panel(canvas, "Fate result", 0, 0, 1920, 1080, new Color(0, .035f, .03f, .86f), true).rectTransform;
+            var box = ui.Panel(modal, "Dialog", 460, 340, 1000, 400, UiKit.Dark, true);
+            ui.Panel(box.transform, "Rule", 36, 0, 928, 3, UiKit.Gold);
+            ui.Label(box.transform, "卦 成", 48, 34, 300, 44, 22, UiKit.Gold);
+            ui.Label(box.transform, "「" + (fate?.Name ?? "无名") + "」", 48, 92, 904, 74, 44, UiKit.Paper);
+            ui.Label(box.transform, fate?.Description ?? "卦象古怪，寻常卜算一概算不出。", 48, 178, 904, 56, 24, UiKit.Muted);
+            ui.Label(box.transform, "另得词条：" + TraitNames(draftTraits) + "。卦象只给个去向，路终究是你自己走。", 48, 246, 904, 50, 21, UiKit.Muted);
+            var accept = ui.Button(box.transform, "记下此卦", 48, 316, 904, 62, () =>
+            {
+                CloseModal();
+                RedrawCreation(currentDraftSlot);
+            }, true);
+            EventSystem.current.SetSelectedGameObject(accept.gameObject);
+        }
+
         // 落笔：以当前草稿创建档位并进入预览。
         public SaveData CreateFromDraft(int slot)
         {
@@ -148,8 +209,9 @@ namespace TwelveJade.Presentation
                 () => SetCreationFaceStyle(1), draftFaceStyle == 1);
 
             ui.Label(content, "命格", 998, 646, 90, 54, 22, UiKit.Gold, TextAlignmentOptions.MidlineLeft);
-            ui.Label(content, TraitNames(draftTraits), 1092, 646, 550, 54, 24, UiKit.Paper, TextAlignmentOptions.MidlineLeft);
-            ui.Button(content, "重掷命格", 1660, 646, 164, 54, RerollCreationFate);
+            ui.Label(content, TraitNames(draftTraits), 1092, 646, 420, 54, 24, UiKit.Paper, TextAlignmentOptions.MidlineLeft);
+            ui.Button(content, "重掷", 1524, 646, 134, 54, RerollCreationFate);
+            ui.Button(content, "问命 · 卜卦", 1668, 646, 152, 54, OpenFateDialogue, true);
             ui.Label(content, FateSummary(draftTraits, draftDestiny), 998, 714, 824, 140, 19, UiKit.Muted);
 
             ui.Label(content, "你的名字", 998, 874, 110, 54, 22, UiKit.Gold, TextAlignmentOptions.MidlineLeft);
