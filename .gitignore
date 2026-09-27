@@ -71,3 +71,7 @@ tmp/
 
 # Unity 批处理临时日志
 GameClient/TwelveJade/*-log.txt
+
+# Unity 崩溃恢复场景（编辑器自动写入，不入库）
+GameClient/TwelveJade/Assets/_Recovery/
+GameClient/TwelveJade/Assets/_Recovery.meta

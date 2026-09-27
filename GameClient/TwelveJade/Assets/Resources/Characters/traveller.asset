@@ -17,6 +17,6 @@ MonoBehaviour:
   description: 背着一只旧包袱，从古道走到村口。来路未必能说清。
   detail: 一双远行旧鞋。此造型不预设人物命运。
   accent: {r: 0.929, g: 0.890, b: 0.796, a: 1}
-  front: {fileID: 0}
-  side: {fileID: 0}
-  back: {fileID: 0}
+  front: {fileID: 2800000, guid: 6b2b39fcad95fa946830280d489cee44, type: 3}
+  side: {fileID: 2800000, guid: 6c10bc7ed7a865d44ac4dfe0cb6d2939, type: 3}
+  back: {fileID: 2800000, guid: 64a3107bb67716249bb97a884cf26455, type: 3}

@@ -28,7 +28,7 @@ namespace TwelveJade.Presentation
                 if (variant != null) return variant;
             }
             var assigned = direction == 0 ? front : direction == 2 ? back : side;
-            return assigned != null ? assigned : Resources.Load<Texture2D>($"Art/{id}-{suffix}");
+            return assigned != null ? assigned : Resources.Load<Texture2D>($"Art/{id}-male-0-{suffix}");
         }
 
         public static string FaceStyleName(string gender, int style)

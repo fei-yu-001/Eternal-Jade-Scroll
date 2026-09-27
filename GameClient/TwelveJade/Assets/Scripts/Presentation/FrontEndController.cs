@@ -155,10 +155,7 @@ namespace TwelveJade.Presentation
         public void ShowMenu()
         {
             BeginPage("menu"); activeSave = null;
-            ui.Label(content, "ETERNAL JADE SCROLL", 103, 126, 510, 40, 19, UiKit.Gold);
-            ui.Label(content, "十二玉楼\n长生经", 92, 187, 570, 222, 78, UiKit.Paper);
-            var seal = Resources.Load<Texture2D>("Art/Items/seal-stamp");
-            if (seal != null) ui.Art(content, seal, 486, 205, 128, 128);
+            // 标题与印章已烘焙在主视觉画里，UI 不再叠印文字，避免两种字体打架。
             ui.Label(content, "山河无定数，凡尘亦长生。", 102, 461, 500, 50, 24, UiKit.Muted);
             ui.MenuItem(content, "启  程", "开始一段新的人生", 100, 545, 400, 84, () => ShowSlots(true));
             ui.MenuItem(content, "续  缘", "回到上次的旅程", 100, 637, 400, 84, () => LoadSlot(repository.Latest()),
@@ -167,8 +164,8 @@ namespace TwelveJade.Presentation
             ui.MenuItem(content, "设  置", "声色与观感", 100, 823, 196, 76, ShowSettings);
             ui.MenuItem(content, "制作信息", "谁在写这个故事", 310, 823, 196, 76, ShowCredits);
             ui.MenuItem(content, "离  去", "暂别此间", 100, 907, 400, 76, ConfirmExit);
-            ui.Label(content, "卷 一", 1706, 116, 80, 50, 25, UiKit.Paper);
-            ui.Label(content, "青\n石\n残\n梦", 1694, 201, 92, 410, 52, UiKit.Paper, TextAlignmentOptions.Top);
+            ui.Label(content, "卷 一", 1700, 116, 92, 54, 30, UiKit.Paper, TextAlignmentOptions.Top, true);
+            ui.Label(content, "青\n石\n残\n梦", 1690, 208, 104, 440, 60, UiKit.Paper, TextAlignmentOptions.Top, true);
             ui.Label(content, "一缕炊烟，一条归路。\n远山之外，旧世正在醒来。", 1040, 817, 720, 110, 28, UiKit.Paper, TextAlignmentOptions.TopRight);
             FocusFirst();
         }

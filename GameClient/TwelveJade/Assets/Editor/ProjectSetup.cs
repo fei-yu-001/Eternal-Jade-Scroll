@@ -35,6 +35,7 @@ namespace TwelveJade.Editor
                 "一双远行旧鞋。此造型不预设人物命运。");
             CreatePreset("merchant", "市井商家", "听惯街市的吆喝，习惯在喧闹里寻找自己的路。",
                 "随身的布袋装着家常小物。此造型不赋予钱财优势。");
+            BindDefaultTurnarounds();
 
             const string scenePath = "Assets/Scenes/FrontEnd.unity";
             if (!File.Exists(Path.Combine(project, scenePath)))
@@ -57,6 +58,29 @@ namespace TwelveJade.Editor
             preset.id = id; preset.displayName = name; preset.description = description; preset.detail = detail;
             preset.accent = id == "farmer" ? UiKit.Jade : id == "traveller" ? UiKit.Gold : UiKit.Paper;
             AssetDatabase.CreateAsset(preset, path);
+        }
+
+        // 画稿引用断掉时（例如文件按新命名规则归位后）自动补绑到默认男装第一款。
+        static void BindDefaultTurnarounds()
+        {
+            var rebound = false;
+            foreach (var guid in AssetDatabase.FindAssets("t:CharacterPreset", new[] { "Assets/Resources/Characters" }))
+            {
+                var preset = AssetDatabase.LoadAssetAtPath<CharacterPreset>(AssetDatabase.GUIDToAssetPath(guid));
+                if (preset == null) continue;
+                foreach (var view in new[] { "front", "side", "back" })
+                {
+                    var field = typeof(CharacterPreset).GetField(view);
+                    if (field.GetValue(preset) != null) continue;
+                    var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(
+                        $"Assets/Resources/Art/{preset.id}-male-0-{view}.png");
+                    if (texture == null) continue;
+                    field.SetValue(preset, texture);
+                    EditorUtility.SetDirty(preset);
+                    rebound = true;
+                }
+            }
+            if (rebound) Debug.Log("Twelve Jade: rebound missing character turnaround references.");
         }
     }
 }

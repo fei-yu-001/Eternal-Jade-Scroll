@@ -17,6 +17,6 @@ MonoBehaviour:
   description: 从田垄与灶火间长大，识得四时，也识得人情。
   detail: 布衣沾着草木气息。此造型不赋予能力加成。
   accent: {r: 0.259, g: 0.435, b: 0.376, a: 1}
-  front: {fileID: 0}
-  side: {fileID: 0}
-  back: {fileID: 0}
+  front: {fileID: 2800000, guid: 152e2941cba7a504587c4741e1c7cc1a, type: 3}
+  side: {fileID: 2800000, guid: 7841a4191f4d2f04aac2292e11cfd61d, type: 3}
+  back: {fileID: 2800000, guid: ce00cdcb33768e94ab0141de51a566d6, type: 3}
