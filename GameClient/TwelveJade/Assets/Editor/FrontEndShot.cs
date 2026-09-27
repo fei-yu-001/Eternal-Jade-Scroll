@@ -27,7 +27,7 @@ namespace TwelveJade.Editor
         static readonly List<string> problems = new List<string>();
         static int shotIndex = -1;
         static float waitStart;
-        static bool waiting, createdSlot;
+        static bool waiting;
         static Action pendingAfter;
         static string currentShot;
         static float runStart;
@@ -125,7 +125,6 @@ namespace TwelveJade.Editor
                     var slot = FreeSlot();
                     if (slot > 0)
                     {
-                        createdSlot = true;
                         controller.ShowCharacterCreation(slot);
                         controller.SetCreationGender("female");
                         controller.SetCreationFaceStyle(1);
@@ -133,7 +132,12 @@ namespace TwelveJade.Editor
                         Check(save != null, "落笔创建应成功");
                         Check(controller.Repository.Read(slot).CanLoad, "新建档位应可读取");
                         var created = slot;
-                        Open(() => controller.ShowPreview(save), () => controller.Repository.Delete(created));
+                        Open(() => controller.ShowPreview(save), () =>
+                        {
+                            controller.Repository.Delete(created);
+                            // 玩家的真实存档可能占据其他槽位，只断言测试档本身已不在。
+                            Check(controller.Repository.Latest()?.Slot != created, "测试档位删除后不应再有该档位");
+                        });
                     }
                     else
                     {
@@ -210,8 +214,6 @@ namespace TwelveJade.Editor
             SessionState.SetBool(SessionKey, false);
             Application.logMessageReceived -= OnLog;
             EditorApplication.update -= Pump;
-            if (createdSlot)
-                Check(controller.Repository.Latest() == null, "测试档位删除后不应有可继续档位");
             Check(controller.CurrentPage == "credits", "当前页面应为制作信息");
             Application.logMessageReceived -= OnLog;
             if (target != null && camera != null) { camera.targetTexture = null; target.Release(); }

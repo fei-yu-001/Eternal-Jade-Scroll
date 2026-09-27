@@ -207,8 +207,8 @@ namespace TwelveJade.Presentation
 
             ui.Label(content, "命格", 998, 646, 90, 54, 22, UiKit.Gold, TextAlignmentOptions.MidlineLeft);
             ui.Label(content, TraitNames(draftTraits), 1092, 646, 420, 54, 24, UiKit.Paper, TextAlignmentOptions.MidlineLeft);
-            ui.Button(content, "重掷", 1524, 646, 134, 54, RerollCreationFate);
-            ui.Button(content, "问命 · 卜卦", 1668, 646, 152, 54, OpenFateDialogue, true);
+            ui.Button(content, "重掷", 1506, 646, 128, 54, RerollCreationFate);
+            ui.Button(content, "问命·卜卦", 1642, 646, 178, 54, OpenFateDialogue, true);
             ui.Label(content, FateSummary(draftTraits, draftDestiny), 998, 714, 824, 140, 19, UiKit.Muted);
 
             ui.Label(content, "你的名字", 998, 874, 110, 54, 22, UiKit.Gold, TextAlignmentOptions.MidlineLeft);
