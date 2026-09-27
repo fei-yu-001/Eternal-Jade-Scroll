@@ -15,6 +15,34 @@ try
     Expect<InvalidOperationException>("no overwrite", () => saves.Create(1, "merchant", "商旅"));
     Expect<ArgumentException>("invalid name", () => saves.Create(2, "traveller", "  "));
     Expect<ArgumentOutOfRangeException>("invalid slot", () => saves.Read(4));
+
+    // schemaVersion 2：性别、面容款式、词条与命运。
+    var v2 = saves.Create(3, "merchant", "云娘", "female", 1,
+        new[] { "deft", "literate" }, "jadeloft");
+    Check("v2 create roundtrip", v2.gender == "female" && v2.faceStyle == 1 &&
+        v2.traits.Length == 2 && v2.destiny == "jadeloft" && v2.schemaVersion == 2);
+    var loadedV2 = saves.Read(3).Data;
+    Check("v2 persisted", loadedV2.gender == "female" && loadedV2.faceStyle == 1 &&
+        loadedV2.traits.Contains("deft") && loadedV2.destiny == "jadeloft");
+    Expect<ArgumentException>("invalid gender rejected", () => saves.Create(2, "farmer", "甲", "other", 0, null, null));
+    Expect<ArgumentException>("invalid face style rejected", () => saves.Create(2, "farmer", "甲", "male", 9, null, null));
+    Expect<ArgumentException>("unknown trait rejected", () => saves.Create(2, "farmer", "甲", "male", 0, new[] { "nope" }, null));
+    Expect<ArgumentException>("unknown destiny rejected", () => saves.Create(2, "farmer", "甲", "male", 0, null, "nope"));
+    Expect<ArgumentException>("too many traits rejected", () => saves.Create(2, "farmer", "甲", "male", 0,
+        new[] { "deft", "literate", "strong" }, null));
+    Check("trait pools sized", CharacterGen.Traits.Count >= 12 && CharacterGen.Destinies.Count >= 8);
+    Check("rolled traits distinct", CharacterGen.RollTraits(new Random(7)).Distinct().Count() == CharacterGen.TraitsPerCharacter);
+
+    // v1 档位读取即迁移：缺省字段取默认值，写回时升级为 v2。
+    File.WriteAllText(Path.Combine(root, "slot-2.json"),
+        "{\"schemaVersion\":1,\"slot\":2,\"characterId\":\"farmer\",\"characterName\":\"阿禾\"," +
+        "\"createdUtc\":\"2026-09-27T00:00:00.0000000+00:00\",\"updatedUtc\":\"2026-09-27T00:00:00.0000000+00:00\"}");
+    var migrated = saves.Read(2).Data;
+    Check("v1 loads with v2 defaults", saves.Read(2).State == SlotState.Ready &&
+        migrated.gender == "male" && migrated.faceStyle == 0 && migrated.traits.Length == 0);
+    saves.Write(migrated);
+    Check("v1 upgraded to v2 on write", saves.Read(2).Data.schemaVersion == 2);
+
     first.facing = 2;
     saves.Write(first);
     File.WriteAllText(Path.Combine(root, "slot-1.json"), "{ broken");
@@ -24,11 +52,11 @@ try
     Check("recovery rewrites primary", saves.Read(1).State == SlotState.Ready);
     Check("older backup survives recovery", File.Exists(Path.Combine(root, "slot-1.json.bak")));
 
-    File.WriteAllText(Path.Combine(root, "slot-2.json"), "{\"schemaVersion\":2,\"slot\":2}");
-    Check("future save protected", saves.Read(2).State == SlotState.FutureVersion);
-    Expect<InvalidOperationException>("future save cannot be recreated", () => saves.Create(2, "farmer", "甲"));
-    saves.Delete(2);
-    Check("explicit delete clears future", saves.Read(2).State == SlotState.Empty);
+    File.WriteAllText(Path.Combine(root, "slot-3.json"), "{\"schemaVersion\":3,\"slot\":3}");
+    Check("future save protected", saves.Read(3).State == SlotState.FutureVersion);
+    Expect<InvalidOperationException>("future save cannot be recreated", () => saves.Create(3, "farmer", "甲"));
+    saves.Delete(3);
+    Check("explicit delete clears future", saves.Read(3).State == SlotState.Empty);
 
     var initialSettings = saves.LoadSettings(out var settingsState);
     Check("new settings use defaults", settingsState == SettingsLoadState.Default && initialSettings.width == 1600);

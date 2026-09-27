@@ -52,7 +52,7 @@ namespace TwelveJade.Core
                 if (!json.Contains("\"schemaVersion\"")) return new SlotInfo(slot, SlotState.Corrupt);
                 var data = codec.Deserialize<SaveData>(json);
                 if (data == null) return new SlotInfo(slot, SlotState.Corrupt);
-                if (data.schemaVersion > 1) return new SlotInfo(slot, SlotState.FutureVersion);
+                if (data.schemaVersion > SaveData.CurrentSchemaVersion) return new SlotInfo(slot, SlotState.FutureVersion);
                 return IsValid(data, slot) ? new SlotInfo(slot, SlotState.Ready, data)
                     : new SlotInfo(slot, SlotState.Corrupt);
             }
@@ -61,21 +61,43 @@ namespace TwelveJade.Core
             { return new SlotInfo(slot, SlotState.Corrupt); }
         }
 
-        static bool IsValid(SaveData data, int slot) => data.schemaVersion == 1 && data.slot == slot &&
-            !string.IsNullOrWhiteSpace(data.characterId) && !string.IsNullOrWhiteSpace(data.characterName) &&
-            data.characterName.Length <= 16 && data.location == "CharacterPreview" &&
+        static bool IsValid(SaveData data, int slot) =>
+            data.slot == slot &&
+            data.schemaVersion >= 1 && data.schemaVersion <= SaveData.CurrentSchemaVersion &&
+            !string.IsNullOrWhiteSpace(data.characterId) &&
+            !string.IsNullOrWhiteSpace(data.characterName) &&
+            data.characterName.Length <= 16 &&
+            data.location == "CharacterPreview" &&
             data.facing >= 0 && data.facing <= 3 &&
-            DateTimeOffset.TryParse(data.createdUtc, out _) && DateTimeOffset.TryParse(data.updatedUtc, out _);
+            (data.schemaVersion == 1 || SaveData.IsValidGender(data.gender)) &&
+            (data.schemaVersion == 1 || SaveData.IsValidFaceStyle(data.faceStyle)) &&
+            (data.traits == null || data.traits.Length <= CharacterGen.TraitsPerCharacter) &&
+            (data.destiny == null || data.destiny.Length <= 32) &&
+            DateTimeOffset.TryParse(data.createdUtc, out _) &&
+            DateTimeOffset.TryParse(data.updatedUtc, out _);
 
-        public SaveData Create(int slot, string characterId, string name)
+        public SaveData Create(int slot, string characterId, string name) =>
+            Create(slot, characterId, name, SaveData.Genders[0], 0, null, null);
+
+        public SaveData Create(int slot, string characterId, string name, string gender, int faceStyle,
+            string[] traits, string destiny)
         {
             if (Read(slot).State != SlotState.Empty) throw new InvalidOperationException("档位已有记录，请先在档位管理中删除。");
             if (string.IsNullOrWhiteSpace(characterId)) throw new ArgumentException("请选择角色外观。");
+            if (!SaveData.IsValidGender(gender)) throw new ArgumentException("性别无效。");
+            if (!SaveData.IsValidFaceStyle(faceStyle)) throw new ArgumentException("面容款式无效。");
+            traits = traits ?? Array.Empty<string>();
+            if (traits.Length > CharacterGen.TraitsPerCharacter) throw new ArgumentException("词条数量过多。");
+            foreach (var trait in traits)
+                if (CharacterGen.FindTrait(trait) == null) throw new ArgumentException("未知词条：" + trait);
+            if (!string.IsNullOrEmpty(destiny) && CharacterGen.FindDestiny(destiny) == null)
+                throw new ArgumentException("未知命运：" + destiny);
             name = (name ?? string.Empty).Trim();
             if (name.Length == 0 || name.Length > 16 || name.Any(char.IsControl))
                 throw new ArgumentException("角色名字需要 1–16 个字，不能包含控制字符。");
             var now = DateTimeOffset.UtcNow.ToString("O");
             var data = new SaveData { slot = slot, characterId = characterId, characterName = name,
+                gender = gender, faceStyle = faceStyle, traits = traits, destiny = destiny ?? "",
                 createdUtc = now, updatedUtc = now };
             Write(data);
             return data;
@@ -85,6 +107,8 @@ namespace TwelveJade.Core
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
             var path = SlotPath(data.slot);
+            // 存档一律以当前 schema 落盘：旧版本对象在写回时完成升级。
+            data.schemaVersion = SaveData.CurrentSchemaVersion;
             if (!IsValid(data, data.slot)) throw new ArgumentException("存档内容无效。");
             if (Read(data.slot).State == SlotState.FutureVersion)
                 throw new InvalidOperationException("此存档由更新版本创建，不能覆盖。");

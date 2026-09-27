@@ -82,7 +82,7 @@ namespace TwelveJade.Editor
             if (shotIndex < 0)
             {
                 if (!EditorApplication.isPlaying) return;
-                controller = UnityEngine.Object.FindObjectOfType<FrontEndController>();
+                controller = UnityEngine.Object.FindAnyObjectByType<FrontEndController>();
                 if (controller == null) return;
                 SetupCapture();
                 Debug.Log("[FrontEndShot] play mode ready, controller found");
@@ -113,7 +113,12 @@ namespace TwelveJade.Editor
                     Open(() => controller.ShowSlots(true));
                     break;
                 case 3:
-                    Open(() => controller.ShowCharacterCreation(2, 1, "云生"));
+                    Open(() =>
+                    {
+                        controller.ShowCharacterCreation(2);
+                        controller.SetCreationGender("female");
+                        controller.SetCreationFaceStyle(1);
+                    });
                     break;
                 case 4:
                 {
@@ -121,11 +126,14 @@ namespace TwelveJade.Editor
                     if (slot > 0)
                     {
                         createdSlot = true;
-                        controller.Repository.Create(slot, "traveller", "云生");
-                        var info = controller.Repository.Read(slot);
-                        Check(info.CanLoad, "新建档位应可读取");
+                        controller.ShowCharacterCreation(slot);
+                        controller.SetCreationGender("female");
+                        controller.SetCreationFaceStyle(1);
+                        var save = controller.CreateFromDraft(slot);
+                        Check(save != null, "落笔创建应成功");
+                        Check(controller.Repository.Read(slot).CanLoad, "新建档位应可读取");
                         var created = slot;
-                        Open(() => controller.ShowPreview(info.Data), () => controller.Repository.Delete(created));
+                        Open(() => controller.ShowPreview(save), () => controller.Repository.Delete(created));
                     }
                     else
                     {
@@ -163,7 +171,7 @@ namespace TwelveJade.Editor
         {
             camera = Camera.main;
             Check(camera != null, "主相机存在");
-            var canvas = UnityEngine.Object.FindObjectOfType<Canvas>();
+            var canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
             Check(canvas != null, "Canvas 存在");
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
             canvas.worldCamera = camera;

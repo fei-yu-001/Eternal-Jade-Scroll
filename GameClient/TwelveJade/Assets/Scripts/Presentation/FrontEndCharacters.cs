@@ -3,11 +3,20 @@ using System.Linq;
 using TMPro;
 using TwelveJade.Core;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace TwelveJade.Presentation
 {
     public sealed partial class FrontEndController
     {
+        string draftGender = SaveData.Genders[0];
+        int draftFaceStyle;
+        int draftOrigin;
+        string draftName = "无名";
+        string[] draftTraits = Array.Empty<string>();
+        string draftDestiny = "";
+        TMP_InputField nameInput;
+
         public void ShowSlots(bool creating)
         {
             BeginPage(creating ? "new-game" : "slots");
@@ -24,7 +33,8 @@ namespace TwelveJade.Presentation
                 {
                     var preset = presets.FirstOrDefault(p => p.id == slot.Data.characterId);
                     title = slot.Data.characterName;
-                    description = (preset != null ? preset.displayName : "未知外观") + "\n停留于：行旅小憩\n\n" +
+                    description = (preset != null ? preset.displayName : "未知外观") + " · " +
+                        CharacterPreset.GenderName(slot.Data.gender) + "\n停留于：行旅小憩\n\n" +
                         "上次归来\n" + DateTimeOffset.Parse(slot.Data.updatedUtc).ToLocalTime().ToString("yyyy.MM.dd  HH:mm");
                     if (slot.State == SlotState.Recovered) description += "\n\n主记录损坏，将从备份恢复。";
                 }
@@ -43,44 +53,131 @@ namespace TwelveJade.Presentation
                         { repository.Delete(slot.Slot); ShowSlots(creating); Notify("此卷已清空。"); }));
                 }
             }
-            ui.Label(content, "记录保存在本机。外观选择暂不影响人物能力与剧情。", 102, 926, 1500, 40, 21, UiKit.Muted);
+            ui.Label(content, "记录保存在本机。外观、命格与词条只是出身底色，不影响数值与剧情走向。", 102, 926, 1500, 40, 21, UiKit.Muted);
             FocusFirst();
         }
 
-        public void ShowCharacterCreation(int slot, int selected = 0, string playerName = "无名")
+        // 从档位管理进入：重置整份草稿并掷一次命格。换外观、改性别等只重绘页面，不重置草稿。
+        public void ShowCharacterCreation(int slot)
         {
+            draftOrigin = 0;
+            draftGender = SaveData.Genders[0];
+            draftFaceStyle = 0;
+            draftName = "无名";
+            RerollDraftFate();
+            RedrawCreation(slot);
+        }
+
+        public void SetCreationOrigin(int index)
+        {
+            draftOrigin = Mathf.Clamp(index, 0, presets.Length - 1);
+            RedrawCreation(currentDraftSlot);
+        }
+
+        public void SetCreationGender(string gender)
+        {
+            if (!SaveData.IsValidGender(gender)) return;
+            draftGender = gender;
+            RedrawCreation(currentDraftSlot);
+        }
+
+        public void SetCreationFaceStyle(int style)
+        {
+            if (!SaveData.IsValidFaceStyle(style)) return;
+            draftFaceStyle = style;
+            RedrawCreation(currentDraftSlot);
+        }
+
+        public void RerollCreationFate()
+        {
+            RerollDraftFate();
+            RedrawCreation(currentDraftSlot);
+        }
+
+        void RerollDraftFate()
+        {
+            var rng = new System.Random();
+            draftTraits = CharacterGen.RollTraits(rng);
+            draftDestiny = CharacterGen.RollDestiny(rng);
+        }
+
+        // 落笔：以当前草稿创建档位并进入预览。
+        public SaveData CreateFromDraft(int slot)
+        {
+            SaveData save = null;
+            Guard(() =>
+            {
+                save = repository.Create(slot, presets[draftOrigin].id, draftName, draftGender,
+                    draftFaceStyle, draftTraits, draftDestiny);
+                activeSave = save;
+                ShowPreview(save);
+            });
+            return save;
+        }
+
+        int currentDraftSlot;
+
+        void RedrawCreation(int slot)
+        {
+            currentDraftSlot = slot;
             BeginPage("character-creation");
             PageHeading("众 生  /  初 见", "你从人间来", "每一个普通人，都有自己的来路。择一身行装，赴一程山河。");
-            var preset = presets[selected];
+            var preset = presets[draftOrigin];
             for (var i = 0; i < presets.Length; i++)
             {
                 var index = i;
                 ui.Button(content, presets[i].displayName, 102 + i * 269, 337, 247, 60,
-                    () => ShowCharacterCreation(slot, index, nameInput.text), i == selected);
+                    () => SetCreationOrigin(index), i == draftOrigin);
             }
-            var artPanel = ui.Panel(content, "Character portrait", 102, 418, 785, 512, new Color(.78f, .76f, .65f, .97f));
-            ShowPortrait(artPanel.transform, preset, 0, 20, 15, 745, 480);
+            ui.Panel(content, "Character portrait", 102, 418, 785, 512, new Color(.78f, .76f, .65f, .97f));
+            ShowPortrait(content, preset, 0, draftGender, draftFaceStyle, 102 + 20, 418 + 15, 745, 480);
+            ui.Label(content, "外观与命格只是出身底色，不预设数值与结局。", 122, 892, 745, 30, 17, UiKit.Ink);
+
             ui.Panel(content, "Character details", 949, 336, 873, 594, new Color(.045f, .115f, .10f, .96f));
-            ui.Label(content, "平 民 出 身", 998, 372, 715, 40, 19, UiKit.Gold);
-            ui.Label(content, preset.displayName, 991, 430, 724, 65, 45, UiKit.Paper);
-            ui.Label(content, preset.description, 998, 516, 748, 115, 27, UiKit.Paper);
-            ui.Label(content, preset.detail, 998, 650, 740, 75, 21, UiKit.Muted);
-            ui.Label(content, "你的名字", 998, 746, 200, 40, 22, UiKit.Gold);
-            nameInput = ui.Input(content, playerName, 998, 793, 407);
-            ui.Button(content, "落笔 · 创建行迹", 1432, 793, 342, 62, () => Guard(() =>
-            {
-                activeSave = repository.Create(slot, preset.id, nameInput.text);
-                ShowPreview(activeSave);
-            }), true);
-            ui.Label(content, "名字可用中文，最多十六字。此时只确定外观与称呼。", 998, 874, 750, 40, 20, UiKit.Muted);
+            ui.Label(content, "平 民 出 身", 998, 366, 715, 36, 19, UiKit.Gold);
+            ui.Label(content, preset.displayName, 991, 408, 724, 64, 42, UiKit.Paper);
+            ui.Label(content, preset.description, 998, 482, 748, 66, 23, UiKit.Paper);
+
+            ui.Label(content, "性别", 998, 566, 90, 54, 24, UiKit.Muted, TextAlignmentOptions.MidlineLeft);
+            ui.Button(content, "男", 1092, 566, 126, 54, () => SetCreationGender("male"), draftGender == "male");
+            ui.Button(content, "女", 1230, 566, 126, 54, () => SetCreationGender("female"), draftGender == "female");
+            ui.Label(content, "面容", 1396, 566, 90, 54, 24, UiKit.Muted, TextAlignmentOptions.MidlineLeft);
+            ui.Button(content, CharacterPreset.FaceStyleName(draftGender, 0), 1490, 566, 150, 54,
+                () => SetCreationFaceStyle(0), draftFaceStyle == 0);
+            ui.Button(content, CharacterPreset.FaceStyleName(draftGender, 1), 1652, 566, 150, 54,
+                () => SetCreationFaceStyle(1), draftFaceStyle == 1);
+
+            ui.Label(content, "命格", 998, 646, 90, 54, 22, UiKit.Gold, TextAlignmentOptions.MidlineLeft);
+            ui.Label(content, TraitNames(draftTraits), 1092, 646, 550, 54, 24, UiKit.Paper, TextAlignmentOptions.MidlineLeft);
+            ui.Button(content, "重掷命格", 1660, 646, 164, 54, RerollCreationFate);
+            ui.Label(content, FateSummary(draftTraits, draftDestiny), 998, 714, 824, 140, 19, UiKit.Muted);
+
+            ui.Label(content, "你的名字", 998, 874, 110, 54, 22, UiKit.Gold, TextAlignmentOptions.MidlineLeft);
+            nameInput = ui.Input(content, draftName, 1112, 868, 280);
+            nameInput.onValueChanged.AddListener(value => draftName = value);
+            ui.Button(content, "落笔 · 创建行迹", 1412, 868, 404, 54, () => CreateFromDraft(slot), true);
             FocusFirst();
         }
 
-        TMP_InputField nameInput;
+        string TraitNames(string[] traits) => string.Join("  ·  ",
+            traits.Select(id => CharacterGen.FindTrait(id)?.Name ?? "无名").ToArray());
 
-        void ShowPortrait(Transform parent, CharacterPreset preset, int facing, float x, float y, float w, float h)
+        string FateSummary(string[] traits, string destiny)
         {
-            var texture = preset.Facing(facing);
+            var lines = traits.Select(id =>
+            {
+                var trait = CharacterGen.FindTrait(id);
+                return trait == null ? "" : trait.Name + "：" + trait.Description;
+            }).Where(line => line.Length > 0).ToList();
+            var fate = CharacterGen.FindDestiny(destiny);
+            lines.Add(fate == null ? "命运：尚未显形。" : "命运·" + fate.Name + "：" + fate.Description);
+            return string.Join("\n", lines.ToArray());
+        }
+
+        void ShowPortrait(Transform parent, CharacterPreset preset, int facing, string gender, int faceStyle,
+            float x, float y, float w, float h)
+        {
+            var texture = preset.Facing(facing, gender, faceStyle);
             if (texture != null) ui.Art(parent, texture, x, y, w, h, facing == 3);
             else
             {
@@ -110,7 +207,7 @@ namespace TwelveJade.Presentation
             var preset = presets.First(p => p.id == data.characterId);
             PageHeading("行 旅 小 憩", data.characterName + "的行装", "一身寻常衣衫，一段尚未展开的人生。");
             var art = ui.Panel(content, "Turnaround", 102, 336, 920, 593, new Color(.78f, .76f, .65f, .97f));
-            ShowPortrait(art.transform, preset, data.facing, 80, 15, 760, 516);
+            ShowPortrait(art.transform, preset, data.facing, data.gender, data.faceStyle, 80, 15, 760, 516);
             string[] directions = { "正面", "右侧", "背面", "左侧" };
             for (var i = 0; i < 4; i++)
             {
@@ -126,11 +223,13 @@ namespace TwelveJade.Presentation
             }
             ui.Panel(content, "Biography", 1074, 336, 746, 593, new Color(.045f, .115f, .10f, .96f));
             ui.Label(content, "第 " + data.slot + " 卷  /  已落笔", 1117, 373, 650, 40, 19, UiKit.Gold);
-            ui.Label(content, preset.displayName, 1110, 436, 650, 70, 46, UiKit.Paper);
-            ui.Label(content, preset.description, 1117, 541, 625, 135, 28, UiKit.Paper);
-            ui.Label(content, "此刻，故事尚未启程。\n先记住这身行装，以及来时的路。", 1117, 702, 625, 90, 24, UiKit.Muted);
-            ui.Button(content, "返回主菜单", 1117, 817, 310, 66, ShowMenu, true);
-            ui.Button(content, "查看行迹", 1456, 817, 310, 66, () => ShowSlots(false));
+            ui.Label(content, preset.displayName + " · " + CharacterPreset.GenderName(data.gender), 1110, 424, 650, 60, 38, UiKit.Paper);
+            ui.Label(content, preset.description, 1117, 494, 625, 96, 25, UiKit.Paper);
+            ui.Label(content, TraitNames(data.traits), 1117, 602, 625, 44, 24, UiKit.Gold);
+            ui.Label(content, FateSummary(data.traits, data.destiny), 1117, 652, 625, 148, 18, UiKit.Muted);
+            ui.Label(content, "此刻，故事尚未启程。\n先记住这身行装，以及来时的路。", 1117, 812, 625, 66, 21, UiKit.Muted);
+            ui.Button(content, "返回主菜单", 1117, 890, 310, 62, ShowMenu, true);
+            ui.Button(content, "查看行迹", 1456, 890, 310, 62, () => ShowSlots(false));
             FocusFirst();
         }
     }

@@ -17,9 +17,14 @@
 | 游戏资源 | 来源 | 授权 / 备注 |
 | --- | --- | --- |
 | `GameClient/TwelveJade/Assets/Resources/Art/menu-background.jpg` | 大都会艺术博物馆藏叶欣《Landscape》，约 1645–1655，藏品编号 65625，原图 3280×2465 | The Met Open Access 项目公共领域图像，藏品 API `isPublicDomain=true`。原图未经改绘；Unity 运行时按 16:9 居中裁切显示。藏品页：<https://www.metmuseum.org/art/collection/search/65625>，开放获取政策：<https://www.metmuseum.org/about-the-met/policies-and-documents/open-access>。画作晚于游戏时代，仅作界面气氛图，不用于历史考据。 |
-| `GameClient/TwelveJade/Assets/Resources/Art/{farmer,traveller,merchant}-{front,side,back}.png`（9 张，各约 427×720） | `grok-imagine-image`，2026-09-27 生成；提示词见 `prompts/{farmer,traveller,merchant}-turnaround-v1.txt`；参数 `n=1, aspect_ratio=16:9, response_format=b64_json`；选定原图存于 `Assets/ArtSource/originals/{farmer,traveller,merchant}-turnaround-v1.png`（1280×720） | 所有者自有 Grok 账号经自有网关生成，输出可用。加工步骤：整图按三等分横列裁切为正面/右视/背面三张竖版视图，未做其他修改；游戏内左视图由右视图镜像。生成后经人工验图：三视图同人同装、朝向正确、头脚完整、无文字水印；农家、行旅、商家三张整体画风一致。已知瑕疵：商家背面图右侧带轻微底色渐变、地面有淡影（提示词本要求无影），幅度不影响展示卡用途，保留不重生成。 |
+| `GameClient/TwelveJade/Assets/Resources/Art/{farmer,traveller,merchant}-{gender}-{style}-{front,side,back}.png`（12 组 × 3 视图 = 36 张，各约 427×720） | `grok-imagine-image`，2026-09-27 生成；提示词在 `prompts/{farmer,traveller,merchant}-turnaround-v1.txt` 模板上仅替换 Subject 行的性别与发型短语；参数 `n=1, aspect_ratio=16:9, response_format=b64_json`；选定原图存于 `Assets/ArtSource/originals/{组合名}-turnaround-v1.png`（1280×720） | 同上，所有者自有 Grok 账号经自有网关生成。加工：整图按三等分横列裁切为正面/右视/背面三张竖版视图；游戏内左视图镜像右视图。经人工逐张验图：三视图同人同装、发型款式区分明确、头脚完整、无文字水印。已知瑕疵：个别图底部有淡影或侧视图有底色接缝，幅度不影响展示卡用途。 |
+| `GameClient/TwelveJade/Assets/Resources/Art/Items/{chest-closed,chest-open,dryfood,herb,coins,jade-pendant,woodcutter-knife,cotton-robe}.png`（8 张，约 1024×1024） | `grok-imagine-image`，2026-09-27 生成；提示词为物品图标模板（原文见下）；参数 `n=1, aspect_ratio=1:1, response_format=b64_json` | 同上。加工：仅等比缩放入库，未裁切。逐张验图：单一物体居中、轮廓清晰、象牙底色与界面展示卡一致。 |
+
+物品图标提示词模板：`Asset type: a single game item icon, hand-painted fine ink linework with soft watercolor washes on warm ivory paper, muted natural colors, consistent with an elegant hand-painted historical Chinese indie game set in the late Yuan / early Ming era. {物体描述}. The object fills most of the canvas, centered, clear silhouette, slight three-quarter view. Uniform flat warm ivory background #EDE6D6, no scene, no surface, no shadow outside the object. Soft diffuse even light. No text, labels, logo, watermark, no modern elements.`
 
 ## 验收记录
+
+2026-09-27（第二批，面容变体）：沿用 v1 模板但手工重组提示词（省略 `Use case: stylized-concept` 与 `Asset type: three-view character turnaround sheet` 头部行）时，上游连续输出与提示词无关的写实照片（单人照、乡村背景），完全忽略水墨与三视图要求。用 v1 原文做对照实验正常，定位为提示词头部指令缺失所致；改为「v1 原文为模板、仅替换 Subject 行」后 9 张全部正常。结论已固化到流程：**改提示词必须保留头部两行与 Primary request 行，只替换 Subject 中的人物短语**。同日 lite 模型（`grok-imagine-image-lite`）再次出现无视提示词与 502，正式弃用并记录。
 
 2026-09-26：通过用户已授权的密钥读取模型列表，列表包含 Codex/GPT 聊天模型，但没有 `gpt-image-2`。使用随附 CLI 向指定图像端点发起一次 `gpt-image-2`、`quality=low`、`size=1536x1024` 的菜单背景请求，服务端返回：
 
