@@ -12,9 +12,9 @@ namespace TwelveJade.Presentation
     {
         public static readonly Color Ink = Hex("142E2B"), Paper = Hex("EDE3CB"), Gold = Hex("C4A46A"),
             Muted = Hex("B5C3B3"), White = Hex("FAF3E4"), Jade = Hex("426F60"), Dark = Hex("102622");
-        readonly TMP_FontAsset font;
+        readonly TMP_FontAsset font, brush;
         readonly Action click;
-        public UiKit(TMP_FontAsset font, Action click) { this.font = font; this.click = click; }
+        public UiKit(TMP_FontAsset font, TMP_FontAsset brush, Action click) { this.font = font; this.brush = brush; this.click = click; }
 
         public static Color Hex(string hex) { ColorUtility.TryParseHtmlString("#" + hex, out var value); return value; }
 
@@ -88,10 +88,10 @@ namespace TwelveJade.Presentation
         }
 
         public TextMeshProUGUI Label(Transform parent, string text, float x, float y, float w, float h,
-            float size = 26, Color? color = null, TextAlignmentOptions align = TextAlignmentOptions.TopLeft)
+            float size = 26, Color? color = null, TextAlignmentOptions align = TextAlignmentOptions.TopLeft, bool brush = false)
         {
             var label = Rect(parent, "Text", x, y, w, h).gameObject.AddComponent<TextMeshProUGUI>();
-            label.font = font; label.text = text; label.fontSize = size;
+            label.font = brush ? this.brush : font; label.text = text; label.fontSize = size;
             label.color = color ?? White; label.alignment = align;
             label.raycastTarget = false; label.textWrappingMode = TextWrappingModes.Normal;
             return label;
@@ -157,8 +157,8 @@ namespace TwelveJade.Presentation
             var stroke = Rect(chip.transform, "Ink stroke", 14, 8, w - 28, h - 16).gameObject.AddComponent<RawImage>();
             stroke.texture = InkStrokeTexture(); stroke.raycastTarget = false;
             stroke.color = enabled ? new Color(.16f, .18f, .17f, .34f) : new Color(.16f, .18f, .17f, .16f);
-            var title_ = Label(chip.transform, title, 26, 4, w - 44, h * .56f, 31,
-                enabled ? Ink : new Color(Ink.r, Ink.g, Ink.b, .38f));
+            var title_ = Label(chip.transform, title, 26, 4, w - 44, h * .56f, 33,
+                enabled ? Ink : new Color(Ink.r, Ink.g, Ink.b, .38f), TextAlignmentOptions.TopLeft, true);
             var caption_ = Label(chip.transform, caption, 27, h * .54f, w - 44, h * .42f, 15,
                 enabled ? Hex("5E6E63") : new Color(.37f, .43f, .39f, .4f));
             var hit = chip.gameObject.GetComponent<Button>() ?? chip.gameObject.AddComponent<Button>();

@@ -41,7 +41,7 @@ namespace TwelveJade.Presentation
                 else if (slot.State == SlotState.Empty) { title = "尚未落笔"; description = "山河辽阔，前路未定。\n这一卷，等你写下第一笔。"; }
                 else if (slot.State == SlotState.FutureVersion) { title = "来自未来的行迹"; description = "该档位由更新版本创建。\n请使用更新的游戏版本打开。"; }
                 else { title = "行迹暂不可读"; description = "档位和备份均无法读取。\n可保留等待修复，或删除后重新开始。"; }
-                ui.Label(card.transform, title, 32, 120, 475, 65, 37, UiKit.Paper);
+                ui.Label(card.transform, title, 32, 120, 475, 65, 40, UiKit.Paper, TextAlignmentOptions.TopLeft, true);
                 ui.Label(card.transform, description, 34, 210, 472, 215, 22, UiKit.Muted);
                 if (slot.State == SlotState.Empty)
                     ui.Button(card.transform, "写下新的人生", 32, 450, 481, 62, () => ShowCharacterCreation(slot.Slot), true);
@@ -148,7 +148,7 @@ namespace TwelveJade.Presentation
             modal = ui.Panel(canvas, "Fate result", 0, 0, 1920, 1080, new Color(0, .035f, .03f, .86f), true).rectTransform;
             var box = ui.Panel(modal, "Dialog", 460, 340, 1000, 400, UiKit.Dark, true);
             ui.Label(box.transform, "卦 成", 48, 34, 300, 44, 22, UiKit.Gold);
-            ui.Label(box.transform, "「" + (fate?.Name ?? "无名") + "」", 48, 92, 904, 74, 44, UiKit.Paper);
+            ui.Label(box.transform, "「" + (fate?.Name ?? "无名") + "」", 48, 92, 904, 74, 48, UiKit.Paper, TextAlignmentOptions.TopLeft, true);
             ui.Label(box.transform, fate?.Description ?? "卦象古怪，寻常卜算一概算不出。", 48, 178, 904, 56, 24, UiKit.Muted);
             ui.Label(box.transform, "另得词条：" + TraitNames(draftTraits) + "。卦象只给个去向，路终究是你自己走。", 48, 246, 904, 50, 21, UiKit.Muted);
             var accept = ui.Button(box.transform, "记下此卦", 48, 316, 904, 62, () =>

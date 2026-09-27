@@ -22,7 +22,7 @@ namespace TwelveJade.Presentation
         CharacterPreset[] presets;
         AudioSource music, effects;
         AudioClip clickTone;
-        TMP_FontAsset runtimeFont;
+        TMP_FontAsset runtimeFont, brushFont;
         SaveData activeSave;
         string page = "menu";
         float toastUntil, fadeStart;
@@ -43,7 +43,12 @@ namespace TwelveJade.Presentation
             runtimeFont = TMP_FontAsset.CreateFontAsset(font, 48, 5, UnityEngine.TextCore.LowLevel.GlyphRenderMode.SDFAA,
                 2048, 2048, AtlasPopulationMode.Dynamic, true);
             runtimeFont.name = "TwelveJade Noto Serif Dynamic";
-            ui = new UiKit(runtimeFont, PlayClick);
+            var brushSource = Resources.Load<Font>("Fonts/ZhiMangXing-Regular");
+            if (brushSource == null) throw new InvalidOperationException("Missing bundled Zhi Mang Xing brush font.");
+            brushFont = TMP_FontAsset.CreateFontAsset(brushSource, 48, 5, UnityEngine.TextCore.LowLevel.GlyphRenderMode.SDFAA,
+                2048, 2048, AtlasPopulationMode.Dynamic, true);
+            brushFont.name = "TwelveJade Zhi Mang Xing Dynamic";
+            ui = new UiKit(runtimeFont, brushFont, PlayClick);
             var canvas_ = new GameObject("Front End Canvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             canvasObject = canvas_;
             canvas = canvas_.GetComponent<RectTransform>();
@@ -142,7 +147,7 @@ namespace TwelveJade.Presentation
         void PageHeading(string kicker, string title, string subtitle)
         {
             ui.Label(content, kicker, 100, 106, 1500, 32, 18, UiKit.Gold);
-            ui.Label(content, title, 100, 155, 1250, 85, 52, UiKit.Paper);
+            ui.Label(content, title, 100, 155, 1250, 85, 56, UiKit.Paper, TextAlignmentOptions.TopLeft, true);
             ui.Label(content, subtitle, 102, 251, 1580, 54, 23, UiKit.Muted);
             ui.Button(content, "返回", 1620, 145, 200, 60, ShowMenu);
         }
@@ -224,6 +229,7 @@ namespace TwelveJade.Presentation
         void OnDestroy()
         {
             if (runtimeFont != null) Destroy(runtimeFont);
+            if (brushFont != null) Destroy(brushFont);
             if (clickTone != null) Destroy(clickTone);
             if (music != null && music.clip != null) Destroy(music.clip);
         }
