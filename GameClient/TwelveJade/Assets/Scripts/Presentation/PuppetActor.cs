@@ -105,9 +105,14 @@ namespace TwelveJade.Presentation
             //   腿块（v 0.76–1）：髋在条带**顶** → 0.96；绕 0.04 就变成绕脚踝当钟摆甩，整条腿会甩离身体。
             //   躯干块（v 0.22–0.76）：胯在条带**底** → 0.04。
             //   头块（v 0–0.22）：颈在条带**底** → 0.12。
+            // 枢轴（在自己 Rect 的归一化空间，y=0 底边 / y=1 顶边）：
+            //   头  绕颈 → 颈在条带底，0.12
+            //   躯干 绕胯 → 胯在条带底，0.04
+            //   腿  绕髋 → **髋在条带顶，取 1.0**；曾误取 0.96/0.04，等于绕脚踝当钟摆甩，
+            //   整条腿会甩离身体（战斗页 230px 下最显眼）。1.0 时枢轴恰在条带顶边＝胯。
             var pivots = new[]
             {
-                new Vector2(.5f, .96f), new Vector2(.5f, .96f),   // 腿：绕髋
+                new Vector2(.5f, 1f), new Vector2(.5f, 1f),        // 腿：绕髋（条带顶边）
                 new Vector2(.5f, .04f),                            // 躯干：绕胯
                 new Vector2(.5f, .04f), new Vector2(.5f, .04f),   // 袖位（未建对象，占位）
                 new Vector2(.5f, .12f),                            // 头：绕颈
@@ -121,11 +126,15 @@ namespace TwelveJade.Presentation
                 rect.anchorMin = rect.anchorMax = new Vector2(0, 1);
                 rect.pivot = pivots[i];
                 rect.sizeDelta = new Vector2((x1 - x0) * size.x, (v1 - v0) * size.y);
-                // anchoredPosition 定位的是**枢轴点**，不是矩形左上角。
-                // 想要条带左上角落在 (-x0*size.x, -v0*size.y)，就得把 pivot 造成的偏移加回来。
-                // 少了这一项，枢轴偏离中心多少，整块就错位多少——小图看不出来，230px 的战斗页会整块飞出去。
-                rect.anchoredPosition = new Vector2(-x0 * size.x, -v0 * size.y) +
-                    Vector2.Scale(pivots[i], rect.sizeDelta);
+                // anchoredPosition 定位的是**枢轴点**，不是矩形左上角；且坐标从底边起算。
+                // 两个搞错都不会报错，只会整块错位——小图看不出来，230px 的战斗页一目了然。
+                // 坐标一律**从底边量**（root.pivot = (.5,0)，anchoredPosition 即脚底）。
+                // v 是"自图顶向下"的比例，所以块底距 root 底 = -(v1)*size.y；
+                // 再换算成枢轴位置：anchoredPos = 块底 + pivot.y * 块高。
+                var blockBottom = -v1 * size.y;
+                rect.anchoredPosition = new Vector2(
+                    -x0 * size.x,
+                    blockBottom + pivots[i].y * rect.sizeDelta.y);
                 var image = rect.gameObject.AddComponent<RawImage>();
                 image.texture = view;
                 image.raycastTarget = false;
