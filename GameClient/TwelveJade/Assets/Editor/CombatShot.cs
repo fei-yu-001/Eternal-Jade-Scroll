@@ -126,6 +126,7 @@ namespace TwelveJade.Editor
             controller.CombatClockAdvance(0.13f);
             Check(controller.CombatFoe.Hp == 44, "轻击命中：野猪 60→44",
                 controller.CombatFoe.Hp + "");
+            Check(ActiveObjects("Puppet actor") >= 1, "玩家纸偶应存在（分层纸偶 v3 切线）");
             controller.CombatClockAdvance(0.4f);
             Check(controller.CombatFoe.Hp == 44, "同一击不重复扣血");
             Check(controller.CombatPlayerPhase == "Idle", "收招后回到静立");

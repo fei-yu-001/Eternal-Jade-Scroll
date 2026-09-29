@@ -463,6 +463,31 @@ namespace TwelveJade.Presentation
                 ui.Label(art.transform, preset.displayName, 92, 180, 736, 80, 50, UiKit.Ink, TextAlignmentOptions.Center);
                 ui.Label(art.transform, "造型画稿待接入", 92, 280, 736, 45, 24, UiKit.Ink, TextAlignmentOptions.Center);
             }
+            // 行走样张：镇上是这台纸偶，预览页必须所见即所得——
+            // 静立/行走/奔跑三档直接给玩家看，接缝露不露馅自己会说话（M4-05）。
+            var walkSample = ui.Panel(content, "Walk sample", 1054, 336, 766, 296,
+                new Color(.06f, .14f, .12f, .9f), true).rectTransform;
+            ui.Label(walkSample, "行 走 样 张", 26, 18, 300, 32, 20, UiKit.Gold, TextAlignmentOptions.TopLeft, true);
+            ui.Label(walkSample, "镇上那台就是这台纸偶。", 26, 54, 400, 28, 17,
+                new Color(.62f, .69f, .63f, .9f));
+            var sampleView = preset.Facing(0, data.gender, data.faceStyle);
+            if (sampleView != null)
+            {
+                walkPreview = PuppetActor.Create(walkSample, sampleView, new Vector2(250f, 214f),
+                    new Vector2(126f, 212f));
+                walkPreview.SetMotion(PuppetActor.Motion.Walk);
+                walkPreviewMotion = (int)PuppetActor.Motion.Walk;
+                string[] gait = { "静立", "行走", "奔跑" };
+                for (var i = 0; i < gait.Length; i++)
+                {
+                    var gaitIndex = i;
+                    ui.Button(walkSample, gait[i], 360 + i * 120, 160, 110, 48,
+                        () => SetWalkPreview(gaitIndex), gaitIndex == walkPreviewMotion);
+                }
+                ui.Label(walkSample, "躯干含双袖随步摆，腿绕髋前后——接缝留了重叠量。", 26, 240, 714, 28, 16,
+                    new Color(.55f, .62f, .56f, .85f));
+            }
+
             string[] directions = { "正面", "右侧", "背面", "左侧" };
             for (var i = 0; i < 4; i++)
             {
@@ -510,6 +535,19 @@ namespace TwelveJade.Presentation
 
         CharacterActor currentActor;
         CharacterActor.Motion currentMotion = CharacterActor.Motion.Walk;
+        PuppetActor walkPreview;
+        int walkPreviewMotion = 1;
+
+        // 行走样张档位切换（0 静立 / 1 行走 / 2 奔跑），与城镇页同一套 PuppetActor。
+        public void SetWalkPreview(int gait)
+        {
+            if (gait < 0 || gait >= PuppetActor.MotionNames.Length) return;
+            walkPreviewMotion = gait;
+            if (walkPreview != null) walkPreview.SetMotion((PuppetActor.Motion)gait);
+        }
+
+        public PuppetActor WalkPreview => walkPreview;
+        public int WalkPreviewMotion => walkPreviewMotion;
 
         public void SetMotion(int motion)
         {

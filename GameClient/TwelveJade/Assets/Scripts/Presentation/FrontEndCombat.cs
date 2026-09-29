@@ -196,6 +196,20 @@ namespace TwelveJade.Presentation
             CombatRules.Tick(combatPlayer, combatNow);
             CombatRules.Tick(combatFoe, combatNow);
 
+            // 短动作：只播表现，Core 该不该动、动了多少血都不归这里管。
+            if (combatPlayerActor != null)
+            {
+                if (combatPlayer.Phase == CombatPhase.Startup)
+                    combatPlayerActor.PlayAction(
+                        combatPlayer.CurrentAction == CombatActionType.Heavy ? PuppetActor.Action.Heavy : PuppetActor.Action.Light,
+                        Time.unscaledTime, true);
+                else if (combatPlayer.CurrentAction == CombatActionType.Dodge &&
+                         (combatPlayer.Phase == CombatPhase.Startup || combatPlayer.Phase == CombatPhase.Active))
+                    combatPlayerActor.PlayAction(PuppetActor.Action.Dodge, Time.unscaledTime, true);
+                else if (combatPlayer.Phase == CombatPhase.Hitstun)
+                    combatPlayerActor.PlayAction(PuppetActor.Action.Flinch, Time.unscaledTime, true);
+            }
+
             // 命中结算：命中帧内每帧尝试，Core 的"一次起手只落一击"挡重复扣血。
             StrikeIfActive(combatPlayer, combatFoe,
                 combatPlayer.CurrentAction == CombatActionType.Heavy
