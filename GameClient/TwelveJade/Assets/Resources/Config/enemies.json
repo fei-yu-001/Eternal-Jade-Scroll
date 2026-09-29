@@ -1,0 +1,22 @@
+{
+  "enemies": [
+    {
+      "id": "boar-demon",
+      "name": "野猪妖",
+      "maxHp": 60,
+      "attack": 9,
+      "defense": 2,
+      "stamina": 50,
+      "moveSpeed": 60,
+      "hitProfile": [
+        { "part": "body", "multiplier": 1.0 },
+        { "part": "head", "multiplier": 1.5 }
+      ],
+      "drops": [
+        { "itemId": "larou", "count": 2 },
+        { "itemId": "caoyao", "count": 3 }
+      ],
+      "coins": 24
+    }
+  ]
+}
