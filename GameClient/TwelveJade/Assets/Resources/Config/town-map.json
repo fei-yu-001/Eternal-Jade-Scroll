@@ -47,5 +47,12 @@
       "x": 1090, "y": 700, "height": 150, "radius": 24,
       "line": "背个货箱的汉子，见你过来就笑：这位客官，缺什么？"
     }
+  ],
+  "encounters": [
+    {
+      "id": "encounter-boar-01", "enemy": "boar-demon", "name": "兽吼",
+      "x": 975, "y": 128,
+      "line": "北巷尽头一声闷吼，惊起满树乌鸦。"
+    }
   ]
 }

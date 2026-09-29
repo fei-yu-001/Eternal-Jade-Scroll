@@ -7,7 +7,7 @@ namespace TwelveJade.Core
     [Serializable]
     public sealed class SaveData
     {
-        public const int CurrentSchemaVersion = 4;
+        public const int CurrentSchemaVersion = 5;
         public const int MaxFaceStyles = 2;
         public const int MaxCoins = 9999999;
         public const int MaxReputation = 100;
@@ -33,6 +33,8 @@ namespace TwelveJade.Core
         public ItemStack[] bag = InventoryRules.NewBag();
         // schemaVersion 4: 商人存货与记忆。首次见面时按商品表铺满，见面与买卖都写回。
         public MerchantState[] merchants = Array.Empty<MerchantState>();
+        // schemaVersion 5: 一次性事件标记（如"encounter-boar-01 已发过奖励"），文本 id，最多 32 条。
+        public string[] oneTimeFlags = Array.Empty<string>();
 
         public static bool IsValidGender(string value) => Genders.Contains(value);
         public static bool IsValidFaceStyle(int value) => value >= 0 && value < MaxFaceStyles;
@@ -61,7 +63,27 @@ namespace TwelveJade.Core
             data.merchants = data.merchants
                 .Where(m => m != null && !string.IsNullOrWhiteSpace(m.id))
                 .ToArray();
+            data.oneTimeFlags ??= Array.Empty<string>();
+            data.oneTimeFlags = data.oneTimeFlags
+                .Where(f => !string.IsNullOrWhiteSpace(f))
+                .Distinct()
+                .ToArray();
         }
+
+        // 一次性标记：没记过返回 true 并记档；重复调用是幂等的。
+        public bool MarkFlag(string flagId)
+        {
+            if (string.IsNullOrWhiteSpace(flagId) || flagId.Length > 48)
+                throw new ArgumentException("标记 id 需要 1–48 个字符。", nameof(flagId));
+            if (oneTimeFlags != null && oneTimeFlags.Contains(flagId)) return false;
+            if (oneTimeFlags != null && oneTimeFlags.Length >= 32)
+                throw new InvalidOperationException("一次性标记已满（32 条），请清理过期标记。");
+            oneTimeFlags = (oneTimeFlags ?? Array.Empty<string>()).Append(flagId).ToArray();
+            return true;
+        }
+
+        public bool HasFlag(string flagId) =>
+            !string.IsNullOrWhiteSpace(flagId) && oneTimeFlags != null && oneTimeFlags.Contains(flagId);
 
         // 开局行囊：新档与旧档迁移共用同一份，kits 表在 ItemTable.StartingKit。
         public static ItemStack[] StartingBag()

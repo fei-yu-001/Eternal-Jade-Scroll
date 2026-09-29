@@ -81,8 +81,23 @@ namespace TwelveJade.Core
             (data.schemaVersion < 3 || (SaveData.IsValidCoins(data.coins) &&
                 SaveData.IsValidReputation(data.localReputation) && InventoryRules.IsValid(data.bag, Items))) &&
             (data.schemaVersion < 4 || IsValidMerchants(data.merchants)) &&
+            (data.schemaVersion < 5 || IsValidFlags(data.oneTimeFlags)) &&
             DateTimeOffset.TryParse(data.createdUtc, out _) &&
             DateTimeOffset.TryParse(data.updatedUtc, out _);
+
+        // 一次性标记：非空、不重复、长度受限。
+        static bool IsValidFlags(string[] flags)
+        {
+            if (flags == null) return false;
+            if (flags.Length > 32) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var flag in flags)
+            {
+                if (string.IsNullOrWhiteSpace(flag) || flag.Length > 48) return false;
+                if (!seen.Add(flag)) return false;
+            }
+            return true;
+        }
 
         // 商人状态：id 不重复、不为空，条数与数量都在合理范围内。
         static bool IsValidMerchants(MerchantState[] merchants)

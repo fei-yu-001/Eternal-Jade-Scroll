@@ -60,6 +60,22 @@ namespace TwelveJade.Core
         public bool Blocks => Radius > 0f;
     }
 
+    // 镇上的战斗遭遇点：走到跟前触发战斗（M4-04）。位置与 NPC 同语义——地平线坐标。
+    public sealed class MapEncounter
+    {
+        public MapEncounter(string id, string enemy, string name, string line, float x, float y)
+        {
+            Id = id; Enemy = enemy; Name = name; Line = line; X = x; Y = y;
+        }
+
+        public string Id { get; }
+        public string Enemy { get; }
+        public string Name { get; }
+        public string Line { get; }
+        public float X { get; }
+        public float Y { get; }
+    }
+
     public sealed class MapLandmark
     {
         public MapLandmark(string id, string name, float x, float y)
@@ -77,12 +93,12 @@ namespace TwelveJade.Core
 
         TownMap(string name, float artWidth, float artHeight, float spawnX, float spawnY, bool spawnFacingLeft,
             float perspectiveTop, float perspectiveBottom, List<MapRect> walkable, List<MapProp> props,
-            List<MapLandmark> landmarks, List<MapNpc> npcs)
+            List<MapLandmark> landmarks, List<MapNpc> npcs, List<MapEncounter> encounters)
         {
             Name = name; ArtWidth = artWidth; ArtHeight = artHeight;
             SpawnX = spawnX; SpawnY = spawnY; SpawnFacingLeft = spawnFacingLeft;
             PerspectiveTop = perspectiveTop; PerspectiveBottom = perspectiveBottom;
-            Walkable = walkable; Props = props; Landmarks = landmarks; Npcs = npcs;
+            Walkable = walkable; Props = props; Landmarks = landmarks; Npcs = npcs; Encounters = encounters;
         }
 
         public string Name { get; }
@@ -98,6 +114,7 @@ namespace TwelveJade.Core
         public IReadOnlyList<MapProp> Props { get; }
         public IReadOnlyList<MapLandmark> Landmarks { get; }
         public IReadOnlyList<MapNpc> Npcs { get; }
+        public IReadOnlyList<MapEncounter> Encounters { get; }
 
         public bool WalkableContains(float x, float y) => Walkable.Any(rect => rect.Contains(x, y));
 
@@ -198,6 +215,20 @@ namespace TwelveJade.Core
             if (npcs.Any(n => npcs.Count(o => o.Id == n.Id) > 1))
                 throw new FormatException("NPC id 重复。");
 
+            var encounters = new List<MapEncounter>();
+            foreach (var entry in Elements(root, "encounters"))
+            {
+                var encounterId = Required(entry, "id");
+                if (encounters.Any(e => e.Id == encounterId))
+                    throw new FormatException("遭遇点 id 重复：" + encounterId);
+                var ex = Number(entry, "x", 0f);
+                var ey = Number(entry, "y", 0f);
+                if (ex < 0f || ey < 0f || ex > artWidth || ey > artHeight)
+                    throw new FormatException("遭遇点 " + encounterId + " 超出画布。");
+                encounters.Add(new MapEncounter(encounterId, Required(entry, "enemy"), Required(entry, "name"),
+                    entry["line"].AsString(""), ex, ey));
+            }
+
             var spawnX = root["spawn"]?["x"].AsFloat(0f) ?? 0f;
             var spawnY = root["spawn"]?["y"].AsFloat(0f) ?? 0f;
             if (!ZoneContains(walkable, props, spawnX, spawnY))
@@ -205,7 +236,7 @@ namespace TwelveJade.Core
 
             return new TownMap(root["name"].AsString("无名之地"), artWidth, artHeight, spawnX, spawnY,
                 root["spawnFacingLeft"].AsBool(false), Number(root, "perspectiveTop", .72f), Number(root, "perspectiveBottom", 1.05f),
-                walkable, props, landmarks, npcs);
+                walkable, props, landmarks, npcs, encounters);
         }
 
         static bool ZoneContains(List<MapRect> walkable, List<MapProp> props, float x, float y)
