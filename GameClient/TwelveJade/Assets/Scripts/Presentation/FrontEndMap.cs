@@ -23,7 +23,15 @@ namespace TwelveJade.Presentation
         bool hasTarget, facingLeft;
         float townScale = 1f, rippleStart;
         int seenFootfalls;
-        readonly List<(RectTransform rect, float baseY)> propOrder = new();
+        // 深度条目：立绘与 NPC 放在同一张表里按基座 y 排；分开两张表会各排各的、互相插队。
+        readonly List<TownLayer> townLayers = new();
+        string pendingNpcId;
+        public sealed class TownLayer
+        {
+            public RectTransform Rect;
+            public float BaseY;
+        }
+        public event System.Action<string> NpcArrived;
         readonly List<RawImage> dustPool = new();
         readonly List<float> dustStart = new();
         readonly List<float> dustFade = new();
@@ -62,10 +70,13 @@ namespace TwelveJade.Presentation
             townScale = mapW / town.ArtWidth;
             townMap = ui.Art(content, townMapArt != null ? townMapArt : Texture2D.whiteTexture, 210, 168, mapW, mapH).rectTransform;
 
-            propOrder.Clear();
+            townLayers.Clear();
+            pendingNpcId = null;
             foreach (var prop in town.Props) PlaceProp(prop);
+            foreach (var npc in town.Npcs) PlaceNpc(npc);
 
             dustLayer = ui.Rect(townMap, "Footfall dust", 0, 0, 10, 10);
+            ArrangeTownLayers();
             BuildDust();
 
             var preset = System.Array.Find(presets, p => p.id == activeSave.characterId) ?? presets[0];
@@ -101,7 +112,73 @@ namespace TwelveJade.Presentation
             var image = rect.gameObject.AddComponent<RawImage>();
             image.texture = texture;
             image.raycastTarget = false;
-            propOrder.Add((rect, prop.Y));
+            townLayers.Add(new TownLayer { Rect = rect, BaseY = prop.Y });
+        }
+
+        // 子节点顺序决定 UI 立绘的遮挡关系：尘点在最底（index 0），
+        // 其余按基座 y 由远到近排。立绘与 NPC 共用这一张表，插队才不会各排各的。
+        void ArrangeTownLayers()
+        {
+            dustLayer.SetAsFirstSibling();
+            townLayers.Sort((left, right) => left.BaseY.CompareTo(right.BaseY));
+            for (var i = 0; i < townLayers.Count; i++)
+                if (townLayers[i].Rect != null) townLayers[i].Rect.SetSiblingIndex(i + 1);
+        }
+
+        // 镇上的活人：与立绘同样按地平线摆放，但可点、可搭话。
+        void PlaceNpc(MapNpc npc)
+        {
+            var texture = Resources.Load<Texture2D>(npc.Art);
+            if (texture == null)
+            {
+                // 缺贴图就没有这个画面对象，但搭话仍然按配置里的 id 走，不受缺图影响。
+                Debug.LogWarning("NPC 贴图缺失，" + npc.Id + "：" + npc.Art);
+                return;
+            }
+            var rect = new GameObject("Npc " + npc.Id, typeof(RectTransform)).GetComponent<RectTransform>();
+            rect.SetParent(townMap, false);
+            rect.anchorMin = rect.anchorMax = new Vector2(0, 1);
+            rect.pivot = new Vector2(.5f, 0f);
+            rect.anchoredPosition = ToLocal(new Vector2(npc.X, npc.Y));
+            rect.sizeDelta = new Vector2(npc.Height, npc.Height) * townScale;
+            var image = rect.gameObject.AddComponent<RawImage>();
+            image.texture = texture;
+            image.raycastTarget = true;
+            var button = rect.gameObject.AddComponent<Button>();
+            button.gameObject.name = "Npc " + npc.Id;
+            button.targetGraphic = image;
+            button.transition = Selectable.Transition.None;
+            button.onClick.AddListener(() => GreetNpc(npc));
+            townLayers.Add(new TownLayer { Rect = rect, BaseY = npc.Y });
+        }
+
+        // 走过去再搭话：点人先挪到他面前，脚下出现涟漪，到了才开口。
+        public void GreetNpc(MapNpc npc)
+        {
+            if (npc == null) return;
+            var spot = ClampToWalkable(new Vector2(npc.X, npc.Y + npc.Radius + 16f));
+            var distance = (spot - localPos).magnitude;
+            // 存 id 而不是下标：缺贴图的 NPC 不会进深度表，下标会错位。
+            pendingNpcId = npc.Id;
+            if (distance < 6f) { pendingNpcId = null; NpcArrived?.Invoke(npc.Id); return; }
+            walkTarget = spot;
+            hasTarget = true;
+            ShowRipple(ToLocal(spot));
+        }
+
+        // 验收钩子：点完 NPC 后人物是否已经在走过去。
+        public bool TownWalkingToNpc => pendingNpcId != null;
+
+        // 验收钩子：把人物直接放到 NPC 跟前。
+        // 批处理里播放循环的节拍不稳，等不到真实走完的那一段，所以"走过去"与
+        // "到达后搭话"分开验：前者断言已设定目标，后者由这里触发到达回调。
+        public bool SnapTravelerNextToNpc(string npcId)
+        {
+            var npc = town?.Npcs.FirstOrDefault(n => n.Id == npcId);
+            if (npc == null || pendingNpcId != npcId) return false;
+            localPos = ClampToWalkable(new Vector2(npc.X, npc.Y + npc.Radius + 16f));
+            hasTarget = false;
+            return true;
         }
 
         // 宣纸舆图：主图缩绘，玩家金点描墨边，地标朱红点；点舆图展开全图浮层。
@@ -298,7 +375,17 @@ namespace TwelveJade.Presentation
                 // 步频与折返：斜向位移比直线短，步频按实际步幅折算，免得斜走时脚下打滑。
                 traveler.SetStepScale(speed / WalkSpeed);
             }
-            else traveler.SetMotion(PuppetActor.Motion.Idle);
+            else
+            {
+                traveler.SetMotion(PuppetActor.Motion.Idle);
+                // 走到位、停下脚，这时才搭话。
+                if (pendingNpcId != null && !hasTarget)
+                {
+                    var arrived = pendingNpcId;
+                    pendingNpcId = null;
+                    NpcArrived?.Invoke(arrived);
+                }
+            }
             traveler.SetPosition(ToLocal(localPos));
             ApplyPerspective();
             SortTravelerDepth();
@@ -352,15 +439,11 @@ namespace TwelveJade.Presentation
             traveler.SetScale(Mathf.Lerp(town.PerspectiveTop, town.PerspectiveBottom, depth));
         }
 
-        // 纵深排序：人物站在谁身后就被谁挡住——基座 y 比人物小（更远）的立绘在人物之下。
+        // 纵深排序：人物站在谁身后就被谁挡住——基座 y 比人物小（更远）的条目在人物之下。
+        // 与 ArrangeTownLayers 用同一张深度表，插队位置和实际绘制顺序必然一致。
         void SortTravelerDepth()
         {
-            var slot = 0;
-            foreach (var (rect, baseY) in propOrder)
-            {
-                if (rect == null) continue;
-                if (baseY <= localPos.y) slot++;
-            }
+            var slot = townLayers.Count(layer => layer.Rect != null && layer.BaseY <= localPos.y);
             var currentIndex = traveler.transform.GetSiblingIndex();
             // 尘点层永远排在第一个子节点之下：排序时补一位，免得它压到人物身上。
             var targetIndex = Mathf.Clamp(slot + 1, 0, townMap.childCount - 1);

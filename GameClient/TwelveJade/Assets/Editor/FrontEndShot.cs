@@ -19,7 +19,7 @@ namespace TwelveJade.Editor
     {
         const int Width = 1920, Height = 1080;
         const string SessionKey = "FrontEndShot.Active";
-        static readonly string[] PageNames = { "menu", "slots", "new-game", "character-creation", "preview", "town", "inventory", "settings", "credits" };
+        static readonly string[] PageNames = { "menu", "slots", "new-game", "character-creation", "preview", "town", "inventory", "trade", "settings", "credits" };
         static readonly HashSet<string> capturedShots = new HashSet<string>();
 
         static FrontEndController controller;
@@ -55,6 +55,11 @@ namespace TwelveJade.Editor
         public static void Capture()
         {
             SessionState.SetBool(SessionKey, true);
+            // 验收全程只在临时存档目录里跑，玩家的三个槽位一概不碰。
+            var dir = Path.Combine(Path.GetTempPath(), "twelve-jade-acceptance-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(dir);
+            Environment.SetEnvironmentVariable("TWELVEJADE_SAVEDIR", dir);
+            Debug.Log("[FrontEndShot] scratch saves at " + dir);
             var project = Directory.GetParent(Application.dataPath).FullName; // TwelveJade 工程
             var repoRoot = Directory.GetParent(Directory.GetParent(project).FullName).FullName; // 仓库根目录
             shotsDir = Path.Combine(repoRoot, "Tools", "screenshots");
@@ -100,6 +105,16 @@ namespace TwelveJade.Editor
             }
             if (!waiting) return;
             if (Time.realtimeSinceStartup - waitStart < .45f) return;
+            if (waitUntil != null)
+            {
+                // 轮询到条件成立为止：比数节拍靠谱（人物走过去的时间不是固定的）。
+                if (!waitUntil() && Time.realtimeSinceStartup < waitDeadline)
+                {
+                    waitStart = Time.realtimeSinceStartup;
+                    return;
+                }
+                waitUntil = null;
+            }
             waiting = false;
             if (!Shot()) return;
             if (shotIndex >= PageNames.Length - 1) Finish();
@@ -165,9 +180,12 @@ namespace TwelveJade.Editor
                     Open(controller.ShowInventory, VerifyInventory);
                     break;
                 case 7:
-                    Open(controller.ShowSettings);
+                    Open(() => controller.ShowTrade("huolang"), VerifyTrade);
                     break;
                 case 8:
+                    Open(controller.ShowSettings);
+                    break;
+                case 9:
                     Open(controller.ShowCredits);
                     break;
             }
@@ -222,8 +240,8 @@ namespace TwelveJade.Editor
             {
                 Check(controller.CurrentPage == "town", "城镇页应已打开");
                 Check(UnityEngine.Object.FindAnyObjectByType<PuppetActor>() != null, "城镇页应有分层纸偶角色");
-                Check(UnityEngine.Object.FindAnyObjectByType<PuppetActor>()?.CurrentMotion == PuppetActor.Motion.Idle,
-                    "入镇时角色先静立");
+                VerifyTalkThenLeave();
+                Check(controller.CurrentPage == "town", "城镇截图应停在镇上");
             }
             if (currentShot == "inventory")
             {
@@ -259,6 +277,19 @@ namespace TwelveJade.Editor
                 .FirstOrDefault(button => button.gameObject.scene.IsValid() && button.gameObject.activeInHierarchy &&
                     button.gameObject.name == "Button " + text);
         }
+
+        // 按 GameObject 名字找可交互控件：货架行、NPC 这些不是 ui.Button 造的，
+        // 用得上它才能在验收里真正 onClick，而不是绕过 UI 直接调 API。
+        static Button FindActiveControl(string name)
+        {
+            return Resources.FindObjectsOfTypeAll<Button>()
+                .FirstOrDefault(button => button.gameObject.scene.IsValid() && button.gameObject.activeInHierarchy &&
+                    button.gameObject.name == name);
+        }
+
+        // 条件等待：满足前不继续推进（人物走过去、弹窗出现这类需要等真实帧的场合）。
+        static Func<bool> waitUntil;
+        static float waitDeadline;
 
         static int ActiveObjects(string name)
         {
@@ -318,11 +349,56 @@ namespace TwelveJade.Editor
             Check(controller.CurrentPage == "character-creation", "记下此卦后回到创建页");
         }
 
-        // 城镇页的行囊检查：B 键与按钮都要能开，开着时再按 B 应合上。
+        // 城镇页：真的点货郎 → 等角色走到跟前 → 搭话框出现 → 告辞 → 截城镇图。
         static void VerifyTownBag()
         {
             Check(controller.CurrentPage == "town", "城镇页应已打开");
+            var peddler = FindActiveControl("Npc huolang");
+            Check(peddler != null, "镇上的货郎应可点");
+            if (peddler != null)
+            {
+                peddler.onClick.Invoke();
+                Check(controller.CurrentPage == "town", "点货郎不该直接弹交易页，应先走过去");
+                Check(controller.TownWalkingToNpc, "点货郎后应先走过去，不是原地对话");
+                // 批处理里等不到真实走完（播放循环节拍不稳），把人物放到跟前再等搭话框。
+                Check(controller.SnapTravelerNextToNpc("huolang"), "应能把人物放到货郎跟前");
+                pendingNpcCheck = true;
+                waitUntil = () => TalkBoxVisible();
+                waitDeadline = Time.realtimeSinceStartup + 20f;
+            }
+        }
+
+        static bool pendingNpcCheck;
+
+        // 走到跟前才搭话：框要出现、要有「做买卖」，点完能进交易页；点完先告辞回镇上截图。
+        static void VerifyTalkThenLeave()
+        {
+            if (!pendingNpcCheck) return;
+            pendingNpcCheck = false;
+            Check(TalkBoxVisible(), "走到货郎跟前应弹出搭话框");
+            // 先把两个按钮都验到，再依次点：点「做买卖」会关掉搭话框，之后就找不到「告辞」了。
+            var trade = FindActiveButton("做 买 卖");
+            var bye = FindActiveButton("告 辞");
+            Check(trade != null, "搭话框应有「做买卖」");
+            Check(bye != null, "搭话框应有「告辞」");
+            if (bye != null) bye.onClick.Invoke();
+            Check(controller.CurrentPage == "town", "告辞后应回到镇上");
+            if (trade == null) return;
+            controller.TalkTo("huolang");
+            FindActiveButton("做 买 卖")?.onClick.Invoke();
+            Check(controller.CurrentPage == "trade", "点「做买卖」应进交易页");
+            // 这一页要截的是镇子，办完差事回镇上再截。
+            controller.ShowTown();
+        }
+
+        static bool TalkBoxVisible() => Resources.FindObjectsOfTypeAll<RectTransform>()
+            .Any(rect => rect.gameObject.scene.IsValid() && rect.gameObject.activeInHierarchy && rect.name == "Talk box");
+
+        // 行囊：B 键与按钮都要能开，开着再合上不应残留格子。
+        static void VerifyBagToggle()
+        {
             controller.ShowInventory();
+
             Check(controller.BagCellCount == InventoryRules.SlotCount, "行囊面板应有 24 格");
             Check(controller.CurrentBag != null && controller.CurrentBag.Length == InventoryRules.SlotCount,
                 "行囊数据应挂上当前存档");
@@ -404,6 +480,101 @@ namespace TwelveJade.Editor
             }
         }
 
+        // 交易页：开页 → 买一件 → 卖一件 → 数字与存档都要对得上。
+        // 交易页：全部走真实按钮点击——货架行、黑市页签、买、卖、批量。
+        static void VerifyTrade()
+        {
+            Check(controller.CurrentPage == "trade", "交易页应已打开");
+            Check(controller.TradeMerchantId == "huolang", "交易页应对上货郎");
+            var shelf = controller.ShelfOrder;
+            Check(shelf.Count >= 3, "货架行数足够", shelf.Count + " 行");
+
+            // 货架首行与末行：真的点按钮，看选中的是不是自己那一件。
+            var firstRow = FindActiveControl("Shelf row 0");
+            var lastRow = FindActiveControl("Shelf row " + (shelf.Count - 1));
+            Check(firstRow != null && lastRow != null, "货架首末行按钮可点");
+            firstRow?.onClick.Invoke();
+            Check(controller.TradePick == shelf[0] && controller.SettleTitle == controller.NameOf(shelf[0]),
+                "点首行选中首行那件", controller.SettleTitle);
+            lastRow?.onClick.Invoke();
+            Check(controller.TradePick == shelf[shelf.Count - 1] &&
+                controller.SettleTitle == controller.NameOf(shelf[shelf.Count - 1]),
+                "点末行选中末行那件", controller.SettleTitle);
+
+            // 黑市页签：显示价必须与结算价同源（×1.4）；可见性按命格，不是看运气。
+            var dayPrice = controller.SelfPriceOf(0);
+            controller.SetDestinyForCheck("anle");
+            var blackTab = FindActiveButton("黑 市");
+            Check(blackTab != null && !blackTab.interactable, "普通命格不该能开黑市",
+                blackTab == null ? "页签不存在" : "interactable=" + blackTab.interactable);
+            controller.SetDestinyForCheck("shaxing");
+            var blackTabOpen = FindActiveButton("黑 市");
+            Check(blackTabOpen != null && blackTabOpen.interactable, "杀星入命应能开黑市");
+            controller.SetBlackMarketForCheck(true);
+            Check(controller.TradeOnBlackMarket, "黑市页应可打开");
+            var blackPrice = controller.SelfPriceOf(0);
+            Check(blackPrice != dayPrice, "黑市标价应更高", dayPrice + " → " + blackPrice);
+            controller.SetBlackMarketForCheck(false);
+            Check(!controller.TradeOnBlackMarket && controller.SelfPriceOf(0) == dayPrice, "回到白日铺标价复原");
+
+            // 买一件：点货架行再点「买一件」。
+            FindActiveControl("Shelf row 0")?.onClick.Invoke();
+            controller.PickTrade("ganliang", 1);
+            var coinsBefore = controller.TradeCoins;
+            var foodBefore = controller.CurrentBagCount("ganliang");
+            FindActiveButton("买 一 件")?.onClick.Invoke();
+            Check(controller.TradeCoins < coinsBefore && controller.CurrentBagCount("ganliang") == foodBefore + 1 &&
+                controller.TradeTrades == 1, "买一件：钱减、货增、计数 +1",
+                $"钱 {coinsBefore}→{controller.TradeCoins} · 干粮 {foodBefore}→{controller.CurrentBagCount("ganliang")}");
+
+            // 卖一件：要过二次确认。
+            controller.PickTrade("ganliang", -1);
+            coinsBefore = controller.TradeCoins;
+            foodBefore = controller.CurrentBagCount("ganliang");
+            FindActiveButton("卖 一 件")?.onClick.Invoke();
+            var confirm = FindActiveButton("确认卖出");
+            Check(confirm != null, "卖出应先弹二次确认");
+            confirm?.onClick.Invoke();
+            Check(controller.TradeCoins > coinsBefore && controller.CurrentBagCount("ganliang") == foodBefore - 1,
+                "卖一件：钱回、货减", $"钱 {coinsBefore}→{controller.TradeCoins}");
+
+            // 任务物不卖。
+            controller.GiveItem("yupei", 1);
+            var relicGiven = controller.CurrentBagCount("yupei");
+            controller.PickTrade("yupei", -1);
+            FindActiveButton("卖 一 件")?.onClick.Invoke();
+            Check(relicGiven > 0 && controller.CurrentBagCount("yupei") == relicGiven,
+                "任务物不能被卖掉", controller.TradeNotice);
+
+            // 钱不够：挡下来并说清差多少。
+            var purse = controller.TradeCoins;
+            controller.SetCoinsForCheck(1);
+            controller.PickTrade("cudao", 1);
+            FindActiveButton("买 一 件")?.onClick.Invoke();
+            Check(controller.TradeCoins == 1 && controller.TradeNotice.Contains("文"),
+                "钱不够该挡下来", controller.TradeNotice);
+            controller.SetCoinsForCheck(purse);
+
+            // 批量购买：钱只够一部分就成交一部分。
+            controller.PickTrade("ganliang", 1);
+            var stockBefore = controller.MerchantStockLeft("ganliang");
+            var foodAtBulk = controller.CurrentBagCount("ganliang");
+            controller.SetCoinsForCheck(8);   // 干粮 4 文/件 → 只够 2 件
+            FindActiveButton("多买几件")?.onClick.Invoke();
+            Check(controller.CurrentBagCount("ganliang") == foodAtBulk + 2,
+                "批量购买只成交买得起的那部分",
+                $"干粮 {foodAtBulk}→{controller.CurrentBagCount("ganliang")} · 货架 {stockBefore}→{controller.MerchantStockLeft("ganliang")}");
+            Check(controller.TradeCoins == 0, "钱应正好花完", controller.TradeCoins + " 文");
+
+            // 数字写回存档，记忆对白随交易次数变化。
+            var saved = controller.Repository.Read(activeSlot).Data;
+            Check(saved != null && saved.coins == controller.TradeCoins && saved.merchants != null &&
+                saved.merchants.Length == 1 && saved.merchants[0].trades == controller.TradeTrades &&
+                saved.schemaVersion == SaveData.CurrentSchemaVersion, "交易结果写回存档",
+                saved == null ? "读不到存档" : "铜钱 " + saved.coins + " · 交易 " + saved.merchants[0].trades + " 次");
+            Check(!string.IsNullOrEmpty(controller.TradeMemoryLine), "商人记得你", controller.TradeMemoryLine);
+        }
+
         static int activeSlot => createdSlot > 0 ? createdSlot : controller.Repository.Latest()?.Slot ?? 1;
 
         static void Check(bool condition, string message)
@@ -412,6 +583,9 @@ namespace TwelveJade.Editor
             else Debug.Log("[FrontEndShot] ok: " + message);
         }
 
+        static void Check(bool condition, string message, string detail)
+            => Check(condition, string.IsNullOrEmpty(detail) ? message : message + " · " + detail);
+
         static void Finish()
         {
             SessionState.SetBool(SessionKey, false);
@@ -419,12 +593,8 @@ namespace TwelveJade.Editor
             EditorApplication.update -= Pump;
             Check(controller.CurrentPage == "credits", "当前页面应为制作信息");
             Check(PageNames.All(p => capturedShots.Contains(p)), "全部页面截图生成");
-            if (createdSlot > 0)
-            {
-                controller.Repository.Delete(createdSlot);
-                // 玩家的真实存档可能占据其他槽位，只断言测试档本身已不在。
-                Check(controller.Repository.Latest()?.Slot != createdSlot, "验收用的临时档位应已清理");
-            }
+            Check(createdSlot > 0, "验收应在临时存档目录里自建一档（不碰玩家存档）");
+            CleanupScratch();
             if (target != null && camera != null) { camera.targetTexture = null; target.Release(); }
             Debug.Log("[FrontEndShot] finished, " + problems.Count + " problem(s)");
             // LogError 会经 OnLog 再入列，枚举中变更集合会抛索引异常——先快照再打印。
@@ -438,7 +608,19 @@ namespace TwelveJade.Editor
             SessionState.SetBool(SessionKey, false);
             Debug.LogError(message);
             EditorApplication.update -= Pump;
+            // 失败路径也要清掉临时存档，否则下一轮验收会捡到上一轮的残档继续跑。
+            CleanupScratch();
             EditorApplication.Exit(1);
+        }
+
+        // 从环境变量取路径而不是静态字段：进 Play 会域重载，静态字段会被清空，
+        // 环境变量是进程级的，能跨过重载，失败路径才擦得掉临时存档。
+        static void CleanupScratch()
+        {
+            var dir = Environment.GetEnvironmentVariable("TWELVEJADE_SAVEDIR");
+            if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir)) return;
+            try { Directory.Delete(dir, true); }
+            catch (Exception ex) { Debug.LogWarning("无法清理验收临时目录：" + ex.Message); }
         }
     }
 }

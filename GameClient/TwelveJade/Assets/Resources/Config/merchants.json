@@ -1,0 +1,32 @@
+{
+  "merchants": [
+    {
+      "id": "huolang",
+      "name": "货郎老栓",
+      "title": "走街串巷的独脚货郎",
+      "greeting": "客官眼生——头一回来青石镇？山里的路子我熟，缺什么张嘴就是。",
+      "buys": ["chishi", "cailiao", "qiyong"],
+      "stock": [
+        { "itemId": "ganliang", "count": 12 },
+        { "itemId": "chuibing", "count": 12 },
+        { "itemId": "larou", "count": 8 },
+        { "itemId": "jinchuangyao", "count": 6 },
+        { "itemId": "caoyao", "count": 20 },
+        { "itemId": "cudao", "count": 2 },
+        { "itemId": "zhudi", "count": 1 }
+      ],
+      "hidden": [
+        { "itemId": "elixir-warm", "count": 3 },
+        { "itemId": "tiejian", "count": 1 },
+        { "itemId": "hetiehe", "count": 1 }
+      ],
+      "memory": [
+        { "at": 0, "line": "头回见面，我这人只认现钱。" },
+        { "at": 1, "line": "上回那买卖还算爽快，我记着呢。" },
+        { "at": 3, "line": "你这后生在我这买过三回干粮了——也不嫌干。" },
+        { "at": 6, "line": "旁人都说我奸，你倒是不怕我。要紧的话，我能给你留点别的。" },
+        { "at": 12, "line": "我走南闯北二十年，头一回有人拿我当自己人。" }
+      ]
+    }
+  ]
+}

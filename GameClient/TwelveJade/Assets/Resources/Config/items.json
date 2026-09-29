@@ -46,6 +46,11 @@
       "description": "长在阴湿石缝里。林药师要的就是这一味。"
     },
     {
+      "id": "elixir-warm", "name": "暖阳丹", "tier": "xuanjie", "category": "yaodan", "icon": "elixir-bottle",
+      "stack": 5, "price": 90,
+      "description": "货郎压箱底的东西。吃下去像喝了一口化开的日头。"
+    },
+    {
       "id": "cudao", "name": "柴刀", "tier": "fanpin", "category": "qiyong", "icon": "woodcutter-knife",
       "stack": 1, "price": 18,
       "description": "砍柴劈竹都趁手，急了也能防身。"

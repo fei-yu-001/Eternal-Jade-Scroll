@@ -37,6 +37,29 @@ namespace TwelveJade.Core
         public bool Blocks => Radius > 0f;
     }
 
+    // 镇上的活人：与立绘一样按地平线摆放，但会被点击搭话。
+    public sealed class MapNpc
+    {
+        public MapNpc(string id, string merchant, string name, string art,
+            float x, float y, float height, float radius, string line)
+        {
+            Id = id; Merchant = merchant; Name = name; Art = art;
+            X = x; Y = y; Height = height; Radius = radius; Line = line;
+        }
+
+        public string Id { get; }
+        // 对应 merchants.json 里的商人 id；为空表示只聊天不卖货。
+        public string Merchant { get; }
+        public string Name { get; }
+        public string Art { get; }
+        public float X { get; }
+        public float Y { get; }
+        public float Height { get; }
+        public float Radius { get; }
+        public string Line { get; }
+        public bool Blocks => Radius > 0f;
+    }
+
     public sealed class MapLandmark
     {
         public MapLandmark(string id, string name, float x, float y)
@@ -53,12 +76,13 @@ namespace TwelveJade.Core
         public const float MinWalkWidth = 24f, MinWalkHeight = 24f;
 
         TownMap(string name, float artWidth, float artHeight, float spawnX, float spawnY, bool spawnFacingLeft,
-            float perspectiveTop, float perspectiveBottom, List<MapRect> walkable, List<MapProp> props, List<MapLandmark> landmarks)
+            float perspectiveTop, float perspectiveBottom, List<MapRect> walkable, List<MapProp> props,
+            List<MapLandmark> landmarks, List<MapNpc> npcs)
         {
             Name = name; ArtWidth = artWidth; ArtHeight = artHeight;
             SpawnX = spawnX; SpawnY = spawnY; SpawnFacingLeft = spawnFacingLeft;
             PerspectiveTop = perspectiveTop; PerspectiveBottom = perspectiveBottom;
-            Walkable = walkable; Props = props; Landmarks = landmarks;
+            Walkable = walkable; Props = props; Landmarks = landmarks; Npcs = npcs;
         }
 
         public string Name { get; }
@@ -73,13 +97,15 @@ namespace TwelveJade.Core
         public IReadOnlyList<MapRect> Walkable { get; }
         public IReadOnlyList<MapProp> Props { get; }
         public IReadOnlyList<MapLandmark> Landmarks { get; }
+        public IReadOnlyList<MapNpc> Npcs { get; }
 
         public bool WalkableContains(float x, float y) => Walkable.Any(rect => rect.Contains(x, y));
 
         public bool CanStand(float x, float y)
         {
             if (!WalkableContains(x, y)) return false;
-            return !Props.Any(prop => prop.Blocks && (x - prop.X) * (x - prop.X) + (y - prop.Y) * (y - prop.Y) <= prop.Radius * prop.Radius);
+            return !Blockers().Any(b =>
+                (x - b.x) * (x - b.x) + (y - b.y) * (y - b.y) <= b.radius * b.radius);
         }
 
         // 点击落点钳到最近的可走处：先把点拉到最近的走廊矩形内，再从圆形障碍推出。
@@ -100,18 +126,26 @@ namespace TwelveJade.Core
             }
             for (var pass = 0; pass < 2; pass++)
             {
-                foreach (var prop in Props)
+                foreach (var (blockX, blockY, blockRadius) in Blockers())
                 {
-                    if (!prop.Blocks) continue;
-                    var offsetX = bestX - prop.X;
-                    var offsetY = bestY - prop.Y;
+                    var offsetX = bestX - blockX;
+                    var offsetY = bestY - blockY;
                     var length = (float)Math.Sqrt(offsetX * offsetX + offsetY * offsetY);
-                    if (length >= prop.Radius || length <= .001f) continue;
-                    bestX = prop.X + offsetX / length * (prop.Radius + 3f);
-                    bestY = prop.Y + offsetY / length * (prop.Radius + 3f);
+                    if (length >= blockRadius || length <= .001f) continue;
+                    bestX = blockX + offsetX / length * (blockRadius + 3f);
+                    bestY = blockY + offsetY / length * (blockRadius + 3f);
                 }
             }
             return (bestX, bestY);
+        }
+
+        // 立绘与 NPC 都是挡路的圆：统一成 (x, y, r) 供站立判定与落点钳制共用。
+        IEnumerable<(float x, float y, float radius)> Blockers()
+        {
+            foreach (var prop in Props)
+                if (prop.Blocks) yield return (prop.X, prop.Y, prop.Radius);
+            foreach (var npc in Npcs)
+                if (npc.Blocks) yield return (npc.X, npc.Y, npc.Radius);
         }
 
         public static TownMap Parse(string json)
@@ -151,6 +185,19 @@ namespace TwelveJade.Core
                 landmarks.Add(new MapLandmark(Required(entry, "id"), Required(entry, "name"),
                     Number(entry, "x", 0f), Number(entry, "y", 0f)));
 
+            var npcs = new List<MapNpc>();
+            foreach (var entry in Elements(root, "npcs"))
+            {
+                var height = Number(entry, "height", 0f);
+                if (height <= 0f) throw new FormatException("NPC " + Required(entry, "id") + " 的高度应为正数。");
+                npcs.Add(new MapNpc(Required(entry, "id"), entry["merchant"].AsString(""),
+                    Required(entry, "name"), Required(entry, "art"),
+                    Number(entry, "x", 0f), Number(entry, "y", 0f), height,
+                    Number(entry, "radius", 0f), entry["line"].AsString("")));
+            }
+            if (npcs.Any(n => npcs.Count(o => o.Id == n.Id) > 1))
+                throw new FormatException("NPC id 重复。");
+
             var spawnX = root["spawn"]?["x"].AsFloat(0f) ?? 0f;
             var spawnY = root["spawn"]?["y"].AsFloat(0f) ?? 0f;
             if (!ZoneContains(walkable, props, spawnX, spawnY))
@@ -158,7 +205,7 @@ namespace TwelveJade.Core
 
             return new TownMap(root["name"].AsString("无名之地"), artWidth, artHeight, spawnX, spawnY,
                 root["spawnFacingLeft"].AsBool(false), Number(root, "perspectiveTop", .72f), Number(root, "perspectiveBottom", 1.05f),
-                walkable, props, landmarks);
+                walkable, props, landmarks, npcs);
         }
 
         static bool ZoneContains(List<MapRect> walkable, List<MapProp> props, float x, float y)

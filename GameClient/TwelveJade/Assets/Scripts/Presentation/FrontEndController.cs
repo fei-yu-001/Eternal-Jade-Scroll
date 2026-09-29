@@ -66,9 +66,16 @@ namespace TwelveJade.Presentation
             design.pivot = new Vector2(.5f, .5f); design.anchoredPosition = Vector2.zero;
             canvas = design;
             BuildBackdrop();
+            NpcArrived += id => TalkTo(id);
             presets = Resources.LoadAll<CharacterPreset>("Characters").OrderBy(x => x.id).ToArray();
             if (presets.Length != 3) throw new InvalidOperationException("Three character presets are required. Run Twelve Jade/Prepare project.");
-            repository = new SaveRepository(Path.Combine(Application.persistentDataPath, "Saves"), new UnityJsonCodec());
+            // 批处理验收会设 TWELVEJADE_SAVEDIR 指到临时目录：验收不该写进玩家真实的存档。
+            var saveRoot = Environment.GetEnvironmentVariable("TWELVEJADE_SAVEDIR");
+            repository = new SaveRepository(
+                string.IsNullOrEmpty(saveRoot) ? Path.Combine(Application.persistentDataPath, "Saves") : saveRoot,
+                new UnityJsonCodec());
+            // 存档校验要用正式物品表卡单品堆叠上限，注入晚了读档就会放过脏数据。
+            repository.Items = Table;
             settings = repository.LoadSettings(out var settingsState);
             SetupAudio(); ApplySettings(settings, true); ShowMenu();
             if (settingsState == SettingsLoadState.Recovered) Notify("设置已从备份恢复。");
@@ -88,6 +95,7 @@ namespace TwelveJade.Presentation
             {
                 if (bagOverlay != null) CloseInventory();
                 else if (modal != null) CloseModal();
+                else if (page == "trade") ShowTown();
                 else if (page == "menu") ConfirmExit();
                 else ShowMenu();
             }
@@ -106,6 +114,7 @@ namespace TwelveJade.Presentation
                     if (digitKeys[i].wasPressedThisFrame) SetMotion(i + 1);
             }
             UpdateTown();
+            UpdateTrade();
         }
 
         void BuildBackdrop()

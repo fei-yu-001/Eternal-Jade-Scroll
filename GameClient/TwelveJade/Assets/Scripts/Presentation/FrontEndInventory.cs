@@ -57,7 +57,10 @@ namespace TwelveJade.Presentation
         // 兜底表：物品表缺失时行囊仍能打开，已有物品按 id 显示为"未登记之物"，不丢东西。
         const string EmptyTableJson =
             "{\"tiers\":[{\"id\":\"fanpin\",\"name\":\"凡品\",\"color\":\"#8C8C86\"}]," +
-            "\"categories\":[{\"id\":\"qita\",\"name\":\"杂物\"}],\"items\":[]}";
+            "\"categories\":[{\"id\":\"qita\",\"name\":\"杂物\"}]," +
+            "\"items\":[{\"id\":\"unknown-item\",\"name\":\"未登记之物\",\"tier\":\"fanpin\"," +
+            "\"category\":\"qita\",\"icon\":\"missing-item\",\"stack\":99,\"price\":0," +
+            "\"description\":\"这一件来历不明，像是从别处流过来的。\"}]}";
 
         public void ShowInventory()
         {

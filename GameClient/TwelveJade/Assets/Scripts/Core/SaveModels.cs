@@ -7,7 +7,7 @@ namespace TwelveJade.Core
     [Serializable]
     public sealed class SaveData
     {
-        public const int CurrentSchemaVersion = 3;
+        public const int CurrentSchemaVersion = 4;
         public const int MaxFaceStyles = 2;
         public const int MaxCoins = 9999999;
         public const int MaxReputation = 100;
@@ -31,6 +31,8 @@ namespace TwelveJade.Core
         public int coins = ItemTable.StartingCoins;
         public int localReputation;
         public ItemStack[] bag = InventoryRules.NewBag();
+        // schemaVersion 4: 商人存货与记忆。首次见面时按商品表铺满，见面与买卖都写回。
+        public MerchantState[] merchants = Array.Empty<MerchantState>();
 
         public static bool IsValidGender(string value) => Genders.Contains(value);
         public static bool IsValidFaceStyle(int value) => value >= 0 && value < MaxFaceStyles;
@@ -38,19 +40,27 @@ namespace TwelveJade.Core
         public static bool IsValidReputation(int value) => value >= 0 && value <= MaxReputation;
 
         // 旧档迁移：只补缺的字段，不覆盖已写入的内容；可重复调用。
-        public static void Migrate(SaveData data)
+        public static void Migrate(SaveData data, ItemTable table = null)
         {
             if (data == null) return;
             if (data.schemaVersion >= 3)
             {
-                data.bag = InventoryRules.Normalize(data.bag);
+                data.bag = InventoryRules.Normalize(data.bag, table);
                 data.coins = Math.Min(Math.Max(data.coins, 0), MaxCoins);
                 data.localReputation = Math.Min(Math.Max(data.localReputation, 0), MaxReputation);
-                return;
             }
-            data.coins = ItemTable.StartingCoins;
-            data.localReputation = 0;
-            data.bag = StartingBag();
+            else
+            {
+                data.coins = ItemTable.StartingCoins;
+                data.localReputation = 0;
+                data.bag = StartingBag();
+            }
+            // v3 及更早的档没见过货郎，merchants 留空，第一次搭话时由 MerchantLedger 按商品表铺货。
+            // 这里只做归一化、不按版本清空——Migrate 必须可以反复调用而不丢东西。
+            data.merchants ??= Array.Empty<MerchantState>();
+            data.merchants = data.merchants
+                .Where(m => m != null && !string.IsNullOrWhiteSpace(m.id))
+                .ToArray();
         }
 
         // 开局行囊：新档与旧档迁移共用同一份，kits 表在 ItemTable.StartingKit。

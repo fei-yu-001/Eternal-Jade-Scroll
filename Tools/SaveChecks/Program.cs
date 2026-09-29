@@ -63,7 +63,7 @@ try
         InventoryRules.Count(kitSave.bag, "caoyao") == 300);
     saves.Write(kitSave);
     var roundTripped = saves.Read(1).Data;
-    Check("v3 roundtrip keeps coins, reputation and bag", roundTripped.schemaVersion == 3 &&
+    Check("v3 roundtrip keeps coins, reputation and bag", roundTripped.schemaVersion == SaveData.CurrentSchemaVersion &&
         roundTripped.coins == 42 && roundTripped.localReputation == 15 &&
         InventoryRules.Count(roundTripped.bag, "caoyao") == 300);
 

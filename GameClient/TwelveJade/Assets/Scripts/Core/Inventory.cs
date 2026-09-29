@@ -32,7 +32,8 @@ namespace TwelveJade.Core
         }
 
         // 旧档读入或缺字段时补齐格数、清掉非法数量；不改动物品本身。
-        public static ItemStack[] Normalize(ItemStack[] bag)
+        // 传入物品表时按单品上限截断（干粮 9、柴刀 1），不传则退回存档层全局上限。
+        public static ItemStack[] Normalize(ItemStack[] bag, ItemTable table = null)
         {
             var result = NewBag();
             if (bag == null) return result;
@@ -40,10 +41,14 @@ namespace TwelveJade.Core
             {
                 var source = bag[i];
                 if (source == null || string.IsNullOrEmpty(source.id) || source.count <= 0) continue;
-                result[i] = new ItemStack(source.id, Math.Min(source.count, ItemTable.MaxStack));
+                result[i] = new ItemStack(source.id, Math.Min(source.count, StackLimitOf(table, source.id)));
             }
             return result;
         }
+
+        // 单品堆叠上限：物品表说了算；表里没有的旧物品退回存档层上限，免得读不回来。
+        public static int StackLimitOf(ItemTable table, string itemId) =>
+            table?.Find(itemId)?.Stack ?? ItemTable.MaxStack;
 
         public static int Count(ItemStack[] bag, string id)
         {
@@ -154,7 +159,8 @@ namespace TwelveJade.Core
             for (var i = 0; i < SlotCount; i++) bag[i] = rebuilt[i];
         }
 
-        public static bool IsValid(ItemStack[] bag)
+        // 校验每格：拿到物品表时按单品上限卡（ganliang:10、cudao:2 都要被拒）。
+        public static bool IsValid(ItemStack[] bag, ItemTable table = null)
         {
             if (bag == null || bag.Length != SlotCount) return false;
             foreach (var stack in bag)
@@ -163,6 +169,7 @@ namespace TwelveJade.Core
                 if (stack.count < 0 || stack.count > ItemTable.MaxStack) return false;
                 if (string.IsNullOrEmpty(stack.id)) { if (stack.count != 0) return false; continue; }
                 if (stack.id.Length > 32 || stack.count == 0) return false;
+                if (stack.count > StackLimitOf(table, stack.id)) return false;
             }
             return true;
         }

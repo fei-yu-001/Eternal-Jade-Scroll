@@ -11,6 +11,9 @@ namespace TwelveJade.Core
         public const int SlotCount = 3;
         readonly string root;
         readonly IJsonCodec codec;
+        // 物品表：由 Unity 启动时注入，校验与迁移才能按单品堆叠上限卡。
+        // 为空时退回存档层全局上限（99），只影响外部写入的脏档。
+        public ItemTable Items { get; set; }
 
         public SaveRepository(string root, IJsonCodec codec)
         {
@@ -54,7 +57,7 @@ namespace TwelveJade.Core
                 if (data == null) return new SlotInfo(slot, SlotState.Corrupt);
                 if (data.schemaVersion > SaveData.CurrentSchemaVersion) return new SlotInfo(slot, SlotState.FutureVersion);
                 // 迁移在读取处完成：旧档在内存里就补齐 v3 的铜钱与行囊，写回时按当前 schema 落盘。
-                SaveData.Migrate(data);
+                SaveData.Migrate(data, Items);
                 return IsValid(data, slot) ? new SlotInfo(slot, SlotState.Ready, data)
                     : new SlotInfo(slot, SlotState.Corrupt);
             }
@@ -63,7 +66,7 @@ namespace TwelveJade.Core
             { return new SlotInfo(slot, SlotState.Corrupt); }
         }
 
-        static bool IsValid(SaveData data, int slot) =>
+        bool IsValid(SaveData data, int slot) =>
             data.slot == slot &&
             data.schemaVersion >= 1 && data.schemaVersion <= SaveData.CurrentSchemaVersion &&
             !string.IsNullOrWhiteSpace(data.characterId) &&
@@ -76,9 +79,38 @@ namespace TwelveJade.Core
             (data.traits == null || data.traits.Length <= CharacterGen.TraitsPerCharacter) &&
             (data.destiny == null || data.destiny.Length <= 32) &&
             (data.schemaVersion < 3 || (SaveData.IsValidCoins(data.coins) &&
-                SaveData.IsValidReputation(data.localReputation) && InventoryRules.IsValid(data.bag))) &&
+                SaveData.IsValidReputation(data.localReputation) && InventoryRules.IsValid(data.bag, Items))) &&
+            (data.schemaVersion < 4 || IsValidMerchants(data.merchants)) &&
             DateTimeOffset.TryParse(data.createdUtc, out _) &&
             DateTimeOffset.TryParse(data.updatedUtc, out _);
+
+        // 商人状态：id 不重复、不为空，条数与数量都在合理范围内。
+        static bool IsValidMerchants(MerchantState[] merchants)
+        {
+            if (merchants == null) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var merchant in merchants)
+            {
+                if (merchant == null || string.IsNullOrWhiteSpace(merchant.id) || merchant.id.Length > 32) return false;
+                if (!seen.Add(merchant.id)) return false;
+                if (merchant.trades < 0 || merchant.trades > 99999) return false;
+                if (merchant.goodwill < 0 || merchant.goodwill > 9999) return false;
+                if (!IsValidStock(merchant.stock) || !IsValidStock(merchant.hidden)) return false;
+            }
+            return true;
+        }
+
+        static bool IsValidStock(StockLine[] lines)
+        {
+            if (lines == null) return false;
+            if (lines.Length > 64) return false;
+            foreach (var line in lines)
+            {
+                if (line == null || string.IsNullOrWhiteSpace(line.itemId) || line.itemId.Length > 32) return false;
+                if (line.count < 0 || line.count > Trade.MaxQuantity) return false;
+            }
+            return true;
+        }
 
         public SaveData Create(int slot, string characterId, string name) =>
             Create(slot, characterId, name, SaveData.Genders[0], 0, null, null);

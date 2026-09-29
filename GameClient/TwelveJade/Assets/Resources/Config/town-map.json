@@ -39,5 +39,13 @@
     { "id": "temple", "name": "山门", "x": 620, "y": 682 },
     { "id": "bridges", "name": "双桥", "x": 1395, "y": 700 },
     { "id": "north-lane", "name": "北巷", "x": 968, "y": 140 }
+  ],
+  "npcs": [
+    {
+      "id": "huolang", "merchant": "huolang", "name": "货郎老栓",
+      "art": "Art/merchant-female-0-front",
+      "x": 1090, "y": 700, "height": 150, "radius": 24,
+      "line": "背个货箱的汉子，见你过来就笑：这位客官，缺什么？"
+    }
   ]
 }
