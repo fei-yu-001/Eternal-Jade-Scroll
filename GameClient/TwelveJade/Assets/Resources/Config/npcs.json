@@ -20,6 +20,21 @@
           "target": 1
         }
       ]
+    },
+    {
+      "id": "yaoshi",
+      "name": "林药师",
+      "title": "青石镇唯一的坐堂郎中",
+      "temper": "Wary",
+      "greeting": "抓药还是问事？问事按问事算——我这儿的实话，不白给。",
+      "goals": [
+        {
+          "id": "find-the-real-source",
+          "title": "查清青灵草的来路",
+          "detail": "山上的草一年比一年少，总有个说法的",
+          "target": 2
+        }
+      ]
     }
   ]
 }

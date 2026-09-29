@@ -1,0 +1,143 @@
+{
+  "nodes": [
+    {
+      "id": "yaoshi-intro",
+      "npc": "yaoshi",
+      "text": "抓药按方子抓，问事另算。问事之前，先让我看看你手上的茧——不是庄稼人的茧。",
+      "options": [
+        {
+          "text": "我刚从外面回来，山上的事想问个明白。",
+          "next": "yaoshi-herb",
+          "socialEvent": "Traded",
+          "socialWeight": 1
+        },
+        {
+          "text": "我只是来抓药的。",
+          "next": "yaoshi-goodbye",
+          "socialEvent": "Traded"
+        }
+      ]
+    },
+    {
+      "id": "yaoshi-herb",
+      "npc": "yaoshi",
+      "text": "青灵草？山上的草一年比一年少。我这本账记了七年，去年要跑两趟山才够数。",
+      "options": [
+        {
+          "text": "少了多少？",
+          "next": "yaoshi-count",
+          "grantClue": "herb-thinning",
+          "socialEvent": "Traded"
+        },
+        {
+          "text": "少了就是有人采。",
+          "next": "yaoshi-doubt",
+          "socialEvent": "RefusedHelp"
+        },
+        {
+          "text": "药里会不会有问题？",
+          "next": "yaoshi-trace",
+          "curiousOnly": true,
+          "requiredFlags": ["herb-thinning"],
+          "grantFlag": "told-the-truth",
+          "grantClue": "poison-trace",
+          "socialEvent": "Confessed",
+          "socialWeight": 2
+        }
+      ]
+    },
+    {
+      "id": "yaoshi-count",
+      "npc": "yaoshi",
+      "text": "三成。不是天时——虫病会让根烂，这批草的根是齐整整断的。",
+      "options": [
+        {
+          "text": "齐整整断的？那就不是病。",
+          "next": "yaoshi-trace",
+          "curiousOnly": true,
+          "grantClue": "poison-trace",
+          "socialEvent": "Confessed",
+          "socialWeight": 2
+        },
+        { "text": "我记下了。", "next": "yaoshi-goodbye" }
+      ]
+    },
+    {
+      "id": "yaoshi-doubt",
+      "npc": "yaoshi",
+      "text": "采的人多了，我不至于连这个都看不出。话我只说这一遍。",
+      "options": [{ "text": "打扰了。", "next": "yaoshi-goodbye", "socialEvent": "RefusedHelp" }]
+    },
+    {
+      "id": "yaoshi-trace",
+      "npc": "yaoshi",
+      "text": "我验过剩下的草根。撒过东西，撒的人懂药性。镇上懂药性的，一只手数得过来。",
+      "options": [
+        {
+          "text": "这话我只当你没说过。",
+          "next": "yaoshi-goodbye",
+          "socialEvent": "Confessed",
+          "socialWeight": 2
+        }
+      ]
+    },
+    {
+      "id": "yaoshi-goodbye",
+      "npc": "yaoshi",
+      "text": "抓药就按方子。别的事，我什么也没说过。",
+      "next": ""
+    },
+    {
+      "id": "huolang-intro",
+      "npc": "huolang",
+      "text": "客官又来了。要买东西，还是有话要问？我这儿的话，可是要拿东西换的。",
+      "options": [
+        {
+          "text": "北边山上，晚上是什么动静？",
+          "next": "huolang-night",
+          "socialEvent": "Traded"
+        },
+        { "text": "买药。", "next": "huolang-goodbye", "socialEvent": "Traded" }
+      ]
+    },
+    {
+      "id": "huolang-night",
+      "npc": "huolang",
+      "text": "兽吼？后山入夜是有点动静。我劝你别往那边去——我这条命是跑出来的，不是捡出来的。",
+      "options": [
+        {
+          "text": "你走过北岭？",
+          "next": "huolang-road",
+          "grantClue": "night-horn",
+          "socialEvent": "RefusedHelp"
+        },
+        { "text": "那我知道了。", "next": "huolang-goodbye" }
+      ]
+    },
+    {
+      "id": "huolang-road",
+      "npc": "huolang",
+      "text": "走过。半年前就断了——那之后我一趟都没往北去。客官若执意要去，至少买张我的平安符。",
+      "options": [
+        {
+          "text": "符我收下了。",
+          "next": "huolang-goodbye",
+          "grantClue": "north-road-closed",
+          "socialEvent": "Traded",
+          "socialWeight": 2
+        },
+        {
+          "text": "我自己有办法。",
+          "next": "huolang-goodbye",
+          "socialEvent": "Traded"
+        }
+      ]
+    },
+    {
+      "id": "huolang-goodbye",
+      "npc": "huolang",
+      "text": "爽快。下回来，我给你留好货。",
+      "next": ""
+    }
+  ]
+}

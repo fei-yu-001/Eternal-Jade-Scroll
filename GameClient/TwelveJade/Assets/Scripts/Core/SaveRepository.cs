@@ -85,8 +85,25 @@ namespace TwelveJade.Core
             (data.schemaVersion < 6 || IsValidQuests(data.quests)) &&
             (data.schemaVersion < 7 || IsValidWorldTime(data.worldDay, data.worldMinuteOfDay)) &&
             (data.schemaVersion < 8 || IsValidNpcs(data.npcs)) &&
+            (data.schemaVersion < 9 || IsValidClues(data.clues)) &&
             DateTimeOffset.TryParse(data.createdUtc, out _) &&
             DateTimeOffset.TryParse(data.updatedUtc, out _);
+
+        // 线索账本：id 不重复、不超上限、时间像样。与人物表解耦——表会变，存档不该因此判脏。
+        static bool IsValidClues(ClueEntry[] clues)
+        {
+            if (clues == null) return false;
+            if (clues.Length > ClueLedger.MaxClues) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var clue in clues)
+            {
+                if (clue == null || string.IsNullOrWhiteSpace(clue.id) || clue.id.Length > 48) return false;
+                if (!seen.Add(clue.id)) return false;
+                if (clue.day < WorldTime.StartDay || clue.day > WorldTime.MaxDays) return false;
+                if (clue.minuteOfDay < 0 || clue.minuteOfDay >= WorldTime.MinutesPerDay) return false;
+            }
+            return true;
+        }
 
         // NPC 状态：id 不重复、关系三轴在 ±100 内、记忆与目标条目结构合法。
         // 这里不查人物表——表会变，存档不该因为"表里现在没这个人"就被判脏。

@@ -1,0 +1,44 @@
+{
+  "clues": [
+    {
+      "id": "herb-thinning",
+      "title": "青灵草一年比一年少",
+      "text": "山上的青灵草比往年少了三成，不像是天时。",
+      "sourceNpc": "yaoshi",
+      "reliability": 1,
+      "requiredFlags": [],
+      "blocksFlags": [],
+      "eventId": "Talked"
+    },
+    {
+      "id": "night-horn",
+      "title": "夜里的兽吼",
+      "text": "后山入夜有兽吼，不止一声，有时像是有东西在互相呼应。",
+      "sourceNpc": "huolang",
+      "reliability": 0,
+      "requiredFlags": [],
+      "blocksFlags": [],
+      "eventId": "RefusedHelp"
+    },
+    {
+      "id": "north-road-closed",
+      "title": "北岭商路断了",
+      "text": "货郎说北边那条商路半年前就没人走了，走一趟赔一趟。",
+      "sourceNpc": "huolang",
+      "reliability": 1,
+      "requiredFlags": [],
+      "blocksFlags": [],
+      "eventId": "Traded"
+    },
+    {
+      "id": "poison-trace",
+      "title": "草上有人动过手脚",
+      "text": "林药师验过剩下的草根：不是虫病，是有人撒过东西。",
+      "sourceNpc": "yaoshi",
+      "reliability": 2,
+      "requiredFlags": ["told-the-truth"],
+      "blocksFlags": [],
+      "eventId": "Confessed"
+    }
+  ]
+}

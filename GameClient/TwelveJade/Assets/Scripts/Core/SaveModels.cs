@@ -7,7 +7,7 @@ namespace TwelveJade.Core
     [Serializable]
     public sealed class SaveData
     {
-        public const int CurrentSchemaVersion = 8;
+        public const int CurrentSchemaVersion = 9;
         public const int MaxFaceStyles = 2;
         public const int MaxCoins = 9999999;
         public const int MaxReputation = 100;
@@ -46,6 +46,13 @@ namespace TwelveJade.Core
         // 与 merchants（交易存货与次数）并存：一个是账，一个是人情。v7 及更早的档没有
         // npcs，读入时留空，第一次碰上某个人时才由 NpcLedger 建一份。
         public NpcState[] npcs = Array.Empty<NpcState>();
+        // schemaVersion 9: 线索账本（哪几条、什么时候拿到的、看过没有）。
+        // 与 npcs/quests 并列：一条线索是"知道的事"，不是和某个人的关系，也不是任务进度。
+        // v8 及更早的档没有 clues，读入时留空，第一次打听时才落第一条。
+        public ClueEntry[] clues = Array.Empty<ClueEntry>();
+        // 当前对话进度（跟谁、停在哪）。Esc 中断写进存档，下次开口从这里续上。
+        // 与 clues 不同：对话是"正在说的话"，线索是"已经知道的事"，两者生命周期不同。
+        public DialogueState dialogue;
 
         public static bool IsValidGender(string value) => Genders.Contains(value);
         public static bool IsValidFaceStyle(int value) => value >= 0 && value < MaxFaceStyles;
@@ -93,6 +100,13 @@ namespace TwelveJade.Core
             // 不能因为"现在的表里找不到"就把玩家跟他打过的交道抹掉。
             data.npcs ??= Array.Empty<NpcState>();
             data.npcs = data.npcs.Where(n => n != null && !string.IsNullOrWhiteSpace(n.id)).ToArray();
+            // 线索同理：归一化但不按表去重（表会变，玩家已经知道的事不该被"表里没了"抹掉）。
+            data.clues ??= Array.Empty<ClueEntry>();
+            data.clues = data.clues.Where(c => c != null && !string.IsNullOrWhiteSpace(c.id)).ToArray();
+            // 对话进度：说话人/节点都空就当没在对话里，别留半截状态卡住下次开口。
+            if (data.dialogue != null &&
+                (string.IsNullOrWhiteSpace(data.dialogue.npcId) || string.IsNullOrWhiteSpace(data.dialogue.nodeId)))
+                data.dialogue = null;
         }
 
         // 读出存档里的世界时间（结构体），供 WorldClock 推进。
