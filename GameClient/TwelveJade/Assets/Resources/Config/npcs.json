@@ -1,0 +1,25 @@
+{
+  "npcs": [
+    {
+      "id": "huolang",
+      "name": "货郎老栓",
+      "title": "走街串巷的独脚货郎",
+      "temper": "Greedy",
+      "greeting": "客官眼生——头一回来青石镇？缺什么张嘴就是。价钱好商量，钱不够那就……再说吧。",
+      "goals": [
+        {
+          "id": "fill-the-box",
+          "title": "把货箱走空",
+          "detail": "走南闯北二十年，就指望着这箱货换过冬的棉衣",
+          "target": 20
+        },
+        {
+          "id": "learn-the-north-road",
+          "title": "摸清北边那条路",
+          "detail": "有人说北岭新开了条商路，货比南边便宜三成",
+          "target": 1
+        }
+      ]
+    }
+  ]
+}

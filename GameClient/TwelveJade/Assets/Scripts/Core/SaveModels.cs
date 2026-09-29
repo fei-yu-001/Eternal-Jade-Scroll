@@ -7,7 +7,7 @@ namespace TwelveJade.Core
     [Serializable]
     public sealed class SaveData
     {
-        public const int CurrentSchemaVersion = 7;
+        public const int CurrentSchemaVersion = 8;
         public const int MaxFaceStyles = 2;
         public const int MaxCoins = 9999999;
         public const int MaxReputation = 100;
@@ -42,6 +42,10 @@ namespace TwelveJade.Core
         // 存档因此不依赖机器时区，读写往返都不会漂。v6 及更早的档读入时落到开局时刻。
         public int worldDay = WorldTime.StartDay;
         public int worldMinuteOfDay = WorldTime.StartMinute;
+        // schemaVersion 8: NPC 关系、记忆与目标进度（GDD 十·第二至第五层）。
+        // 与 merchants（交易存货与次数）并存：一个是账，一个是人情。v7 及更早的档没有
+        // npcs，读入时留空，第一次碰上某个人时才由 NpcLedger 建一份。
+        public NpcState[] npcs = Array.Empty<NpcState>();
 
         public static bool IsValidGender(string value) => Genders.Contains(value);
         public static bool IsValidFaceStyle(int value) => value >= 0 && value < MaxFaceStyles;
@@ -85,6 +89,10 @@ namespace TwelveJade.Core
             var world = WorldClock.ReadFrom(data.worldDay, data.worldMinuteOfDay);
             data.worldDay = world.day;
             data.worldMinuteOfDay = world.minuteOfDay;
+            // NPC 状态只归一化不去重不裁剪：表里暂时没有的人（以后才加进人物表）也要留着，
+            // 不能因为"现在的表里找不到"就把玩家跟他打过的交道抹掉。
+            data.npcs ??= Array.Empty<NpcState>();
+            data.npcs = data.npcs.Where(n => n != null && !string.IsNullOrWhiteSpace(n.id)).ToArray();
         }
 
         // 读出存档里的世界时间（结构体），供 WorldClock 推进。

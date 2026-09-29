@@ -84,8 +84,56 @@ namespace TwelveJade.Core
             (data.schemaVersion < 5 || IsValidFlags(data.oneTimeFlags)) &&
             (data.schemaVersion < 6 || IsValidQuests(data.quests)) &&
             (data.schemaVersion < 7 || IsValidWorldTime(data.worldDay, data.worldMinuteOfDay)) &&
+            (data.schemaVersion < 8 || IsValidNpcs(data.npcs)) &&
             DateTimeOffset.TryParse(data.createdUtc, out _) &&
             DateTimeOffset.TryParse(data.updatedUtc, out _);
+
+        // NPC 状态：id 不重复、关系三轴在 ±100 内、记忆与目标条目结构合法。
+        // 这里不查人物表——表会变，存档不该因为"表里现在没这个人"就被判脏。
+        static bool IsValidNpcs(NpcState[] npcs)
+        {
+            if (npcs == null) return false;
+            if (npcs.Length > 64) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var npc in npcs)
+            {
+                if (npc == null || string.IsNullOrWhiteSpace(npc.id) || npc.id.Length > 48) return false;
+                if (!seen.Add(npc.id)) return false;
+                if (npc.relation == null || !npc.relation.IsValid) return false;
+                if (!IsValidMemories(npc.memory)) return false;
+                if (!IsValidGoalStates(npc.goals)) return false;
+            }
+            return true;
+        }
+
+        static bool IsValidMemories(NpcMemoryEntry[] memory)
+        {
+            if (memory == null || memory.Length > NpcLedger.MaxMemories) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var entry in memory)
+            {
+                if (entry == null || string.IsNullOrWhiteSpace(entry.eventId) || entry.eventId.Length > 48) return false;
+                if (!seen.Add(entry.eventId)) return false;
+                if (entry.strength < 1 || entry.strength > 100) return false;
+                if (entry.day < WorldTime.StartDay || entry.day > WorldTime.MaxDays) return false;
+                if (entry.minuteOfDay < 0 || entry.minuteOfDay >= WorldTime.MinutesPerDay) return false;
+            }
+            return true;
+        }
+
+        static bool IsValidGoalStates(NpcGoalState[] goals)
+        {
+            if (goals == null || goals.Length > NpcLedger.MaxGoals) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var goal in goals)
+            {
+                if (goal == null || string.IsNullOrWhiteSpace(goal.goalId) || goal.goalId.Length > 48) return false;
+                if (!seen.Add(goal.goalId)) return false;
+                if (goal.progress < 0 || goal.progress > 9999) return false;
+                if (goal.blockedBy != null && goal.blockedBy.Length > 48) return false;
+            }
+            return true;
+        }
 
         // 世界时间：日子在 1–3650、当天分钟在 0–1439。存档只存这两个整数，不存时间戳。
         static bool IsValidWorldTime(int day, int minuteOfDay) =>
