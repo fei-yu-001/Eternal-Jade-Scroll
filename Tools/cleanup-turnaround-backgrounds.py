@@ -1,7 +1,8 @@
 # 把角色三视图的浅色底抠成透明：
-# 1) 四角取参考底色，从画面边缘做连通生长（与参考色接近的都算底）；
+# 1) 逐列取顶部背景行参考色，从画面边缘做连通生长（与参考色接近的都算底）；
 # 2) 第二轮局部连续生长，吞掉与底色相邻的淡影/接缝带；
 # 3) 人物掩膜侵蚀 1px 去白边，3x3 盒滤波羽化，环带像素用内侧颜色回填。
+# 4) 强制清空画布外沿 8px，避免贴地阴影残留在裁切边缘。
 # 用法：python Tools/cleanup-turnaround-backgrounds.py [预览输出目录]
 import sys
 from pathlib import Path
@@ -9,7 +10,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-ART = Path(r"D:\Eternal Jade Scroll\GameClient\TwelveJade\Assets\Resources\Art")
+ART = Path(__file__).resolve().parents[1] / "GameClient" / "TwelveJade" / "Assets" / "Resources" / "Art"
 PATTERNS = ("farmer-", "traveller-", "merchant-")
 EDGE_TOLERANCE = 55      # 与参考底色的距离阈值：直接判定为底
 SHADOW_TOLERANCE = 22    # 相邻底像素的色差阈值：吞掉淡影、接缝
@@ -92,6 +93,8 @@ def cleanup(path: Path):
     soft = inner.astype(np.float32)
     blur = sum(shift(soft, dy, dx, 0.0) for dy in (-1, 0, 1) for dx in (-1, 0, 1)) / 9.0
     alpha = np.clip(blur * 1.6, 0, 1)       # 补回模糊损失的覆盖率，内部保持全不透明
+    alpha[:8, :] = alpha[-8:, :] = 0
+    alpha[:, :8] = alpha[:, -8:] = 0
     out = np.dstack([np.clip(rgb, 0, 255).astype(np.uint8), (alpha * 255).astype(np.uint8)])
     Image.fromarray(out, "RGBA").save(path)
     return int(connected.sum()), h * w

@@ -33,6 +33,7 @@ namespace TwelveJade.Presentation
                 var (height, alpha, y) = specs[i];
                 var image = NewSprite("Mist " + i, fogTexture, new Color(.94f, .93f, .87f, alpha));
                 image.rectTransform.SetParent(transform, false);
+                AnchorTopLeft(image.rectTransform);
                 image.rectTransform.sizeDelta = new Vector2(WrapX, height);
                 image.rectTransform.anchoredPosition = new Vector2(0, -y);
                 fogRects[i] = image.rectTransform;
@@ -48,6 +49,7 @@ namespace TwelveJade.Presentation
             {
                 var image = NewSprite("Mote " + i, dot, tints[i % tints.Length]);
                 image.rectTransform.SetParent(transform, false);
+                AnchorTopLeft(image.rectTransform);
                 var size = 3 + (float)random.NextDouble() * 5;
                 image.rectTransform.sizeDelta = new Vector2(size, size);
                 var x = (float)random.NextDouble() * 1920;
@@ -57,6 +59,12 @@ namespace TwelveJade.Presentation
                 motePhases[i] = (float)random.NextDouble() * Mathf.PI * 2;
                 motes[i] = image.rectTransform;
             }
+        }
+
+        static void AnchorTopLeft(RectTransform rect)
+        {
+            rect.anchorMin = rect.anchorMax = new Vector2(0, 1);
+            rect.pivot = new Vector2(0, 1);
         }
 
         static RawImage NewSprite(string name, Texture2D texture, Color color)

@@ -74,7 +74,7 @@ namespace TwelveJade.Presentation
             PageHeading("共 创  /  致 谢", "写给同行者", "一卷未尽的山河，一个慢慢生长的世界。");
             var panel = ui.Panel(content, "Credits", 100, 337, 1720, 592, new Color(.045f, .115f, .10f, .97f));
             ui.Label(panel.transform, "十二玉楼长生经", 48, 42, 1520, 75, 45, UiKit.Paper);
-            ui.Label(panel.transform, "创作与方向  ·  fei-yu-001\n开发协作  ·  AI 辅助实现与迭代\n\n字体  ·  Noto Serif CJK（SIL Open Font License 1.1）\n美术  ·  本项目素材来源详见仓库素材记录\n声音  ·  原创程序合成的环境琴音与交互音效", 51, 154, 1530, 285, 27, UiKit.Muted);
+            ui.Label(panel.transform, "创作与方向  ·  fei-yu-001\n开发协作  ·  AI 辅助实现与迭代\n\n字体  ·  Noto Serif CJK、志莽行书（SIL Open Font License 1.1）\n美术  ·  本项目素材来源详见仓库素材记录\n声音  ·  原创程序合成的环境琴音与交互音效", 51, 154, 1530, 285, 27, UiKit.Muted);
             ui.Label(panel.transform, "感谢你愿意走进这个尚在生长的世界。", 51, 499, 1300, 50, 25, UiKit.Gold);
             FocusFirst();
         }

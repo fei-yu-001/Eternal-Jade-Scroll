@@ -85,74 +85,96 @@ namespace TwelveJade.Presentation
         void Update()
         {
             time += Time.unscaledDeltaTime;
+            // 动作切换的过渡权重：换姿态时振幅从零拉起，避免相位跳变造成的僵硬突兀。
+            var w = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(time / .22f));
             var position = Vector2.zero;
             var rotation = 0f;
             var scaleX = 1f;
             var scaleY = 1f;
             var shadowScale = 1f;
+            var shadowSquash = 1f;
             var shadowAlpha = .32f;
             var shadowJade = false;
             switch (motion)
             {
                 case Motion.Idle:
-                    scaleY = 1f + Mathf.Sin(time * 2.1f) * .008f;
+                    scaleY = 1f + Mathf.Sin(time * 1.9f) * .008f * w;
+                    rotation = Mathf.Sin(time * .7f) * .5f * w;
+                    position.x = Mathf.Sin(time * .23f) * 1.5f * w;
                     break;
                 case Motion.Walk:
                 {
-                    var phase = time / .72f * Mathf.PI * 2f;
-                    position.y = Mathf.Abs(Mathf.Sin(phase)) * 7f;
-                    rotation = Mathf.Sin(phase) * 1.6f;
-                    position.x = Mathf.Sin(phase * .5f) * 3f;
+                    // 一步一个 π：快起缓落的单步弧 + 触地挤压 + 左右步交替摆动。
+                    const float stepPeriod = .34f;
+                    var ph = time / stepPeriod * Mathf.PI;
+                    var u = Mathf.Repeat(ph, Mathf.PI) / Mathf.PI;
+                    var rise = Mathf.Pow(Mathf.Sin(u * Mathf.PI), .8f);
+                    position.y = rise * 8f * w;
+                    var contact = Mathf.Clamp01(1f - Mathf.Min(u, 1f - u) / .12f);
+                    scaleY = 1f + rise * .015f * w - contact * .03f * w;
+                    scaleX = 1f + contact * .02f * w;
+                    rotation = -1.2f * w + Mathf.Sin(ph * .5f) * 2f * w;
+                    position.x = Mathf.Sin(ph * .5f) * 2.4f * w;
+                    shadowScale = 1f - rise * .12f * w;
+                    shadowAlpha = .32f - rise * .07f * w;
                     break;
                 }
                 case Motion.Run:
                 {
-                    var phase = time / .42f * Mathf.PI * 2f;
-                    position.y = Mathf.Abs(Mathf.Sin(phase)) * 13f;
-                    rotation = -5f + Mathf.Sin(phase) * 3f;
-                    position.x = Mathf.Sin(phase * .5f) * 6f;
-                    scaleY = 1f + Mathf.Abs(Mathf.Sin(phase)) * .02f;
-                    shadowScale = 1f - Mathf.Abs(Mathf.Sin(phase)) * .18f;
+                    const float stepPeriod = .26f;
+                    var ph = time / stepPeriod * Mathf.PI;
+                    var u = Mathf.Repeat(ph, Mathf.PI) / Mathf.PI;
+                    var rise = Mathf.Pow(Mathf.Sin(u * Mathf.PI), .75f);
+                    position.y = rise * 15f * w;
+                    var contact = Mathf.Clamp01(1f - Mathf.Min(u, 1f - u) / .14f);
+                    scaleY = 1f + rise * .025f * w - contact * .05f * w;
+                    scaleX = 1f + contact * .03f * w;
+                    rotation = -6.5f * w + Mathf.Sin(ph * .5f) * 2.6f * w;
+                    position.x = Mathf.Sin(ph * .5f) * 5f * w;
+                    shadowScale = 1f - rise * .2f * w;
+                    shadowAlpha = .32f - rise * .1f * w;
                     break;
                 }
                 case Motion.Sneak:
                 {
                     var phase = time / 1.15f * Mathf.PI * 2f;
-                    position.y = 12f + Mathf.Abs(Mathf.Sin(phase)) * 3f;
-                    rotation = -4f + Mathf.Sin(phase) * .8f;
+                    position.y = (12f + Mathf.Abs(Mathf.Sin(phase)) * 3f) * w;
+                    rotation = (-4f + Mathf.Sin(phase) * .8f) * w;
                     shadowAlpha = .38f;
                     break;
                 }
                 case Motion.Crouch:
-                    position.y = 2f;
-                    scaleY = .8f;
-                    scaleX = 1.06f;
-                    shadowScale = 1.08f;
+                    position.y = 2f * w;
+                    scaleY = 1f - .2f * w;
+                    scaleX = 1f + .06f * w;
+                    shadowScale = 1f + .08f * w;
                     break;
                 case Motion.Jump:
                 {
                     const float cycle = 1.15f;
                     var u = Mathf.Repeat(time, cycle) / cycle;
                     var arc = Mathf.Sin(u * Mathf.PI);
-                    position.y = arc * 64f;
-                    scaleY = 1f + arc * .05f - (u > .9f ? .1f : 0f);
-                    scaleX = 1f - arc * .03f;
-                    shadowScale = 1f - arc * .3f;
-                    shadowAlpha = .32f - arc * .16f;
+                    position.y = arc * 64f * w;
+                    scaleY = 1f + (arc * .05f - (u > .9f ? .1f : 0f)) * w;
+                    scaleX = 1f - arc * .03f * w;
+                    shadowScale = 1f - arc * .3f * w;
+                    shadowAlpha = .32f - arc * .16f * w;
                     break;
                 }
                 case Motion.Swim:
-                    position.y = 6f + Mathf.Sin(time * 1.6f) * 5f;
-                    rotation = -68f + Mathf.Sin(time * 1.2f) * 4f;
+                    // 只斜不倒：压低身姿像凫水，不再把整张立绘放倒。
+                    position.y = (4f + Mathf.Sin(time * 1.7f) * 3.5f) * w;
+                    rotation = (-34f + Mathf.Sin(time * 1.2f) * 3f) * w;
                     shadowAlpha = .22f;
                     shadowJade = true;
-                    shadowScale = 1.35f;
+                    shadowScale = 1f + .3f * w;
+                    shadowSquash = 1f - .38f * w;
                     break;
             }
             body.anchoredPosition = position;
             body.localRotation = Quaternion.Euler(0, 0, rotation);
             body.localScale = new Vector3(scaleX, scaleY, 1f);
-            shadow.localScale = new Vector3(shadowScale, shadowScale, 1f);
+            shadow.localScale = new Vector3(shadowScale, shadowSquash, 1f);
             shadowImage.color = shadowJade
                 ? new Color(.16f, .38f, .32f, shadowAlpha)
                 : new Color(.04f, .09f, .08f, shadowAlpha);
