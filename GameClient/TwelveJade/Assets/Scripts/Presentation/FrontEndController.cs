@@ -67,6 +67,7 @@ namespace TwelveJade.Presentation
             canvas = design;
             BuildBackdrop();
             NpcArrived += id => TalkTo(id);
+            EncounterArrived += id => ShowCombat(id);
             presets = Resources.LoadAll<CharacterPreset>("Characters").OrderBy(x => x.id).ToArray();
             if (presets.Length != 3) throw new InvalidOperationException("Three character presets are required. Run Twelve Jade/Prepare project.");
             // 批处理验收会设 TWELVEJADE_SAVEDIR 指到临时目录：验收不该写进玩家真实的存档。
@@ -96,6 +97,7 @@ namespace TwelveJade.Presentation
                 if (bagOverlay != null) CloseInventory();
                 else if (modal != null) CloseModal();
                 else if (page == "trade") ShowTown();
+                else if (page == "combat") ShowTown();
                 else if (page == "menu") ConfirmExit();
                 else ShowMenu();
             }
@@ -115,6 +117,7 @@ namespace TwelveJade.Presentation
             }
             UpdateTown();
             UpdateTrade();
+            CombatClockAdvance(Time.unscaledDeltaTime);
         }
 
         void BuildBackdrop()

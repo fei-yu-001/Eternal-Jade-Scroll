@@ -25,7 +25,10 @@ namespace TwelveJade.Presentation
         int seenFootfalls;
         // 深度条目：立绘与 NPC 放在同一张表里按基座 y 排；分开两张表会各排各的、互相插队。
         readonly List<TownLayer> townLayers = new();
+        readonly List<(RectTransform ring, RectTransform label)> encounterMarkers = new();
         string pendingNpcId;
+        string pendingEncounterId;
+        public event System.Action<string> EncounterArrived;
         public sealed class TownLayer
         {
             public RectTransform Rect;
@@ -72,8 +75,11 @@ namespace TwelveJade.Presentation
 
             townLayers.Clear();
             pendingNpcId = null;
+            pendingEncounterId = null;
+            encounterMarkers.Clear();
             foreach (var prop in town.Props) PlaceProp(prop);
             foreach (var npc in town.Npcs) PlaceNpc(npc);
+            foreach (var encounter in town.Encounters) PlaceEncounter(encounter);
 
             dustLayer = ui.Rect(townMap, "Footfall dust", 0, 0, 10, 10);
             ArrangeTownLayers();
@@ -179,6 +185,46 @@ namespace TwelveJade.Presentation
             localPos = ClampToWalkable(new Vector2(npc.X, npc.Y + npc.Radius + 16f));
             hasTarget = false;
             return true;
+        }
+
+        // 遭遇点：脉动金环 + 竖排名，走进去触发战斗（M4-04：encounter-boar-01 后山兽吼）。
+        void PlaceEncounter(MapEncounter encounter)
+        {
+            var rect = new GameObject("Encounter " + encounter.Id, typeof(RectTransform)).GetComponent<RectTransform>();
+            rect.SetParent(townMap, false);
+            rect.anchorMin = rect.anchorMax = new Vector2(0, 1);
+            rect.pivot = new Vector2(.5f, 1f);
+            rect.anchoredPosition = ToLocal(new Vector2(encounter.X, encounter.Y));
+            rect.sizeDelta = new Vector2(44f, 44f) * townScale;
+            var ring = rect.gameObject.AddComponent<RawImage>();
+            ring.texture = TownRingTexture(.35f);
+            ring.color = new Color(1f, .82f, .35f, .95f);
+            ring.raycastTarget = false;
+            var button = rect.gameObject.AddComponent<Button>();
+            button.targetGraphic = ring;
+            button.transition = Selectable.Transition.None;
+            button.onClick.AddListener(() => SeekEncounter(encounter));
+            var label = ui.Label(rect, encounter.Name, -10, -2, 64, 30, 17, new Color(.4f, .3f, .18f, .95f),
+                TextAlignmentOptions.Top);
+            encounterMarkers.Add((ring.rectTransform, label.rectTransform));
+            townLayers.Add(new TownLayer { Rect = rect, BaseY = encounter.Y });
+        }
+
+        // 走到遭遇点跟前再触发：脚下涟漪，到位才开战。
+        public void SeekEncounter(MapEncounter encounter)
+        {
+            if (encounter == null) return;
+            var spot = ClampToWalkable(new Vector2(encounter.X, encounter.Y));
+            pendingEncounterId = encounter.Id;
+            if ((spot - localPos).magnitude < 6f)
+            {
+                pendingEncounterId = null;
+                EncounterArrived?.Invoke(encounter.Id);
+                return;
+            }
+            walkTarget = spot;
+            hasTarget = true;
+            ShowRipple(ToLocal(spot));
         }
 
         // 宣纸舆图：主图缩绘，玩家金点描墨边，地标朱红点；点舆图展开全图浮层。
@@ -385,6 +431,12 @@ namespace TwelveJade.Presentation
                     pendingNpcId = null;
                     NpcArrived?.Invoke(arrived);
                 }
+                if (pendingEncounterId != null && !hasTarget)
+                {
+                    var arrivedEncounter = pendingEncounterId;
+                    pendingEncounterId = null;
+                    EncounterArrived?.Invoke(arrivedEncounter);
+                }
             }
             traveler.SetPosition(ToLocal(localPos));
             ApplyPerspective();
@@ -395,6 +447,9 @@ namespace TwelveJade.Presentation
                 if (move != Vector2.zero) SpawnDust(run);
             }
             UpdateDust();
+            var pulse = 1f + Mathf.Sin(Time.unscaledTime * 4f) * .12f;
+            foreach (var (ring, _) in encounterMarkers)
+                if (ring != null) ring.localScale = Vector3.one * pulse;
 
             if (miniDot != null)
             {

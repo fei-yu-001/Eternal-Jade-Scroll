@@ -28,6 +28,7 @@ namespace TwelveJade.Presentation
 
         public Vector2 Position => position;
         public Motion CurrentMotion => motion;
+        public RectTransform Root => root;
         // 步频随速度联动；每跨过半步记一次「落地」，供脚步尘点取用。
         public int Footfalls => footfalls;
 
