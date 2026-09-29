@@ -1,0 +1,83 @@
+{
+  "quests": [
+    {
+      "id": "tax-and-labor",
+      "title": "税与役",
+      "chapter": 1,
+      "status": "Available",
+      "objectives": [
+        { "id": "answer-summons", "type": "talk", "count": 1, "text": "" }
+      ],
+      "prerequisites": [],
+      "rewards": { "coins": 0, "items": [], "flags": ["chapter-1-tax-settled"] },
+      "next": "night-beast-roar"
+    },
+    {
+      "id": "night-beast-roar",
+      "title": "夜里的兽吼",
+      "chapter": 1,
+      "status": "Locked",
+      "objectives": [
+        { "id": "drive-off-the-boar", "type": "defeat", "target": "encounter-boar-01", "count": 1, "text": "" }
+      ],
+      "prerequisites": ["tax-and-labor"],
+      "rewards": { "coins": 0, "items": [], "flags": ["chapter-1-first-beast-slain"] },
+      "next": "beast-origin"
+    },
+    {
+      "id": "beast-origin",
+      "title": "兽之来历",
+      "chapter": 1,
+      "status": "Locked",
+      "objectives": [
+        { "id": "hear-the-hunter", "type": "talk", "count": 1, "text": "" },
+        { "id": "compare-the-wound", "type": "clue", "count": 1, "text": "" }
+      ],
+      "prerequisites": ["night-beast-roar"],
+      "rewards": { "coins": 0, "items": [], "flags": [] },
+      "next": "guide-investigation"
+    },
+    {
+      "id": "guide-investigation",
+      "title": "谁是引路人",
+      "chapter": 1,
+      "status": "Locked",
+      "objectives": [
+        { "id": "weigh-the-testimony", "type": "clue", "count": 1, "text": "" }
+      ],
+      "prerequisites": ["beast-origin"],
+      "rewards": { "coins": 0, "items": [], "flags": [] },
+      "next": "town-day"
+    },
+    {
+      "id": "town-day",
+      "title": "镇上的一天",
+      "chapter": 1,
+      "status": "Locked",
+      "objectives": [],
+      "prerequisites": ["guide-investigation"],
+      "rewards": { "coins": 0, "items": [], "flags": [] },
+      "next": "fortune-teller-change"
+    },
+    {
+      "id": "fortune-teller-change",
+      "title": "神算惊变",
+      "chapter": 1,
+      "status": "Locked",
+      "objectives": [],
+      "prerequisites": ["town-day"],
+      "rewards": { "coins": 0, "items": [], "flags": [] },
+      "next": "leave-qingshi"
+    },
+    {
+      "id": "leave-qingshi",
+      "title": "离镇",
+      "chapter": 1,
+      "status": "Locked",
+      "objectives": [],
+      "prerequisites": ["fortune-teller-change"],
+      "rewards": { "coins": 0, "items": [], "flags": ["chapter-1-left-qingshi"] },
+      "next": ""
+    }
+  ]
+}

@@ -82,8 +82,27 @@ namespace TwelveJade.Core
                 SaveData.IsValidReputation(data.localReputation) && InventoryRules.IsValid(data.bag, Items))) &&
             (data.schemaVersion < 4 || IsValidMerchants(data.merchants)) &&
             (data.schemaVersion < 5 || IsValidFlags(data.oneTimeFlags)) &&
+            (data.schemaVersion < 6 || IsValidQuests(data.quests)) &&
             DateTimeOffset.TryParse(data.createdUtc, out _) &&
             DateTimeOffset.TryParse(data.updatedUtc, out _);
+
+        // 任务状态：id 不重复、状态在五档之内、进度不为负且不越界。
+        static bool IsValidQuests(QuestState[] quests)
+        {
+            if (quests == null) return false;
+            if (quests.Length > 256) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var quest in quests)
+            {
+                if (quest == null || string.IsNullOrWhiteSpace(quest.id) || quest.id.Length > 48) return false;
+                if (!seen.Add(quest.id)) return false;
+                if (!QuestLedger.IsKnownStatus(quest.status)) return false;
+                if (quest.progress == null || quest.progress.Length > 32) return false;
+                foreach (var step in quest.progress)
+                    if (step < 0 || step > 999) return false;
+            }
+            return true;
+        }
 
         // 一次性标记：非空、不重复、长度受限。
         static bool IsValidFlags(string[] flags)

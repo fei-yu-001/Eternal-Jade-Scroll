@@ -4,6 +4,9 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
+    <!-- 源文件一律 UTF-8 无 BOM，csc 默认按系统 ANSI 读会把中文解成乱码：
+         乱码进了 JSON 测试数据就会破坏引号平衡，报出与真实原因无关的解析错误。 -->
+    <CodePage>65001</CodePage>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Core/*.cs" Link="Core/%(Filename)%(Extension)" />

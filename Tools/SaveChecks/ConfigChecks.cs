@@ -26,6 +26,7 @@ namespace TwelveJade.Core
             CombatChecks.Run();
             EnemyChecks.Run(itemTable, configDir);
             M4Checks.Run(itemTable, town, configDir);
+            QuestChecks.Run(itemTable, configDir, town);
             Check("town-map.json parses", town.Walkable.Count >= 5 && town.Props.Count >= 10 && town.Landmarks.Count >= 3,
                 string.Format("{0} 条走廊 / {1} 件立绘 / {2} 处地标", town.Walkable.Count, town.Props.Count, town.Landmarks.Count));
             Check("spawn stands in the town", town.CanStand(town.SpawnX, town.SpawnY));

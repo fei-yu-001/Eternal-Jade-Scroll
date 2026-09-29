@@ -7,7 +7,7 @@ namespace TwelveJade.Core
     [Serializable]
     public sealed class SaveData
     {
-        public const int CurrentSchemaVersion = 5;
+        public const int CurrentSchemaVersion = 6;
         public const int MaxFaceStyles = 2;
         public const int MaxCoins = 9999999;
         public const int MaxReputation = 100;
@@ -35,6 +35,9 @@ namespace TwelveJade.Core
         public MerchantState[] merchants = Array.Empty<MerchantState>();
         // schemaVersion 5: 一次性事件标记（如"encounter-boar-01 已发过奖励"），文本 id，最多 32 条。
         public string[] oneTimeFlags = Array.Empty<string>();
+        // schemaVersion 6: 任务与章节进度。v5 及更早的档没有 quests，读入时留空——任务表
+        // 第一次被用到时才由 QuestLedger 按表铺一份初始状态，历史档因此不丢东西。
+        public QuestState[] quests = Array.Empty<QuestState>();
 
         public static bool IsValidGender(string value) => Genders.Contains(value);
         public static bool IsValidFaceStyle(int value) => value >= 0 && value < MaxFaceStyles;
@@ -67,6 +70,12 @@ namespace TwelveJade.Core
             data.oneTimeFlags = data.oneTimeFlags
                 .Where(f => !string.IsNullOrWhiteSpace(f))
                 .Distinct()
+                .ToArray();
+            // 任务状态只做归一化、不按版本清空：迁移必须能反复调用而不丢已推进的进度。
+            // v5 及更早的档没有 quests，保持为空，由 QuestLedger 首次用到时按表铺初始状态。
+            data.quests ??= Array.Empty<QuestState>();
+            data.quests = data.quests
+                .Where(q => q != null && !string.IsNullOrWhiteSpace(q.id))
                 .ToArray();
         }
 
