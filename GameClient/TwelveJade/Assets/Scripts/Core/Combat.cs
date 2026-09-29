@@ -162,6 +162,16 @@ namespace TwelveJade.Core
             }
         }
 
+        // 命中帧内的进度（0..1），表现层做突进/挥击动画用；不在命中帧返回 0。
+        public static float ActiveProgress(CombatActorState actor, float now)
+        {
+            if (actor == null || actor.Phase != CombatPhase.Active) return 0f;
+            var timing = Timing(actor.CurrentAction);
+            if (timing.active <= 0f) return 0f;
+            var progress = (now - (actor.ActionStart + timing.startup)) / timing.active;
+            return (float)Math.Min(1.0, Math.Max(0.0, progress));
+        }
+
         // 精力回复：只按调用方给的时长结算（M4-03 用可暂停时钟逐帧调），Idle 之外一律不回。
         public static void Regenerate(CombatActorState actor, float seconds)
         {

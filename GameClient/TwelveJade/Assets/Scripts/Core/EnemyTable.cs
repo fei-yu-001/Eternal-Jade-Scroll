@@ -173,10 +173,14 @@ namespace TwelveJade.Core
         public readonly List<(string itemId, int granted, int leftover)> Drops = new();
 
         public bool EverythingFits => Drops.All(d => d.leftover == 0);
-        public string Describe() => "铜钱 " + CoinsGranted + " 文　" + string.Join("、",
-            Drops.Select(d => d.leftover > 0
-                ? d.itemId + "×" + d.granted + "（装不下 " + d.leftover + "）"
-                : d.itemId + "×" + d.granted));
+        public string Describe(ItemTable items = null) => "铜钱 " + CoinsGranted + " 文　" + string.Join("、",
+            Drops.Select(d =>
+            {
+                var name = items?.Find(d.itemId)?.Name ?? d.itemId;
+                return d.leftover > 0
+                    ? name + "×" + d.granted + "（装不下 " + d.leftover + "）"
+                    : name + "×" + d.granted;
+            }));
     }
 
     // 战斗胜利奖励：由 Core 统一发——铜钱直接进档（带存档上限护栏），
