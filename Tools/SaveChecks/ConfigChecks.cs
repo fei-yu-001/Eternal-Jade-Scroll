@@ -23,6 +23,7 @@ namespace TwelveJade.Core
             var mapPath = Path.Combine(configDir, "town-map.json");
             var town = TownMap.Parse(File.ReadAllText(mapPath));
             TradeChecks.Run(itemTable, configDir);
+            CombatChecks.Run();
             Check("town-map.json parses", town.Walkable.Count >= 5 && town.Props.Count >= 10 && town.Landmarks.Count >= 3,
                 string.Format("{0} 条走廊 / {1} 件立绘 / {2} 处地标", town.Walkable.Count, town.Props.Count, town.Landmarks.Count));
             Check("spawn stands in the town", town.CanStand(town.SpawnX, town.SpawnY));
