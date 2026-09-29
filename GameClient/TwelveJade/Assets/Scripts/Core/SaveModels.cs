@@ -7,8 +7,10 @@ namespace TwelveJade.Core
     [Serializable]
     public sealed class SaveData
     {
-        public const int CurrentSchemaVersion = 2;
+        public const int CurrentSchemaVersion = 3;
         public const int MaxFaceStyles = 2;
+        public const int MaxCoins = 9999999;
+        public const int MaxReputation = 100;
         public static readonly string[] Genders = { "male", "female" };
 
         public int schemaVersion = CurrentSchemaVersion;
@@ -25,9 +27,58 @@ namespace TwelveJade.Core
         public int faceStyle;
         public string[] traits = Array.Empty<string>();
         public string destiny = "";
+        // schemaVersion 3: 行囊、铜钱与地方声望。旧档读入时补上开局行囊（那时还没有这些字段）。
+        public int coins = ItemTable.StartingCoins;
+        public int localReputation;
+        public ItemStack[] bag = InventoryRules.NewBag();
 
         public static bool IsValidGender(string value) => Genders.Contains(value);
         public static bool IsValidFaceStyle(int value) => value >= 0 && value < MaxFaceStyles;
+        public static bool IsValidCoins(int value) => value >= 0 && value <= MaxCoins;
+        public static bool IsValidReputation(int value) => value >= 0 && value <= MaxReputation;
+
+        // 旧档迁移：只补缺的字段，不覆盖已写入的内容；可重复调用。
+        public static void Migrate(SaveData data)
+        {
+            if (data == null) return;
+            if (data.schemaVersion >= 3)
+            {
+                data.bag = InventoryRules.Normalize(data.bag);
+                data.coins = Math.Min(Math.Max(data.coins, 0), MaxCoins);
+                data.localReputation = Math.Min(Math.Max(data.localReputation, 0), MaxReputation);
+                return;
+            }
+            data.coins = ItemTable.StartingCoins;
+            data.localReputation = 0;
+            data.bag = StartingBag();
+        }
+
+        // 开局行囊：新档与旧档迁移共用同一份，kits 表在 ItemTable.StartingKit。
+        public static ItemStack[] StartingBag()
+        {
+            var bag = InventoryRules.NewBag();
+            foreach (var (id, count) in ItemTable.StartingKit) InventoryRules.Add(bag, null, id, count);
+            return bag;
+        }
+    }
+
+    // 声望折扣：地方声望每满一档，买卖价让三分，最多让到一成半（GDD 八节善名线）。
+    public static class Reputation
+    {
+        public const int TierStep = 20, MaxTiers = 5;
+        public const float DiscountPerTier = .03f;
+
+        public static int Tiers(int reputation) =>
+            Math.Min(Math.Max(reputation, 0) / TierStep, MaxTiers);
+
+        public static float Discount(int reputation) => Tiers(reputation) * DiscountPerTier;
+
+        // 买入价向上取整、卖出价向下取整，避免四舍五入把价格算到 0。
+        public static int BuyPrice(int basePrice, int reputation) =>
+            (int)Math.Ceiling(basePrice * (1 - Discount(reputation)));
+
+        public static int SellPrice(int basePrice, int reputation) =>
+            (int)Math.Floor(basePrice * .5 * (1 + Discount(reputation)));
     }
 
     // 随机词条与命运只描述出身与性情，不给数值加成；命运为后续剧情埋的钩子。
@@ -79,7 +130,16 @@ namespace TwelveJade.Core
                 new Entry("debtor", "旧债", "家里欠着一笔说不清的旧债，讨债的人迟早会来。"),
                 new Entry("scholar", "文曲偏照", "见字不忘，先生说不去赶考可惜了这颗脑袋。"),
                 new Entry("away", "离乡命", "故土留不住你，你的路在远方。"),
-                new Entry("unreadable", "无名", "命格古怪，寻常卜算一概算不出你。")
+                new Entry("unreadable", "无名", "命格古怪，寻常卜算一概算不出你。"),
+                new Entry("xia", "侠骨", "路见不平便要管，命里多刀光，也多知己。"),
+                new Entry("shaxing", "杀星入命", "批语说乱世出煞星。是救人的刀还是索命的刀，批语没敢写。"),
+                new Entry("chuandeng", "传灯命", "命中注定要做旁人的引路人。灯传下去，这辈子的路就没白走。"),
+                new Entry("anle", "安乐命", "不求闻达，但求灶头有肉、缸里有米——乱世里这也是大福气。"),
+                new Entry("caixing", "财星照命", "见钱眼开不算褒贬。命里带财，做买卖能起三铺两库。"),
+                new Entry("renxin", "仁心命", "见病痛就挪不动步，命中注定要悬壶。救一人，便积一分德。"),
+                new Entry("chiqing", "痴情种", "为一人可以不要性命。情之一字，是你的劫，也是你的道。"),
+                new Entry("longshe", "龙蛇命", "批语只四个字：乱世龙蛇。是龙是蛇，看时势，也看你的手腕。"),
+                new Entry("xianyun", "闲云命", "富贵功名都留不住你。山里一亩药田、半卷闲书，才是归宿。")
             };
 
         public static Entry FindTrait(string id) => Traits.FirstOrDefault(x => x.Id == id);

@@ -1,0 +1,43 @@
+{
+  "name": "青石镇",
+  "artWidth": 1920,
+  "artHeight": 1080,
+  "spawn": { "x": 990, "y": 985 },
+  "spawnFacingLeft": false,
+  "perspectiveTop": 0.72,
+  "perspectiveBottom": 1.05,
+  "walkable": [
+    { "comment": "南门瓮城大街", "x": 930, "y": 750, "width": 120, "height": 330 },
+    { "comment": "主街中段（最宽处）", "x": 900, "y": 450, "width": 180, "height": 300 },
+    { "comment": "主街上段", "x": 915, "y": 225, "width": 135, "height": 225 },
+    { "comment": "主街北口", "x": 940, "y": 90, "width": 70, "height": 135 },
+    { "comment": "中央集市横街", "x": 780, "y": 570, "width": 510, "height": 150 },
+    { "comment": "庙前小巷", "x": 495, "y": 645, "width": 405, "height": 75 },
+    { "comment": "溪畔小径", "x": 1275, "y": 525, "width": 150, "height": 315 },
+    { "comment": "北桥", "x": 1350, "y": 532, "width": 165, "height": 60 },
+    { "comment": "南桥", "x": 1350, "y": 750, "width": 195, "height": 90 }
+  ],
+  "props": [
+    { "slug": "paifang", "x": 990, "y": 838, "height": 240, "radius": 0, "comment": "牌坊门洞可穿行" },
+    { "slug": "stone-lion", "x": 912, "y": 806, "height": 66, "radius": 22 },
+    { "slug": "stone-lion", "x": 1068, "y": 806, "height": 66, "radius": 22 },
+    { "slug": "lantern-pole", "x": 918, "y": 700, "height": 240, "radius": 12 },
+    { "slug": "lantern-pole", "x": 1062, "y": 690, "height": 240, "radius": 12 },
+    { "slug": "lantern-pole", "x": 928, "y": 512, "height": 200, "radius": 11 },
+    { "slug": "lantern-pole", "x": 1055, "y": 505, "height": 200, "radius": 11 },
+    { "slug": "market-stall", "x": 838, "y": 668, "height": 150, "radius": 20 },
+    { "slug": "market-stall", "x": 1005, "y": 648, "height": 150, "radius": 20 },
+    { "slug": "market-stall", "x": 1178, "y": 660, "height": 150, "radius": 20 },
+    { "slug": "shop-front", "x": 800, "y": 706, "height": 230, "radius": 28 },
+    { "slug": "willow", "x": 1332, "y": 706, "height": 300, "radius": 28 },
+    { "slug": "bamboo", "x": 1568, "y": 610, "height": 200, "radius": 22 },
+    { "slug": "bamboo", "x": 1630, "y": 822, "height": 220, "radius": 24 }
+  ],
+  "landmarks": [
+    { "id": "south-gate", "name": "南门", "x": 990, "y": 985 },
+    { "id": "market", "name": "集市", "x": 1020, "y": 645 },
+    { "id": "temple", "name": "山门", "x": 620, "y": 682 },
+    { "id": "bridges", "name": "双桥", "x": 1395, "y": 700 },
+    { "id": "north-lane", "name": "北巷", "x": 968, "y": 140 }
+  ]
+}

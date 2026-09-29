@@ -76,6 +76,9 @@ GameClient/TwelveJade/*-log.txt
 GameClient/TwelveJade/Assets/_Recovery/
 GameClient/TwelveJade/Assets/_Recovery.meta
 
-# 抠图脚本的临时预览与运行日志
+# Python 缓存与抠图脚本的临时预览、运行日志
+__pycache__/
+*.pyc
+
 Tools/art-cleanup-preview/
 Tools/art-cleanup-run.log

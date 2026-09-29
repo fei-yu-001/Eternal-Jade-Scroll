@@ -53,6 +53,8 @@ namespace TwelveJade.Core
                 var data = codec.Deserialize<SaveData>(json);
                 if (data == null) return new SlotInfo(slot, SlotState.Corrupt);
                 if (data.schemaVersion > SaveData.CurrentSchemaVersion) return new SlotInfo(slot, SlotState.FutureVersion);
+                // 迁移在读取处完成：旧档在内存里就补齐 v3 的铜钱与行囊，写回时按当前 schema 落盘。
+                SaveData.Migrate(data);
                 return IsValid(data, slot) ? new SlotInfo(slot, SlotState.Ready, data)
                     : new SlotInfo(slot, SlotState.Corrupt);
             }
@@ -73,6 +75,8 @@ namespace TwelveJade.Core
             (data.schemaVersion == 1 || SaveData.IsValidFaceStyle(data.faceStyle)) &&
             (data.traits == null || data.traits.Length <= CharacterGen.TraitsPerCharacter) &&
             (data.destiny == null || data.destiny.Length <= 32) &&
+            (data.schemaVersion < 3 || (SaveData.IsValidCoins(data.coins) &&
+                SaveData.IsValidReputation(data.localReputation) && InventoryRules.IsValid(data.bag))) &&
             DateTimeOffset.TryParse(data.createdUtc, out _) &&
             DateTimeOffset.TryParse(data.updatedUtc, out _);
 
@@ -98,6 +102,7 @@ namespace TwelveJade.Core
             var now = DateTimeOffset.UtcNow.ToString("O");
             var data = new SaveData { slot = slot, characterId = characterId, characterName = name,
                 gender = gender, faceStyle = faceStyle, traits = traits, destiny = destiny ?? "",
+                coins = ItemTable.StartingCoins, localReputation = 0, bag = SaveData.StartingBag(),
                 createdUtc = now, updatedUtc = now };
             Write(data);
             return data;

@@ -1,0 +1,109 @@
+{
+  "tiers": [
+    { "id": "fanpin", "name": "凡品", "color": "#8C8C86" },
+    { "id": "huangjie", "name": "黄阶", "color": "#C8A34A" },
+    { "id": "xuanjie", "name": "玄阶", "color": "#4E8C7A" },
+    { "id": "dijie", "name": "地阶", "color": "#8A6BA8" },
+    { "id": "tianjie", "name": "天阶", "color": "#D8B96A" }
+  ],
+  "categories": [
+    { "id": "yaodan", "name": "丹药" },
+    { "id": "chishi", "name": "吃食" },
+    { "id": "cailiao", "name": "材料" },
+    { "id": "qiyong", "name": "器用" },
+    { "id": "bingqi", "name": "兵器" },
+    { "id": "renwu", "name": "任务物" }
+  ],
+  "items": [
+    {
+      "id": "ganliang", "name": "干粮", "tier": "fanpin", "category": "chishi", "icon": "dryfood",
+      "stack": 9, "price": 4,
+      "description": "粗面蒸的饼子，压得实，路上顶饿。"
+    },
+    {
+      "id": "chuibing", "name": "炊饼", "tier": "fanpin", "category": "chishi", "icon": "steamed-bun",
+      "stack": 9, "price": 2,
+      "description": "集市口刚出锅的，趁热吃最好。"
+    },
+    {
+      "id": "larou", "name": "腊肉", "tier": "fanpin", "category": "chishi", "icon": "cured-meat",
+      "stack": 5, "price": 9,
+      "description": "年下腌的，切一片能下两碗饭。"
+    },
+    {
+      "id": "jinchuangyao", "name": "金疮药", "tier": "fanpin", "category": "yaodan", "icon": "elixir-bottle",
+      "stack": 5, "price": 14,
+      "description": "止血生肌的土方药，走江湖的第一件家当。"
+    },
+    {
+      "id": "caoyao", "name": "药草", "tier": "fanpin", "category": "cailiao", "icon": "herb",
+      "stack": 20, "price": 3,
+      "description": "山埂上随手采的，晾干了能用。"
+    },
+    {
+      "id": "qinglingcao", "name": "青灵草", "tier": "huangjie", "category": "cailiao", "icon": "herb",
+      "stack": 20, "price": 12,
+      "description": "长在阴湿石缝里。林药师要的就是这一味。"
+    },
+    {
+      "id": "cudao", "name": "柴刀", "tier": "fanpin", "category": "qiyong", "icon": "woodcutter-knife",
+      "stack": 1, "price": 18,
+      "description": "砍柴劈竹都趁手，急了也能防身。"
+    },
+    {
+      "id": "cubupao", "name": "粗布袍", "tier": "fanpin", "category": "qiyong", "icon": "cotton-robe",
+      "stack": 1, "price": 10,
+      "description": "浆洗得发白，补丁是自己缝的。"
+    },
+    {
+      "id": "zhudi", "name": "竹笛", "tier": "fanpin", "category": "qiyong", "icon": "bamboo-flute",
+      "stack": 1, "price": 30,
+      "description": "后山砍的竹子自己凿的，音不算准，山风爱听。"
+    },
+    {
+      "id": "dongxiao", "name": "洞箫", "tier": "huangjie", "category": "qiyong", "icon": "xiao-flute",
+      "stack": 1, "price": 48,
+      "description": "音色沉，夜里吹起来，隔壁要嫌吵。"
+    },
+    {
+      "id": "guqin", "name": "古琴", "tier": "huangjie", "category": "qiyong", "icon": "guqin",
+      "stack": 1, "price": 260,
+      "description": "琴身有旧裂，是有人弹过很多年的琴。"
+    },
+    {
+      "id": "pipa", "name": "琵琶", "tier": "huangjie", "category": "qiyong", "icon": "pipa",
+      "stack": 1, "price": 320,
+      "description": "说书人用得着，卖艺的也离不了。"
+    },
+    {
+      "id": "fulu", "name": "符箓", "tier": "huangjie", "category": "qiyong", "icon": "talisman",
+      "stack": 5, "price": 40,
+      "description": "朱砂画的黄纸，看着唬人，到底灵不灵没人敢试。"
+    },
+    {
+      "id": "tiejian", "name": "铁剑", "tier": "huangjie", "category": "bingqi", "icon": "sword",
+      "stack": 1, "price": 380,
+      "description": "铁匠铺打的素剑，不值钱，但趁手。"
+    },
+    {
+      "id": "yupei", "name": "半块玉佩", "tier": "xuanjie", "category": "renwu", "icon": "jade-pendant",
+      "stack": 1, "price": 0,
+      "description": "父辈留下的半块，断口平整，像是被人掰开的。"
+    },
+    {
+      "id": "hetiehe", "name": "沉水铁盒", "tier": "huangjie", "category": "renwu", "icon": "chest-closed",
+      "stack": 1, "price": 0,
+      "description": "从河里摸上来的，锈死了，得找匠人开。"
+    },
+    {
+      "id": "kaihetie", "name": "开启的铁盒", "tier": "huangjie", "category": "renwu", "icon": "chest-open",
+      "stack": 1, "price": 0,
+      "description": "盒盖一开，里头的东西却没几个人认得。"
+    },
+    {
+      "id": "yinzhang", "name": "旧印章", "tier": "fanpin", "category": "renwu", "icon": "seal",
+      "stack": 1, "price": 0,
+      "description": "印面磨得只剩半个字，看着像是姓。"
+    }
+  ]
+}

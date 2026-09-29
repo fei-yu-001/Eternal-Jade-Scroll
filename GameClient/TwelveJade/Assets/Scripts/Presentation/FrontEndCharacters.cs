@@ -101,9 +101,11 @@ namespace TwelveJade.Presentation
             draftDestiny = CharacterGen.RollDestiny(rng);
         }
 
-        // 问命：三相之后按答案倾向加权随机定命运；词条始终纯随机。
+        // 问命：序章星夜问命。答案只为命格加权（底数 1，倾向 +3），命盘随答点亮；词条始终纯随机。
         int fateStep;
         readonly System.Collections.Generic.List<string> fateFavored = new();
+        readonly System.Collections.Generic.Dictionary<string, RawImage> fateStars =
+            new System.Collections.Generic.Dictionary<string, RawImage>();
 
         public void OpenFateDialogue()
         {
@@ -111,29 +113,158 @@ namespace TwelveJade.Presentation
             content.GetComponent<CanvasGroup>().interactable = false;
             fateStep = 0;
             fateFavored.Clear();
-            ShowFateQuestion();
+            modal = OpenFateScene("Fate dialogue");
+            ShowFateIntro();
+        }
+
+        // 序章共用底景：星夜渡口背景画压暗作底，无图时退回纯色遮罩。
+        RectTransform OpenFateScene(string name)
+        {
+            var root = ui.Panel(canvas, name, 0, 0, 1920, 1080, new Color(0, .035f, .03f, .9f), true).rectTransform;
+            var texture = Resources.Load<Texture2D>("Art/fate-background");
+            if (texture != null)
+            {
+                var art = ui.Art(root, texture, 0, 0, 1920, 1080);
+                art.color = new Color(.62f, .72f, .7f, .92f);
+                ui.Panel(root, "Fate veil", 0, 0, 1920, 1080, new Color(0f, .02f, .018f, .5f));
+            }
+            return root;
+        }
+
+        // 命盘：中央无名（卜算照不出），内环六星外环十二星对应其余命格；答问点亮倾向之星。
+        // 星用中心锚点自成坐标（y 向上），其余 UI 元素一律沿用 UiKit 的左上原点、y 向下约定。
+        void BuildFateBoard(Transform parent, bool animate)
+        {
+            fateStars.Clear();
+            var board = ui.Panel(parent, "Fate board", 120, 170, 500, 640, new Color(.015f, .05f, .04f, .72f)).rectTransform;
+            ui.Label(board, "命  盘", 0, 16, 500, 40, 22, UiKit.Gold, TextAlignmentOptions.Center, true);
+            var center = new Vector2(0f, -30f);
+            AddStar(board, CharacterGen.Destinies[18].Id, center, 24);
+            for (var i = 0; i < 6; i++)
+            {
+                var angle = i * 60f * Mathf.Deg2Rad;
+                AddStar(board, CharacterGen.Destinies[i].Id,
+                    center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 84f, 17);
+            }
+            for (var i = 0; i < 12; i++)
+            {
+                var angle = (i * 30f + 15f) * Mathf.Deg2Rad;
+                AddStar(board, CharacterGen.Destinies[6 + i].Id,
+                    center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 150f, 13);
+            }
+            foreach (var id in fateFavored) LightStar(id);
+            if (animate)
+            {
+                var driver = board.gameObject.AddComponent<FateSendOff>();
+                driver.Init(fateStars.Values.Select(s => s.rectTransform).ToArray(), center, AddStar(board, "", center, 26));
+            }
+        }
+
+        RectTransform FateBox(Transform parent)
+        {
+            return ui.Panel(parent, "Fate box", 680, 150, 1120, 780, UiKit.Dark).rectTransform;
+        }
+
+        RawImage AddStar(Transform parent, string destinyId, Vector2 position, float size)
+        {
+            var star = new GameObject("FateStar " + destinyId, typeof(RectTransform)).GetComponent<RectTransform>();
+            star.SetParent(parent, false);
+            star.anchorMin = star.anchorMax = new Vector2(.5f, .5f);
+            star.pivot = new Vector2(.5f, .5f);
+            star.anchoredPosition = position;
+            star.sizeDelta = new Vector2(size, size);
+            var image = star.gameObject.AddComponent<RawImage>();
+            image.texture = StarTexture();
+            image.raycastTarget = false;
+            image.color = new Color(.45f, .62f, .55f, .2f);
+            if (!string.IsNullOrEmpty(destinyId)) fateStars[destinyId] = image;
+            return image;
+        }
+
+        void LightStar(string destinyId)
+        {
+            if (fateStars.TryGetValue(destinyId, out var star))
+                star.color = new Color(1f, .86f, .5f, .95f);
+        }
+
+        static Texture2D starTexture;
+        static Texture2D StarTexture()
+        {
+            if (starTexture != null) return starTexture;
+            const int s = 48;
+            starTexture = new Texture2D(s, s, TextureFormat.RGBA32, false);
+            for (var y = 0; y < s; y++)
+            for (var x = 0; x < s; x++)
+            {
+                var dx = (x + .5f) / s - .5f;
+                var dy = (y + .5f) / s - .5f;
+                var d = Mathf.Sqrt(dx * dx + dy * dy) * 2f;
+                var a = Mathf.Clamp01(1f - d);
+                starTexture.SetPixel(x, y, new Color(1f, 1f, 1f, a * a * (3f - 2f * a)));
+            }
+            starTexture.Apply(false, true);
+            return starTexture;
+        }
+
+        // 序章各幕共用一只遮罩，内容面板逐幕重建，避免遮罩堆叠挡住射线。
+        RectTransform FatePhasePanel()
+        {
+            var old = modal.Find("Fate content");
+            if (old != null) Destroy(old.gameObject);
+            return ui.Panel(modal, "Fate content", 0, 0, 1920, 1080, new Color(0, 0, 0, 0)).rectTransform;
+        }
+
+        void ShowFateIntro()
+        {
+            var panel = FatePhasePanel();
+            BuildFateBoard(panel, false);
+            var box = FateBox(panel);
+            ui.Label(box, "星 夜 问 命", 48, 52, 1024, 84, 50, UiKit.Paper, TextAlignmentOptions.Center, true);
+            ui.Label(box, FateDialogue.Opening, 108, 200, 904, 170, 30, UiKit.Gold, TextAlignmentOptions.Center, true);
+            ui.Label(box, "答案不为定命，只为命盘添几星光。", 108, 410, 904, 44, 20, UiKit.Muted, TextAlignmentOptions.Center);
+            ui.Button(box, "落座听问", 440, 630, 240, 68, ShowFateQuestion, true);
         }
 
         void ShowFateQuestion()
         {
+            var panel = FatePhasePanel();
+            BuildFateBoard(panel, false);
+            var box = FateBox(panel);
             var question = FateDialogue.Questions[fateStep];
-            modal = ui.Panel(canvas, "Fate dialogue", 0, 0, 1920, 1080, new Color(0, .035f, .03f, .86f), true).rectTransform;
-            var box = ui.Panel(modal, "Dialog", 460, 290, 1000, 490, UiKit.Dark, true);
-            ui.Label(box.transform, "村 口 · 问 命", 48, 34, 500, 40, 20, UiKit.Gold);
-            ui.Label(box.transform, string.Format("（{0} / {1}）", fateStep + 1, FateDialogue.Questions.Length),
-                850, 34, 102, 40, 20, UiKit.Muted, TextAlignmentOptions.TopRight);
-            ui.Label(box.transform, question.Text, 48, 96, 904, 96, 27, UiKit.Paper);
+            ui.Label(box, question.Title, 48, 42, 780, 52, 30, UiKit.Gold, TextAlignmentOptions.TopLeft, true);
+            ui.Label(box, string.Format("（{0} / {1}）", fateStep + 1, FateDialogue.Questions.Length),
+                900, 52, 170, 40, 20, UiKit.Muted, TextAlignmentOptions.TopRight);
+            ui.Label(box, question.Text, 48, 118, 1024, 96, 28, UiKit.Paper);
             for (var i = 0; i < question.Options.Length; i++)
             {
                 var index = i;
-                ui.Button(box.transform, question.Options[i].Text, 48, 214 + i * 84, 904, 68, () => ChooseFate(index));
+                ui.Button(box, question.Options[i].Text, 48, 244 + i * 102, 1024, 86, () => ChooseFate(index));
             }
         }
 
         void ChooseFate(int optionIndex)
         {
-            fateFavored.AddRange(FateDialogue.Questions[fateStep].Options[optionIndex].Favor);
+            var option = FateDialogue.Questions[fateStep].Options[optionIndex];
+            fateFavored.AddRange(option.Favor);
             fateStep++;
+            ShowFateReply(option.Reply);
+        }
+
+        void ShowFateReply(string reply)
+        {
+            var panel = FatePhasePanel();
+            BuildFateBoard(panel, false);
+            var box = FateBox(panel);
+            ui.Label(box, "老 者 神 态", 48, 42, 780, 52, 26, UiKit.Gold, TextAlignmentOptions.TopLeft, true);
+            ui.Label(box, string.Format("（{0} / {1}）", fateStep, FateDialogue.Questions.Length),
+                900, 52, 170, 40, 20, UiKit.Muted, TextAlignmentOptions.TopRight);
+            ui.Label(box, reply, 48, 130, 1024, 280, 26, UiKit.Paper);
+            ui.Label(box, "命盘之上，又亮几星。", 48, 668, 700, 40, 19, UiKit.Muted, TextAlignmentOptions.TopLeft);
+            ui.Button(box, "继 续", 852, 646, 220, 64, NextFateStep, true);
+        }
+
+        void NextFateStep()
+        {
             if (fateStep < FateDialogue.Questions.Length) ShowFateQuestion();
             else FinishFateDialogue();
         }
@@ -145,18 +276,71 @@ namespace TwelveJade.Presentation
             draftDestiny = FateDialogue.RollDestiny(fateFavored.ToArray(), rng);
             var fate = CharacterGen.FindDestiny(draftDestiny);
             if (modal != null) { modal.gameObject.SetActive(false); Destroy(modal.gameObject); modal = null; }
-            modal = ui.Panel(canvas, "Fate result", 0, 0, 1920, 1080, new Color(0, .035f, .03f, .86f), true).rectTransform;
-            var box = ui.Panel(modal, "Dialog", 460, 340, 1000, 400, UiKit.Dark, true);
-            ui.Label(box.transform, "卦 成", 48, 34, 300, 44, 22, UiKit.Gold);
-            ui.Label(box.transform, "「" + (fate?.Name ?? "无名") + "」", 48, 92, 904, 74, 48, UiKit.Paper, TextAlignmentOptions.TopLeft, true);
-            ui.Label(box.transform, fate?.Description ?? "卦象古怪，寻常卜算一概算不出。", 48, 178, 904, 56, 24, UiKit.Muted);
-            ui.Label(box.transform, "另得词条：" + TraitNames(draftTraits) + "。卦象只给个去向，路终究是你自己走。", 48, 246, 904, 50, 21, UiKit.Muted);
-            var accept = ui.Button(box.transform, "记下此卦", 48, 316, 904, 62, () =>
+            modal = OpenFateScene("Fate result");
+            BuildFateBoard(modal.transform, true);
+            var box = FateBox(modal.transform);
+            ui.Label(box, "卦 成", 48, 42, 400, 52, 26, UiKit.Gold, TextAlignmentOptions.TopLeft, true);
+            ui.Label(box, "「" + (fate?.Name ?? "无名") + "」", 48, 120, 1024, 110, 54, UiKit.Paper, TextAlignmentOptions.TopLeft, true);
+            ui.Label(box, fate?.Description ?? "卦象古怪，寻常卜算一概算不出。", 48, 282, 1024, 96, 26, UiKit.Muted);
+            ui.Label(box, "另得词条：" + TraitNames(draftTraits) + "。卦象只给个去向，路终究是你自己走。",
+                48, 400, 1024, 74, 21, UiKit.Muted);
+            var accept = ui.Button(box, "记下此卦", 48, 660, 320, 68, () =>
             {
                 CloseModal();
                 RedrawCreation(currentDraftSlot);
             }, true);
             EventSystem.current.SetSelectedGameObject(accept.gameObject);
+        }
+
+        // 星落收束：问毕诸星向命盘中心收拢，一点金星坠向人间——命格随后揭晓。
+        sealed class FateSendOff : MonoBehaviour
+        {
+            RectTransform[] stars;
+            Vector2[] starts;
+            float[] alphas;
+            Vector2 center;
+            RawImage falling;
+            float time;
+
+            public void Init(RectTransform[] starRects, Vector2 centerPoint, RawImage fallingStar)
+            {
+                stars = starRects;
+                center = centerPoint;
+                falling = fallingStar;
+                starts = new Vector2[stars.Length];
+                alphas = new float[stars.Length];
+                for (var i = 0; i < stars.Length; i++)
+                {
+                    starts[i] = stars[i].anchoredPosition;
+                    alphas[i] = stars[i].GetComponent<RawImage>().color.a;
+                }
+                if (falling != null) falling.gameObject.SetActive(false);
+            }
+
+            void Update()
+            {
+                if (stars == null || stars.Length == 0) return;
+                time += Time.unscaledDeltaTime;
+                var t = Mathf.Clamp01(time / 1.1f);
+                var pull = t * t;
+                for (var i = 0; i < stars.Length; i++)
+                {
+                    if (stars[i] == null) continue;
+                    stars[i].anchoredPosition = Vector2.Lerp(starts[i], center, pull);
+                    var image = stars[i].GetComponent<RawImage>();
+                    var color = image.color;
+                    image.color = new Color(color.r, color.g, color.b, alphas[i] * (1f - pull * .9f));
+                }
+                if (time > 1.05f && falling != null)
+                {
+                    var u = Mathf.Clamp01((time - 1.05f) / .85f);
+                    falling.gameObject.SetActive(true);
+                    falling.rectTransform.anchoredPosition = center + new Vector2(0f, -u * 340f);
+                    var glow = Mathf.Sin(u * Mathf.PI);
+                    falling.color = new Color(1f, .86f, .5f, glow);
+                    falling.rectTransform.localScale = Vector3.one * (.7f + glow * .8f);
+                }
+            }
         }
 
         // 落笔：以当前草稿创建档位并进入预览。
@@ -208,7 +392,7 @@ namespace TwelveJade.Presentation
             ui.Label(content, "命格", 998, 646, 90, 54, 22, UiKit.Gold, TextAlignmentOptions.MidlineLeft);
             ui.Label(content, TraitNames(draftTraits), 1092, 646, 420, 54, 24, UiKit.Paper, TextAlignmentOptions.MidlineLeft);
             ui.Button(content, "重掷", 1506, 646, 128, 54, RerollCreationFate);
-            ui.Button(content, "问命·卜卦", 1642, 646, 178, 54, OpenFateDialogue, true);
+            ui.Button(content, "入梦问命", 1642, 646, 178, 54, OpenFateDialogue, true);
             ui.Label(content, FateSummary(draftTraits, draftDestiny), 998, 714, 824, 140, 19, UiKit.Muted);
 
             ui.Label(content, "你的名字", 998, 874, 110, 54, 22, UiKit.Gold, TextAlignmentOptions.MidlineLeft);
@@ -264,7 +448,8 @@ namespace TwelveJade.Presentation
         {
             BeginPage("preview"); activeSave = data;
             var preset = presets.First(p => p.id == data.characterId);
-            PageHeading("行 旅 小 憩", data.characterName + "的行装", "一身寻常衣衫，一段尚未展开的人生。试试他的身手。");
+            var pronoun = data.gender == "female" ? "她" : "他";
+            PageHeading("行 旅 小 憩", data.characterName + "的行装", "一身寻常衣衫，一段尚未展开的人生。试试" + pronoun + "的身手。");
             var art = ui.Panel(content, "Turnaround", 102, 336, 920, 593, new Color(.78f, .76f, .65f, .97f));
             var view = preset.Facing(data.facing, data.gender, data.faceStyle);
             if (view != null)
@@ -296,7 +481,7 @@ namespace TwelveJade.Presentation
             {
                 var motion = (CharacterActor.Motion)i;
                 ui.Button(art.transform, CharacterActor.MotionNames[i], 92 + (i - 1) * 140, 502, 128, 52,
-                    () => SetMotion(i), currentMotion == motion);
+                    () => SetMotion((int)motion), currentMotion == motion);
             }
             ui.Label(art.transform, "键盘 1–6 亦可切换动作", 24, 562, 400, 24, 15,
                 new Color(.24f, .28f, .26f, .55f));
@@ -305,11 +490,22 @@ namespace TwelveJade.Presentation
             ui.Label(content, preset.displayName + " · " + CharacterPreset.GenderName(data.gender), 1110, 424, 650, 60, 38, UiKit.Paper);
             ui.Label(content, preset.description, 1117, 494, 625, 96, 25, UiKit.Paper);
             ui.Label(content, TraitNames(data.traits), 1117, 602, 625, 44, 24, UiKit.Gold);
-            ui.Label(content, FateSummary(data.traits, data.destiny), 1117, 652, 625, 148, 18, UiKit.Muted);
-            ui.Label(content, "此刻，故事尚未启程。\n先记住这身行装，以及来时的路。", 1117, 812, 625, 66, 21, UiKit.Muted);
-            ui.Button(content, "返回主菜单", 1117, 890, 310, 62, ShowMenu, true);
-            ui.Button(content, "查看行迹", 1456, 890, 310, 62, () => ShowSlots(false));
+            ui.Label(content, FateSummary(data.traits, data.destiny), 1117, 652, 625, 128, 18, UiKit.Muted);
+            ui.Label(content, BagLine(data), 1117, 780, 625, 30, 19, UiKit.Gold);
+            ui.Button(content, "启程 · 进入青石镇", 1117, 812, 449, 62, () => Guard(() => ShowTown()), true);
+            ui.Button(content, "行囊", 1580, 812, 186, 62, ShowInventory);
+            ui.Button(content, "返回主菜单", 1117, 884, 310, 56, ShowMenu, true);
+            ui.Button(content, "查看行迹", 1456, 884, 310, 56, () => ShowSlots(false));
             FocusFirst();
+        }
+
+        // 行囊摘要：铜钱、地方声望与占用格数——买卖让利按声望算（M3 交易所同一套规则）。
+        string BagLine(SaveData data)
+        {
+            var bag = data.bag ?? InventoryRules.NewBag();
+            return "行囊 " + InventoryRules.UsedSlots(bag) + " / " + InventoryRules.SlotCount +
+                " 格 · 铜钱 " + data.coins + " 文 · 地方声望 " + data.localReputation +
+                "（让利 " + Mathf.RoundToInt(Reputation.Discount(data.localReputation) * 100) + "%）";
         }
 
         CharacterActor currentActor;

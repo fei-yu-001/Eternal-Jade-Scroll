@@ -86,10 +86,16 @@ namespace TwelveJade.Presentation
             if (toast != null && Time.unscaledTime > toastUntil) { Destroy(toast.gameObject); toast = null; }
             if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             {
-                if (modal != null) CloseModal();
+                if (bagOverlay != null) CloseInventory();
+                else if (modal != null) CloseModal();
                 else if (page == "menu") ConfirmExit();
-                else if (page == "settings") ShowMenu();
                 else ShowMenu();
+            }
+            if (Keyboard.current != null && Keyboard.current.bKey.wasPressedThisFrame &&
+                page == "town" && modal == null)
+            {
+                if (bagOverlay != null) CloseInventory();
+                else ShowInventory();
             }
             if (page == "preview" && Keyboard.current != null)
             {
@@ -99,6 +105,7 @@ namespace TwelveJade.Presentation
                 for (var i = 0; i < digitKeys.Length; i++)
                     if (digitKeys[i].wasPressedThisFrame) SetMotion(i + 1);
             }
+            UpdateTown();
         }
 
         void BuildBackdrop()
@@ -123,6 +130,8 @@ namespace TwelveJade.Presentation
                 backdropImage = image;
             }
             ui.Panel(canvas, "Atmosphere", 0, 0, 1920, 1080, new Color(.025f, .09f, .075f, .30f));
+            var ambience = canvas.gameObject.AddComponent<MenuAmbience>();
+            ambience.Configure(backdropImage, () => settings.reduceMotion);
             // 左侧文字区纱罩：横向渐变代替竖直硬边。
             var scrim = ui.Rect(canvas, "Left scrim", 0, 0, 900, 1080).gameObject.AddComponent<RawImage>();
             scrim.texture = UiKit.LeftFadeTexture(); scrim.raycastTarget = false;
@@ -130,8 +139,6 @@ namespace TwelveJade.Presentation
             ui.Label(canvas, "九 州 界  /  凡 尘 篇", 82, 25, 900, 30, 16, UiKit.Paper);
             ui.Label(canvas, "十二玉楼长生经", 80, 1020, 600, 30, 17, UiKit.Muted);
             ui.Label(canvas, ProductVersion, 1370, 1020, 475, 30, 17, UiKit.Muted, TextAlignmentOptions.TopRight);
-            var ambience = canvasObject.AddComponent<MenuAmbience>();
-            ambience.Configure(backdropImage, () => settings.reduceMotion);
         }
 
         void BeginPage(string name)
