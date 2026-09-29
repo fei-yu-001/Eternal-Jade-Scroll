@@ -1,0 +1,28 @@
+{
+  "schedules": [
+    {
+      "id": "huolang",
+      "npcId": "huolang",
+      "windows": [
+        {
+          "id": "market-day",
+          "start": 360,
+          "end": 1140,
+          "place": "market",
+          "trade": true,
+          "black": false,
+          "note": "白天在集市口开铺，谁都能找他"
+        },
+        {
+          "id": "bridges-night",
+          "start": 1320,
+          "end": 1440,
+          "place": "bridges",
+          "trade": true,
+          "black": true,
+          "note": "入夜后才挪到双桥底下，独门货只在这里出"
+        }
+      ]
+    }
+  ]
+}

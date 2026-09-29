@@ -83,8 +83,14 @@ namespace TwelveJade.Core
             (data.schemaVersion < 4 || IsValidMerchants(data.merchants)) &&
             (data.schemaVersion < 5 || IsValidFlags(data.oneTimeFlags)) &&
             (data.schemaVersion < 6 || IsValidQuests(data.quests)) &&
+            (data.schemaVersion < 7 || IsValidWorldTime(data.worldDay, data.worldMinuteOfDay)) &&
             DateTimeOffset.TryParse(data.createdUtc, out _) &&
             DateTimeOffset.TryParse(data.updatedUtc, out _);
+
+        // 世界时间：日子在 1–3650、当天分钟在 0–1439。存档只存这两个整数，不存时间戳。
+        static bool IsValidWorldTime(int day, int minuteOfDay) =>
+            day >= WorldTime.StartDay && day <= WorldTime.MaxDays &&
+            minuteOfDay >= 0 && minuteOfDay < WorldTime.MinutesPerDay;
 
         // 任务状态：id 不重复、状态在五档之内、进度不为负且不越界。
         static bool IsValidQuests(QuestState[] quests)

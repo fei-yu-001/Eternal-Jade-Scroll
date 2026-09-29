@@ -7,7 +7,7 @@ namespace TwelveJade.Core
     [Serializable]
     public sealed class SaveData
     {
-        public const int CurrentSchemaVersion = 6;
+        public const int CurrentSchemaVersion = 7;
         public const int MaxFaceStyles = 2;
         public const int MaxCoins = 9999999;
         public const int MaxReputation = 100;
@@ -38,6 +38,10 @@ namespace TwelveJade.Core
         // schemaVersion 6: 任务与章节进度。v5 及更早的档没有 quests，读入时留空——任务表
         // 第一次被用到时才由 QuestLedger 按表铺一份初始状态，历史档因此不丢东西。
         public QuestState[] quests = Array.Empty<QuestState>();
+        // schemaVersion 7: 世界时间。存"第几天 + 当天第几分钟"两个整数而不是时间戳——
+        // 存档因此不依赖机器时区，读写往返都不会漂。v6 及更早的档读入时落到开局时刻。
+        public int worldDay = WorldTime.StartDay;
+        public int worldMinuteOfDay = WorldTime.StartMinute;
 
         public static bool IsValidGender(string value) => Genders.Contains(value);
         public static bool IsValidFaceStyle(int value) => value >= 0 && value < MaxFaceStyles;
@@ -77,7 +81,18 @@ namespace TwelveJade.Core
             data.quests = data.quests
                 .Where(q => q != null && !string.IsNullOrWhiteSpace(q.id))
                 .ToArray();
+            // 世界时间同样只做归一化：越界的日子与分钟拉回合法范围，迁移可反复调用。
+            var world = WorldClock.ReadFrom(data.worldDay, data.worldMinuteOfDay);
+            data.worldDay = world.day;
+            data.worldMinuteOfDay = world.minuteOfDay;
         }
+
+        // 读出存档里的世界时间（结构体），供 WorldClock 推进。
+        public WorldTime WorldTimeNow() => WorldClock.ReadFrom(worldDay, worldMinuteOfDay);
+
+        // 把世界时间写回存档字段。
+        public void SetWorldTime(WorldTime time) =>
+            WorldClock.WriteTo(time, (day, minute) => { worldDay = day; worldMinuteOfDay = minute; });
 
         // 一次性标记：没记过返回 true 并记档；重复调用是幂等的。
         public bool MarkFlag(string flagId)
