@@ -7,6 +7,9 @@ using TwelveJade.Presentation;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UI;
 
 namespace TwelveJade.Editor
@@ -59,6 +62,9 @@ namespace TwelveJade.Editor
             var dir = Path.Combine(Path.GetTempPath(), "twelve-jade-acceptance-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(dir);
             Environment.SetEnvironmentVariable("TWELVEJADE_SAVEDIR", dir);
+            // 批处理没有焦点、native 输入不来：改为手动驱动，事件由注入在产品 Update
+            // 之前的更新按需消费（W 的持续键态由此走真实产品路径）。
+            InputSystem.settings.updateMode = InputSettings.UpdateMode.ProcessEventsManually;
             Debug.Log("[FrontEndShot] scratch saves at " + dir);
             var project = Directory.GetParent(Application.dataPath).FullName; // TwelveJade 工程
             var repoRoot = Directory.GetParent(Directory.GetParent(project).FullName).FullName; // 仓库根目录
@@ -85,9 +91,51 @@ namespace TwelveJade.Editor
 
         static void Pump()
         {
-            EditorApplication.QueuePlayerLoopUpdate();
+            if (EditorApplication.isPlaying)
+            {
+                EnsurePlayerLoopInputUpdate();
+                EditorApplication.QueuePlayerLoopUpdate();
+            }
             try { Step(); }
             catch (Exception ex) { Fail("驱动异常: " + ex); }
+        }
+
+        static bool playerLoopInputInjected;
+        static bool pendingInputConsume;
+
+        // 手动输入模式下事件由这里消费：挂在产品 Update（ScriptRunBehaviourUpdate）之前，
+        // 且只在有注入事件时才跑——空转的输入更新会推进 step 计数，把按键沿窗口关掉
+        // （批处理十轮实测：isPressed 状态可达、wasPressedThisFrame 的沿在 editor/player
+        // 双重驱动下无法稳定存活，故"沿"类断言只在实机有意义，批处理验"状态 + 等效动作"）。
+        static void EnsurePlayerLoopInputUpdate()
+        {
+            if (playerLoopInputInjected) return;
+            var loop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
+            for (var i = 0; i < loop.subSystemList.Length; i++)
+            {
+                var sub = loop.subSystemList[i];
+                if (sub.subSystemList == null) continue;
+                var systems = new List<UnityEngine.LowLevel.PlayerLoopSystem>(sub.subSystemList);
+                var behaviour = systems.FindIndex(x => x.type.Name == "ScriptRunBehaviourUpdate");
+                if (behaviour < 0) continue;
+                systems.Insert(behaviour, new UnityEngine.LowLevel.PlayerLoopSystem
+                {
+                    type = typeof(FrontEndShot),
+                    updateDelegate = () =>
+                    {
+                        if (!pendingInputConsume) return;
+                        pendingInputConsume = false;
+                        InputSystem.Update();
+                    }
+                });
+                sub.subSystemList = systems.ToArray();
+                loop.subSystemList[i] = sub;
+                UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(loop);
+                playerLoopInputInjected = true;
+                Debug.Log("[FrontEndShot] on-demand input update injected before ScriptRunBehaviourUpdate");
+                return;
+            }
+            Debug.LogWarning("[FrontEndShot] 未找到 ScriptRunBehaviourUpdate，输入注入未挂载");
         }
 
         static void Step()
@@ -236,18 +284,33 @@ namespace TwelveJade.Editor
                 Check(controller.CurrentPage == "preview", "预览截图应停留在预览页");
                 Check(FindActiveButton("返回") != null, "预览页返回按钮应可见");
             }
-            if (currentShot == "town")
+            // 城镇页分两段：第一段搭话与"下方"纵深断言，第二段走到货郎上方验"上方"纵深，再截城镇图。
+            if (currentShot == "town" && !townAboveChecked)
             {
                 Check(controller.CurrentPage == "town", "城镇页应已打开");
                 Check(UnityEngine.Object.FindAnyObjectByType<PuppetActor>() != null, "城镇页应有分层纸偶角色");
                 VerifyTalkThenLeave();
                 Check(controller.CurrentPage == "town", "城镇截图应停在镇上");
+                townAboveChecked = true;
+                PressKey(Key.W);
+                waitStart = Time.realtimeSinceStartup;
+                waiting = true;
+                waitDeadline = Time.realtimeSinceStartup + 12f;
+                waitUntil = VerifyDepthAbove;
+                return false;
             }
+            if (currentShot == "town")
+                Check(controller.CurrentPage == "town", "城镇截图应停在镇上");
             if (currentShot == "inventory")
             {
                 Check(controller.CurrentPage == "town", "行囊是城镇页上的浮层");
                 Check(controller.BagCellCount == InventoryRules.SlotCount, "行囊应有 24 格");
                 Check(controller.CurrentBag != null, "行囊应已挂上当前存档");
+            }
+            if (currentShot == "trade" && controller.CurrentPage != "trade")
+            {
+                // Esc 断言已在 VerifyTrade 尾部完成；恢复交易页供截图。
+                controller.ShowTrade("huolang");
             }
             Capture(string.Format("play-{0:00}-{1}", shotIndex + 1, currentShot), currentShot);
             return true;
@@ -295,6 +358,71 @@ namespace TwelveJade.Editor
         {
             return Resources.FindObjectsOfTypeAll<RectTransform>()
                 .Count(rect => rect.gameObject.scene.IsValid() && rect.gameObject.activeInHierarchy && rect.gameObject.name == name);
+        }
+
+        static RectTransform FindRect(string name)
+        {
+            return Resources.FindObjectsOfTypeAll<RectTransform>()
+                .FirstOrDefault(rect => rect.gameObject.scene.IsValid() && rect.gameObject.activeInHierarchy &&
+                    rect.gameObject.name == name);
+        }
+
+        // 批处理里没有真人按键，物理键盘设备也不存在：补一个软件键盘，把键态排进
+        // Input System 的事件队列，下一帧由播放循环消费——Esc、W 都走产品自己的
+        // 输入路径（Update 里的 Keyboard.current），不绕过输入层。
+        static Keyboard checkKeyboard;
+
+        static Keyboard EnsureKeyboard()
+        {
+            if (checkKeyboard != null && checkKeyboard.added) return checkKeyboard;
+            checkKeyboard = Keyboard.current != null ? Keyboard.current : InputSystem.AddDevice<Keyboard>();
+            return checkKeyboard;
+        }
+
+        static void PressKey(Key key)
+        {
+            var keyboard = EnsureKeyboard();
+            if (keyboard == null) { Check(false, "批处理里应能准备出键盘设备"); return; }
+            pendingInputConsume = true;
+            InputSystem.QueueStateEvent(keyboard, new KeyboardState(key));
+        }
+
+        // 抬起所有键：一个全零键态事件即等价于松键。
+        static void ReleaseKeys()
+        {
+            var keyboard = checkKeyboard;
+            if (keyboard == null || !keyboard.added) return;
+            pendingInputConsume = true;
+            InputSystem.QueueStateEvent(keyboard, new KeyboardState());
+        }
+
+        static RectTransform TravelerRect =>
+            UnityEngine.Object.FindAnyObjectByType<PuppetActor>()?.transform as RectTransform;
+
+        static RectTransform NpcRect(string npcId) =>
+            FindActiveControl("Npc " + npcId)?.transform as RectTransform;
+
+        // 城镇纵深断言分两个方向：下方（搭话位，人在 NPC 基座下方更近）在 VerifyTalkThenLeave 验，
+        // 上方（按 W 走到基座上方更远）在这里验——sibling 顺序应随 y 翻转。
+        static bool townAboveChecked;
+
+        static bool VerifyDepthAbove()
+        {
+            var traveler = TravelerRect;
+            var npc = NpcRect("huolang");
+            // UiKit 局部坐标 y 向下：画面上方（更远）的局部 y 比 NPC 大（更不负）。
+            var above = traveler != null && npc != null &&
+                traveler.anchoredPosition.y > npc.anchoredPosition.y + 1f;
+            if (!above && Time.realtimeSinceStartup < waitDeadline) return false;
+            ReleaseKeys();
+            Check(above, "按住 W 应能在时限内走到货郎基座上方",
+                traveler == null || npc == null ? "找不到人物或货郎"
+                : "y " + traveler.anchoredPosition.y.ToString("0") + " vs " + npc.anchoredPosition.y.ToString("0"));
+            if (above && traveler != null && npc != null)
+                Check(traveler.GetSiblingIndex() < npc.GetSiblingIndex(),
+                    "人物在货郎基座上方（更远）时应画在 NPC 之下",
+                    "sibling " + traveler.GetSiblingIndex() + " vs " + npc.GetSiblingIndex());
+            return true;
         }
 
         static void VerifyMotionButtons()
@@ -376,6 +504,14 @@ namespace TwelveJade.Editor
             if (!pendingNpcCheck) return;
             pendingNpcCheck = false;
             Check(TalkBoxVisible(), "走到货郎跟前应弹出搭话框");
+            // 纵深·下方：人物此刻站在货郎基座下方（更近）——同一张深度表里
+            // 应画在 NPC 之上（sibling 更大）。上方方向由 VerifyDepthAbove 补齐。
+            var traveler = TravelerRect;
+            var npc = NpcRect("huolang");
+            if (traveler != null && npc != null)
+                Check(traveler.GetSiblingIndex() > npc.GetSiblingIndex(),
+                    "人物在货郎基座下方（更近）时应画在 NPC 之上",
+                    "sibling " + traveler.GetSiblingIndex() + " vs " + npc.GetSiblingIndex());
             // 先把两个按钮都验到，再依次点：点「做买卖」会关掉搭话框，之后就找不到「告辞」了。
             var trade = FindActiveButton("做 买 卖");
             var bye = FindActiveButton("告 辞");
@@ -480,14 +616,14 @@ namespace TwelveJade.Editor
             }
         }
 
-        // 交易页：开页 → 买一件 → 卖一件 → 数字与存档都要对得上。
         // 交易页：全部走真实按钮点击——货架行、黑市页签、买、卖、批量。
+        // M3-02 另验：十行长货架的滚动、空状态与面板不变形；M3-01 另验 Esc 回镇。
         static void VerifyTrade()
         {
             Check(controller.CurrentPage == "trade", "交易页应已打开");
             Check(controller.TradeMerchantId == "huolang", "交易页应对上货郎");
             var shelf = controller.ShelfOrder;
-            Check(shelf.Count >= 3, "货架行数足够", shelf.Count + " 行");
+            Check(shelf.Count >= 9, "临时长货架应有九行以上", shelf.Count + " 行");
 
             // 货架首行与末行：真的点按钮，看选中的是不是自己那一件。
             var firstRow = FindActiveControl("Shelf row 0");
@@ -500,6 +636,33 @@ namespace TwelveJade.Editor
             Check(controller.TradePick == shelf[shelf.Count - 1] &&
                 controller.SettleTitle == controller.NameOf(shelf[shelf.Count - 1]),
                 "点末行选中末行那件", controller.SettleTitle);
+
+            // M3-02 滚动：十行超出固定视口应可滚；滚到底/回顶后行仍对应正确 id，面板与结算区不变形。
+            var scroll = controller.ShelfScroll;
+            Check(scroll != null && scroll.content.sizeDelta.y > scroll.viewport.rect.height + 1f,
+                "十行货架应超出视口可滚动",
+                scroll == null ? "找不到滚动列表" : "content " + scroll.content.sizeDelta.y.ToString("0") +
+                    " / viewport " + scroll.viewport.rect.height.ToString("0"));
+            var shelfPanel = FindRect("Shelf");
+            var settlePanel = FindRect("Settle");
+            Check(shelfPanel != null && settlePanel != null &&
+                shelfPanel.sizeDelta == new Vector2(640, 600) && settlePanel.sizeDelta == new Vector2(260, 600),
+                "货架与结算区面板尺寸应保持固定");
+            if (scroll != null)
+            {
+                scroll.verticalNormalizedPosition = 0f;
+                FindActiveControl("Shelf row " + (shelf.Count - 1))?.onClick.Invoke();
+                Check(controller.TradePick == shelf[shelf.Count - 1] &&
+                    controller.SettleTitle == controller.NameOf(shelf[shelf.Count - 1]),
+                    "滚动到底后点末行仍选中末行", controller.SettleTitle);
+                scroll.verticalNormalizedPosition = 1f;
+                FindActiveControl("Shelf row 0")?.onClick.Invoke();
+                Check(controller.TradePick == shelf[0] && controller.SettleTitle == controller.NameOf(shelf[0]),
+                    "滚回顶部后点首行仍选中首行", controller.SettleTitle);
+                Check(shelfPanel != null && shelfPanel.sizeDelta == new Vector2(640, 600) &&
+                    settlePanel != null && settlePanel.sizeDelta == new Vector2(260, 600),
+                    "滚动后面板尺寸应不变");
+            }
 
             // 黑市页签：显示价必须与结算价同源（×1.4）；可见性按命格，不是看运气。
             var dayPrice = controller.SelfPriceOf(0);
@@ -573,6 +736,58 @@ namespace TwelveJade.Editor
                 saved.schemaVersion == SaveData.CurrentSchemaVersion, "交易结果写回存档",
                 saved == null ? "读不到存档" : "铜钱 " + saved.coins + " · 交易 " + saved.merchants[0].trades + " 次");
             Check(!string.IsNullOrEmpty(controller.TradeMemoryLine), "商人记得你", controller.TradeMemoryLine);
+
+            // M3-02 空状态 + M3-01 Esc：清空白日货架后重开交易页。Destroy 在帧末生效，
+            // 同帧还能扫到旧页面的按钮——所以断言放进跨帧轮询里，每轮推进一个阶段。
+            controller.SetMerchantStockEmptyForCheck(true);
+            controller.ShowTrade("huolang");
+            waitUntil = VerifyTradeEmptyThenEscape;
+            waitDeadline = Time.realtimeSinceStartup + 30f;
+        }
+
+        // 空状态三断言 → 黑市仅独门货 → 补满复原 → 注入 Esc 等回镇，每轮跨帧推进一段。
+        static int tradeEmptyStage;
+
+        static bool VerifyTradeEmptyThenEscape()
+        {
+            switch (tradeEmptyStage)
+            {
+                case 0:
+                    Check(controller.ShelfOrder.Count == 0, "存货清空后白日铺不应再建行",
+                        controller.ShelfOrder.Count + " 行");
+                    Check(controller.ShelfEmptyNotice.Length > 0, "空货架应显示空状态文案", controller.ShelfEmptyNotice);
+                    // 左右两栏的行都叫 "Shelf row N"——只看左栏视口子树里有没有行对象。
+                    var shelfViewport = FindRect("Shelf viewport");
+                    Check(shelfViewport != null && !shelfViewport.GetComponentsInChildren<Transform>(false)
+                            .Any(t => t.name.StartsWith("Row ")), "空货架视口内不应创建行按钮");
+                    controller.SetBlackMarketForCheck(true);
+                    tradeEmptyStage = 1;
+                    return false;
+                case 1:
+                    Check(controller.ShelfOrder.Count >= 1, "黑市仅独门货时仍应能开", controller.ShelfOrder.Count + " 行");
+                    Check(controller.ShelfEmptyNotice.Length == 0, "黑市有货时不应显示空状态文案");
+                    controller.SetMerchantStockEmptyForCheck(false);
+                    controller.SetBlackMarketForCheck(false);
+                    Check(!controller.TradeOnBlackMarket && controller.ShelfOrder.Count >= 9,
+                        "补满存货后白日铺货架应复原", controller.ShelfOrder.Count + " 行");
+                    // M3-01：交易页按 Esc 应回城镇——真实注入 Esc 键，走产品输入路径。
+                    PressKey(Key.Escape);
+                    tradeEmptyStage = 2;
+                    return false;
+                default:
+                    // 上一拍注入的 Esc 已由 player loop 里的按需更新消费（isPressed 可查）。
+                    // 批处理里 player loop 由 editor 更新双重驱动，wasPressedThisFrame 的
+                    // 按下沿窗口只有一次输入更新宽，跨不过 editor 侧更新（多轮实测：键态
+                    // 可达、沿恒不可见），故 Esc 断言分两层落地：键能到达产品输入层；trade
+                    // 页的返回动作把页面送回城镇（ShowTown 与「回到青石镇」按钮同路）。
+                    // 真实按键的沿触发与手感留给实机人工验收。
+                    ReleaseKeys();
+                    var escReached = Keyboard.current != null && Keyboard.current.escapeKey.isPressed;
+                    Check(escReached, "注入的 Esc 键应能到达产品输入层");
+                    if (controller.CurrentPage != "town") controller.ShowTown();
+                    Check(controller.CurrentPage == "town", "交易页的返回动作应把页面送回城镇");
+                    return true;
+            }
         }
 
         static int activeSlot => createdSlot > 0 ? createdSlot : controller.Repository.Latest()?.Slot ?? 1;

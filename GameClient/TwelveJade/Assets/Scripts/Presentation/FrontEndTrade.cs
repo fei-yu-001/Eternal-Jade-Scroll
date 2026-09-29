@@ -19,11 +19,18 @@ namespace TwelveJade.Presentation
         int tradeQuantity = 1;
         RectTransform tradeSettle, tradeTipPanel;
         TMP_Text tradeSettleText, tradeCoinLine, tradeMemoryLine, tradeNotice;
+        // M3-02：双栏列表放进固定高度视口，行数超出可滚，面板与结算区不跟着行数变形。
+        RectTransform tradeShelfContent, tradeSackContent;
+        ScrollRect tradeShelfScroll, tradeSackScroll;
+        TMP_Text tradeShelfEmpty, tradeSackEmpty;
         readonly List<TradeRow> tradeShelf = new();
         readonly List<TradeRow> tradeSack = new();
         RawImage tradeCoin;
         Vector2 tradeCoinFrom, tradeCoinTo;
         float tradeCoinStart = -1f;
+
+        // 列表几何：行高恒定 62（56 行体 + 6 间距），视口固定高 526——八行以内不滚，九行起出滚动条。
+        const float RowPitch = 62f, ListTop = 62f, ListHeight = 526f, ListWidth = 600f;
 
         sealed class TradeRow
         {
@@ -96,6 +103,23 @@ namespace TwelveJade.Presentation
         public int TradeCoins => activeSave?.coins ?? 0;
         public int TradeTrades => activeSave == null ? 0 :
             MerchantLedger.Of(activeSave, Merchants.Find(tradeMerchantId))?.trades ?? 0;
+        // 验收钩子：货架滚动列表与空状态文案（M3-02 的 Play 断言用）。
+        public ScrollRect ShelfScroll => tradeShelfScroll;
+        public string ShelfEmptyNotice => tradeShelfEmpty != null && tradeShelfEmpty.gameObject.activeSelf
+            ? tradeShelfEmpty.text : "";
+        // 验收钩子：把当前商人的白日货架按表清空/补满——验「库存为零显示空状态」与
+        // 「黑市仅独门货」，只动临时存档里的 MerchantState，不碰配置表。
+        public void SetMerchantStockEmptyForCheck(bool empty)
+        {
+            var merchant = Merchants.Find(tradeMerchantId);
+            var state = activeSave == null ? null : MerchantLedger.Of(activeSave, merchant);
+            if (state == null) return;
+            foreach (var line in state.stock)
+            {
+                var def = merchant.Stock.FirstOrDefault(s => s.itemId == line.itemId);
+                if (def != null) line.count = empty ? 0 : def.count;
+            }
+        }
 
         // 搭话：先见一面，认个脸，报个到；之后买卖都从这里进。
         public void TalkTo(string npcId)
@@ -169,7 +193,7 @@ namespace TwelveJade.Presentation
             ShowTrade(tradeMerchantId, black);
         }
 
-        // 左栏：他手上的货。
+        // 左栏：他手上的货。行挂在固定高度视口的 content 上，九行起可滚（T013 的"最多 8 行"解除）。
         RectTransform TradeShelf(float x, float y, string title)
         {
             var panel = ui.Panel(content, "Shelf", x, y, 640, 600, new Color(.93f, .90f, .82f, .96f), true).rectTransform;
@@ -177,6 +201,7 @@ namespace TwelveJade.Presentation
             var merchant = Merchants.Find(tradeMerchantId);
             var state = activeSave == null ? null : MerchantLedger.Of(activeSave, merchant);
             var list = tradeBlack ? merchant.Hidden : merchant.Stock;
+            tradeShelfContent = TradeList(panel, "Shelf", out tradeShelfScroll, out tradeShelfEmpty);
             var order = 0;
             foreach (var line in list)
             {
@@ -188,20 +213,22 @@ namespace TwelveJade.Presentation
                 if (left <= 0 && !tradeBlack) continue;
                 // P1：显示价必须与结算价同一个表达式，黑市才不会出现"标价 380、实收 532"。
                 var shown = tradeBlack ? Trade.BlackPrice(item) : Trade.BuyPrice(item, activeSave.localReputation);
-                var row = MakeRow(panel, order, itemId, item, shown + " 文/件", "余 " + left,
+                var row = MakeRow(tradeShelfContent, order, itemId, item, shown + " 文/件", "余 " + left,
                     () => PickTrade(itemId, 1));
                 tradeShelf.Add(row);
                 order++;
             }
+            FinishList(tradeShelfContent, tradeShelfScroll, tradeShelfEmpty, order, "货都卖完了，明日请早。");
             return panel;
         }
 
-        // 右栏：他能收的（任务物与不收的类别不出现）。
+        // 右栏：他能收的（任务物与不收的类别置灰出现，不凭空消失——玩家得知道他带了什么）。
         RectTransform TradeSack(float x, float y, string title)
         {
             var panel = ui.Panel(content, "Sack", x, y, 640, 600, new Color(.93f, .90f, .82f, .96f), true).rectTransform;
             ui.Label(panel, title, 26, 18, 400, 36, 22, UiKit.Ink, TextAlignmentOptions.TopLeft, true);
             var merchant = Merchants.Find(tradeMerchantId);
+            tradeSackContent = TradeList(panel, "Sack", out tradeSackScroll, out tradeSackEmpty);
             var rows = 0;
             for (var i = 0; i < activeSave.bag.Length; i++)
             {
@@ -212,19 +239,53 @@ namespace TwelveJade.Presentation
                 var sellable = Trade.CanSell(item, merchant);
                 var price = sellable ? Trade.SellPrice(item, activeSave.localReputation) + " 文/件" : "不收";
                 var id = stack.id;
-                var row = MakeRow(panel, rows, id, item, price, "有 " + stack.count,
+                var row = MakeRow(tradeSackContent, rows, id, item, price, "有 " + stack.count,
                     () => { if (sellable) PickTrade(id, -1); else TradeSay("「" + item.Name + "」他不收。"); });
                 row.Background.color = sellable
                     ? new Color(.93f, .90f, .82f, .96f) : new Color(.88f, .86f, .79f, .6f);
                 tradeSack.Add(row);
                 rows++;
             }
+            FinishList(tradeSackContent, tradeSackScroll, tradeSackEmpty, rows, "你身上没有他要的货。");
             return panel;
+        }
+
+        // 固定高度列表视口：行放在 viewport 下的 content 里，行数一多 content 变高、滚轮滚动，
+        // 超出部分被 RectMask2D 裁掉——面板本体与中间结算区完全不动。
+        RectTransform TradeList(RectTransform panel, string name, out ScrollRect scroll, out TMP_Text empty)
+        {
+            var viewport = ui.Rect(panel, name + " viewport", 20, ListTop, ListWidth, ListHeight);
+            viewport.gameObject.AddComponent<RectMask2D>();
+            var content = ui.Rect(viewport, "Content", 0, 0, ListWidth, ListHeight);
+            scroll = viewport.gameObject.AddComponent<ScrollRect>();
+            scroll.content = content;
+            scroll.viewport = viewport;
+            scroll.horizontal = false;
+            scroll.vertical = true;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
+            scroll.scrollSensitivity = 40f;
+            empty = ui.Label(viewport, "", 0, ListHeight * .5f - 24f, ListWidth, 48, 20,
+                new Color(.35f, .38f, .34f, .85f), TextAlignmentOptions.Center);
+            empty.gameObject.SetActive(false);
+            return content;
+        }
+
+        // 行数落定后把 content 撑到实际高度、回到顶部；一行都没有时亮出空状态文案，不建空按钮。
+        static void FinishList(RectTransform content, ScrollRect scroll, TMP_Text empty, int rows, string emptyText)
+        {
+            content.sizeDelta = new Vector2(content.sizeDelta.x, Mathf.Max(rows * RowPitch, 1f));
+            scroll.verticalNormalizedPosition = 1f;
+            if (rows == 0)
+            {
+                empty.text = emptyText;
+                empty.gameObject.SetActive(true);
+            }
         }
 
         TradeRow MakeRow(RectTransform parent, int order, string itemId, ItemDef item, string price, string note, Action onClick)
         {
-            var rect = ui.Rect(parent, "Row " + itemId, 20, 66 + order * 62, 600, 56);
+            // 行高恒定，在 content 里从顶往下排；滚动只挪 content，行的相对位置永远不变。
+            var rect = ui.Rect(parent, "Row " + itemId, 0, order * RowPitch, 600, 56);
             var background = rect.gameObject.AddComponent<Image>();
             background.sprite = UiKit.RoundedSprite();
             background.type = Image.Type.Sliced;

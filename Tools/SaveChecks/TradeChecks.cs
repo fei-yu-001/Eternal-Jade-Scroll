@@ -64,6 +64,17 @@ namespace TwelveJade.Core
             }
             Check("duplicate shelf rows are rejected", dupRejectedBoth == 2);
 
+            // M3-02：长货架（十行）也要能读能对表——T013 的"最多 8 行"解除后，加货只改表。
+            var longShelf = MerchantTable.Parse(LongShelfTable);
+            longShelf.CrossCheck(items);
+            Check("a ten-row shelf parses and cross-checks", longShelf.Find("huolang").Stock.Count == 10);
+            // 只有黑市独门货的商人合法：白日铺会走空状态，不该被解析拒绝。
+            var hiddenOnly = MerchantTable.Parse(
+                "{\"merchants\":[{\"id\":\"a\",\"name\":\"甲\",\"title\":\"乙\",\"greeting\":\"丙\"," +
+                "\"buys\":[\"chishi\"],\"stock\":[],\"hidden\":[{\"itemId\":\"ganliang\",\"count\":1}],\"memory\":[]}]}");
+            Check("a hidden-only merchant parses", hiddenOnly.Find("a").Stock.Count == 0 &&
+                hiddenOnly.Find("a").Hidden.Count == 1);
+
             var unknownItem = new MerchantTable(new List<MerchantDef>
             {
                 new MerchantDef("x", "甲", "乙", "丙", new List<MerchantStock> { new MerchantStock { itemId = "不存在", count = 1 } },
@@ -282,6 +293,15 @@ namespace TwelveJade.Core
             "{\"merchants\":[{\"id\":\"none\",\"name\":\"货郎\",\"title\":\"走南闯北的散商\",\"greeting\":\"今日只看货，不谈旧事。\"," +
             "\"buys\":[\"chishi\"],\"stock\":[{\"itemId\":\"ganliang\",\"count\":1}],\"hidden\":[]," +
             "\"memory\":[{\"at\":0,\"line\":\"今日只看货，不谈旧事。\"}]}]}";
+
+        // M3-02：十行白日货架的临时长表——七件正式常进货 + 青灵草、符箓、洞箫，全部指向真实物品。
+        const string LongShelfTable =
+            "{\"merchants\":[{\"id\":\"huolang\",\"name\":\"货郎\",\"title\":\"走南闯北的散商\",\"greeting\":\"客官来点啥？\"," +
+            "\"buys\":[\"chishi\",\"cailiao\",\"qiyong\"]," +
+            "\"stock\":[{\"itemId\":\"ganliang\",\"count\":12},{\"itemId\":\"chuibing\",\"count\":12},{\"itemId\":\"larou\",\"count\":8}," +
+            "{\"itemId\":\"jinchuangyao\",\"count\":6},{\"itemId\":\"caoyao\",\"count\":20},{\"itemId\":\"cudao\",\"count\":2}," +
+            "{\"itemId\":\"zhudi\",\"count\":1},{\"itemId\":\"qinglingcao\",\"count\":10},{\"itemId\":\"fulu\",\"count\":4},{\"itemId\":\"dongxiao\",\"count\":1}]," +
+            "\"hidden\":[{\"itemId\":\"tiejian\",\"count\":1}],\"memory\":[{\"at\":0,\"line\":\"头回见面。\"}]}]}";
 
         sealed class PlainCodec : IJsonCodec
         {
