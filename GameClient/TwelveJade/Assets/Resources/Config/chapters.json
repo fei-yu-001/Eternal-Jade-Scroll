@@ -1,0 +1,103 @@
+{
+  "segments": [
+    {
+      "id": "Prologue",
+      "title": "投胎问命",
+      "summary": "渡口老者问命，得一句批语，命格决定你在青石镇的第一个称呼。",
+      "requiresFlags": [],
+      "requiresQuests": [],
+      "grantsFlag": "chapter-prologue",
+      "encounterId": "",
+      "nightOnly": 0,
+      "draft": false
+    },
+    {
+      "id": "Arrival",
+      "title": "进城",
+      "summary": "南门瓮城。牌坊底下有人等着收钱，也有人等着问路。",
+      "requiresFlags": ["chapter-prologue"],
+      "requiresQuests": [],
+      "grantsFlag": "chapter-arrival",
+      "encounterId": "",
+      "nightOnly": 0,
+      "draft": false
+    },
+    {
+      "id": "TaxAndLabor",
+      "title": "税与役",
+      "summary": "一年一度的丁税。交钱或出力，两条路都得走完。",
+      "requiresFlags": ["chapter-arrival"],
+      "requiresQuests": ["tax-and-labor"],
+      "grantsFlag": "chapter-tax",
+      "encounterId": "",
+      "nightOnly": 0,
+      "draft": false
+    },
+    {
+      "id": "FreeRoam",
+      "title": "各自营生",
+      "summary": "镇上的人各有各的营生。买卖、打听、采买，都在这一段里。",
+      "requiresFlags": ["chapter-tax"],
+      "requiresQuests": [],
+      "grantsFlag": "chapter-freeroam",
+      "encounterId": "",
+      "nightOnly": 0,
+      "draft": false
+    },
+    {
+      "id": "NightRoar",
+      "title": "夜里的兽吼",
+      "summary": "后山入夜有动静。不是风声，也不是人。",
+      "requiresFlags": ["chapter-freeroam"],
+      "requiresQuests": ["night-beast-roar"],
+      "grantsFlag": "chapter-nightroar",
+      "encounterId": "encounter-boar-01",
+      "nightOnly": 1,
+      "draft": false
+    },
+    {
+      "id": "BeastFight",
+      "title": "野猪妖",
+      "summary": "林子那头窜出来一头带血条的东西。",
+      "requiresFlags": ["chapter-nightroar"],
+      "requiresQuests": [],
+      "grantsFlag": "chapter-beastfight",
+      "encounterId": "encounter-boar-01",
+      "nightOnly": 0,
+      "draft": false
+    },
+    {
+      "id": "Investigation",
+      "title": "草上的手脚",
+      "summary": "药师验过剩下的草根。断口齐整，不是病。",
+      "requiresFlags": ["chapter-beastfight"],
+      "requiresQuests": ["beast-origin"],
+      "grantsFlag": "chapter-investigation",
+      "encounterId": "",
+      "nightOnly": 0,
+      "draft": false
+    },
+    {
+      "id": "OracleTwist",
+      "title": "神算惊变",
+      "summary": "（草稿）老者的批语忽然对不上了。",
+      "requiresFlags": ["chapter-investigation"],
+      "requiresQuests": [],
+      "grantsFlag": "chapter-oracletwist",
+      "encounterId": "",
+      "nightOnly": 0,
+      "draft": true
+    },
+    {
+      "id": "Departure",
+      "title": "离镇",
+      "summary": "（草稿）山门在身后关上。",
+      "requiresFlags": ["chapter-oracletwist"],
+      "requiresQuests": ["leave-qingshi"],
+      "grantsFlag": "chapter-departure",
+      "encounterId": "",
+      "nightOnly": 0,
+      "draft": true
+    }
+  ]
+}

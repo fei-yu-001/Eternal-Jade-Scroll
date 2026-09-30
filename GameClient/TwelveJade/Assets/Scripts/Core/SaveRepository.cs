@@ -86,8 +86,26 @@ namespace TwelveJade.Core
             (data.schemaVersion < 7 || IsValidWorldTime(data.worldDay, data.worldMinuteOfDay)) &&
             (data.schemaVersion < 8 || IsValidNpcs(data.npcs)) &&
             (data.schemaVersion < 9 || IsValidClues(data.clues)) &&
+            (data.schemaVersion < 10 || IsValidChapter(data.chapter)) &&
             DateTimeOffset.TryParse(data.createdUtc, out _) &&
             DateTimeOffset.TryParse(data.updatedUtc, out _);
+
+        // 章进度：段落名必须是真的、不能重复、reached 不得越过已结算的段。
+        static bool IsValidChapter(ChapterState chapter)
+        {
+            if (chapter == null) return false;
+            if (chapter.settled == null) return false;
+            if (chapter.settled.Length > 16) return false;
+            if (chapter.reached < (int)ChapterSegment.Prologue || chapter.reached > (int)ChapterSegment.Departure) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var name in chapter.settled)
+            {
+                if (!System.Enum.TryParse<ChapterSegment>(name, out var segment)) return false;
+                if ((int)segment > chapter.reached) return false;
+                if (!seen.Add(name)) return false;
+            }
+            return true;
+        }
 
         // 线索账本：id 不重复、不超上限、时间像样。与人物表解耦——表会变，存档不该因此判脏。
         static bool IsValidClues(ClueEntry[] clues)
@@ -250,6 +268,13 @@ namespace TwelveJade.Core
             if (data == null) throw new ArgumentNullException(nameof(data));
             var path = SlotPath(data.slot);
             // 存档一律以当前 schema 落盘：旧版本对象在写回时完成升级。
+            // 迁移在写前补一次缺省字段（新建对象的 chapter/clues 是 null，直接写会被 IsValid 拒）。
+            // 只补**整体为 null 的集合**，绝不逐条净化——null 元素、越界堆叠这些脏东西
+            // 必须由 IsValid 当场拒掉；在迁移里洗白等于让脏档混过去。
+            if (data.chapter == null) data.chapter = new ChapterState();
+            if (data.clues == null) data.clues = Array.Empty<ClueEntry>();
+            if (data.merchants == null) data.merchants = Array.Empty<MerchantState>();
+            if (data.bag == null) data.bag = InventoryRules.NewBag();
             data.schemaVersion = SaveData.CurrentSchemaVersion;
             if (!IsValid(data, data.slot)) throw new ArgumentException("存档内容无效。");
             if (Read(data.slot).State == SlotState.FutureVersion)

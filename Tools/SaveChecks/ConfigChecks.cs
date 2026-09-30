@@ -27,6 +27,7 @@ namespace TwelveJade.Core
             EnemyChecks.Run(itemTable, configDir);
             M4Checks.Run(itemTable, town, configDir);
             DialogueChecks.Run(NpcTable.Parse(File.ReadAllText(Path.Combine(configDir, "npcs.json"))), configDir);
+            ChapterChecks.Run(configDir);
             QuestChecks.Run(itemTable, configDir, town);
             ScheduleChecks.Run(new SaveData { slot = 1, characterId = "farmer", characterName = "A" },
                 itemTable, configDir, town);

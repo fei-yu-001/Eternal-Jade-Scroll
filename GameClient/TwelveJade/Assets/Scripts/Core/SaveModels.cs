@@ -7,7 +7,7 @@ namespace TwelveJade.Core
     [Serializable]
     public sealed class SaveData
     {
-        public const int CurrentSchemaVersion = 9;
+        public const int CurrentSchemaVersion = 10;
         public const int MaxFaceStyles = 2;
         public const int MaxCoins = 9999999;
         public const int MaxReputation = 100;
@@ -53,6 +53,13 @@ namespace TwelveJade.Core
         // 当前对话进度（跟谁、停在哪）。Esc 中断写进存档，下次开口从这里续上。
         // 与 clues 不同：对话是"正在说的话"，线索是"已经知道的事"，两者生命周期不同。
         public DialogueState dialogue;
+        // schemaVersion 10: 章进度（走到第几段、哪几段已结算）。
+        // 与 quests 分开：任务是一个个目标，章进度是整条轴线走到哪儿了。
+        public ChapterState chapter;
+
+        // 瞬态标记（不进 JSON）：行囊是否已按物品表整理过。
+        // 读档整理一次；写档路径绝不再整理，否则越界堆叠会被悄悄截到上限、脏档再也拒不掉。
+        [NonSerialized] public bool bagClipped;
 
         public static bool IsValidGender(string value) => Genders.Contains(value);
         public static bool IsValidFaceStyle(int value) => value >= 0 && value < MaxFaceStyles;
@@ -65,7 +72,13 @@ namespace TwelveJade.Core
             if (data == null) return;
             if (data.schemaVersion >= 3)
             {
-                data.bag = InventoryRules.Normalize(data.bag, table);
+                // 只在**读档**路径用 Normalize（老档可能带着越界值，读进来要收拾干净）。
+                // 写档路径若也 Normalize，越界堆叠会被悄悄截到上限——脏档就再也拒不掉了。
+                if (table != null && !data.bagClipped)
+                {
+                    data.bag = InventoryRules.Normalize(data.bag, table);
+                    data.bagClipped = true;
+                }
                 data.coins = Math.Min(Math.Max(data.coins, 0), MaxCoins);
                 data.localReputation = Math.Min(Math.Max(data.localReputation, 0), MaxReputation);
             }
@@ -107,6 +120,9 @@ namespace TwelveJade.Core
             if (data.dialogue != null &&
                 (string.IsNullOrWhiteSpace(data.dialogue.npcId) || string.IsNullOrWhiteSpace(data.dialogue.nodeId)))
                 data.dialogue = null;
+            // 章进度：v9 及更早的档没有 chapter，落回第一段。
+            data.chapter ??= new ChapterState();
+            data.chapter.settled ??= Array.Empty<string>();
         }
 
         // 读出存档里的世界时间（结构体），供 WorldClock 推进。
