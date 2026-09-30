@@ -1,0 +1,28 @@
+# 《十二玉楼长生经》服务端 · 默认配置
+#
+# 骨架阶段默认**不连数据库**：探针与存档契约都要能独立起来。
+# 需要连库时用 --spring.profiles.active=mysql 激活 application-mysql.yml，
+# 那一档里所有连接信息都走环境变量，不在仓库里留任何账号密码。
+server:
+  port: ${TWELVEJADE_PORT:18080}
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: twelve-jade-server
+  jackson:
+    default-property-inclusion: non_null   # data 为 null 时不输出该字段，客户端解析更省事
+  mvc:
+    problemdetails:
+      enabled: false                      # 错误一律走 ApiResponse，不混用 ProblemDetail
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+logging:
+  level:
+    com.twelvejade: INFO

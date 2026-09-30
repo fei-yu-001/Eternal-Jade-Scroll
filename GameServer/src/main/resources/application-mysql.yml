@@ -1,0 +1,13 @@
+# 《十二玉楼长生经》服务端 · MySQL 档（默认不激活）
+#
+# 启用方式：java -jar game-server.jar --spring.profiles.active=mysql
+# 全部连接信息来自环境变量，仓库里不留账号密码：
+#   TWELVEJADE_DB_URL        例 jdbc:mysql://127.0.0.1:3306/twelvejade?useSSL=false&serverTimezone=UTC
+#   TWELVEJADE_DB_USERNAME   例 root
+#   TWELVEJADE_DB_PASSWORD   （无默认值，必须由环境提供）
+spring:
+  datasource:
+    url: ${TWELVEJADE_DB_URL:}
+    username: ${TWELVEJADE_DB_USERNAME:}
+    password: ${TWELVEJADE_DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
