@@ -29,6 +29,8 @@ namespace TwelveJade.Presentation
         const string ProductVersion = "0.0.1 · 初见青石";
 
         public string CurrentPage => page;
+        // 验收与章系统都需要读当前档；写入口仍是各 Core 账本。
+        public SaveData ActiveSave => activeSave;
         public SaveRepository Repository => repository;
 
         void Awake()

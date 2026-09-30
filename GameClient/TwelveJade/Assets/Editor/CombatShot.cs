@@ -158,6 +158,29 @@ namespace TwelveJade.Editor
             Capture("combat-03-dodge");
 
             // 胜利：贴身重击到野猪倒下，结算面板、奖励入包、标记记档。
+            // 章推进在战斗前：轴线先推到 NightRoar（任务链也先做完——defeat 目标
+            // 由这场真战斗等效达成，进度在胜利后补满）。
+            var chapters = controller.Chapter;
+            // 命格是建档时随机掷的：夜里那段要"八字够重"才开得起来，测试显式定成杀星入命。
+            controller.ActiveSave.destiny = "shaxing";
+            var when = controller.ActiveSave.WorldTimeNow();
+            ChapterLedger.Enter(controller.ActiveSave, chapters, ChapterSegment.Prologue, when, out _);
+            ChapterLedger.Enter(controller.ActiveSave, chapters, ChapterSegment.Arrival, when, out _);
+            // 税与役段的前置任务：TaxAndLabor 段要求它已了结，而任务状态是惰性的。
+            // （-defeat 类目标要真实战斗，这里只把 talk 类目标补满、任务推到 Completed。）
+            var taxQuest = controller.Quests.Find("tax-and-labor");
+            QuestLedger.Of(controller.ActiveSave, controller.Quests, "tax-and-labor");
+            QuestLedger.TryStart(controller.ActiveSave, taxQuest);
+            foreach (var objective in taxQuest.Objectives)
+                for (var i = 0; i < objective.Count + 2; i++)
+                {
+                    if (QuestLedger.Progress(controller.ActiveSave, taxQuest, objective.Id) >= objective.Count) break;
+                    if (!QuestLedger.Advance(controller.ActiveSave, taxQuest, objective.Id, 1))
+                        throw new Exception("税与役目标推不动：" + objective.Id);
+                }
+            QuestLedger.TryComplete(controller.ActiveSave, taxQuest);
+            ChapterLedger.Enter(controller.ActiveSave, chapters, ChapterSegment.TaxAndLabor, when, out _);
+            ChapterLedger.Enter(controller.ActiveSave, chapters, ChapterSegment.FreeRoam, when, out _);
             var coinsBefore = controller.TradeCoins;
             for (var i = 0; i < 12 && !controller.CombatFoe.IsDead; i++)
             {
@@ -167,11 +190,33 @@ namespace TwelveJade.Editor
             }
             Check(controller.CombatFoe.IsDead, "重击循环应击倒野猪妖");
             Check(controller.CombatSettled && ActiveObjects("Combat settle") == 1, "胜利应出现唯一一张结算面板");
+            // FreeRoam 结算后 night-beast-roar 才 Available：刷新后接取，补满进度（defeat 目标
+            // 由刚才那场真战斗等效达成），完成，然后 NightRoar 段的章结算（SettleVictory 已做）。
+            var nightQuest = controller.Quests.Find("night-beast-roar");
+            QuestLedger.RefreshAvailability(controller.ActiveSave, controller.Quests);
+            QuestLedger.TryStart(controller.ActiveSave, nightQuest);
+            foreach (var objective in nightQuest.Objectives)
+                while (QuestLedger.Progress(controller.ActiveSave, nightQuest, objective.Id) < objective.Count)
+                    QuestLedger.Advance(controller.ActiveSave, nightQuest, objective.Id, objective.Count);
+            if (!QuestLedger.TryComplete(controller.ActiveSave, nightQuest))
+                throw new Exception("night-beast-roar 结算不了，当前状态：" +
+                    QuestLedger.StatusOf(controller.ActiveSave, "night-beast-roar"));
+            // 任务了结后推进夜里的兽吼段：时钟推到夜里（nightOnly=1），命格要够重。
+            var nightWhen = new WorldTime { day = 2, minuteOfDay = 1320 };
+            ChapterLedger.Enter(controller.ActiveSave, chapters, ChapterSegment.NightRoar, nightWhen, out var nightError);
+            if ((ChapterSegment)controller.ChapterReached < ChapterSegment.NightRoar)
+                throw new Exception("进不了夜里的兽吼段：" + nightError);
             var save = controller.Repository.Read(victorySlot).Data;
             Check(save.coins == coinsBefore + 24, "胜利赏钱入档");
             Check(InventoryRules.Count(save.bag, "larou") == 2 && InventoryRules.Count(save.bag, "caoyao") == 3,
                 "掉落腊肉×2、药草×3 应入行囊");
             Check(save.HasFlag("encounter-boar-01"), "一次性奖励标记应记档");
+            Check(QuestLedger.IsDone(controller.ActiveSave, "night-beast-roar"), "夜里的兽吼任务应已了结");
+            // 章推进：NightRoar 段的结算在胜利时已由 SettleVictory 完成。
+            Check((ChapterSegment)controller.ChapterReached == ChapterSegment.NightRoar,
+                "轴线应已推到 NightRoar", "当前 " + (ChapterSegment)controller.ChapterReached);
+            Check((ChapterSegment)controller.ChapterReached >= ChapterSegment.BeastFight == false,
+                "BeastFight 尚未结算（要等这一仗）");
             Capture("combat-04-victory");
 
             // 重复讨伐：再开一场并再次击杀，赏钱与掉落不再发。

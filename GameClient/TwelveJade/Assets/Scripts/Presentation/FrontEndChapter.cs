@@ -132,17 +132,39 @@ namespace TwelveJade.Presentation
                          .Where(q => q.Chapter == (int)segment || chapterTable.Find(segment).RequiresQuests.Contains(q.Id)))
                 lines.Add("· " + quest.Title + "　" + QuestStatusName(QuestLedger.StatusOf(activeSave, quest.Id)));
             var next = (ChapterSegment)((int)segment + 1);
-            if ((int)next <= (int)ChapterSegment.Departure)
+            var nextDef = (int)next <= (int)ChapterSegment.Departure ? chapterTable.Find(next) : null;
+            if (nextDef != null)
             {
                 var can = ChapterLedger.CanEnter(activeSave, chapterTable, next, chapterQuests);
                 lines.Add("");
-                lines.Add(can
-                    ? "下一步：" + chapterTable.Find(next).Title + "（可以去了）"
-                    : "下一步：" + chapterTable.Find(next).Title + "（还差些条件）");
+                lines.Add("下一步：" + nextDef.Title + (can ? "（可以去了）" : "（还差些条件）"));
             }
             chapterBody.text = string.Join("\n", lines.ToArray());
             chapterLog.text = "已经了结 " + ChapterLedger.SettledCount(activeSave) + " 段 · " +
                                "线索 " + ClueLedger.Of(activeSave).Count() + " 条（未读 " + UnreadClues + "）";
+            // 下一段是战斗遭遇且现在能进：给一个真正的入口，点了就走（含存档）。
+            // 旧入口先停用：Destroy 是延迟的，同帧 Find 还能捞到旧按钮。
+            var oldGo = chapterPanel.Find("Chapter go");
+            if (oldGo != null) oldGo.gameObject.SetActive(false);
+            if (nextDef != null && !string.IsNullOrEmpty(nextDef.EncounterId) &&
+                ChapterLedger.CanEnter(activeSave, chapterTable, next, chapterQuests))
+            {
+                var go = ui.Rect(chapterPanel, "Chapter go", 24, 418, 300, 52);
+                var background = go.gameObject.AddComponent<Image>();
+                background.sprite = UiKit.RoundedSprite();
+                background.type = Image.Type.Sliced;
+                background.color = new Color(.77f, .64f, .42f, .95f);
+                background.raycastTarget = true;
+                var button = go.gameObject.AddComponent<Button>();
+                button.targetGraphic = background;
+                button.onClick.AddListener(() =>
+                {
+                    ChapterLedger.Enter(activeSave, chapterTable, next, activeSave.WorldTimeNow(), out _);
+                    PersistChapter();
+                    ShowCombat(nextDef.EncounterId);
+                });
+                ui.Label(go, "去 " + nextDef.Title, 0, 0, 300, 52, 22, UiKit.Ink, TextAlignmentOptions.Center);
+            }
         }
 
         // 镇民：对话面板。推进节点只调 DialogueRules，Esc 存档续上。

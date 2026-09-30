@@ -273,6 +273,15 @@ namespace TwelveJade.Presentation
             combatSettled = true;
             // 一次性奖励：按遭遇 id 记档（M4-04），重复讨伐不再发放；Esc/失败不发。
             var firstKill = activeSave.MarkFlag(combatEncounterId);
+            // 章推进：这场战斗是轴线上某段（如 NightRoar/BeastFight）的 encounters，
+            // 赢了就把该段结算掉——ChapterLedger 自己保证只结算一次。
+            if (chapterTable != null)
+            {
+                foreach (var def in chapterTable.Segments)
+                    if (def.EncounterId == combatEncounterId)
+                        ChapterLedger.Enter(activeSave, chapterTable, def.Segment, activeSave.WorldTimeNow(), out _);
+                PersistChapter();
+            }
             combatSpoils = firstKill ? Core.CombatSpoils.Grant(activeSave, combatFoeDef, Table) : new SpoilsResult();
             PersistBag();
             combatSettlePanel = ui.Panel(content, "Combat settle", 560, 340, 800, 380,
