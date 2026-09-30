@@ -100,6 +100,8 @@ namespace TwelveJade.Presentation
             traveler.SetMotion(PuppetActor.Motion.Idle);
 
             BuildMiniMap();
+            // 眼前事/镇民/线索面板（M5-05 S2）：城镇页右侧，与行囊、交易互不打断。
+            ShowTownChapterPanel();
             FocusFirst();
         }
 
