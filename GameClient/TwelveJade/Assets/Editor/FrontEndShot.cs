@@ -311,6 +311,10 @@ namespace TwelveJade.Editor
             {
                 // Esc 断言已在 VerifyTrade 尾部完成；恢复交易页供截图。
                 controller.ShowTrade("huolang");
+                // 同帧截图赶不上 0.22s 渐入（alpha 仍为 0，会透出底层主菜单），直接拉满。
+                var fade = typeof(FrontEndController).GetField("contentFade",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (fade?.GetValue(controller) is CanvasGroup group) group.alpha = 1f;
             }
             Capture(string.Format("play-{0:00}-{1}", shotIndex + 1, currentShot), currentShot);
             return true;

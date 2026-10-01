@@ -289,7 +289,7 @@ namespace TwelveJade.Presentation
             ui.Label(combatSettlePanel, combatFoeDef.Name + " 倒下了", 44, 34, 712, 60, 34, UiKit.Paper,
                 TextAlignmentOptions.TopLeft, true);
             ui.Label(combatSettlePanel, firstKill
-                    ? "拾获：" + combatSpoils.Describe()
+                    ? "拾获：" + combatSpoils.Describe(Table)
                     : "这头畜生是冲着同伙的气味来的——身上没什么可剥的了。",
                 44, 116, 712, 110, 24, UiKit.Gold);
             ui.Label(combatSettlePanel, "山风把腥气压下去之前，先回镇上歇口气。", 44, 210, 712, 44, 20, UiKit.Muted);
