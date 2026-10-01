@@ -96,7 +96,7 @@ namespace TwelveJade.Presentation
             var preset = System.Array.Find(presets, p => p.id == activeSave.characterId) ?? presets[0];
             var view = preset.Facing(0, activeSave.gender, activeSave.faceStyle)
                        ?? presets[0].Facing(0, activeSave.gender, activeSave.faceStyle);
-            var bodyHeight = 150f * townScale;
+            var bodyHeight = 165f * townScale;
             traveler = PuppetActor.Create(townMap, view, Vector2.zero, new Vector2(bodyHeight * .593f, bodyHeight));
             localPos = new Vector2(town.SpawnX, town.SpawnY);
             walkTarget = localPos;

@@ -86,7 +86,7 @@ namespace TwelveJade.Presentation
             chapterTabs.Add(("线索", ShowCluePanel));
             chapterTabs.Add(("货郎", () => ShowNpcPanel("huolang")));
 
-            chapterPanel = ui.Panel(content, "Chapter panel", 1240, 336, 580, 594,
+            chapterPanel = ui.Panel(content, "Chapter panel", 1324, 336, 580, 594,
                 new Color(.045f, .115f, .10f, .97f), true).rectTransform;
             var tabs = new RectTransform[chapterTabs.Count];
             for (var i = 0; i < chapterTabs.Count; i++)

@@ -130,10 +130,12 @@ namespace TwelveJade.Presentation
                 // 两个搞错都不会报错，只会整块错位——小图看不出来，230px 的战斗页一目了然。
                 // 坐标一律**从底边量**（root.pivot = (.5,0)，anchoredPosition 即脚底）。
                 // v 是"自图顶向下"的比例，所以块底距 root 底 = -(v1)*size.y；
-                // 再换算成枢轴位置：anchoredPos = 块底 + pivot.y * 块高。
+                // x 向：块左缘在 x0*size.x（root 局部原点在左上角），枢轴再往块内偏 pivot.x 个块宽。
+                // 旧公式 -x0*size.x 把全宽块整体左移半身（彼此仍对齐、看不出），却把两条腿
+                // 各甩出左边缘——右腿整个出体、左腿截半，就是玩家截图里的"腿身错位"。
                 var blockBottom = -v1 * size.y;
                 rect.anchoredPosition = new Vector2(
-                    -x0 * size.x,
+                    x0 * size.x + pivots[i].x * rect.sizeDelta.x,
                     blockBottom + pivots[i].y * rect.sizeDelta.y);
                 var image = rect.gameObject.AddComponent<RawImage>();
                 image.texture = view;
