@@ -289,6 +289,7 @@ namespace TwelveJade.Editor
             {
                 Check(controller.CurrentPage == "town", "城镇页应已打开");
                 Check(UnityEngine.Object.FindAnyObjectByType<PuppetActor>() != null, "城镇页应有分层纸偶角色");
+                VerifyArtImport();
                 VerifyTalkThenLeave();
                 Check(controller.CurrentPage == "town", "城镇截图应停在镇上");
                 townAboveChecked = true;
@@ -414,6 +415,51 @@ namespace TwelveJade.Editor
         // 上方（按 W 走到基座上方更远）在这里验——sibling 顺序应随 y 翻转。
         static bool townAboveChecked;
         static bool walkingShotTaken;
+
+        // 美术导入回归防线：纸偶靠 uvRect 的 v 比例切片，只要 Unity 把贴图缩放/填充过
+        // （非 2 的幂尺寸 + nPOTScale），腿那一段就会落到空白区——表现是"腿没了"，
+        // 而磁盘上的 PNG 完全正常，肉眼查文件永远查不出来。这里直接比对运行期尺寸与
+        // 源文件尺寸，对不上立刻报出来。配合 Editor/ArtImportGuard 从源头强制设置。
+        static void VerifyArtImport()
+        {
+            var folder = Path.Combine(Directory.GetParent(Application.dataPath)!.FullName,
+                Path.Combine("Assets", "Resources", "Art"));
+            if (!Directory.Exists(folder)) return;
+            var wrong = new List<string>();
+            foreach (var path in Directory.GetFiles(folder, "*.png", SearchOption.AllDirectories))
+            {
+                var (sourceWidth, sourceHeight) = PngSize(path);
+                if (sourceWidth <= 0) continue;
+                var key = "Art/" + Path.GetFileNameWithoutExtension(path).Replace('\\', '/');
+                var loaded = Resources.Load<Texture2D>(key);
+                if (loaded == null) continue;
+                if (loaded.width != sourceWidth || loaded.height != sourceHeight)
+                    wrong.Add(Path.GetFileNameWithoutExtension(path) +
+                             $" 源{sourceWidth}x{sourceHeight}→Unity{loaded.width}x{loaded.height}");
+            }
+            Check(wrong.Count == 0, "美术贴图导入尺寸应与源文件一致（nPOT 缩放会毁掉纸偶切片）",
+                wrong.Count == 0 ? "全部一致" : string.Join(" · ", wrong.ToArray()));
+        }
+
+        // PNG 尺寸取自文件头的 IHDR 块，不依赖任何图像库。
+        static (int width, int height) PngSize(string path)
+        {
+            try
+            {
+                using var stream = File.OpenRead(path);
+                var header = new byte[24];
+                if (stream.Read(header, 0, 24) < 24) return (0, 0);
+                // 8 字节签名 + 4 长度 + 4 "IHDR" + 4 宽 + 4 高
+                return (BigEndian(header, 16), BigEndian(header, 20));
+            }
+            catch (System.Exception)
+            {
+                return (0, 0);
+            }
+        }
+
+        static int BigEndian(byte[] bytes, int offset) =>
+            (bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3];
 
         static bool VerifyDepthAbove()
         {
