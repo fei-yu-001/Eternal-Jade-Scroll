@@ -43,6 +43,9 @@ namespace TwelveJade.Presentation
 
         const float WalkSpeed = 215f, RunSpeed = 390f;
         const int DustCount = 8;
+        // 近景镜头倍率：整镇图放大后超出视口，镜头跟随主角滚动（UpdateCamera）。
+        // 2 倍时主角约屏高 28%，替代原先 1:1 缩在画布里的鸟瞰构图。
+        const float TownZoom = 2f;
 
         // 可行走区域来自配置：读不到就不放行，避免用代码里的副本悄悄跑偏。
         bool LoadTownMap()
@@ -63,15 +66,19 @@ namespace TwelveJade.Presentation
             BeginPage("town");
             ui.Panel(content, "Town veil", 0, 0, 1920, 1080, new Color(.91f, .88f, .79f, .98f));
             ui.Label(content, town.Name, 100, 44, 600, 60, 42, UiKit.Ink, TextAlignmentOptions.TopLeft, true);
-            ui.Label(content, "点击街面或 WASD 移动 · 按住 Shift 奔跑 · B 开行囊", 104, 114, 900, 30, 20,
-                new Color(.24f, .28f, .26f, .8f));
+            // 提示行垫一条半透明墨底：镜头拉近后底下滚过深浅不一的屋顶，纯墨字会没进屋檐里。
+            var townHint = ui.Panel(content, "Town hint", 96, 106, 668, 46, new Color(.07f, .11f, .09f, .55f));
+            ui.Label(townHint.transform, "点击街面或 WASD 移动 · 按住 Shift 奔跑 · B 开行囊", 12, 4, 644, 38, 20,
+                new Color(.96f, .93f, .85f, .92f));
             ui.Button(content, "行囊", 1408, 44, 200, 54, ShowInventory);
             ui.Button(content, "返回主菜单", 1620, 44, 200, 54, ShowMenu, true);
 
             townMapArt = Resources.Load<Texture2D>("Art/town-map");
-            float mapW = 1500f, mapH = mapW * town.ArtHeight / town.ArtWidth;
+            float mapW = town.ArtWidth * TownZoom, mapH = mapW * town.ArtHeight / town.ArtWidth;
             townScale = mapW / town.ArtWidth;
-            townMap = ui.Art(content, townMapArt != null ? townMapArt : Texture2D.whiteTexture, 210, 168, mapW, mapH).rectTransform;
+            townMap = ui.Art(content, townMapArt != null ? townMapArt : Texture2D.whiteTexture, 0, 0, mapW, mapH).rectTransform;
+            // 近景下整图铺满视口，会压住先建的标题与按钮——压到背景纱之后、标题之前。
+            townMap.SetSiblingIndex(1);
 
             townLayers.Clear();
             pendingNpcId = null;
@@ -97,6 +104,7 @@ namespace TwelveJade.Presentation
             seenFootfalls = traveler.Footfalls;
             traveler.SetPosition(ToLocal(localPos));
             ApplyPerspective();
+            UpdateCamera();
             traveler.SetMotion(PuppetActor.Motion.Idle);
 
             BuildMiniMap();
@@ -442,6 +450,7 @@ namespace TwelveJade.Presentation
             }
             traveler.SetPosition(ToLocal(localPos));
             ApplyPerspective();
+            UpdateCamera();
             SortTravelerDepth();
             if (traveler.Footfalls != seenFootfalls)
             {
@@ -494,6 +503,29 @@ namespace TwelveJade.Presentation
         {
             var depth = Mathf.Clamp01((localPos.y - 90f) / (1050f - 90f));
             traveler.SetScale(Mathf.Lerp(town.PerspectiveTop, town.PerspectiveBottom, depth));
+        }
+
+        // 镜头跟随：主角恒居视口中心，钳在图边内（贴边时主角偏离中心、图不再滚动）。
+        // townMap 锚在父左上、枢轴自身左上：x 向右为正，合法区间 [1920-W, 0]；
+        // y 向上为正、图向下延伸，合法区间 [0, H-1080]——两个轴的钳制方向相反。
+        void UpdateCamera()
+        {
+            if (townMap == null) return;
+            var focus = ToLocal(localPos);
+            var x = Mathf.Clamp(960f - focus.x, 1920f - townMap.rect.width, 0f);
+            var y = Mathf.Clamp(-540f - focus.y, 0f, townMap.rect.height - 1080f);
+            townMap.anchoredPosition = new Vector2(x, y);
+        }
+
+        // 验收钩子：镜头跟随是否把主角留在 1920×1080 视口内。
+        public bool TownTravelerOnScreen
+        {
+            get
+            {
+                if (townMap == null) return false;
+                var view = townMap.anchoredPosition + ToLocal(localPos);
+                return view.x >= 0f && view.x <= 1920f && view.y <= 0f && view.y >= -1080f;
+            }
         }
 
         // 纵深排序：人物站在谁身后就被谁挡住——基座 y 比人物小（更远）的条目在人物之下。

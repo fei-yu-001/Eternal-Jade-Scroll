@@ -300,7 +300,11 @@ namespace TwelveJade.Editor
                 return false;
             }
             if (currentShot == "town")
+            {
                 Check(controller.CurrentPage == "town", "城镇截图应停在镇上");
+                // 走过一段路后镜头应一直跟着主角：近景构图里主角不许滚出视口。
+                Check(controller.TownTravelerOnScreen, "镜头跟随应让主角留在视口内");
+            }
             if (currentShot == "inventory")
             {
                 Check(controller.CurrentPage == "town", "行囊是城镇页上的浮层");
