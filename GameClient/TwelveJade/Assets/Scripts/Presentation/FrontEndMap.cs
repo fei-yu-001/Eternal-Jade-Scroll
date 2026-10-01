@@ -73,7 +73,6 @@ namespace TwelveJade.Presentation
                 new Color(.96f, .93f, .85f, .92f));
             ui.Button(content, "行囊", 1408, 44, 200, 54, ShowInventory);
             ui.Button(content, "返回主菜单", 1620, 44, 200, 54, ShowMenu, true);
-            BuildVersionStamp();
 
             townMapArt = Resources.Load<Texture2D>("Art/town-map");
             float mapW = town.ArtWidth * TownZoom, mapH = mapW * town.ArtHeight / town.ArtWidth;
@@ -99,6 +98,7 @@ namespace TwelveJade.Presentation
                        ?? presets[0].Facing(0, activeSave.gender, activeSave.faceStyle);
             var bodyHeight = 165f * townScale;
             traveler = PuppetActor.Create(townMap, view, Vector2.zero, new Vector2(bodyHeight * .593f, bodyHeight));
+            BuildVersionStamp(view);
             localPos = new Vector2(town.SpawnX, town.SpawnY);
             walkTarget = localPos;
             hasTarget = false;
@@ -513,12 +513,32 @@ namespace TwelveJade.Presentation
 
         // 构建版本戳：左下角显示当前提交的短哈希（Tools/write-build-stamp.py 写入）。
         // "改了没变化"这类反馈没法自证，屏幕上看得到版本号，对不上就是没跑到最新代码。
-        void BuildVersionStamp()
+        // 后面跟一段贴图指纹：运行时直接读当前角色贴图的像素特征，和 Tools 侧从文件算出的
+        // 期望值一比，就能判定"是贴图没更新"还是"是切块/姿态的问题"——两者修法完全不同。
+        void BuildVersionStamp(Texture2D travelerView)
         {
             var asset = Resources.Load<TextAsset>("Config/build-stamp");
-            if (asset == null) return;
-            ui.Label(content, "build " + asset.text.Trim(), 24, 1032, 320, 30, 16,
-                new Color(.35f, .38f, .34f, .75f), TextAlignmentOptions.BottomLeft);
+            var text = "build " + (asset == null ? "?" : asset.text.Trim());
+            if (travelerView != null)
+            {
+                text += $"　{travelerView.name} {travelerView.width}x{travelerView.height}";
+                try
+                {
+                    // GetPixels 自下而上排列：from 之后的 70% 对应画面上方的七成。
+                    // 贴图没开 Read/Write 时这里会抛，诊断信息不该把游戏带崩。
+                    var pixels = travelerView.GetPixels();
+                    long sum = 0;
+                    for (var i = (int)(pixels.Length * .30f); i < pixels.Length; i++)
+                        sum += (long)(pixels[i].a * 255f);
+                    text += $" #{sum % 1000000}";
+                }
+                catch (System.Exception)
+                {
+                    text += " #unreadable";
+                }
+            }
+            ui.Label(content, text, 24, 1024, 640, 34, 20, new Color(.32f, .35f, .31f, .85f),
+                TextAlignmentOptions.BottomLeft);
         }
 
         // 左上 HUD：头像窗 + 生命/精力条 + 铜钱与行历，替换原先孤零零的镇名大字。
