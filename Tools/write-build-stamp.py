@@ -10,12 +10,11 @@ OUT = os.path.join(ROOT, 'GameClient/TwelveJade/Assets/Resources/Config/build-st
 def run(*args):
     return subprocess.run(args, cwd=ROOT, capture_output=True, text=True).stdout.strip()
 
+# 版本戳就是"运行中的代码来自哪个提交"：写当前 HEAD 的短哈希即可。
+# 它天然比含它的那个提交早一格（自指无法消除），但足以判断"是不是最新那一批改动"。
+# 提交后跑一次并把结果并入下一次提交。
 head = run('git', 'rev-parse', '--short', 'HEAD')
-# 只看**已跟踪文件**的改动：多会话共享工作区，别人的未跟踪文件（如新加的 .meta）
-# 不该把我们的版本戳标成 dirty。
-diff = run('git', 'diff', '--stat', 'HEAD')
-dirty = bool(diff)
-stamp = f'{head}-dirty' if dirty else head
+stamp = head
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 prev = ''
 if os.path.exists(OUT):
