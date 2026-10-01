@@ -11,7 +11,10 @@ def run(*args):
     return subprocess.run(args, cwd=ROOT, capture_output=True, text=True).stdout.strip()
 
 head = run('git', 'rev-parse', '--short', 'HEAD')
-dirty = bool(run('git', 'status', '--porcelain'))
+# 只看**已跟踪文件**的改动：多会话共享工作区，别人的未跟踪文件（如新加的 .meta）
+# 不该把我们的版本戳标成 dirty。
+diff = run('git', 'diff', '--stat', 'HEAD')
+dirty = bool(diff)
 stamp = f'{head}-dirty' if dirty else head
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 prev = ''
