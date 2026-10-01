@@ -18,50 +18,71 @@
       "height": 80
     },
     {
-      "comment": "南门内近段",
-      "x": 780,
-      "y": 830,
-      "width": 380,
-      "height": 170
+      "comment": "主街近段",
+      "x": 900,
+      "y": 820,
+      "width": 130,
+      "height": 180
     },
     {
       "comment": "主街中段",
       "x": 850,
-      "y": 580,
-      "width": 220,
-      "height": 250
+      "y": 570,
+      "width": 170,
+      "height": 260
     },
     {
       "comment": "主街中上段",
       "x": 870,
       "y": 480,
-      "width": 180,
+      "width": 170,
       "height": 100
     },
     {
       "comment": "主街远段（山门前）",
       "x": 895,
-      "y": 380,
+      "y": 375,
       "width": 130,
-      "height": 100
+      "height": 110
+    },
+    {
+      "comment": "西北民居房前小路（东西向）",
+      "x": 424,
+      "y": 950,
+      "width": 350,
+      "height": 80
+    },
+    {
+      "comment": "西侧支巷",
+      "x": 560,
+      "y": 690,
+      "width": 300,
+      "height": 80
+    },
+    {
+      "comment": "东侧支巷",
+      "x": 1010,
+      "y": 560,
+      "width": 390,
+      "height": 80
     }
   ],
   "props": [
     {
       "slug": "residence",
-      "x": 748,
+      "x": 390,
       "y": 950,
       "height": 460,
       "radius": 30,
-      "comment": "西侧民居（阻挡件，约人物 2.4 倍高）"
+      "comment": "西北民居（阻挡件，房前小路接南门大街）"
     },
     {
       "slug": "residence",
-      "x": 1120,
-      "y": 940,
+      "x": 1260,
+      "y": 990,
       "height": 460,
       "radius": 0,
-      "comment": "东侧民居（视觉件）"
+      "comment": "东南民居（视觉件）"
     },
     {
       "slug": "stone-lion",
@@ -79,31 +100,31 @@
     },
     {
       "slug": "shop-front",
-      "x": 818,
-      "y": 760,
+      "x": 1170,
+      "y": 930,
       "height": 380,
-      "radius": 26,
-      "comment": "临街店面（阻挡件）"
+      "radius": 0,
+      "comment": "东南临街店面（视觉件）"
     },
     {
       "slug": "market-stall",
-      "x": 824,
+      "x": 740,
       "y": 620,
       "height": 200,
       "radius": 20,
-      "comment": "西侧摊位（阻挡件）"
+      "comment": "西支巷口摊位（阻挡件）"
     },
     {
       "slug": "market-stall",
       "x": 1140,
-      "y": 720,
+      "y": 540,
       "height": 240,
       "radius": 0,
-      "comment": "东侧摊位（视觉件）"
+      "comment": "东支巷口摊位（视觉件）"
     },
     {
       "slug": "lantern-pole",
-      "x": 834,
+      "x": 760,
       "y": 660,
       "height": 220,
       "radius": 12,
@@ -111,30 +132,30 @@
     },
     {
       "slug": "lantern-pole",
-      "x": 1030,
-      "y": 520,
+      "x": 1150,
+      "y": 470,
       "height": 180,
       "radius": 0
     },
     {
       "slug": "temple-gate",
       "x": 960,
-      "y": 430,
+      "y": 350,
       "height": 320,
       "radius": 0,
       "comment": "街道尽头山门（远景件）"
     },
     {
       "slug": "willow",
-      "x": 1430,
-      "y": 880,
+      "x": 1600,
+      "y": 900,
       "height": 340,
       "radius": 0
     },
     {
       "slug": "bamboo",
-      "x": 520,
-      "y": 760,
+      "x": 1520,
+      "y": 640,
       "height": 260,
       "radius": 0
     }
@@ -161,8 +182,8 @@
     {
       "id": "bridges",
       "name": "双桥",
-      "x": 1120,
-      "y": 620
+      "x": 1300,
+      "y": 600
     },
     {
       "id": "north-lane",
@@ -190,7 +211,7 @@
       "enemy": "boar-demon",
       "name": "兽吼",
       "x": 960,
-      "y": 400,
+      "y": 460,
       "line": "山门方向一声闷吼，惊起满树乌鸦。"
     }
   ]
