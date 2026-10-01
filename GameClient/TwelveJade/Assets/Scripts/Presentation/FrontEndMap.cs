@@ -73,6 +73,7 @@ namespace TwelveJade.Presentation
                 new Color(.96f, .93f, .85f, .92f));
             ui.Button(content, "行囊", 1408, 44, 200, 54, ShowInventory);
             ui.Button(content, "返回主菜单", 1620, 44, 200, 54, ShowMenu, true);
+            BuildVersionStamp();
 
             townMapArt = Resources.Load<Texture2D>("Art/town-map");
             float mapW = town.ArtWidth * TownZoom, mapH = mapW * town.ArtHeight / town.ArtWidth;
@@ -509,6 +510,16 @@ namespace TwelveJade.Presentation
         }
 
         static readonly string[] HourBranches = { "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥" };
+
+        // 构建版本戳：左下角显示当前提交的短哈希（Tools/write-build-stamp.py 写入）。
+        // "改了没变化"这类反馈没法自证，屏幕上看得到版本号，对不上就是没跑到最新代码。
+        void BuildVersionStamp()
+        {
+            var asset = Resources.Load<TextAsset>("Config/build-stamp");
+            if (asset == null) return;
+            ui.Label(content, "build " + asset.text.Trim(), 24, 1032, 320, 30, 16,
+                new Color(.35f, .38f, .34f, .75f), TextAlignmentOptions.BottomLeft);
+        }
 
         // 左上 HUD：头像窗 + 生命/精力条 + 铜钱与行历，替换原先孤零零的镇名大字。
         // 生命/精力取战斗同源的 PlayerStatsFor（T017 养成系统接入后这里自动跟上）。
