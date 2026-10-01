@@ -40,6 +40,29 @@ namespace TwelveJade.Presentation
             public TMP_Text Name, Detail, Price;
         }
 
+        // 验收注入：临时换一份商品表（如九行长货架），验完 RestoreMerchantFixture 恢复正式表。
+        // 只换内存里的引用，不落盘。
+        private MerchantTable merchantFixture;
+
+        public void LoadMerchantFixtureForCheck(string json)
+        {
+            merchantFixture = MerchantTable.Parse(json);
+            merchants = merchantFixture;
+            tradeMerchantId = merchantFixture.Merchants[0].Id;
+            tradeBlack = false;
+            tradePick = "";
+            tradeQuantity = 1;
+            if (page == "trade") ShowTrade(tradeMerchantId, tradeBlack);
+        }
+
+        public void RestoreMerchantFixture()
+        {
+            if (merchantFixture == null) return;
+            merchantFixture = null;
+            merchants = null;
+            if (page == "trade") ShowTrade(Merchants.Merchants[0].Id);
+        }
+
         MerchantTable Merchants
         {
             get
@@ -86,7 +109,9 @@ namespace TwelveJade.Presentation
         public bool BlackTabVisible() => Trade.SeesBlackMarket(activeSave);
         // 选中物品的显示名：直接从物品表取，比去切结算区的多行文本可靠。
         public string SettleTitle => Table.Find(tradePick)?.Name ?? "";
-        public string SelfPriceOf(int index) => tradeShelf[index].Price.text;
+        // 黑市页签下货架可能为空（fixture 的 hidden 是空表）：越界返回空串而不是抛。
+        public string SelfPriceOf(int index) =>
+            index >= 0 && index < tradeShelf.Count ? tradeShelf[index].Price.text : "";
         public string NameOf(string itemId) => Table.Find(itemId)?.Name ?? "";
         public int MerchantStockLeft(string itemId)
         {

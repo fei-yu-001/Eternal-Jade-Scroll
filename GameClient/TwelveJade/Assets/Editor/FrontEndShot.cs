@@ -622,6 +622,9 @@ namespace TwelveJade.Editor
         {
             Check(controller.CurrentPage == "trade", "交易页应已打开");
             Check(controller.TradeMerchantId == "huolang", "交易页应对上货郎");
+            // M3-02 的长货架用例需要 9 行以上：正式表只有 7 行，注入一份 10 行的临时表，
+            // 验完恢复正式配置（任务包原文："正式配置可恢复原数量"）。
+            controller.LoadMerchantFixtureForCheck(LongShelfJson());
             var shelf = controller.ShelfOrder;
             Check(shelf.Count >= 9, "临时长货架应有九行以上", shelf.Count + " 行");
 
@@ -663,6 +666,10 @@ namespace TwelveJade.Editor
                     settlePanel != null && settlePanel.sizeDelta == new Vector2(260, 600),
                     "滚动后面板尺寸应不变");
             }
+
+            // 长货架验完：恢复正式配置，黑市与买卖用例全走正式数据。
+            controller.RestoreMerchantFixture();
+            Check(controller.ShelfOrder.Count == 7, "恢复正式货架行数", controller.ShelfOrder.Count + " 行");
 
             // 黑市页签：显示价必须与结算价同源（×1.4）；可见性按命格，不是看运气。
             var dayPrice = controller.SelfPriceOf(0);
@@ -730,11 +737,14 @@ namespace TwelveJade.Editor
             Check(controller.TradeCoins == 0, "钱应正好花完", controller.TradeCoins + " 文");
 
             // 数字写回存档，记忆对白随交易次数变化。
+            // 长货架 fixture 的交易也落了账（同一存档），按 id 找正式货郎对账。
             var saved = controller.Repository.Read(activeSlot).Data;
-            Check(saved != null && saved.coins == controller.TradeCoins && saved.merchants != null &&
-                saved.merchants.Length == 1 && saved.merchants[0].trades == controller.TradeTrades &&
+            var ledgerRow = saved?.merchants.FirstOrDefault(m => m.id == "huolang");
+            Check(saved != null && saved.coins == controller.TradeCoins && ledgerRow != null &&
+                ledgerRow.trades == controller.TradeTrades &&
                 saved.schemaVersion == SaveData.CurrentSchemaVersion, "交易结果写回存档",
-                saved == null ? "读不到存档" : "铜钱 " + saved.coins + " · 交易 " + saved.merchants[0].trades + " 次");
+                saved == null ? "读不到存档" : "铜钱 " + saved.coins + " · 交易 " +
+                    (ledgerRow?.trades.ToString() ?? "无账") + " 次");
             Check(!string.IsNullOrEmpty(controller.TradeMemoryLine), "商人记得你", controller.TradeMemoryLine);
 
             // M3-02 空状态 + M3-01 Esc：清空白日货架后重开交易页。Destroy 在帧末生效，
@@ -768,7 +778,8 @@ namespace TwelveJade.Editor
                     Check(controller.ShelfEmptyNotice.Length == 0, "黑市有货时不应显示空状态文案");
                     controller.SetMerchantStockEmptyForCheck(false);
                     controller.SetBlackMarketForCheck(false);
-                    Check(!controller.TradeOnBlackMarket && controller.ShelfOrder.Count >= 9,
+                    // 重排后 fixture 已恢复正式表：复原 = 正式货架的 7 行回来。
+                    Check(!controller.TradeOnBlackMarket && controller.ShelfOrder.Count == 7,
                         "补满存货后白日铺货架应复原", controller.ShelfOrder.Count + " 行");
                     // M3-01：交易页按 Esc 应回城镇——真实注入 Esc 键，走产品输入路径。
                     PressKey(Key.Escape);
@@ -796,6 +807,29 @@ namespace TwelveJade.Editor
         {
             if (!condition) problems.Add("断言失败: " + message);
             else Debug.Log("[FrontEndShot] ok: " + message);
+        }
+
+        // 十行长货架的临时商品表：全部指向物品表里真实存在的吃食/药材，堆叠与价格随意但合法。
+        static string LongShelfJson()
+        {
+            // 逐段用 char 数组拼引号，避免转义出错——这一段之前坏过一次。
+            var q = "\"";
+            var items = string.Join(",", new[]
+            {
+                ("ganliang", 12), ("chuibing", 12), ("larou", 8), ("jinchuangyao", 6),
+                ("caoyao", 20), ("cudao", 2), ("zhudi", 1), ("dongxiao", 1),
+                ("guqin", 1), ("pipa", 1),
+            }.Select(pair => "{ " + q + "itemId" + q + ": " + q + pair.Item1 + q +
+                              ", " + q + "count" + q + ": " + pair.Item2 + " }"));
+            return "{ " + q + "merchants" + q + ": [ { " +
+                q + "id" + q + ": " + q + "huolang-fixture" + q + ", " +
+                q + "name" + q + ": " + q + "货郎老栓" + q + ", " +
+                q + "title" + q + ": " + q + "走街串巷的独脚货郎" + q + ", " +
+                q + "greeting" + q + ": " + q + "客官来了。" + q + ", " +
+                q + "buys" + q + ": [" + q + "chishi" + q + ", " + q + "cailiao" + q + "], " +
+                q + "stock" + q + ": [" + items + "], " +
+                q + "hidden" + q + ": [], " +
+                q + "memory" + q + ": [] } ] }";
         }
 
         static void Check(bool condition, string message, string detail)
