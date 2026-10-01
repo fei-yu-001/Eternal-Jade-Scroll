@@ -413,11 +413,18 @@ namespace TwelveJade.Editor
         // 城镇纵深断言分两个方向：下方（搭话位，人在 NPC 基座下方更近）在 VerifyTalkThenLeave 验，
         // 上方（按 W 走到基座上方更远）在这里验——sibling 顺序应随 y 翻转。
         static bool townAboveChecked;
+        static bool walkingShotTaken;
 
         static bool VerifyDepthAbove()
         {
             var traveler = TravelerRect;
             var npc = NpcRect("huolang");
+            // 迈步途中抓一帧：纸偶分块装配在走路姿态下也要对齐（腿身不分离、不露缝）。
+            if (!walkingShotTaken && traveler != null)
+            {
+                walkingShotTaken = true;
+                Capture("play-06b-walking", "town");
+            }
             // UiKit 局部坐标 y 向下：画面上方（更远）的局部 y 比 NPC 大（更不负）。
             var above = traveler != null && npc != null &&
                 traveler.anchoredPosition.y > npc.anchoredPosition.y + 1f;
