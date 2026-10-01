@@ -365,15 +365,27 @@ namespace TwelveJade.Presentation
             BeginPage("character-creation");
             PageHeading("众 生  /  初 见", "你从人间来", "每一个普通人，都有自己的来路。择一身行装，赴一程山河。");
             var preset = presets[draftOrigin];
+            // 出身立绘卡片：三种来路一眼看全，选中卡描金、未选中压暗；点击卡片即切换。
+            // 立绘跟随当前性别/面容重取，选性别也能预览到每一张卡的样子。
             for (var i = 0; i < presets.Length; i++)
             {
                 var index = i;
-                ui.Button(content, presets[i].displayName, 102 + i * 269, 337, 247, 60,
-                    () => SetCreationOrigin(index), i == draftOrigin);
+                var selected = index == draftOrigin;
+                var card = ui.Panel(content, "Origin card " + presets[i].displayName, 102 + i * 269, 418, 247, 512,
+                    selected ? new Color(.82f, .72f, .5f, .97f) : new Color(.5f, .48f, .42f, .92f), true);
+                var view = presets[i].Facing(0, draftGender, draftFaceStyle);
+                if (view != null)
+                {
+                    var art = ui.Art(card.transform, view, 8, 8, 231, 438);
+                    art.color = selected ? Color.white : new Color(.6f, .58f, .52f, 1f);
+                }
+                else
+                    ui.Label(card.transform, "画稿待接入", 8, 200, 231, 50, 24, UiKit.Ink, TextAlignmentOptions.Center);
+                ui.Label(card.transform, presets[i].displayName, 8, 454, 231, 48, 26,
+                    selected ? UiKit.Ink : UiKit.Paper, TextAlignmentOptions.Center, true);
+                card.gameObject.AddComponent<Button>().onClick.AddListener(() => SetCreationOrigin(index));
             }
-            ui.Panel(content, "Character portrait", 102, 418, 785, 512, new Color(.78f, .76f, .65f, .97f));
-            ShowPortrait(content, preset, 0, draftGender, draftFaceStyle, 102 + 20, 418 + 15, 745, 480);
-            ui.Label(content, "外观与命格只是出身底色，不预设数值与结局。", 122, 892, 745, 30, 17, UiKit.Ink);
+            ui.Label(content, "外观与命格只是出身底色，不预设数值与结局。", 122, 946, 745, 30, 17, UiKit.Ink);
 
             ui.Panel(content, "Character details", 949, 336, 873, 594, new Color(.045f, .115f, .10f, .96f));
             ui.Label(content, "平 民 出 身", 998, 366, 715, 36, 19, UiKit.Gold);

@@ -15,6 +15,7 @@ namespace TwelveJade.Presentation
     public sealed partial class FrontEndController
     {
         PuppetActor traveler;
+        RectTransform nameTag;
         RectTransform townMap, miniDot, miniHalo, ripple, dustLayer;
         RawImage rippleImage;
         Texture2D townMapArt;
@@ -65,9 +66,9 @@ namespace TwelveJade.Presentation
             CloseInventory();
             BeginPage("town");
             ui.Panel(content, "Town veil", 0, 0, 1920, 1080, new Color(.91f, .88f, .79f, .98f));
-            ui.Label(content, town.Name, 100, 44, 600, 60, 42, UiKit.Ink, TextAlignmentOptions.TopLeft, true);
+            BuildTownHud();
             // 提示行垫一条半透明墨底：镜头拉近后底下滚过深浅不一的屋顶，纯墨字会没进屋檐里。
-            var townHint = ui.Panel(content, "Town hint", 96, 106, 668, 46, new Color(.07f, .11f, .09f, .55f));
+            var townHint = ui.Panel(content, "Town hint", 96, 158, 668, 46, new Color(.07f, .11f, .09f, .55f));
             ui.Label(townHint.transform, "点击街面或 WASD 移动 · 按住 Shift 奔跑 · B 开行囊", 12, 4, 644, 38, 20,
                 new Color(.96f, .93f, .85f, .92f));
             ui.Button(content, "行囊", 1408, 44, 200, 54, ShowInventory);
@@ -106,6 +107,7 @@ namespace TwelveJade.Presentation
             ApplyPerspective();
             UpdateCamera();
             traveler.SetMotion(PuppetActor.Motion.Idle);
+            BuildTravelerTag();
 
             BuildMiniMap();
             // 眼前事/镇民/线索面板（M5-05 S2）：城镇页右侧，与行囊、交易互不打断。
@@ -451,6 +453,7 @@ namespace TwelveJade.Presentation
             traveler.SetPosition(ToLocal(localPos));
             ApplyPerspective();
             UpdateCamera();
+            if (nameTag != null) nameTag.anchoredPosition = ToLocal(localPos) + new Vector2(0f, -10f);
             SortTravelerDepth();
             if (traveler.Footfalls != seenFootfalls)
             {
@@ -503,6 +506,50 @@ namespace TwelveJade.Presentation
         {
             var depth = Mathf.Clamp01((localPos.y - 90f) / (1050f - 90f));
             traveler.SetScale(Mathf.Lerp(town.PerspectiveTop, town.PerspectiveBottom, depth));
+        }
+
+        static readonly string[] HourBranches = { "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥" };
+
+        // 左上 HUD：头像窗 + 生命/精力条 + 铜钱与行历，替换原先孤零零的镇名大字。
+        // 生命/精力取战斗同源的 PlayerStatsFor（T017 养成系统接入后这里自动跟上）。
+        void BuildTownHud()
+        {
+            var preset = System.Array.Find(presets, p => p.id == activeSave.characterId) ?? presets[0];
+            var stats = PlayerStatsFor(activeSave.characterId);
+            var hud = ui.Panel(content, "Town hud", 88, 26, 700, 130, new Color(.06f, .1f, .08f, .66f));
+            var portrait = ui.Rect(hud.transform, "Hud portrait", 14, 12, 94, 94);
+            var portraitImage = portrait.gameObject.AddComponent<RawImage>();
+            var face = preset.Facing(0, activeSave.gender, activeSave.faceStyle);
+            portraitImage.texture = face != null ? face : Texture2D.whiteTexture;
+            // 正面立绘裁头肩段：UV 的 v 向上，取图的上中部。
+            portraitImage.uvRect = new Rect(.32f, .5f, .36f, .44f);
+            ui.Label(hud.transform, activeSave.characterName, 126, 12, 264, 36, 24, UiKit.Paper,
+                TextAlignmentOptions.TopLeft, true);
+            ui.Label(hud.transform, preset.displayName, 126, 52, 264, 28, 17, UiKit.Gold);
+            var hpBack = ui.Panel(hud.transform, "Hp back", 126, 86, 270, 16, new Color(.2f, .12f, .1f, .95f));
+            ui.Panel(hpBack.transform, "Hp fill", 2, 2, 266, 12, new Color(.7f, .22f, .16f, .96f));
+            ui.Label(hud.transform, stats.hp + "/" + stats.hp, 402, 84, 90, 20, 14,
+                new Color(.95f, .8f, .75f, .95f), TextAlignmentOptions.MidlineLeft);
+            var spBack = ui.Panel(hud.transform, "Sp back", 126, 108, 270, 8, new Color(.16f, .17f, .12f, .95f));
+            ui.Panel(spBack.transform, "Sp fill", 2, 2, 266, 4, new Color(.85f, .68f, .3f, .96f));
+            var now = activeSave.WorldTimeNow();
+            var branch = HourBranches[(now.minuteOfDay / 60 + 1) / 2 % 12];
+            ui.Label(hud.transform, "铜钱 " + activeSave.coins + " 文", 500, 12, 184, 30, 18, UiKit.Gold,
+                TextAlignmentOptions.TopLeft);
+            ui.Label(hud.transform, "第 " + now.day + " 日 · " + branch + "时", 500, 46, 184, 26, 15, UiKit.Paper,
+                TextAlignmentOptions.TopLeft);
+            ui.Label(hud.transform, town.Name, 500, 76, 184, 32, 20, UiKit.Paper, TextAlignmentOptions.TopLeft, true);
+        }
+
+        // 主角脚下名牌：每帧跟底座点同步；不进深度表（浮层语义，走到道具后也不会被挡）。
+        void BuildTravelerTag()
+        {
+            nameTag = ui.Panel(townMap, "Traveler tag", 0, -80, 220, 34, new Color(.06f, .1f, .08f, .72f)).rectTransform;
+            nameTag.pivot = new Vector2(.5f, 1f);
+            nameTag.anchorMin = nameTag.anchorMax = new Vector2(0, 1);
+            ui.Label(nameTag, activeSave.characterName, 8, 3, 204, 28, 20, new Color(.98f, .95f, .86f, .97f),
+                TextAlignmentOptions.Center);
+            nameTag.SetAsLastSibling();
         }
 
         // 镜头跟随：主角恒居视口中心，钳在图边内（贴边时主角偏离中心、图不再滚动）。
