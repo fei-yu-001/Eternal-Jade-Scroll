@@ -1,18 +1,7 @@
 {
- "name": "青石镇",
- "phase": "world-greybox",
- "comment": "大世界配置（第一阶段灰盒）。地块与 blocked 区域由 Tools/make-world-greybox.py 同源产出——改布局请改脚本后重跑，图与坐标不会脱节。第二阶段把 chunks[].art 换成 Grok 母图切分产物即可，坐标/碰撞配置全部复用。",
  "worldWidth": 8192,
  "worldHeight": 8192,
  "chunkSize": 1024,
- "worldScale": 1.0,
- "spawn": {
-  "x": 4096.0,
-  "y": 7900.0
- },
- "spawnFacingLeft": false,
- "perspectiveTop": 0.72,
- "perspectiveBottom": 1.08,
  "chunks": [
   {
    "id": "r0-c0",
@@ -154574,10 +154563,6 @@
    "why": "river"
   }
  ],
- "walkable": [],
- "props": [],
- "npcs": [],
- "encounters": [],
  "landmarks": [
   {
    "id": "south-gate",
@@ -154651,5 +154636,9 @@
    "x": 4096,
    "y": 7900
   }
- ]
+ ],
+ "spawn": {
+  "x": 4096.0,
+  "y": 7900.0
+ }
 }

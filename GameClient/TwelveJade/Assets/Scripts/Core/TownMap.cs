@@ -24,6 +24,24 @@ namespace TwelveJade.Core
         public bool Contains(float x, float y) => x >= MinX && x <= MaxX && y >= MinY && y <= MaxY;
     }
 
+    // 大世界地图块：一块地形贴图在世界坐标里的位置。分块的意义是"世界远大于一屏"——
+    // 每块独立加载、按需显示，摄像机只移动世界根节点，不缩放整张巨图。
+    public sealed class MapChunk
+    {
+        public MapChunk(string id, string art, string overview, float x, float y, float width, float height)
+        {
+            Id = id; Art = art; Overview = overview; X = x; Y = y; Width = width; Height = height;
+        }
+
+        public string Id { get; }
+        public string Art { get; }        // Resources 相对路径（不带扩展名）
+        public string Overview { get; }   // 整幅世界的缩略图（小地图用）
+        public float X { get; }
+        public float Y { get; }
+        public float Width { get; }
+        public float Height { get; }
+    }
+
     public sealed class MapProp
     {
         public MapProp(string slug, float x, float y, float height, float radius)
@@ -94,13 +112,17 @@ namespace TwelveJade.Core
         TownMap(string name, float artWidth, float artHeight, float spawnX, float spawnY, bool spawnFacingLeft,
             float perspectiveTop, float perspectiveBottom, List<MapRect> walkable, List<MapProp> props,
             List<MapLandmark> landmarks, List<MapNpc> npcs, List<MapEncounter> encounters,
-            string phase, List<MapRect> terrainZones, List<string> terrainTypes)
+            string phase, List<MapRect> terrainZones, List<string> terrainTypes,
+            float worldWidth, float worldHeight, float chunkSize, List<MapChunk> chunks, List<MapRect> blocked,
+            float worldScale, string overviewArt)
         {
             Name = name; ArtWidth = artWidth; ArtHeight = artHeight;
             SpawnX = spawnX; SpawnY = spawnY; SpawnFacingLeft = spawnFacingLeft;
             PerspectiveTop = perspectiveTop; PerspectiveBottom = perspectiveBottom;
             Walkable = walkable; Props = props; Landmarks = landmarks; Npcs = npcs; Encounters = encounters;
             Phase = phase; TerrainZones = terrainZones; TerrainTypes = terrainTypes;
+            WorldWidth = worldWidth; WorldHeight = worldHeight; ChunkSize = chunkSize;
+            Chunks = chunks; Blocked = blocked; WorldScale = worldScale; OverviewArt = overviewArt;
         }
 
         public string Name { get; }
@@ -127,13 +149,36 @@ namespace TwelveJade.Core
         public IReadOnlyList<MapRect> TerrainZones { get; }
         public IReadOnlyList<string> TerrainTypes { get; }
 
+        // ---- 大世界语义（World Size 与 Camera View 严格分离）----
+        /// <summary>整个世界的尺寸（世界单位）。远大于任何一屏可见范围。</summary>
+        public float WorldWidth { get; }
+        public float WorldHeight { get; }
+        /// <summary>单块地图的世界边长。</summary>
+        public float ChunkSize { get; }
+        public IReadOnlyList<MapChunk> Chunks { get; }
+        /// <summary>不可通行区域（山体、河面、岩石）。与 <see cref="Blocked"/> 语义：
+        /// 落在其中即不可站立（河桥、渡口、山径由配置留出缺口）。</summary>
+        public IReadOnlyList<MapRect> Blocked { get; }
+        /// <summary>世界单位 → 画布像素。配合世界尺寸决定"一屏能看到多少世界"。</summary>
+        public float WorldScale { get; }
+        /// <summary>整幅世界的缩略图路径（小地图底图）。</summary>
+        public string OverviewArt { get; }
+
         public bool WalkableContains(float x, float y) => Walkable.Any(rect => rect.Contains(x, y));
 
+        // 站立判定（世界语义）：世界边界内 ∧ 不在不可通行区 ∧ 不撞立绘/NPC 障碍 ∧
+        // （若配置了 walkable 白名单则还要落在白名单内；白名单为空 = 除 blocked 外皆可走）。
         public bool CanStand(float x, float y)
         {
-            if (!WalkableContains(x, y)) return false;
-            return !Blockers().Any(b =>
-                (x - b.x) * (x - b.x) + (y - b.y) * (y - b.y) <= b.radius * b.radius);
+            if (x < 0f || y < 0f || x > WorldWidth || y > WorldHeight) return false;
+            if (Blocked.Any(rect => rect.Contains(x, y))) return false;
+            foreach (var (blockX, blockY, blockRadius) in Blockers())
+            {
+                var dx = x - blockX; var dy = y - blockY;
+                if (dx * dx + dy * dy <= blockRadius * blockRadius) return false;
+            }
+            if (Walkable.Count > 0 && !Walkable.Any(rect => rect.Contains(x, y))) return false;
+            return true;
         }
 
         // 点击落点钳到最近的可走处：先把点拉到最近的走廊矩形内，再从圆形障碍推出。
@@ -176,6 +221,22 @@ namespace TwelveJade.Core
                 if (npc.Blocks) yield return (npc.X, npc.Y, npc.Radius);
         }
 
+        // 摄像机钳制：世界远大于一屏时，视口四边不得越出世界（否则露黑）。
+        // 返回被夹过的"视口中心"（世界坐标）。世界比视口还小时居中显示，不产生黑边。
+        public float ClampCameraX(float centerX, float viewHalfWidth) =>
+            viewHalfWidth * 2f >= WorldWidth
+                ? WorldWidth * .5f
+                : Math.Min(Math.Max(centerX, viewHalfWidth), WorldWidth - viewHalfWidth);
+
+        public float ClampCameraY(float centerY, float viewHalfHeight) =>
+            viewHalfHeight * 2f >= WorldHeight
+                ? WorldHeight * .5f
+                : Math.Min(Math.Max(centerY, viewHalfHeight), WorldHeight - viewHalfHeight);
+
+        /// <summary>一屏能看到的世界尺寸——用于验收断言"视野远小于世界"。</summary>
+        public (float width, float height) ViewWorldSize(float viewWidth, float viewHeight, float scale) =>
+            (viewWidth / scale, viewHeight / scale);
+
         public static TownMap Parse(string json)
         {
             if (!Json.TryParse(json, out var root, out var error))
@@ -197,7 +258,9 @@ namespace TwelveJade.Core
                     throw new FormatException("可行走矩形超出画布：" + (entry["comment"].AsString(rect.X + "," + rect.Y)));
                 walkable.Add(rect);
             }
-            if (walkable.Count == 0) throw new FormatException("地图至少要有一条可行走走廊。");
+            // 大世界模式（配置了 blocked 或分块）：白名单可空——"除不可通行区外皆可走"。
+            if (walkable.Count == 0 && root["blocked"] == null && root["chunks"] == null && root["blocked"] == null)
+                throw new FormatException("地图至少要有一条可行走走廊，或声明 blocked 不可通行区。");
 
             var props = new List<MapProp>();
             foreach (var entry in Elements(root, "props"))
@@ -240,9 +303,21 @@ namespace TwelveJade.Core
                     entry["line"].AsString(""), ex, ey));
             }
 
+            var overviewArt = "";
+            var blocked = new List<MapRect>();
+            foreach (var entry in Elements(root, "blocked"))
+            {
+                var rect = new MapRect(Number(entry, "x", 0f), Number(entry, "y", 0f),
+                    Number(entry, "width", 0f), Number(entry, "height", 0f));
+                if (rect.Width <= 0f || rect.Height <= 0f)
+                    throw new FormatException("不可通行区尺寸应为正：" + entry["why"].AsString("blocked"));
+                blocked.Add(rect);
+            }
+
             var spawnX = root["spawn"]?["x"].AsFloat(0f) ?? 0f;
             var spawnY = root["spawn"]?["y"].AsFloat(0f) ?? 0f;
-            if (!ZoneContains(walkable, props, spawnX, spawnY))
+            if (blocked.Any(rect => rect.Contains(spawnX, spawnY)) ||
+                !ZoneContains(walkable, props, spawnX, spawnY))
                 throw new FormatException("出生点不在可行走区域内。");
 
             // 地形分区标注（纯数据）：type + 矩形，供验收与二期建筑落位参考。
@@ -257,15 +332,38 @@ namespace TwelveJade.Core
             if (terrainZones.Count != terrainTypes.Count)
                 throw new FormatException("terrain 分区数据不一致。");
 
+            // ---- 大世界：世界尺寸 / 分块 / 不可通行区 ----
+            // 未配置 worldWidth 时退回旧语义（整张图 = 世界），保证旧配置仍能解析。
+            var worldWidth = Number(root, "worldWidth", artWidth);
+            var worldHeight = Number(root, "worldHeight", artHeight);
+            var chunkSize = Number(root, "chunkSize", 0f);
+            var chunks = new List<MapChunk>();
+            foreach (var entry in Elements(root, "chunks"))
+            {
+                var art = Required(entry, "art");
+                var cx = Number(entry, "x", 0f);
+                var cy = Number(entry, "y", 0f);
+                var cw = Number(entry, "width", chunkSize);
+                var chh = Number(entry, "height", chunkSize);
+                if (cx < 0f || cy < 0f || cx + cw > worldWidth + 1f || cy + chh > worldHeight + 1f)
+                    throw new FormatException("地图块越出世界：" + Required(entry, "id"));
+                chunks.Add(new MapChunk(Required(entry, "id"), art, entry["overview"].AsString(""),
+                    cx, cy, cw, chh));
+                if (overviewArt == "" ) overviewArt = entry["overview"].AsString("");
+            }
+
             return new TownMap(root["name"].AsString("无名之地"), artWidth, artHeight, spawnX, spawnY,
                 root["spawnFacingLeft"].AsBool(false), Number(root, "perspectiveTop", .72f), Number(root, "perspectiveBottom", 1.05f),
                 walkable, props, landmarks, npcs, encounters,
-                root["phase"].AsString("full"), terrainZones, terrainTypes);
+                root["phase"].AsString("full"), terrainZones, terrainTypes,
+                worldWidth, worldHeight, chunkSize, chunks, blocked,
+                Number(root, "worldScale", 1f), overviewArt);
         }
 
+        // 白名单为空 = 大世界模式（除 blocked 外皆可走），此时不做白名单判定。
         static bool ZoneContains(List<MapRect> walkable, List<MapProp> props, float x, float y)
         {
-            if (!walkable.Any(rect => rect.Contains(x, y))) return false;
+            if (walkable.Count > 0 && !walkable.Any(rect => rect.Contains(x, y))) return false;
             return !props.Any(prop => prop.Radius > 0f &&
                 (x - prop.X) * (x - prop.X) + (y - prop.Y) * (y - prop.Y) <= prop.Radius * prop.Radius);
         }

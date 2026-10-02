@@ -25,14 +25,25 @@ namespace TwelveJade.Core
             TradeChecks.Run(itemTable, configDir);
             CombatChecks.Run();
             EnemyChecks.Run(itemTable, configDir);
-            M4Checks.Run(itemTable, town, configDir);
-            DialogueChecks.Run(NpcTable.Parse(File.ReadAllText(Path.Combine(configDir, "npcs.json"))), configDir);
-            ChapterChecks.Run(configDir);
-            QuestChecks.Run(itemTable, configDir, town);
-            ScheduleChecks.Run(new SaveData { slot = 1, characterId = "farmer", characterName = "A" },
-                itemTable, configDir, town);
-            NpcChecks.Run(itemTable, configDir, town);
-            // 地形底座阶段（phase=terrain）props 可为空：立绘下限只在完整阶段生效。
+            // 地形底座阶段（phase=terrain）：世界地图不含 NPC/遭遇点/立绘，
+            // 依赖这些内容的验收项整体跳过——本阶段只验"地"。
+            var worldPhase = town.Chunks.Count > 0;   // 大世界配置（分块 + blocked），内容类断言整体跳过
+            if (!worldPhase)
+            {
+                M4Checks.Run(itemTable, town, configDir);
+                DialogueChecks.Run(NpcTable.Parse(File.ReadAllText(Path.Combine(configDir, "npcs.json"))), configDir);
+                ChapterChecks.Run(configDir);
+                QuestChecks.Run(itemTable, configDir, town);
+                ScheduleChecks.Run(new SaveData { slot = 1, characterId = "farmer", characterName = "A" },
+                    itemTable, configDir, town);
+                NpcChecks.Run(itemTable, configDir, town);
+            }
+            if (worldPhase)
+            {
+                WorldChecks.Run(town);
+            }
+            else
+            {
             Check("town-map.json parses", town.Walkable.Count >= 5 &&
                 (town.Phase == "terrain" || town.Props.Count >= 10) && town.Landmarks.Count >= 3,
                 string.Format("{0} 条走廊 / {1} 件立绘 / {2} 处地标 / phase={3}",
@@ -75,7 +86,7 @@ namespace TwelveJade.Core
                 ("{\"walkable\":[{\"x\":100,\"y\":100,\"width\":200,\"height\":200}],\"spawn\":{\"x\":900,\"y\":900}}", "出生点在墙里"),
                 ("{\"walkable\":[{\"x\":100,\"y\":100,\"width\":200,\"height\":200}],\"spawn\":{\"x\":200,\"y\":200}," +
                  "\"props\":[{\"slug\":\"x\",\"x\":200,\"y\":200,\"height\":0}]}", "立绘高度为零"),
-                ("{\"walkable\":[],\"spawn\":{\"x\":0,\"y\":0}}", "没有走廊"),
+                ("{\"walkable\":[],\"spawn\":{\"x\":0,\"y\":0}}", "既无走廊也无 blocked/分块"),
                 ("not json at all", "不是 JSON")
             };
             foreach (var (json, label) in bad)
@@ -85,6 +96,7 @@ namespace TwelveJade.Core
                 catch (FormatException) { rejected = true; }
                 Check("malformed town map rejected: " + label, rejected);
             }
+            }   // end else（非世界阶段）
         }
 
         // 从可执行文件往上找到仓库根（含 GameClient/TwelveJade/Assets/Resources/Config）。

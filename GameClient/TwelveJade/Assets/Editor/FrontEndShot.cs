@@ -432,50 +432,71 @@ namespace TwelveJade.Editor
             }
         }
 
+        // 世界底座验收（第一阶段）：只验"世界"——世界/视野比例、摄像机跟随与边界、
+        // 跑图距离、小地图全局/局部分工。不含任何内容（房屋/NPC/树）验收。
         static void RunTerrainChecks()
         {
+            var world = controller.World;
+            Check(world != null, "世界配置应已载入");
+            if (world == null) return;
             Check(controller.CurrentPage == "town", "应能进入城镇页");
-            // phase=terrain：场景里不应有任何建筑立绘 / NPC / 遭遇标记。
-            var props = CountSceneObjects("Prop ");
-            var npcs = CountSceneObjects("Npc ");
-            var encounters = CountSceneObjects("Encounter ");
-            Check(props == 0 && npcs == 0 && encounters == 0,
-                "地形阶段场景不应有建筑/NPC/遭遇标记",
-                $"prop {props} · npc {npcs} · encounter {encounters}");
-            Check(controller.TerrainZoneCount >= 5, "地形分区数据应已解析（河/山/田/路等）",
-                controller.TerrainZoneCount + " 个分区");
 
-            // 可通行：路网与活动区。
-            Check(controller.TerrainStandable(384, 700), "主街中段应可走");
-            Check(controller.TerrainStandable(384, 1080), "南门官道应可走");
-            Check(controller.TerrainStandable(300, 600), "镇区草地（预留建筑位）应可走");
-            Check(controller.TerrainStandable(384, 420), "北桥桥面应可走");
-            Check(controller.TerrainStandable(384, 250), "山径下段应可走");
-            Check(controller.TerrainStandable(384, 1100), "出生点应可走");
+            // ---- 世界 vs 视野：核心比例 ----
+            var view = controller.ViewWorldSize;
+            var coverage = (view.x * view.y) / (world.WorldWidth * world.WorldHeight);
+            Check(coverage < .10f, "一屏只应是世界的一小部分（<10%）",
+                string.Format("视野 {0:0}x{1:0} / 世界 {2:0}x{3:0} = {4:P1}",
+                    view.x, view.y, world.WorldWidth, world.WorldHeight, coverage));
 
-            // 不可通行：河心（桥面之外的河段）、山体、边界外。
-            Check(!controller.TerrainStandable(150, 415), "河心（西段，桥外）不应可走");
-            Check(!controller.TerrainStandable(600, 415), "河心（东段，桥外）不应可走");
-            Check(!controller.TerrainStandable(100, 100), "山体不应可走");
-            Check(!controller.TerrainStandable(20, 20), "画布西北角（山体）不应可走");
-            Check(!controller.TerrainStandable(-5, 500), "西边界外不应可走");
-            Check(!controller.TerrainStandable(773, 500), "东边界外不应可走");
-            Check(!controller.TerrainStandable(384, -5), "北边界外不应可走");
+            // ---- 分块铺满世界 ----
+            Check(world.Chunks.Count > 1, "世界应由多块拼成", world.Chunks.Count + " 块");
 
-            // 摄像机跟随：置位三处，主角每处都要留在视口内。
-            foreach (var (x, y, label) in new[] { (384, 1080, "南门"), (384, 420, "北桥"), (384, 250, "山径口") })
+            // ---- 摄像机：主角居中、跟随时不越界 ----
+            Check(controller.SnapTravelerTo(world.SpawnX, world.SpawnY), "出生点置位应成功");
+            Check(controller.PlayerOnScreen(), "出生点应可见");
+            // 逐点抽查：主角走到世界各处，镜头都要跟得上且不出画
+            var probes = world.Landmarks.Where(m => world.CanStand(m.X, m.Y)).Take(6).ToList();
+            Check(probes.Count >= 4, "抽查点应足够", probes.Count + " 处");
+            foreach (var mark in probes)
             {
-                Check(controller.SnapTravelerTo(x, y), label + " 置位应成功");
-                Check(controller.TownTravelerOnScreen, label + "：镜头跟随应让主角留在视口内");
+                Check(controller.SnapTravelerTo(mark.X, mark.Y), mark.Name + " 置位应成功");
+                Check(controller.PlayerOnScreen(), mark.Name + "：主角应在视口内");
             }
 
-            // 截图：南门、北桥（望河与山）、山径口。
-            controller.SnapTravelerTo(384, 1080);
-            Capture("terrain-01-south", "terrain-south");
-            controller.SnapTravelerTo(384, 420);
-            Capture("terrain-02-river", "terrain-river");
-            controller.SnapTravelerTo(384, 250);
-            Capture("terrain-03-hill", "terrain-hill");
+            // ---- 不可通行：山/河不可走，桥可走，世界外不可走 ----
+            // 采样点从配置反推（blocked 里河面矩形 + 山体矩形），不写死坐标——
+            // 写死会在世界尺寸调整后误判（曾把山径上的点当成山体）。
+            var riverBlocks = world.Blocked.Where(r => r.MinY > world.WorldHeight * .2f &&
+                r.MinY < world.WorldHeight * .4f).ToList();
+            var riverProbe = riverBlocks.FirstOrDefault(r => r.MinX > world.WorldWidth * .15f &&
+                r.MinX < world.WorldWidth * .85f);
+            Check(riverProbe != null && !controller.TerrainStandable(riverProbe.MinX + 8f, riverProbe.MinY + 8f),
+                "河面不可通行（桥外）", riverProbe != null ? $"({riverProbe.MinX},{riverProbe.MinY})" : "找不到河");
+            var mountainBlocks = world.Blocked.Where(r => r.MinY < world.WorldHeight * .12f).ToList();
+            var mountainProbe = mountainBlocks.FirstOrDefault(r => r.MinX > world.WorldWidth * .3f &&
+                r.MinX < world.WorldWidth * .6f);
+            Check(mountainProbe != null && !controller.TerrainStandable(mountainProbe.MinX + 8f, mountainProbe.MinY + 8f),
+                "后山不可通行", mountainProbe != null ? $"({mountainProbe.MinX},{mountainProbe.MinY})" : "找不到山");
+            var bridge = world.Landmarks.FirstOrDefault(m => m.Id.Contains("bridge") || m.Id.Contains("river"));
+            Check(bridge != null && controller.TerrainStandable(bridge.X, bridge.Y), "主桥可通行",
+                bridge != null ? $"({bridge.X:0},{bridge.Y:0})" : "缺少桥地标");
+            Check(!controller.TerrainStandable(-10, world.WorldHeight * .5f), "世界边界外不可通行");
+
+            // ---- 跑图距离：出生点到后山，按速度换算时间 ----
+            var spawnY = world.SpawnY;
+            var edgeDistance = controller.PlayerEdgeDistance();
+            Check(edgeDistance > 100f, "出生点应远离世界边缘（可继续扩张）",
+                edgeDistance.ToString("0") + " 单位");
+
+            // ---- 截图：出生点（南缘）、镇中心、北桥、后山 ----
+            controller.SnapTravelerTo(world.SpawnX, spawnY);
+            Capture("world-01-spawn", "world-spawn");
+            var town = world.Landmarks.FirstOrDefault(m => m.Id == "town-center");
+            var northBridge = world.Landmarks.FirstOrDefault(m => m.Id == "river-north");
+            var foothill = world.Landmarks.FirstOrDefault(m => m.Id == "foothill");
+            if (town != null) { controller.SnapTravelerTo(town.X, town.Y); Capture("world-02-town", "world-town"); }
+            if (northBridge != null) { controller.SnapTravelerTo(northBridge.X, northBridge.Y); Capture("world-03-bridge", "world-bridge"); }
+            if (foothill != null) { controller.SnapTravelerTo(foothill.X, foothill.Y); Capture("world-04-hill", "world-hill"); }
         }
 
         static int CountSceneObjects(string prefix)
@@ -1022,8 +1043,9 @@ namespace TwelveJade.Editor
             }
             else
             {
-                Check(capturedShots.Contains("terrain-south") && capturedShots.Contains("terrain-river") &&
-                    capturedShots.Contains("terrain-hill"), "三张地形截图生成",
+                Check(capturedShots.Contains("world-spawn") && capturedShots.Contains("world-town") &&
+                    capturedShots.Contains("world-bridge") && capturedShots.Contains("world-hill"),
+                "四张世界截图生成",
                     string.Join(" · ", capturedShots.ToArray()));
             }
             Check(createdSlot > 0, "验收应在临时存档目录里自建一档（不碰玩家存档）");

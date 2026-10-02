@@ -117,7 +117,7 @@ namespace TwelveJade.Presentation
                 for (var i = 0; i < digitKeys.Length; i++)
                     if (digitKeys[i].wasPressedThisFrame) SetMotion(i + 1);
             }
-            UpdateTown();
+            UpdateWorld();
             UpdateTrade();
             CombatClockAdvance(Time.unscaledDeltaTime);
         }
