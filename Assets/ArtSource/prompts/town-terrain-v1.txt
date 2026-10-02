@@ -1,0 +1,14 @@
+Asset type: a single top-down terrain base map for a 2D walking scene of a small Chinese market town, viewed from directly above with a very slight perspective tilt, 16:9 landscape. Fine ink linework with soft watercolor washes on warm ivory paper, muted natural colors, consistent with an elegant hand-painted historical Chinese indie game set in the late Yuan / early Ming era. Target resolution 3840x2160. This is GROUND ONLY — no buildings, no people, no standing trees, no animals.
+
+LAYOUT (follow the composition exactly):
+- BOTTOM CENTER: a south gate opening (two stone gatehouse bases and a gap) with a dirt official road leading off the bottom edge.
+- MAIN STREET: a wide flagstone road of large grey-blue stone slabs running from the south gate straight up the middle of the image, ending at the far north.
+- MARKET SQUARE: around 45-60% of the image height the main street widens into an open plaza of rounder, denser cobblestones extending left and right of the street.
+- RIVER: a gentle stream crossed the upper third of the image horizontally (about 30% from the top), pale green-blue water, light sandy banks with sparse reeds. Width about 6% of image height.
+- TWO STONE BRIDGES over the river: one aligned with the main street (north bridge), one further east where a side lane crosses (east bridge). Simple arched stone decks seen from above.
+- FERRY LANDING: on the south bank west of the main street, stone steps leading into the water and a wooden mooring post.
+- FARM FIELDS: two large paddy/vegetable plots north of the river (beyond the bridges), and one vegetable plot east of the main street in the lower half — clear raised earthen ridges and field-boundary lines, muted green and ochre.
+- DIRT PATHS: narrow packed-earth paths connecting main street to the ferry landing, to the eastern vegetable plot, and from the north bridge up to an empty temple courtyard flat area in the far north center.
+- EVERYWHERE ELSE: flat grass in muted sage tones with occasional grass tufts, small stones and worn earth patches. Keep large open flat areas — building plots along the main street are intentionally left empty for later cutout buildings.
+
+COLOR & LIGHT: soft even morning light, no cast shadows, gentle watercolor paper texture, low contrast so characters and buildings placed on top read clearly. Flat uniform warm ivory #EDE6D6 beyond the terrain edges. No frame, no compass, no text, labels, logo, watermark, no buildings, no people, no animals, no modern elements.
