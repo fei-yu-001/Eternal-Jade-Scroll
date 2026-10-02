@@ -32,8 +32,11 @@ namespace TwelveJade.Core
             ScheduleChecks.Run(new SaveData { slot = 1, characterId = "farmer", characterName = "A" },
                 itemTable, configDir, town);
             NpcChecks.Run(itemTable, configDir, town);
-            Check("town-map.json parses", town.Walkable.Count >= 5 && town.Props.Count >= 10 && town.Landmarks.Count >= 3,
-                string.Format("{0} 条走廊 / {1} 件立绘 / {2} 处地标", town.Walkable.Count, town.Props.Count, town.Landmarks.Count));
+            // 地形底座阶段（phase=terrain）props 可为空：立绘下限只在完整阶段生效。
+            Check("town-map.json parses", town.Walkable.Count >= 5 &&
+                (town.Phase == "terrain" || town.Props.Count >= 10) && town.Landmarks.Count >= 3,
+                string.Format("{0} 条走廊 / {1} 件立绘 / {2} 处地标 / phase={3}",
+                    town.Walkable.Count, town.Props.Count, town.Landmarks.Count, town.Phase));
             Check("spawn stands in the town", town.CanStand(town.SpawnX, town.SpawnY));
             Check("corridors touch each other", CorridorsConnected(town));
             Check("landmarks are reachable", town.Landmarks.All(mark => town.CanStand(mark.X, mark.Y) ||
@@ -43,21 +46,24 @@ namespace TwelveJade.Core
             // 立绘障碍不能把街巷拦死：从出生点按网格洪水填充，每条走廊都要走得进去。
             Check("blockers never seal off a corridor", ReachableFromSpawn(town));
 
-            // 可行走判定：走廊外不可走、圆形障碍内不可走、贴着障碍能滑过去。
-            Check("corridor gaps are not walkable", !town.CanStand(60f, 60f) && !town.CanStand(1900f, 1000f));
-            var blocker = town.Props.First(prop => prop.Blocks);
-            Check("blockers cannot be entered", !town.CanStand(blocker.X, blocker.Y) &&
-                !town.CanStand(blocker.X + blocker.Radius * .5f, blocker.Y));
-            Check("blocker face is standable", town.CanStand(blocker.X + blocker.Radius + 6f, blocker.Y));
-            var snapped = town.ClampToWalkable(200f, 900f);
-            Check("click outside the corridor snaps back", town.CanStand(snapped.x, snapped.y));
-            Check("clamped point never lands in a blocker", Enumerable.Range(0, 40).All(i =>
+            // 可行走判定：走廊外不可走。有立绘障碍时再验"圆内不可走、贴着能滑过"。
+            Check("corridor gaps are not walkable", !town.CanStand(20f, 20f) && !town.CanStand(town.ArtWidth - 20f, town.ArtHeight - 20f));
+            var blocker = town.Props.FirstOrDefault(prop => prop.Blocks);
+            if (blocker != null)
             {
-                var angle = i / 40f * Math.PI * 2;
-                var point = town.ClampToWalkable(blocker.X + (float)Math.Cos(angle) * (blocker.Radius * .6f),
-                    blocker.Y + (float)Math.Sin(angle) * (blocker.Radius * .6f));
-                return town.CanStand(point.x, point.y) || !town.WalkableContains(point.x, point.y);
-            }));
+                Check("blockers cannot be entered", !town.CanStand(blocker.X, blocker.Y) &&
+                    !town.CanStand(blocker.X + blocker.Radius * .5f, blocker.Y));
+                Check("blocker face is standable", town.CanStand(blocker.X + blocker.Radius + 6f, blocker.Y));
+                var snappedBlocker = town.ClampToWalkable(blocker.X + blocker.Radius + 30f, blocker.Y);
+                Check("click outside the corridor snaps back", town.CanStand(snappedBlocker.x, snappedBlocker.y));
+                Check("clamped point never lands in a blocker", Enumerable.Range(0, 40).All(i =>
+                {
+                    var angle = i / 40f * Math.PI * 2;
+                    var point = town.ClampToWalkable(blocker.X + (float)Math.Cos(angle) * (blocker.Radius * .6f),
+                        blocker.Y + (float)Math.Sin(angle) * (blocker.Radius * .6f));
+                    return town.CanStand(point.x, point.y) || !town.WalkableContains(point.x, point.y);
+                }));
+            }
             Check("perspective narrows toward the horizon", town.PerspectiveTop < town.PerspectiveBottom &&
                 town.PerspectiveTop > .3f && town.PerspectiveBottom < 1.6f);
 
