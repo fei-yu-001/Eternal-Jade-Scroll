@@ -55,8 +55,20 @@ namespace TwelveJade.Editor
             EditorApplication.update += Pump;
         }
 
-        public static void Capture()
+        public static void Capture() => Run(false);
+
+        // 地形底座阶段入口：TwelveJade.Editor.FrontEndShot.CaptureTerrain
+        public static void CaptureTerrain() => Run(true);
+
+        // 模式标记必须跨 play 域重载存活（普通静态字段会被重置回 false，
+        // 导致地形模式跑成完整流程、撞上 terrain 阶段不存在的 NPC 断言）。
+        static bool terrainMode => SessionState.GetBool(SessionKey + ".Terrain", false);
+        static bool terrainDraftCreated;
+        static bool terrainReady;
+
+        static void Run(bool mode)
         {
+            SessionState.SetBool(SessionKey + ".Terrain", mode);
             SessionState.SetBool(SessionKey, true);
             // 验收全程只在临时存档目录里跑，玩家的三个槽位一概不碰。
             var dir = Path.Combine(Path.GetTempPath(), "twelve-jade-acceptance-" + Guid.NewGuid().ToString("N"));
@@ -141,6 +153,13 @@ namespace TwelveJade.Editor
         static void Step()
         {
             if (Time.realtimeSinceStartup - runStart > 240f) { Fail("验收超时:超过 240 秒仍未完成,当前页面 " + controllerPage); return; }
+            // 地形底座模式：只验"地"，走独立短流程（建档→进镇→地形断言→三张截图），
+            // 不进 trade/combat 等依赖 NPC 的页面。
+            if (terrainMode)
+            {
+                TerrainStep();
+                return;
+            }
             if (shotIndex < 0)
             {
                 if (!EditorApplication.isPlaying) return;
@@ -164,6 +183,13 @@ namespace TwelveJade.Editor
                 waitUntil = null;
             }
             waiting = false;
+            if (terrainMode)
+            {
+                // 地形模式收尾：三张地形截图 + 底座断言，然后直接结束。
+                RunTerrainChecks();
+                Finish();
+                return;
+            }
             if (!Shot()) return;
             if (shotIndex >= PageNames.Length - 1) Finish();
             else AdvanceTo(shotIndex + 1);
@@ -293,11 +319,14 @@ namespace TwelveJade.Editor
                 VerifyTalkThenLeave();
                 Check(controller.CurrentPage == "town", "城镇截图应停在镇上");
                 townAboveChecked = true;
-                PressKey(Key.W);
+                // 纵深·上方：批处理无应用焦点时 InputSystem 重置注入按键，"按住 W 走
+                // 长路"不可靠（只活一大步）。改用钩子把人物置到货郎上方，等一帧让
+                // 镜头/排序刷新后断言遮挡关系；真实步行由搭话走向覆盖。
+                Check(controller.SnapTravelerAboveNpc("huolang"), "验收钩子应能把人物置到货郎上方");
                 waitStart = Time.realtimeSinceStartup;
                 waiting = true;
-                waitDeadline = Time.realtimeSinceStartup + 12f;
-                waitUntil = VerifyDepthAbove;
+                waitDeadline = Time.realtimeSinceStartup + 8f;
+                waitUntil = null;
                 return false;
             }
             if (currentShot == "town")
@@ -305,6 +334,7 @@ namespace TwelveJade.Editor
                 Check(controller.CurrentPage == "town", "城镇截图应停在镇上");
                 // 走过一段路后镜头应一直跟着主角：近景构图里主角不许滚出视口。
                 Check(controller.TownTravelerOnScreen, "镜头跟随应让主角留在视口内");
+                VerifyDepthAbove();
             }
             if (currentShot == "inventory")
             {
@@ -363,6 +393,98 @@ namespace TwelveJade.Editor
         static Func<bool> waitUntil;
         static float waitDeadline;
 
+        // ---- 地形底座模式（CaptureTerrain）----
+        static void TerrainStep()
+        {
+            if (controller == null)
+            {
+                controller = UnityEngine.Object.FindAnyObjectByType<FrontEndController>();
+                return;
+            }
+            // 等产品初始化到主菜单（presets/配置表加载完毕），再建临时行迹。
+            if (!terrainDraftCreated)
+            {
+                if (controller.CurrentPage != "menu") return;
+                controller.CreateFromDraft(1);
+                terrainDraftCreated = true;
+                createdSlot = 1;
+                return;
+            }
+            if (!terrainReady)
+            {
+                // 等 UI 画布就绪（play 早期 Canvas 未建时 SetupCapture 会空引用）。
+                if (UnityEngine.Object.FindAnyObjectByType<Canvas>() == null) return;
+                SetupCapture();
+                controller.ShowTown();
+                terrainReady = true;
+                waitStart = Time.realtimeSinceStartup;
+                waitDeadline = Time.realtimeSinceStartup + 4f;
+                waiting = true;
+                waitUntil = null; // 纯等 .45s+ 让渐入/镜头/排序刷新，不设条件
+                return;
+            }
+            // 进镇页已就绪：等一拍刷新后跑地形断言 + 三张截图，然后收尾。
+            if (Time.realtimeSinceStartup - waitStart < .45f) return;
+            if (Time.realtimeSinceStartup >= waitDeadline)
+            {
+                RunTerrainChecks();
+                Finish();
+            }
+        }
+
+        static void RunTerrainChecks()
+        {
+            Check(controller.CurrentPage == "town", "应能进入城镇页");
+            // phase=terrain：场景里不应有任何建筑立绘 / NPC / 遭遇标记。
+            var props = CountSceneObjects("Prop ");
+            var npcs = CountSceneObjects("Npc ");
+            var encounters = CountSceneObjects("Encounter ");
+            Check(props == 0 && npcs == 0 && encounters == 0,
+                "地形阶段场景不应有建筑/NPC/遭遇标记",
+                $"prop {props} · npc {npcs} · encounter {encounters}");
+            Check(controller.TerrainZoneCount >= 5, "地形分区数据应已解析（河/山/田/路等）",
+                controller.TerrainZoneCount + " 个分区");
+
+            // 可通行：路网与活动区。
+            Check(controller.TerrainStandable(384, 700), "主街中段应可走");
+            Check(controller.TerrainStandable(384, 1080), "南门官道应可走");
+            Check(controller.TerrainStandable(300, 600), "镇区草地（预留建筑位）应可走");
+            Check(controller.TerrainStandable(384, 420), "北桥桥面应可走");
+            Check(controller.TerrainStandable(384, 250), "山径下段应可走");
+            Check(controller.TerrainStandable(384, 1100), "出生点应可走");
+
+            // 不可通行：河心（桥面之外的河段）、山体、边界外。
+            Check(!controller.TerrainStandable(150, 415), "河心（西段，桥外）不应可走");
+            Check(!controller.TerrainStandable(600, 415), "河心（东段，桥外）不应可走");
+            Check(!controller.TerrainStandable(100, 100), "山体不应可走");
+            Check(!controller.TerrainStandable(20, 20), "画布西北角（山体）不应可走");
+            Check(!controller.TerrainStandable(-5, 500), "西边界外不应可走");
+            Check(!controller.TerrainStandable(773, 500), "东边界外不应可走");
+            Check(!controller.TerrainStandable(384, -5), "北边界外不应可走");
+
+            // 摄像机跟随：置位三处，主角每处都要留在视口内。
+            foreach (var (x, y, label) in new[] { (384, 1080, "南门"), (384, 420, "北桥"), (384, 250, "山径口") })
+            {
+                Check(controller.SnapTravelerTo(x, y), label + " 置位应成功");
+                Check(controller.TownTravelerOnScreen, label + "：镜头跟随应让主角留在视口内");
+            }
+
+            // 截图：南门、北桥（望河与山）、山径口。
+            controller.SnapTravelerTo(384, 1080);
+            Capture("terrain-01-south", "terrain-south");
+            controller.SnapTravelerTo(384, 420);
+            Capture("terrain-02-river", "terrain-river");
+            controller.SnapTravelerTo(384, 250);
+            Capture("terrain-03-hill", "terrain-hill");
+        }
+
+        static int CountSceneObjects(string prefix)
+        {
+            return Resources.FindObjectsOfTypeAll<Transform>()
+                .Count(rect => rect.name.StartsWith(prefix, StringComparison.Ordinal) &&
+                    rect.gameObject.scene.IsValid() && rect.gameObject.activeInHierarchy);
+        }
+
         static int ActiveObjects(string name)
         {
             return Resources.FindObjectsOfTypeAll<RectTransform>()
@@ -414,7 +536,6 @@ namespace TwelveJade.Editor
         // 城镇纵深断言分两个方向：下方（搭话位，人在 NPC 基座下方更近）在 VerifyTalkThenLeave 验，
         // 上方（按 W 走到基座上方更远）在这里验——sibling 顺序应随 y 翻转。
         static bool townAboveChecked;
-        static bool walkingShotTaken;
 
         // 美术导入回归防线：纸偶靠 uvRect 的 v 比例切片，只要 Unity 把贴图缩放/填充过
         // （非 2 的幂尺寸 + nPOTScale），腿那一段就会落到空白区——表现是"腿没了"，
@@ -461,29 +582,22 @@ namespace TwelveJade.Editor
         static int BigEndian(byte[] bytes, int offset) =>
             (bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3];
 
-        static bool VerifyDepthAbove()
+        // 纵深·上方断言（钩子置位后由 town 第二段调用）：人物在货郎基座上方（更远）
+        // 时应画在 NPC 之下（sibling 更小）——与搭话时的"下方"断言合成一对。
+        static void VerifyDepthAbove()
         {
             var traveler = TravelerRect;
             var npc = NpcRect("huolang");
-            // 迈步途中抓一帧：纸偶分块装配在走路姿态下也要对齐（腿身不分离、不露缝）。
-            if (!walkingShotTaken && traveler != null)
-            {
-                walkingShotTaken = true;
-                Capture("play-06b-walking", "town");
-            }
             // UiKit 局部坐标 y 向下：画面上方（更远）的局部 y 比 NPC 大（更不负）。
             var above = traveler != null && npc != null &&
                 traveler.anchoredPosition.y > npc.anchoredPosition.y + 1f;
-            if (!above && Time.realtimeSinceStartup < waitDeadline) return false;
-            ReleaseKeys();
-            Check(above, "按住 W 应能在时限内走到货郎基座上方",
+            Check(above, "钩子置位后人物应停在货郎基座上方",
                 traveler == null || npc == null ? "找不到人物或货郎"
                 : "y " + traveler.anchoredPosition.y.ToString("0") + " vs " + npc.anchoredPosition.y.ToString("0"));
             if (above && traveler != null && npc != null)
                 Check(traveler.GetSiblingIndex() < npc.GetSiblingIndex(),
                     "人物在货郎基座上方（更远）时应画在 NPC 之下",
                     "sibling " + traveler.GetSiblingIndex() + " vs " + npc.GetSiblingIndex());
-            return true;
         }
 
         static void VerifyMotionButtons()
@@ -901,8 +1015,17 @@ namespace TwelveJade.Editor
             SessionState.SetBool(SessionKey, false);
             Application.logMessageReceived -= OnLog;
             EditorApplication.update -= Pump;
-            Check(controller.CurrentPage == "credits", "当前页面应为制作信息");
-            Check(PageNames.All(p => capturedShots.Contains(p)), "全部页面截图生成");
+            if (!terrainMode)
+            {
+                Check(controller.CurrentPage == "credits", "当前页面应为制作信息");
+                Check(PageNames.All(p => capturedShots.Contains(p)), "全部页面截图生成");
+            }
+            else
+            {
+                Check(capturedShots.Contains("terrain-south") && capturedShots.Contains("terrain-river") &&
+                    capturedShots.Contains("terrain-hill"), "三张地形截图生成",
+                    string.Join(" · ", capturedShots.ToArray()));
+            }
             Check(createdSlot > 0, "验收应在临时存档目录里自建一档（不碰玩家存档）");
             CleanupScratch();
             if (target != null && camera != null) { camera.targetTexture = null; target.Release(); }

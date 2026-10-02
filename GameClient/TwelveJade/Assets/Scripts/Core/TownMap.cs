@@ -93,12 +93,14 @@ namespace TwelveJade.Core
 
         TownMap(string name, float artWidth, float artHeight, float spawnX, float spawnY, bool spawnFacingLeft,
             float perspectiveTop, float perspectiveBottom, List<MapRect> walkable, List<MapProp> props,
-            List<MapLandmark> landmarks, List<MapNpc> npcs, List<MapEncounter> encounters)
+            List<MapLandmark> landmarks, List<MapNpc> npcs, List<MapEncounter> encounters,
+            string phase, List<MapRect> terrainZones, List<string> terrainTypes)
         {
             Name = name; ArtWidth = artWidth; ArtHeight = artHeight;
             SpawnX = spawnX; SpawnY = spawnY; SpawnFacingLeft = spawnFacingLeft;
             PerspectiveTop = perspectiveTop; PerspectiveBottom = perspectiveBottom;
             Walkable = walkable; Props = props; Landmarks = landmarks; Npcs = npcs; Encounters = encounters;
+            Phase = phase; TerrainZones = terrainZones; TerrainTypes = terrainTypes;
         }
 
         public string Name { get; }
@@ -115,6 +117,15 @@ namespace TwelveJade.Core
         public IReadOnlyList<MapLandmark> Landmarks { get; }
         public IReadOnlyList<MapNpc> Npcs { get; }
         public IReadOnlyList<MapEncounter> Encounters { get; }
+
+        // 场景阶段："terrain" = 地形底座阶段，ShowTown 不摆放 props/npcs/encounters
+        // （它们的数据仍在本配置里，二期"建筑/环境立绘"阶段切回 "full" 直接启用）。
+        public string Phase { get; }
+
+        // 地形分区标注（河/山/田/镇区等矩形），本期是纯数据：坐标体系的一部分，
+        // 供验收断言"河/山不可走"与二期建筑落位参考；不驱动任何运行期逻辑。
+        public IReadOnlyList<MapRect> TerrainZones { get; }
+        public IReadOnlyList<string> TerrainTypes { get; }
 
         public bool WalkableContains(float x, float y) => Walkable.Any(rect => rect.Contains(x, y));
 
@@ -234,9 +245,22 @@ namespace TwelveJade.Core
             if (!ZoneContains(walkable, props, spawnX, spawnY))
                 throw new FormatException("出生点不在可行走区域内。");
 
+            // 地形分区标注（纯数据）：type + 矩形，供验收与二期建筑落位参考。
+            var terrainZones = new List<MapRect>();
+            var terrainTypes = new List<string>();
+            foreach (var entry in Elements(root, "terrain"))
+            {
+                terrainTypes.Add(Required(entry, "type"));
+                terrainZones.Add(new MapRect(Number(entry, "x", 0f), Number(entry, "y", 0f),
+                    Number(entry, "width", 0f), Number(entry, "height", 0f)));
+            }
+            if (terrainZones.Count != terrainTypes.Count)
+                throw new FormatException("terrain 分区数据不一致。");
+
             return new TownMap(root["name"].AsString("无名之地"), artWidth, artHeight, spawnX, spawnY,
                 root["spawnFacingLeft"].AsBool(false), Number(root, "perspectiveTop", .72f), Number(root, "perspectiveBottom", 1.05f),
-                walkable, props, landmarks, npcs, encounters);
+                walkable, props, landmarks, npcs, encounters,
+                root["phase"].AsString("full"), terrainZones, terrainTypes);
         }
 
         static bool ZoneContains(List<MapRect> walkable, List<MapProp> props, float x, float y)

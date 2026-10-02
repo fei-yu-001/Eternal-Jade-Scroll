@@ -46,7 +46,10 @@ namespace TwelveJade.Presentation
         const int DustCount = 8;
         // 近景镜头倍率：整镇图放大后超出视口，镜头跟随主角滚动（UpdateCamera）。
         // 2 倍时主角约屏高 28%，替代原先 1:1 缩在画布里的鸟瞰构图。
-        const float TownZoom = 2f;
+        // 近景镜头倍率：不再写死——按底图宽高自适应（BuildZoom）。目标：图宽铺满 1920 视口、
+        // 人物屏显高度恒定约 330px。横图（1920 宽）时即原来的 2 倍，竖图（如 768 宽）放大到 2.5。
+        static float BuildZoom(TownMap map) => Mathf.Max(2f, 1920f / map.ArtWidth);
+        static float BuildBodyHeight(float zoom) => 330f / zoom;
 
         // 可行走区域来自配置：读不到就不放行，避免用代码里的副本悄悄跑偏。
         bool LoadTownMap()
@@ -75,7 +78,8 @@ namespace TwelveJade.Presentation
             ui.Button(content, "返回主菜单", 1620, 44, 200, 54, ShowMenu, true);
 
             townMapArt = Resources.Load<Texture2D>("Art/town-map");
-            float mapW = town.ArtWidth * TownZoom, mapH = mapW * town.ArtHeight / town.ArtWidth;
+            var zoom = BuildZoom(town);
+            float mapW = town.ArtWidth * zoom, mapH = mapW * town.ArtHeight / town.ArtWidth;
             townScale = mapW / town.ArtWidth;
             townMap = ui.Art(content, townMapArt != null ? townMapArt : Texture2D.whiteTexture, 0, 0, mapW, mapH).rectTransform;
             // 近景下整图铺满视口，会压住先建的标题与按钮——压到背景纱之后、标题之前。
@@ -85,9 +89,15 @@ namespace TwelveJade.Presentation
             pendingNpcId = null;
             pendingEncounterId = null;
             encounterMarkers.Clear();
-            foreach (var prop in town.Props) PlaceProp(prop);
-            foreach (var npc in town.Npcs) PlaceNpc(npc);
-            foreach (var encounter in town.Encounters) PlaceEncounter(encounter);
+            // 地形底座阶段（phase = "terrain"）：只铺地面，不摆任何建筑/NPC/装饰——
+            // 数据仍留在配置里，二期切回 full 即整体启用。
+            var terrainPhase = town.Phase == "terrain";
+            if (!terrainPhase)
+                foreach (var prop in town.Props) PlaceProp(prop);
+            if (!terrainPhase)
+                foreach (var npc in town.Npcs) PlaceNpc(npc);
+            if (!terrainPhase)
+                foreach (var encounter in town.Encounters) PlaceEncounter(encounter);
 
             dustLayer = ui.Rect(townMap, "Footfall dust", 0, 0, 10, 10);
             ArrangeTownLayers();
@@ -96,7 +106,7 @@ namespace TwelveJade.Presentation
             var preset = System.Array.Find(presets, p => p.id == activeSave.characterId) ?? presets[0];
             var view = preset.Facing(0, activeSave.gender, activeSave.faceStyle)
                        ?? presets[0].Facing(0, activeSave.gender, activeSave.faceStyle);
-            var bodyHeight = 165f * townScale;
+            var bodyHeight = BuildBodyHeight(zoom);
             traveler = PuppetActor.Create(townMap, view, Vector2.zero, new Vector2(bodyHeight * .593f, bodyHeight));
             BuildVersionStamp(view);
             localPos = new Vector2(town.SpawnX, town.SpawnY);
@@ -197,6 +207,39 @@ namespace TwelveJade.Presentation
             if (npc == null || pendingNpcId != npcId) return false;
             localPos = ClampToWalkable(new Vector2(npc.X, npc.Y + npc.Radius + 16f));
             hasTarget = false;
+            return true;
+        }
+
+        // 验收钩子：把人物放到 NPC 基座上方（更远一侧），供纵深排序断言使用。
+        // 批处理无应用焦点时 InputSystem 会重置注入的按键，"按住 W 长距离步行"
+        // 无法可靠模拟，改由钩子置位后直接断言排序；真实步行由搭话走向覆盖。
+        public bool SnapTravelerAboveNpc(string npcId)
+        {
+            var npc = town?.Npcs.FirstOrDefault(n => n.Id == npcId);
+            if (npc == null) return false;
+            localPos = ClampToWalkable(new Vector2(npc.X, npc.Y - 60f));
+            hasTarget = false;
+            traveler?.SetPosition(ToLocal(localPos)); // 同帧同步显示位置（PuppetActor.Update 会覆盖）
+            UpdateCamera();
+            return true;
+        }
+
+        // 验收钩子（地形底座阶段）：转发某坐标是否可站立——TerrainShot 用它断言
+        // "河/山不可走、路可走、边界外不可走"，与配置数据而非硬编码对照。
+        public bool TerrainStandable(float x, float y) => town != null && WalkablePoint(new Vector2(x, y));
+
+        // 验收钩子（地形底座阶段）：地形分区数据是否解析成功。
+        public int TerrainZoneCount => town?.TerrainZones.Count ?? 0;
+
+        // 验收钩子（地形底座阶段）：把人物直接放到指定坐标（限可走区内）。
+        // 置位后同步刷新镜头（UpdateCamera 平时由每帧驱动，同帧断言会读到旧镜头位）。
+        public bool SnapTravelerTo(float x, float y)
+        {
+            if (!WalkablePoint(new Vector2(x, y))) return false;
+            localPos = new Vector2(x, y);
+            hasTarget = false;
+            traveler?.SetPosition(ToLocal(localPos)); // 同帧同步显示位置（PuppetActor.Update 会覆盖）
+            UpdateCamera();
             return true;
         }
 
