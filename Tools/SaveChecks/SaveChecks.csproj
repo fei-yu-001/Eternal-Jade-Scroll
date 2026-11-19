@@ -17,6 +17,7 @@
     <!-- 员工 L：行囊手艺与经济层是纯 C#（不依赖 UnityEngine），并入控制台门禁，
          这样背包/理包/手艺/物价/善行的判据在没有 Unity 的机器上也有人值守。 -->
     <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Economy/*.cs" Link="Economy/%(Filename)%(Extension)" />
+    <Compile Include="../../GameClient/TwelveJade/Assets/Editor/InventoryEconomySuite.cs" Link="Checks/InventoryEconomySuite.cs" />
     <!-- 员工 K：妖兽 2.0 表、战力与耐久、命途映射都是纯 C#（不依赖 UnityEngine），
          并入控制台门禁，这样部位倍率对表、耐久归零回退、战败账单在没有 Unity 的机器上也有人值守。 -->
     <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Combat/*.cs" Link="Combat/%(Filename)%(Extension)" />

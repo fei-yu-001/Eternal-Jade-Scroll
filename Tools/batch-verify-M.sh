@@ -131,7 +131,7 @@ check() {
   else
     echo "SELFTEST: FAIL 正常白名单竟然被拒（OWNED 与 MINE 不同步）"; return 1
   fi
-  EXTRA_MINE="Assets/Scripts/Economy/InventoryEconomySuite.cs"   # 3号 名下的真实文件，不是编出来的靶子
+  EXTRA_MINE="Assets/Editor/InventoryEconomySuite.cs"   # 3号 名下的真实文件，不是编出来的靶子
   if overlay_guard; then
     echo "SELFTEST: FAIL 多带一个别人名下的文件竟然没被拦"; return 1
   fi

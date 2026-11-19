@@ -8,10 +8,8 @@ namespace TwelveJade.Economy
 {
     // 行囊 / 手艺 / 物价 / 气运的判据全集（85+ 项）。
     //
-    // 为什么把断言放进 Economy 而不是直接写在 Editor 夹具里：
-    // 这一层刻意不碰 UnityEngine，于是同一套判据能在两个地方跑——
-    // Unity 的 InventoryEconomyShot.RunSuite，和没有 Unity 的 SaveChecks 控制台。
-    // 判据只写一份，就不会出现"两边绿得不一样"这种事。
+    // 放在 Editor 目录以排除玩家构建；保持纯 C#，由 SaveChecks 显式链接同一份源码。
+    // Unity 的 InventoryEconomyShot 和控制台共用这套判据。
     public static class InventoryEconomySuite
     {
         public delegate void CheckFn(string label, bool ok, string detail = null);
@@ -1141,11 +1139,11 @@ namespace TwelveJade.Economy
             // 表是文档，但这里把它当门禁对：文档与映射表两边必须严格相等——
             // "写了表没接线"和"接了线没写表"都不许绿着过去（上一轮的虚账就是这么留下的）。
             // configDir 是 <repo>/GameClient/TwelveJade/Assets/Resources/Config：五段 .. 才回到仓库根，
-            // Unity 侧（Application.dataPath/Resources/Config）同形，两条路都落在 Tools/logs。
+            // Unity 侧（Application.dataPath/Resources/Config）同形，两条路都读版本管理内的接线表。
             var ledgerPath = Path.GetFullPath(Path.Combine(configDir,
-                "..", "..", "..", "..", "..", "Tools", "logs", "o-karma-ledger.md"));
+                "..", "..", "..", "..", "..", "Documents", "气运事件接线表.md"));
             var ledger = File.Exists(ledgerPath) ? File.ReadAllText(ledgerPath) : "";
-            check("气运去向表读到了（Tools/logs/o-karma-ledger.md）", ledger.Length > 0, ledgerPath);
+            check("气运去向表读到了（Documents/气运事件接线表.md）", ledger.Length > 0, ledgerPath);
             var unlisted = karma.Entries.Where(d => !ledger.Contains("`" + d.Id + "`"))
                 .Select(d => d.Id).ToList();
             check("去向表逐条点名 25 条，一条不落", unlisted.Count == 0,

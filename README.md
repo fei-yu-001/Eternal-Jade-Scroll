@@ -39,6 +39,8 @@ Eternal-Jade-Scroll/
 
 ## 快速开始
 
+当前架构与清理结论：[`Documents/架构审查-2026-11-20.md`](Documents/架构审查-2026-11-20.md)。其中列出了已清理代码、已跑验证和仍需处理的地图验收及手机入口问题。
+
 1. **新手 / 开发者**：先读 [`Documents/00_项目开发文档.md`](Documents/00_项目开发文档.md)（总体规划 + 当前状态 + 近期任务），再看 [`Documents/09_开发日志.md`](Documents/09_开发日志.md) 了解最新进展
 2. **设计参考**：[`Documents/01_情节大纲.md`](Documents/01_情节大纲.md)
 3. **审计与方案**：[`Documents/14_验收审计与修复方案.md`](Documents/14_验收审计与修复方案.md)

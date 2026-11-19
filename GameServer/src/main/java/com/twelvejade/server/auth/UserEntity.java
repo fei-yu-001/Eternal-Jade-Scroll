@@ -37,7 +37,7 @@ public class UserEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    /** 最近一次签发令牌的时间，用于将来做令牌过期。 */
+    /** 最近一次签发令牌的时间，由 AuthTokens 用于判定令牌有效期。 */
     @Column(name = "token_at")
     private LocalDateTime tokenAt;
 

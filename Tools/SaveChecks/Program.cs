@@ -1,6 +1,19 @@
 using System.Text.Json;
 using TwelveJade.Core;
 
+if (args.Length > 0)
+{
+    if (args.Length != 2 || args[0] != "--suite" ||
+        (args[1] != "economy" && args[1] != "chapters"))
+        throw new ArgumentException("Usage: SaveChecks [--suite economy|chapters]");
+    var configDir = ConfigChecks.FindConfigDirectory()
+        ?? throw new DirectoryNotFoundException("Game configuration directory not found.");
+    if (args[1] == "economy") InventoryEconomyChecks.Run(configDir);
+    else ChapterChecks.Run(configDir);
+    Console.WriteLine("PASS: selected suite " + args[1] + " (full suite not run)");
+    return;
+}
+
 // 游戏工程的正式配置表也要过一遍：改坏了必须在这里先报警。
 ConfigChecks.Run();
 

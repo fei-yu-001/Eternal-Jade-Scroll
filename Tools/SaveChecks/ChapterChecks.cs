@@ -75,11 +75,11 @@ namespace TwelveJade.Core
             Check("skipping ahead is refused", !jumped.Entered && jumpError.Length > 0, jumpError);
 
             // 逐段走通：条件到位就解锁，走到就写标记。
-            WalkAll(save, chapters, quests, Night());
+            var walkError = WalkAll(save, chapters, quests, Night());
             Check("the whole axis can be walked",
                 ChapterLedger.Reached(save) == ChapterSegment.Departure &&
                 ChapterLedger.SettledCount(save) == chapters.Segments.Count,
-                "走到 " + ChapterLedger.Reached(save) + "，结算 " + ChapterLedger.SettledCount(save) + " 段");
+                "走到 " + ChapterLedger.Reached(save) + "，结算 " + ChapterLedger.SettledCount(save) + " 段；" + walkError);
             Check("every segment wrote its one-shot flag", chapters.Segments
                 .All(s => string.IsNullOrEmpty(s.GrantsFlag) || save.HasFlag(s.GrantsFlag)));
             Check("ledger reconciles", ChapterLedger.Reconciles(save, chapters));
@@ -122,13 +122,8 @@ namespace TwelveJade.Core
         }
 
         // 从第一段一路推到 Departure：每段先解锁前置任务，再进入。
-        static string lastWalkError;
-
-        static void WalkAll(SaveData save, ChapterTable chapters, QuestTable quests, WorldTime night)
+        static string WalkAll(SaveData save, ChapterTable chapters, QuestTable quests, WorldTime night)
         {
-            var walked = true;
-            var walkedError = "";
-            lastWalkError = "";
             foreach (var def in chapters.Segments.OrderBy(s => (int)s.Segment))
             {
                 // 任务是链式的：反复刷新 + 做完"当前能做的下一件"，直到没有新的进展。
@@ -136,8 +131,9 @@ namespace TwelveJade.Core
                 DrainQuestChain(save, quests, def.RequiresQuests);
                 var when = def.NightOnly > 0 ? night : Day();
                 var entered = ChapterLedger.Enter(save, chapters, def.Segment, when, out var error);
-                if (!entered.Entered) { walked = false; walkedError = "段 " + def.Segment + "：" + error; break; }
+                if (!entered.Entered) return "段 " + def.Segment + "：" + error;
             }
+            return "";
         }
 
         // 把任务推到完成：逐个目标补进度再结算。目标推不动就带着原因报错，

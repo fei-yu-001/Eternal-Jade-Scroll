@@ -131,7 +131,7 @@ namespace TwelveJade.Core
         }
 
         // 从可执行文件往上找到仓库根（含 GameClient/TwelveJade/Assets/Resources/Config）。
-        static string FindConfigDirectory()
+        internal static string FindConfigDirectory()
         {
             var candidates = new List<string>();
             var directory = new DirectoryInfo(AppContext.BaseDirectory);

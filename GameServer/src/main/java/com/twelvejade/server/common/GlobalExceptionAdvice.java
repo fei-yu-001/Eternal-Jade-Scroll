@@ -1,7 +1,5 @@
 package com.twelvejade.server.common;
 
-import com.twelvejade.server.common.ApiCode;
-import com.twelvejade.server.common.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

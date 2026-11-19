@@ -124,7 +124,7 @@ public class SaveController {
                     return fresh;
                 });
         entity.setSchemaVersion(schemaVersion);
-        entity.setPayload(PAYLOAD_MAPPER.writeValueAsString(savePayload));
+        entity.setPayload(payload);
         // "现在"一律走注入的 Clock（TimeConfig 纪律）；截到微秒与数据库 TIMESTAMP(6) 精度对齐，
         // 保证回执与随后 download/list 给出的字符串逐字一致。
         entity.setUpdatedAt(Instant.now(clock).truncatedTo(ChronoUnit.MICROS));
@@ -141,7 +141,7 @@ public class SaveController {
             var existing = saveRepository.findByUser_IdAndSlot(user.getId(), (byte) slot)
                     .orElseThrow(() -> conflict);
             existing.setSchemaVersion(schemaVersion);
-            existing.setPayload(PAYLOAD_MAPPER.writeValueAsString(savePayload));
+            existing.setPayload(payload);
             existing.setUpdatedAt(Instant.now(clock).truncatedTo(ChronoUnit.MICROS));
             entity = saveRepository.save(existing);
         }

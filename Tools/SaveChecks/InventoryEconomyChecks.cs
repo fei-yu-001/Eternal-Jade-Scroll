@@ -5,7 +5,7 @@ using TwelveJade.Economy;
 namespace TwelveJade.Core
 {
     // 员工 L · M9（控制台版）：与 Assets/Editor/InventoryEconomyShot.cs 共用同一套判据
-    // （Economy/InventoryEconomySuite.cs），跑在 SaveChecks 里。
+    // （Editor/InventoryEconomySuite.cs），跑在 SaveChecks 里。
     // 这条控制台路线不是 Unity 批处理缺席时的替代品，而是**常态化的第二双眼睛**：
     // 它跑得快、不依赖引擎，改一件物品就能当场回验。真正只有引擎测得到的那几条
     // （Resources 加载路径与 JsonUtility 落盘往返）留在 InventoryEconomyShot 里。

@@ -10,7 +10,7 @@ namespace TwelveJade.Editor
     // 员工 L · M9：行囊 / 手艺 / 物价 / 气运的无头夹具（85+ 断言）。
     // 批处理入口 TwelveJade.Editor.InventoryEconomyShot.RunSuite。
     //
-    // 断言主体在 Economy/InventoryEconomySuite.cs（纯 C#，不依赖 UnityEngine），
+    // 断言主体在 Editor/InventoryEconomySuite.cs（纯 C#，不依赖 UnityEngine），
     // 这里只负责三件事：找配置目录、收结果、补上两条**只有引擎里才测得到**的判据——
     // Resources 的真实加载路径、以及 JsonUtility 的落盘往返。同一套判据因此在
     // Unity 与控制台两条路上都能跑，而运行期专属的那一环不会没人值守。
