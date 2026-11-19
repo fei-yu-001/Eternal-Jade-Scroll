@@ -133,7 +133,7 @@ namespace TwelveJade.Presentation
             var note=PaintedScrollArt.Note(ui,host,"Study local silk result",new Rect(70,540,560,140));
             var heading=AestheticUi.Text(ui,note,"Study spirit result","",new Rect(24,14,512,48),27,TextAlignmentOptions.Center);
             var detail=AestheticUi.Text(ui,note,"Study spirit detail","",new Rect(24,66,512,62),22,TextAlignmentOptions.Center);
-            detail.textWrappingMode=TextWrappingModes.Normal;
+            TextWrapCompat.SetWrapping(detail, true);
             motion=overlay.gameObject.AddComponent<ChibiStudyAnimation>();
             motion.Bind(body,group,heading,detail,reduce,Array.Empty<RectTransform>(),Array.Empty<CanvasGroup>(),host);
             group.blocksRaycasts=true;group.interactable=true;

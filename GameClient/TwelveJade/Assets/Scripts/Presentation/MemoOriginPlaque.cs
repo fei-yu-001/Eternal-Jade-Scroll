@@ -47,7 +47,7 @@ namespace TwelveJade.Presentation
                 selected ? Ink : Ivory, TextAlignmentOptions.Center, true);
             label.name = name + " label";
             label.richText = false;
-            label.textWrappingMode = TextWrappingModes.NoWrap;
+            TextWrapCompat.SetWrapping(label, false);
             label.enableAutoSizing = false;
             label.overflowMode = TextOverflowModes.Overflow;
             label.extraPadding = false; label.margin = new Vector4(2, 2, 2, 2);

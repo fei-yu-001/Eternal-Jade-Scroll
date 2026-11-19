@@ -4,19 +4,12 @@ using UnityEngine.UI;
 
 namespace TwelveJade.Network.UI
 {
-    /// <summary>
-    /// 对话框入口（M6-03-C 交互闭环）。
-    ///
-    /// 为什么是热键而不是主菜单按钮：主菜单在 FrontEndController.ShowMenu 里，那不是本轮
-    /// 白名单文件（G9 的提交清单不含表现层）。可没有入口的话，AuthDialog / CloudSaveDialog
-    /// 做得再全也没有玩家能打开——"面板存在"不等于"闭环成立"。
-    /// 架构师排期在主菜单落一个正式按钮之后，这个引导对象直接删掉即可。
-    ///
-    /// 为什么放在 UI/Auth 而不是 NetworkRuntime：TwelveJade.Network 被本程序集引用，
-    /// 反向引用会成编译环。
-    /// </summary>
+    /// <summary>Shared account/cloud entry: touchable main-menu buttons plus desktop shortcuts.</summary>
     public sealed class NetworkDialogEntry : MonoBehaviour
     {
+        TwelveJade.Presentation.FrontEndController controller;
+        RectTransform menuTools;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap()
         {
@@ -26,6 +19,7 @@ namespace TwelveJade.Network.UI
 
         void Update()
         {
+            RefreshMenuTools();
             var keyboard = Keyboard.current;
             if (keyboard == null) return;
             if (!keyboard.f1Key.wasPressedThisFrame && !keyboard.f2Key.wasPressedThisFrame) return;
@@ -34,6 +28,30 @@ namespace TwelveJade.Network.UI
             if (keyboard.f1Key.wasPressedThisFrame && !AuthDialog.IsOpen) AuthDialog.Open();
             else if (keyboard.f2Key.wasPressedThisFrame && !CloudSaveDialog.IsOpen) CloudSaveDialog.Open();
         }
+
+        void RefreshMenuTools()
+        {
+            if (controller == null) controller = FindAnyObjectByType<TwelveJade.Presentation.FrontEndController>();
+            if (controller == null) return;
+            if (menuTools == null && controller.CurrentPage == "menu")
+            {
+                var kit = NetworkUi.Kit;
+                menuTools = kit.Rect(NetworkUi.OverlayCanvas().transform, "Account and cloud entry", 0, 0, 428, 72);
+                menuTools.anchorMin = menuTools.anchorMax = new Vector2(.5f, 0);
+                menuTools.pivot = new Vector2(.5f, 0); menuTools.anchoredPosition = new Vector2(0, 28);
+                TwelveJade.Presentation.AestheticUi.Jade(kit, menuTools, "Menu account", "账号", new Rect(0, 0, 204, 72),
+                    () => { if (controller.CurrentPage == "menu") AuthDialog.Open(); }, () => true, fontSize: 28);
+                TwelveJade.Presentation.AestheticUi.Jade(kit, menuTools, "Menu cloud saves", "云存档", new Rect(224, 0, 204, 72),
+                    () => { if (controller.CurrentPage == "menu") CloudSaveDialog.Open(); }, () => true, fontSize: 28);
+            }
+            if (menuTools != null)
+            {
+                bool visible = controller.CurrentPage == "menu" && !AuthDialog.IsOpen && !CloudSaveDialog.IsOpen;
+                if (menuTools.gameObject.activeSelf != visible) menuTools.gameObject.SetActive(visible);
+            }
+        }
+
+        void OnDestroy() { if (menuTools != null) Destroy(menuTools.gameObject); }
 
         /// <summary>
         /// 只在主菜单与青石镇页接管：战斗/交易/角色创建中途弹账号面板会打断操作，

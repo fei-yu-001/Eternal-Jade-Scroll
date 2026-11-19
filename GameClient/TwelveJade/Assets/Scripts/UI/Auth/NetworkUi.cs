@@ -106,7 +106,7 @@ namespace TwelveJade.Network.UI
             var label = Kit.Label(parent, "", x, y, w, h, 22,
                 new Color(.86f, .22f, .18f), TextAlignmentOptions.Midline);
             label.gameObject.name = name;
-            label.textWrappingMode = TextWrappingModes.Normal;
+            TextWrapCompat.SetWrapping(label, true);
             return label;
         }
     }

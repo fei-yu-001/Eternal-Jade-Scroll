@@ -22,7 +22,7 @@ namespace TwelveJade.Presentation
             var button=root.gameObject.AddComponent<Button>();button.targetGraphic=hit;button.transition=Selectable.Transition.None;
             var surface=ui.Stretch(root,"Painted jade command").gameObject.AddComponent<DialogueSurface>();surface.ConfigurePainted(ui,false);
             var text=ui.Label(root,title,22,4,bounds.width-44,bounds.height-8,size,new Color(.16f,.23f,.20f,1),TextAlignmentOptions.Center);
-            text.name=name+" caption";text.richText=false;text.enableAutoSizing=false;text.textWrappingMode=TextWrappingModes.NoWrap;text.extraPadding=false;text.margin=new Vector4(2,2,2,2);
+            text.name=name+" caption";text.richText=false;text.enableAutoSizing=false;TextWrapCompat.SetWrapping(text, false);text.extraPadding=false;text.margin=new Vector4(2,2,2,2);
             root.gameObject.AddComponent<DialogueSlipFeedback>().Configure(button,surface,text);
             button.onClick.AddListener(()=>sound?.Invoke());if(action!=null)button.onClick.AddListener(action);return button;
         }

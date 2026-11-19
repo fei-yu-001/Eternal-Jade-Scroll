@@ -347,7 +347,7 @@ namespace TwelveJade.Presentation
                 if (worldHealthCaption != null) worldHealthCaption.text = "气血  " + worldPlayerState.Hp + " / " + worldPlayerState.MaxHp;
                 if (worldStaminaCaption != null) worldStaminaCaption.text = "精力  " + Mathf.CeilToInt(worldPlayerState.Stamina) + " / " + worldPlayerState.MaxStamina;
             }
-            if (worldBattleHint != null) worldBattleHint.text = !WorldCombatActive ? "面向前方出招 · J 轻击 K 重击 · U 御剑 I 雷法 O 清心" : "WASD 走位 · J 轻击  K 重击 · 空格闪身 · 避开地面预警";
+            if (worldBattleHint != null) worldBattleHint.text = MobileControls.Enabled ? "摇杆走位 · 点选招式 · 闪身避开预警" : !WorldCombatActive ? "面向前方出招 · J 轻击 K 重击 · U 御剑 I 雷法 O 清心" : "WASD 走位 · J 轻击  K 重击 · 空格闪身 · 避开地面预警";
             if (!WorldCombatActive || worldTargetFill == null) return;
             worldTargetFill.rectTransform.sizeDelta = new Vector2(598f * worldBattle.Foe.Hp / worldBattle.Foe.MaxHp, 10);
             worldTargetHealth.text = worldBattle.Foe.Hp + " / " + worldBattle.Foe.MaxHp +

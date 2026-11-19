@@ -20,7 +20,7 @@ namespace TwelveJade.Presentation
             caption=AestheticUi.Text(ui,button.transform,"Quest entry title",title,new Rect(65,12,width-112,50),24,TextAlignmentOptions.Left);
             fold=AestheticUi.Text(ui,button.transform,"Quest fold state","展",new Rect(width-41,15,30,44),21,TextAlignmentOptions.Center);
             body=AestheticUi.Text(ui,host,"Quest expanded detail",detail,new Rect(16,86,width-32,120),23);
-            body.textWrappingMode=TextWrappingModes.Normal;Set(title,detail);Apply();
+            TextWrapCompat.SetWrapping(body, true);Set(title,detail);Apply();
         }
         public void Set(string title,string detail){caption.text=title;body.text=detail;Apply();}
         void Toggle(){expanded=!expanded;Apply();changed?.Invoke();}

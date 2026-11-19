@@ -264,7 +264,7 @@ namespace TwelveJade.Presentation
             var label = kit.Label(parent, value, x, y, width, height, size, color,
                 TextAlignmentOptions.TopLeft, false);
             label.name = name; label.richText = false;
-            label.textWrappingMode = TextWrappingModes.Normal;
+            TextWrapCompat.SetWrapping(label, true);
             label.overflowMode = TextOverflowModes.Overflow;
             return label;
         }
@@ -295,7 +295,7 @@ namespace TwelveJade.Presentation
             label.rectTransform.anchoredPosition = new Vector2(textInset, 0);
             label.rectTransform.sizeDelta = new Vector2(width - textInset * 2, height);
             label.fontSize = 25; label.enableAutoSizing = false; label.characterSpacing = .6f;
-            label.richText = false; label.textWrappingMode = TextWrappingModes.Normal;
+            label.richText = false; TextWrapCompat.SetWrapping(label, true);
             label.overflowMode = TextOverflowModes.Overflow;
             label.alignment = TextAlignmentOptions.Center;
             button.gameObject.AddComponent<DialogueSlipFeedback>().Configure(button, surface, label);

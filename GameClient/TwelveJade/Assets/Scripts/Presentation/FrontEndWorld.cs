@@ -123,6 +123,7 @@ namespace TwelveJade.Presentation
             BuildQuestOverheads();
             BuildMiniMap();
             BuildTownHud();
+            BuildMobileControls();
 
             worldPos = ReferenceEquals(wildernessReturnOwner, activeSave) && wildernessReturn.HasValue && CanStand(wildernessReturn.Value)
                 ? wildernessReturn.Value : new Vector2(town.SpawnX, town.SpawnY);
@@ -615,6 +616,11 @@ namespace TwelveJade.Presentation
                 if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) move.x -= 1f;
                 if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) move.x += 1f;
             }
+            if (mobileMovePad != null && mobileMovePad.isActiveAndEnabled && mobileMovePad.Direction != Vector2.zero)
+            {
+                move = new Vector2(mobileMovePad.Direction.x, -mobileMovePad.Direction.y);
+                run = mobileMovePad.Running;
+            }
             if (move != Vector2.zero)
             {
                 // T033：键盘按下就是玩家说"我自己走"，优先级高于自动寻路。
@@ -695,11 +701,9 @@ namespace TwelveJade.Presentation
             UpdateDepthOrder();
             if (page != "town") return;
 
-            var mouse = Mouse.current;
-            if (mouse != null && mouse.leftButton.wasPressedThisFrame)
+            if (MobileControls.TryGroundPress(out var screen))
             {
                 // T031：落地面寻路前先问真实射线，而不是"有没有指针悬在 UI 上"这种粗判。
-                var screen = mouse.position.ReadValue();
                 if (!IsPointerBlockedByUI(screen) && !IsPointerOverWorldAction(screen))
                 {
                     var point = ScreenToWorld(screen);

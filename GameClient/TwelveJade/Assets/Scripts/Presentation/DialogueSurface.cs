@@ -131,7 +131,7 @@ namespace TwelveJade.Presentation
             var name = kit.Label(rect, "", 16, 4, 128, height - 8, 32,
                 new Color(.43f, .13f, .10f, 1), TextAlignmentOptions.Center, true);
             name.name = "Dialogue speaker"; name.richText = false; name.characterSpacing = 1;
-            name.enableAutoSizing = false; name.textWrappingMode = TextWrappingModes.NoWrap;
+            name.enableAutoSizing = false; TextWrapCompat.SetWrapping(name, false);
             name.overflowMode = TextOverflowModes.Overflow;
             rect.gameObject.AddComponent<DialogueNameSealFit>().Configure(name, maxWidth);
             return name;

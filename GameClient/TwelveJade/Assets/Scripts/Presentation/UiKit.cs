@@ -129,7 +129,7 @@ namespace TwelveJade.Presentation
             float inset = Mathf.Min(w * .22f, h * .72f);
             var label = Label(frame.transform, text, inset, 0, w - inset * 2, h, primary ? 40 : 27,
                 Hex("382314"), TextAlignmentOptions.Center, true);
-            label.textWrappingMode = TextWrappingModes.NoWrap;
+            TextWrapCompat.SetWrapping(label, false);
             label.enableAutoSizing = true; label.fontSizeMin = primary ? 34 : 20; label.fontSizeMax = primary ? 40 : 27;
             label.name = name + " label";
             label.richText = false;
@@ -150,7 +150,7 @@ namespace TwelveJade.Presentation
             var label = Label(rect, text, width * .18f, 0, width * .64f, height, 40,
                 Hex("3E4333"), TextAlignmentOptions.Center, true);
             label.name = name + " label"; label.richText = false;
-            label.enableAutoSizing = false; label.textWrappingMode = TextWrappingModes.NoWrap;
+            label.enableAutoSizing = false; TextWrapCompat.SetWrapping(label, false);
             button.onClick.AddListener(() => chime?.Invoke()); button.onClick.AddListener(action);
             rect.gameObject.AddComponent<JadeCommandView>().Configure(image, button, label, reduced);
             return button;
@@ -187,7 +187,7 @@ namespace TwelveJade.Presentation
             var label = Rect(parent, "Text", x, y, w, h).gameObject.AddComponent<TextMeshProUGUI>();
             label.font = brush ? this.brush : font; label.text = text; label.fontSize = size;
             label.color = color ?? White; label.alignment = align;
-            label.raycastTarget = false; label.textWrappingMode = TextWrappingModes.Normal;
+            label.raycastTarget = false; TextWrapCompat.SetWrapping(label, true);
             return label;
         }
 

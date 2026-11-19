@@ -47,7 +47,7 @@ namespace TwelveJade.Presentation
                 new Color(.97f, .87f, .64f), TextAlignmentOptions.Center, true);
             label.rectTransform.anchorMin = label.rectTransform.anchorMax = label.rectTransform.pivot = new Vector2(.5f, .5f);
             label.rectTransform.anchoredPosition = new Vector2(0, height * .02f);
-            label.name = name + " label"; label.richText = false; label.textWrappingMode = TextWrappingModes.NoWrap;
+            label.name = name + " label"; label.richText = false; TextWrapCompat.SetWrapping(label, false);
             label.enableAutoSizing = false; label.overflowMode = TextOverflowModes.Overflow; label.extraPadding = true;
             var rule = ui.Panel(rect, "Seal keyboard focus rule", Width * .25f, height * .83f, Width * .5f, 1.4f, new Color(1, .86f, .5f));
             rule.raycastTarget = false;

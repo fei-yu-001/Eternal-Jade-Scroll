@@ -101,7 +101,11 @@ namespace TwelveJade.Network
         public NetworkClient(NetworkConfig config, ITransport transport = null)
         {
             this.config = config ?? throw new ArgumentNullException(nameof(config));
+#if UNITY_OPENHARMONY && !UNITY_EDITOR
+            this.transport = transport ?? new HarmonyHttpTransport();
+#else
             this.transport = transport ?? new UnityWebRequestTransport();
+#endif
         }
 
         public void BindCredentials(Func<string> tokenProvider, Action<string> tokenWriter)

@@ -33,7 +33,7 @@ namespace TwelveJade.Presentation
         {
             var clip=ui.Rect(parent,name+" boundary",box.x,box.y,box.width,box.height);clip.gameObject.AddComponent<RectMask2D>();
             var label=ImmortalUi.Text(ui,clip,name,text,6,6,box.width-12,box.height-12,size,ink??Ivory,false,align); // Upright local typography; no global font replacement.
-            label.textWrappingMode=TextWrappingModes.NoWrap;label.maxVisibleLines=lines;label.lineSpacing=4;
+            TextWrapCompat.SetWrapping(label, false);label.maxVisibleLines=lines;label.lineSpacing=4;
             label.enableAutoSizing=false;label.extraPadding=false;label.overflowMode=TextOverflowModes.Truncate;return label;
         }
         public static ArtsCodexGraphic Graphic(UiKit ui,Transform parent,string name,Rect box,ArtsCodexGraphic.Form form,Color color,Func<bool> reduce=null,int glyph=0)

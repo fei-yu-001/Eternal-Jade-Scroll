@@ -32,10 +32,10 @@ namespace TwelveJade.Presentation
             var edge = ui.Panel(badge.content, "Identity fine gold rule", 12, 3, 256, 1, new Color(.69f, .58f, .35f, .52f)); edge.raycastTarget = false;
             badge.nameLabel = ui.Label(badge.content, name ?? "", 14, string.IsNullOrEmpty(title) ? 3 : 29, 252, 36, 23, UiKit.Paper, TextAlignmentOptions.Center, true);
             badge.nameLabel.name = "NPC real name"; badge.nameLabel.richText = false; badge.nameLabel.enableAutoSizing = false;
-            badge.nameLabel.textWrappingMode = TextWrappingModes.NoWrap; badge.nameLabel.raycastTarget = false;
+            TextWrapCompat.SetWrapping(badge.nameLabel, false); badge.nameLabel.raycastTarget = false;
             badge.titleLabel = ui.Label(badge.content, title ?? "", 14, 4, 252, 28, 18, new Color(.79f, .73f, .57f, 1), TextAlignmentOptions.Center);
             badge.titleLabel.name = "NPC configured title"; badge.titleLabel.richText = false; badge.titleLabel.enableAutoSizing = false;
-            badge.titleLabel.textWrappingMode = TextWrappingModes.NoWrap; badge.titleLabel.raycastTarget = false; badge.titleLabel.gameObject.SetActive(!string.IsNullOrEmpty(title));
+            TextWrapCompat.SetWrapping(badge.titleLabel, false); badge.titleLabel.raycastTarget = false; badge.titleLabel.gameObject.SetActive(!string.IsNullOrEmpty(title));
             float needed = Mathf.Max(badge.nameLabel.GetPreferredValues(name ?? "").x, badge.titleLabel.GetPreferredValues(title ?? "").x) + 28;
             float width = Mathf.Max(180, needed); badge.content.sizeDelta = new Vector2(width, badge.content.sizeDelta.y);
             badge.nameLabel.rectTransform.sizeDelta = new Vector2(width - 28, 36); badge.titleLabel.rectTransform.sizeDelta = new Vector2(width - 28, 28);

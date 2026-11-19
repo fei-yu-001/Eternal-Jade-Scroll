@@ -64,7 +64,12 @@ namespace TwelveJade.Presentation
                 mode.GetComponentInChildren<TMP_Text>().text = draft.fullscreen ? "无边框全屏" : "窗口";
                 PlaceSettingsKnob(modeKnob, draft.fullscreen);
             });
-            SettingsSanctumArt.Text(ui, paper, "Settings resolution label", "窗口分辨率", new Rect(864,365,186,46), 26);
+            if (MobileControls.Enabled)
+            {
+                mode.interactable = false;
+                mode.GetComponentInChildren<TMP_Text>().text = "横屏全屏";
+            }
+            SettingsSanctumArt.Text(ui, paper, "Settings resolution label", MobileControls.Enabled ? "画面尺寸" : "窗口分辨率", new Rect(864,365,186,46), 26);
             var available = Resolutions.Where(r => r.x <= Display.main.systemWidth && r.y <= Display.main.systemHeight).ToArray();
             if (available.Length == 0) available = new[] { Resolutions[0] };
             var resolution = SettingsSanctumArt.Button(ui, paper, "Settings resolution", draft.width + " × " + draft.height, 1056, 349, 476, 66, null, () => draft.reduceMotion, PlayClick);
@@ -75,6 +80,11 @@ namespace TwelveJade.Presentation
                 resolution.GetComponentInChildren<TMP_Text>().text = next.x + " × " + next.y;
             });
             SettingsKnob(resolution, true);
+            if (MobileControls.Enabled)
+            {
+                resolution.interactable = false;
+                resolution.GetComponentInChildren<TMP_Text>().text = "随设备调整";
+            }
             SettingsSanctumArt.Text(ui, paper, "Settings motion label", "界面过渡", new Rect(864,475,186,46), 26);
             var motion = SettingsSanctumArt.Button(ui, paper, "Settings reduced motion", draft.reduceMotion ? "即时切换" : "柔和渐入", 1056, 459, 476, 66, null, () => draft.reduceMotion, PlayClick);
             var motionKnob = SettingsKnob(motion, draft.reduceMotion);
@@ -84,8 +94,8 @@ namespace TwelveJade.Presentation
                 motion.GetComponentInChildren<TMP_Text>().text = draft.reduceMotion ? "即时切换" : "柔和渐入";
                 PlaceSettingsKnob(motionKnob, draft.reduceMotion);
             });
-            SettingsSanctumArt.Text(ui, paper, "Settings draft notice", "保存后生效 · Esc 收起设置。\n环境音乐包含琴音与山间风声。", new Rect(92,568,660,86), 23);
-            SettingsSanctumArt.Text(ui, paper, "Settings display notice", "全屏使用显示器原生分辨率；窗口尺寸循环切换。", new Rect(866,568,666,76), 22);
+            SettingsSanctumArt.Text(ui, paper, "Settings draft notice", MobileControls.Enabled ? "保存后生效 · 轻触右上角收起。\n环境音乐包含琴音与山间风声。" : "保存后生效 · Esc 收起设置。\n环境音乐包含琴音与山间风声。", new Rect(92,568,660,86), 23);
+            SettingsSanctumArt.Text(ui, paper, "Settings display notice", MobileControls.Enabled ? "手机采用横屏全屏，画面尺寸随设备调整。" : "全屏使用显示器原生分辨率；窗口尺寸循环切换。", new Rect(866,568,666,76), 22);
             SettingsSanctumArt.Button(ui, paper, "Settings defaults", "恢复默认并保存", 874, 656, 320, 64,
                 () => Confirm("恢复默认设置？", "音量和画面设置将恢复初始值。角色档位不受影响。", "恢复并保存", () =>
                 {
@@ -97,7 +107,7 @@ namespace TwelveJade.Presentation
                 var committed = draftSession.Snapshot(); repository.SaveSettings(committed); settings = V2SettingsDraft.Copy(committed);
                 ApplySettings(settings, true); Notify("设置已保存。");
             }), () => draft.reduceMotion, PlayClick);
-            SettingsSanctumArt.Text(ui, paper, "Settings keyboard help", "方向键调珠 · Tab / 方向键择项 · 回车确认", new Rect(92,674,660,38), 20);
+            SettingsSanctumArt.Text(ui, paper, "Settings keyboard help", MobileControls.Enabled ? "拖动音量珠 · 轻触选项进行调整" : "方向键调珠 · Tab / 方向键择项 · 回车确认", new Rect(92,674,660,38), 20);
             if(activeSave!=null)
                 SettingsSanctumArt.Button(ui,paper,"Settings return to menu","返回主卷",92,770,320,64,()=>
                     Confirm("暂歇此行", "封存此刻行迹，返回主卷？", "封存并返回", ()=>
@@ -146,7 +156,7 @@ namespace TwelveJade.Presentation
             if (effects != null) effects.volume = value.effectsVolume * .4f;
             // C-13：底噪随"环境音乐"滑杆（与琴音同源），`ambienceLevel` 是两者的配比。
             if (ambience != null) ambience.volume = value.musicVolume * ambienceLevel * .6f;
-            if (!applyDisplay) return;
+            if (!applyDisplay || MobileControls.Enabled) return;
 #if !UNITY_EDITOR
             Screen.SetResolution(value.fullscreen ? Display.main.systemWidth : value.width,
                 value.fullscreen ? Display.main.systemHeight : value.height,

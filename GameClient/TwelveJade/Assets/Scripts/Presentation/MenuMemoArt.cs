@@ -137,7 +137,7 @@ namespace TwelveJade.Presentation
         static void Caption(TMP_Text label, string name)
         {
             label.name = name; label.richText = false; label.raycastTarget = false;
-            label.enableAutoSizing = false; label.textWrappingMode = TextWrappingModes.NoWrap;
+            label.enableAutoSizing = false; TextWrapCompat.SetWrapping(label, false);
             label.overflowMode = TextOverflowModes.Overflow; label.extraPadding = false;
             label.margin = new Vector4(2, 2, 2, 2); SdfInkWeight.Apply(label);
         }

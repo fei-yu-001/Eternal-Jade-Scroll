@@ -127,7 +127,7 @@ namespace TwelveJade.Presentation
                 (string.IsNullOrWhiteSpace(draftName) ? "未定名" : draftName) : chosen.State == SlotState.FutureVersion ? "异世来卷" : "旧卷待修";
             var titleLabel = MemoLabel(paper, "Dossier name", title, bodyX, 20, bodyW, 84, 48, TextAlignmentOptions.MidlineLeft, true);
             titleLabel.color = UiKit.Hex("1E1E1E"); titleLabel.enableAutoSizing = true;
-            titleLabel.fontSizeMin = 28; titleLabel.fontSizeMax = 48; titleLabel.textWrappingMode = TextWrappingModes.NoWrap;
+            titleLabel.fontSizeMin = 28; titleLabel.fontSizeMax = 48; TextWrapCompat.SetWrapping(titleLabel, false);
             if (empty) BuildEmptyMemo(paper, bodyX, bodyW, titleLabel);
             else BuildRecordedMemo(paper, chosen, preset, bodyX, bodyW);
             var enter = MenuMemoArt.Command(ui,paper,"Slot enter",empty?"立传开卷":"承卷入世",new Rect(0,0,276,76),

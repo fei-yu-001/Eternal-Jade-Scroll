@@ -43,7 +43,7 @@ namespace TwelveJade.Presentation
             var host=ui.Rect(parent,name+" boundary",box.x,box.y,box.width,box.height);
             host.gameObject.AddComponent<RectMask2D>();
             var label=ImmortalUi.Text(ui,host,name,text,TextInset,TextInset,box.width-2*TextInset,box.height-2*TextInset,size,ink,false,alignment);
-            label.textWrappingMode=TextWrappingModes.NoWrap;label.overflowMode=TextOverflowModes.Truncate;
+            TextWrapCompat.SetWrapping(label, false);label.overflowMode=TextOverflowModes.Truncate;
             label.maxVisibleLines=lines;label.lineSpacing=4;return label;
         }
         public static string LimitLines(string text,int lines)=>string.Join("\n",(text??"").Replace("\r","").Split('\n').Take(Math.Max(1,lines)));

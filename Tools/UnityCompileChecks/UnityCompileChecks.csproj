@@ -7,7 +7,7 @@
          框架解析会报 NETSDK1226 直接中止（旧 SDK 静默跳过）。
          这两个 csproj 只用 BCL，不依赖剪裁数据，踩过就钉死。 -->
     <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
-    <DefineConstants>UNITY_EDITOR;UNITY_6000_3;ENABLE_INPUT_SYSTEM</DefineConstants>
+    <DefineConstants>UNITY_EDITOR;UNITY_6000_3;UNITY_6000_0_OR_NEWER;ENABLE_INPUT_SYSTEM</DefineConstants>
     <EditorManaged>D:/ruangong/unity/Editor/6000.3.25f1/Editor/Data/Managed</EditorManaged>
     <TemplateAssemblies>D:/ruangong/unity/Editor/6000.3.25f1/Editor/Data/Resources/PackageManager/ProjectTemplates/libcache/com.unity.template.2d-cross-platform-2d-6.1.6/ScriptAssemblies</TemplateAssemblies>
   </PropertyGroup>

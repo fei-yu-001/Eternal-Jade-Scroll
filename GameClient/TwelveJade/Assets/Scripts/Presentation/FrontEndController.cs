@@ -107,6 +107,7 @@ namespace TwelveJade.Presentation
             if (contentFade != null)
                 contentFade.alpha = settings.reduceMotion ? 1 : Mathf.Clamp01((Time.unscaledTime - fadeStart) / .22f);
             if (toast != null && Time.unscaledTime > toastUntil) { Destroy(toast.gameObject); toast = null; }
+            RefreshMobileControls();
             var dialogueInput = HandleTownDialogueInput();
             if (!dialogueInput && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             {

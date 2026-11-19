@@ -13,7 +13,7 @@ namespace TwelveJade.Presentation
         public static TMP_Text Text(UiKit ui,Transform parent,string name,string text,float x,float y,float w,float h,float size=26,bool brush=false,TextAlignmentOptions align=TextAlignmentOptions.TopLeft,Color? color=null)
         {
             var label=ui.Label(parent,text,x,y,w,h,size,color??UiKit.Ink,align,brush);
-            label.name=name;label.richText=false;label.extraPadding=false;label.textWrappingMode=TextWrappingModes.Normal;
+            label.name=name;label.richText=false;label.extraPadding=false;TextWrapCompat.SetWrapping(label, true);
             if(!brush)SdfInkWeight.Apply(label);return label;
         }
         public static Button Button(UiKit ui,Transform parent,string name,string text,float x,float y,float w,float h,UnityAction action,UnityAction click=null)
