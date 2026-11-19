@@ -1,0 +1,3609 @@
+{
+  "generatedBy": "User-authorized image API: source-layout + supplied style reference, then local corrections and constrained landmark alignment. Not a direct collage.",
+  "canvas": [
+    1254,
+    1254
+  ],
+  "worldSize": [
+    8192,
+    8192
+  ],
+  "projection": "uniform world x/y to square map; painted landmarks fitted to real ground anchors; manual annotation uncertainty retained",
+  "configInputs": [
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Config/town-map.json",
+      "sha256": "86fa5c7b3b0e0a8a3c735ecfdb5f96d7ebc5455b15cb0b2d2f97dd4c15c5d548"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Config/building-plots.json",
+      "sha256": "43dfefd84b65e5fe928596c5f03a4aee4a691eaab1569ead4a9aa1eab905272d"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Config/terrain-types.json",
+      "sha256": "54fd7eff0f3d445c423148b6ba8c155f36978e90461422e2b3089184d4543f22"
+    }
+  ],
+  "styleInput": {
+    "path": "GameClient/TwelveJade/Assets/Resources/Art/UI/Nov8/qingshi-shanhe-scroll.png",
+    "sha256": "1caac0703803030d48f74f45197ca5f679f7516c99707c12f6a5bb1ff36dd04a",
+    "cropNormalized": [
+      0.14,
+      0.08,
+      0.39,
+      0.22
+    ],
+    "scope": "Original layout-guide northern ink texture, retained as an upstream conditioning dependency; new style reference is listed in paintingInputs."
+  },
+  "artInputs": [
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/mountain-pine.png",
+      "sha256": "dd25a60b01db41c840e65a515817494416b773b0dbd9646f7742012f4e3764c6"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/willow.png",
+      "sha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/Nov7/ancestral-hall-complete.png",
+      "sha256": "a2d95375f20df8db5ab6fdae1f42fd3a5abc4b0ae5e936c0223435a8e715be99"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/Nov7/lion-sumeru-plinth.png",
+      "sha256": "f912e716c523f452c29b1f0d99343b62522c47793b0dbb1ac8ef7dea9badcae2"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/reeds.png",
+      "sha256": "b00c3351a1cb0247e96258f4f82c84f872ecc6389094d51e021aea2c90206159"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/washing-stone.png",
+      "sha256": "537d94428393ee7b4216a929e61033f44d5c8c12b1f2ca6a64e90101dc17c827"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/bamboo.png",
+      "sha256": "7d6389136f2250296670171399e75da696fe2d1fda2c6c7f112483fe5f903074"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/forge-anvil.png",
+      "sha256": "da3950f3430e033552749fe00d0aaf7c005450a4a41630491446a0e742653566"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/shop-front-v2.png",
+      "sha256": "0169fdaf3a24f08a03eb1c268729359f9f5a545070c291cbdf7da7d95ba0c0e9"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/firewood-pile.png",
+      "sha256": "32ead71d55edf92a9c7f151d56f98de5c9e972550899eb23bc588e3fec5d1419"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/haystack.png",
+      "sha256": "f6515baab93bed69715de56dadfcefabd3cbb240843e584906456230c2bc9bff"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/Nov7/welcome-pine-stone-planter.png",
+      "sha256": "b9ed5add5939942f789d5de69e44923a00d37b550f3a1e7986db75e7a1206223"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/stone-house-v2.png",
+      "sha256": "6785ae149166fe364f000d3256886b191693cb1129ce35691789bf28a4d751cc"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/shop-front.png",
+      "sha256": "d56592ae4625991c2da99c9ca92b644ac5c28477cd1d2709effb876bee2c6b51"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/lantern-pole.png",
+      "sha256": "c3cf481edbf3c94fc46ef8d8c3fd7c7da10b777df757f1dde3bd0a3d88ebfca1"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/paifang.png",
+      "sha256": "4459f217760ea050967a6d38f855855e0d1a0f662bea125eb9ddb6184c39064f"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/Nov7/white-marble-drum.png",
+      "sha256": "3ddd2a64a869bb7f338f3a7f7f1478acee81b8bf5c5512fce606e308900c635e"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/temple-gate.png",
+      "sha256": "8ea073cd3875ec17f3d182cf7cf736ae73b7317864fb391dbf90ff66899631d5"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/rubble.png",
+      "sha256": "beeb4f286da9697153fd8c488096dd488cf25bd5ca2aaddfbaa43b8e9e53b51b"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/market-stall.png",
+      "sha256": "d0c58ca6e3ef371075a383a4190eeb0e5322a6b32c18f25eb0a43a987209e1de"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/ancient-locust.png",
+      "sha256": "9d501500196a7d08a37f3d62dd99f6fcac17e9a8132fbf6c68a6079d15d6299c"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/village-well.png",
+      "sha256": "963b5f9ab02ed8435a670f556edb60e1680ffd5576714d981382bb3400f86ca9"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/teahouse-v2.png",
+      "sha256": "cdfc8d24dde39e97ff0aac8ced7ee5eadb14fd30e083de70b2ac18ab056c1b74"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/market-cart.png",
+      "sha256": "3b2ceb0ae98e10c6edd1d19129cf3bd22e6c92f8ca8a9a323be5862b577a3c29"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/notice-board.png",
+      "sha256": "8243d461e6d8ab02cc1849588a14888244ce4d38092fd7c00e283c42a24496d0"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/residence.png",
+      "sha256": "e3e967fe38e6d7c7e11c747855f39be8bc331d198d5c713e7e126df6965745d3"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/Nov7/opera-stage-complete.png",
+      "sha256": "7512c00885c949e6e62b306f037c99a0e97aa85e49b6fc610b8f0de8c6b668cf"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/qingshi-market-vignette.png",
+      "sha256": "cac4cb658a133c1604c41e37b959cc93de5eecb7e2ef544c6a2152d2808cbaa5"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Buildings/town-gate-south-wide.png",
+      "sha256": "36c9f9022be112410c0fb1f6cfe639fbd6d6ed48d7169b3d6dab9c645e01e407"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/millstone.png",
+      "sha256": "2481a089f77100883c0c3d6c667d3acbf924bcd7e634d48430f2d9ddf0a3a8d4"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/Nov7/market-dry-goods-stall.png",
+      "sha256": "c93fab59192bcecd98c06c95fe9fefb32de951f0e4df346ddd3d4d50792755c1"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/Nov7/market-leather-stall.png",
+      "sha256": "de622a2b039c497b877b513b88f3bfaa02cd555d0349a9d3a0c2d079e9aa13b0"
+    },
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Art/Props/Nov7/market-cloth-stall.png",
+      "sha256": "2fcbcef1f417626d15bf4988ba22ee3446b54a6af65d0ee070fec835c06834e3"
+    }
+  ],
+  "outputSHA256": "b34a3b776543c58d4e6db4ef3a8c09fc54418ec7d40b365ab3f23cb8c3e2c833",
+  "plots": [
+    {
+      "id": "plot-mountain-pine",
+      "name": "崖畔苍松",
+      "kind": "tree",
+      "source": "Art/Props/mountain-pine",
+      "worldTopLeft": [
+        3575.0,
+        1390
+      ],
+      "worldSize": [
+        250,
+        250
+      ],
+      "worldGroundFoot": [
+        3700,
+        1637.9167
+      ],
+      "atlasRect": [
+        547.247314453125,
+        212.77587890625,
+        38.26904296875,
+        38.26904296875
+      ]
+    },
+    {
+      "id": "plot-pine-02",
+      "name": "垂柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        3735.0,
+        1710
+      ],
+      "worldSize": [
+        250,
+        240
+      ],
+      "worldGroundFoot": [
+        3860,
+        1948.0
+      ],
+      "atlasRect": [
+        571.739501953125,
+        261.76025390625,
+        38.26904296875,
+        36.73828125
+      ]
+    },
+    {
+      "id": "plot-ancestral-hall",
+      "name": "张氏祠堂",
+      "kind": "building",
+      "source": "Art/Props/Nov7/ancestral-hall-complete",
+      "worldTopLeft": [
+        2787.4699,
+        1552.5301
+      ],
+      "worldSize": [
+        1265.0602,
+        700
+      ],
+      "worldGroundFoot": [
+        3420,
+        2250.0
+      ],
+      "atlasRect": [
+        426.6952215087891,
+        237.65536442871093,
+        193.65057260742185,
+        107.1533203125
+      ]
+    },
+    {
+      "id": "plot-ancestral-lion-west",
+      "name": "张氏祠堂西石狮",
+      "kind": "prop",
+      "source": "Art/Props/Nov7/lion-sumeru-plinth",
+      "worldTopLeft": [
+        3154.8244,
+        2169.5122
+      ],
+      "worldSize": [
+        90.3512,
+        126
+      ],
+      "worldGroundFoot": [
+        3200,
+        2295.0
+      ],
+      "atlasRect": [
+        482.92844208984377,
+        332.1006224121094,
+        13.8306158203125,
+        19.28759765625
+      ]
+    },
+    {
+      "id": "plot-ancestral-lion-east",
+      "name": "张氏祠堂东石狮",
+      "kind": "prop",
+      "source": "Art/Props/Nov7/lion-sumeru-plinth",
+      "worldTopLeft": [
+        3594.8244,
+        2169.5122
+      ],
+      "worldSize": [
+        90.3512,
+        126
+      ],
+      "worldGroundFoot": [
+        3640,
+        2295.0
+      ],
+      "atlasRect": [
+        550.2819577148438,
+        332.1006224121094,
+        13.8306158203125,
+        19.28759765625
+      ]
+    },
+    {
+      "id": "clutter-reeds-bridge2",
+      "name": "桥南芦苇",
+      "kind": "prop",
+      "source": "Art/Props/reeds",
+      "worldTopLeft": [
+        3070.0,
+        2384.0
+      ],
+      "worldSize": [
+        100,
+        100
+      ],
+      "worldGroundFoot": [
+        3120,
+        2483.1667
+      ],
+      "atlasRect": [
+        469.94384765625,
+        364.93359375,
+        15.3076171875,
+        15.3076171875
+      ]
+    },
+    {
+      "id": "plot-washing-stone",
+      "name": "浣衣石",
+      "kind": "prop",
+      "source": "Art/Props/washing-stone",
+      "worldTopLeft": [
+        5250.0,
+        2850
+      ],
+      "worldSize": [
+        140,
+        140
+      ],
+      "worldGroundFoot": [
+        5320,
+        2988.5416999999998
+      ],
+      "atlasRect": [
+        803.64990234375,
+        436.26708984375,
+        21.4306640625,
+        21.4306640625
+      ]
+    },
+    {
+      "id": "old-willow-riverside-01",
+      "name": "老柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        4490.0,
+        2720
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        4640,
+        3017.5
+      ],
+      "atlasRect": [
+        687.31201171875,
+        416.3671875,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "clutter-reeds-bridge",
+      "name": "桥西芦苇",
+      "kind": "prop",
+      "source": "Art/Props/reeds",
+      "worldTopLeft": [
+        3305.0,
+        2930
+      ],
+      "worldSize": [
+        110,
+        110
+      ],
+      "worldGroundFoot": [
+        3360,
+        3039.0833
+      ],
+      "atlasRect": [
+        505.916748046875,
+        448.51318359375,
+        16.83837890625,
+        16.83837890625
+      ]
+    },
+    {
+      "id": "plot-wharf-reeds",
+      "name": "埠头芦苇",
+      "kind": "prop",
+      "source": "Art/Props/reeds",
+      "worldTopLeft": [
+        5925.0,
+        2940
+      ],
+      "worldSize": [
+        150,
+        150
+      ],
+      "worldGroundFoot": [
+        6000,
+        3088.75
+      ],
+      "atlasRect": [
+        906.976318359375,
+        450.0439453125,
+        22.96142578125,
+        22.96142578125
+      ]
+    },
+    {
+      "id": "plot-riverbank-bamboo",
+      "name": "河岸竹丛",
+      "kind": "tree",
+      "source": "Art/Props/bamboo",
+      "worldTopLeft": [
+        2690.0,
+        2980
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        2840,
+        3268.4375
+      ],
+      "atlasRect": [
+        411.77490234375,
+        456.1669921875,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-river-reeds",
+      "name": "浅滩芦苇",
+      "kind": "prop",
+      "source": "Art/Props/reeds",
+      "worldTopLeft": [
+        4486.0,
+        3140
+      ],
+      "worldSize": [
+        140,
+        140
+      ],
+      "worldGroundFoot": [
+        4556,
+        3278.8333000000002
+      ],
+      "atlasRect": [
+        686.69970703125,
+        480.6591796875,
+        21.4306640625,
+        21.4306640625
+      ]
+    },
+    {
+      "id": "plot-forge-anvil",
+      "name": "打铁砧炉",
+      "kind": "prop",
+      "source": "Art/Props/forge-anvil",
+      "worldTopLeft": [
+        3312.0,
+        3260
+      ],
+      "worldSize": [
+        96,
+        96
+      ],
+      "worldGroundFoot": [
+        3360,
+        3354.9
+      ],
+      "atlasRect": [
+        506.98828125,
+        499.0283203125,
+        14.6953125,
+        14.6953125
+      ]
+    },
+    {
+      "id": "plot-blacksmith",
+      "name": "守渡铁匠铺",
+      "kind": "building",
+      "source": "Art/Props/shop-front-v2",
+      "worldTopLeft": [
+        3425.8008,
+        2840
+      ],
+      "worldSize": [
+        448.3984,
+        520
+      ],
+      "worldGroundFoot": [
+        3650,
+        3354.9219000000003
+      ],
+      "atlasRect": [
+        524.4084720703125,
+        434.736328125,
+        68.639110546875,
+        79.599609375
+      ]
+    },
+    {
+      "id": "plot-river-willow-east",
+      "name": "东岸垂柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        4678.0,
+        3130
+      ],
+      "worldSize": [
+        244,
+        244
+      ],
+      "worldGroundFoot": [
+        4800,
+        3371.9667
+      ],
+      "atlasRect": [
+        716.09033203125,
+        479.12841796875,
+        37.3505859375,
+        37.3505859375
+      ]
+    },
+    {
+      "id": "plot-shuikou-willow-01",
+      "name": "水口林老柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        5086.0,
+        3100
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        5236,
+        3397.5
+      ],
+      "atlasRect": [
+        778.54541015625,
+        474.5361328125,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-school",
+      "name": "北街村塾",
+      "kind": "building",
+      "source": "Art/Props/shop-front-v2",
+      "worldTopLeft": [
+        1817.0096,
+        3040
+      ],
+      "worldSize": [
+        336.2988,
+        390
+      ],
+      "worldGroundFoot": [
+        1985.159,
+        3426.1914
+      ],
+      "atlasRect": [
+        278.140873828125,
+        465.3515625,
+        51.47933291015625,
+        59.69970703125
+      ]
+    },
+    {
+      "id": "plot-firewood-02",
+      "name": "村塾院角柴堆",
+      "kind": "prop",
+      "source": "Art/Props/firewood-pile",
+      "worldTopLeft": [
+        1875.0,
+        3531.3542
+      ],
+      "worldSize": [
+        130,
+        130
+      ],
+      "worldGroundFoot": [
+        1940,
+        3660.0
+      ],
+      "atlasRect": [
+        287.017822265625,
+        540.5661824707032,
+        19.89990234375,
+        19.89990234375
+      ]
+    },
+    {
+      "id": "plot-haystack-02",
+      "name": "谷草垛",
+      "kind": "prop",
+      "source": "Art/Props/haystack",
+      "worldTopLeft": [
+        1710.0,
+        3620
+      ],
+      "worldSize": [
+        140,
+        140
+      ],
+      "worldGroundFoot": [
+        1780,
+        3758.8333000000002
+      ],
+      "atlasRect": [
+        261.76025390625,
+        554.1357421875,
+        21.4306640625,
+        21.4306640625
+      ]
+    },
+    {
+      "id": "plot-shuikou-reeds",
+      "name": "水口浅苇",
+      "kind": "prop",
+      "source": "Art/Props/reeds",
+      "worldTopLeft": [
+        5453.0,
+        3620
+      ],
+      "worldSize": [
+        150,
+        150
+      ],
+      "worldGroundFoot": [
+        5528,
+        3768.75
+      ],
+      "atlasRect": [
+        834.724365234375,
+        554.1357421875,
+        22.96142578125,
+        22.96142578125
+      ]
+    },
+    {
+      "id": "plot-river-willow-west",
+      "name": "西岸垂柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        3246.0,
+        3520
+      ],
+      "worldSize": [
+        268,
+        268
+      ],
+      "worldGroundFoot": [
+        3380,
+        3785.7667
+      ],
+      "atlasRect": [
+        496.88525390625,
+        538.828125,
+        41.0244140625,
+        41.0244140625
+      ]
+    },
+    {
+      "id": "plot-shuikou-willow-02",
+      "name": "水口林垂柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        5930.0,
+        3660
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        6080,
+        3957.5
+      ],
+      "atlasRect": [
+        907.74169921875,
+        560.2587890625,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-paifang-welcome-pine-west",
+      "name": "牌坊青石树池迎客松",
+      "kind": "tree",
+      "source": "Art/Props/Nov7/welcome-pine-stone-planter",
+      "worldTopLeft": [
+        3385.0,
+        3787.5269
+      ],
+      "worldSize": [
+        230.0,
+        233.4243
+      ],
+      "worldGroundFoot": [
+        3500,
+        4020.0
+      ],
+      "atlasRect": [
+        518.162841796875,
+        579.7801187255859,
+        35.20751953125,
+        35.73169826660156
+      ]
+    },
+    {
+      "id": "plot-paifang-welcome-pine-east",
+      "name": "牌坊青石树池迎客松",
+      "kind": "tree",
+      "source": "Art/Props/Nov7/welcome-pine-stone-planter",
+      "worldTopLeft": [
+        3739.0,
+        3787.5269
+      ],
+      "worldSize": [
+        230.0,
+        233.4243
+      ],
+      "worldGroundFoot": [
+        3854,
+        4020.0
+      ],
+      "atlasRect": [
+        572.351806640625,
+        579.7801187255859,
+        35.20751953125,
+        35.73169826660156
+      ]
+    },
+    {
+      "id": "plot-stone-house",
+      "name": "石门柴扉",
+      "kind": "building",
+      "source": "Art/Props/stone-house-v2",
+      "worldTopLeft": [
+        2582.848,
+        3290.1698
+      ],
+      "worldSize": [
+        650.566,
+        772.8302
+      ],
+      "worldGroundFoot": [
+        2908.131,
+        4055.4528
+      ],
+      "atlasRect": [
+        395.372484375,
+        503.6465978027344,
+        99.58615283203126,
+        118.30188852539062
+      ]
+    },
+    {
+      "id": "shop-north-street-01",
+      "name": "北街街铺",
+      "kind": "building",
+      "source": "Art/Props/shop-front",
+      "worldTopLeft": [
+        4476.734,
+        3650
+      ],
+      "worldSize": [
+        420.0,
+        420
+      ],
+      "worldGroundFoot": [
+        4686.734,
+        4063.0
+      ],
+      "atlasRect": [
+        685.2813032226563,
+        558.72802734375,
+        64.2919921875,
+        64.2919921875
+      ]
+    },
+    {
+      "id": "plot-lantern-street-01",
+      "name": "街巷灯笼",
+      "kind": "prop",
+      "source": "Art/Props/lantern-pole",
+      "worldTopLeft": [
+        4860.0,
+        3914.4648
+      ],
+      "worldSize": [
+        60,
+        150
+      ],
+      "worldGroundFoot": [
+        4890,
+        4063.0
+      ],
+      "atlasRect": [
+        743.9501953125,
+        599.2112865234375,
+        9.1845703125,
+        22.96142578125
+      ]
+    },
+    {
+      "id": "plot-pine-west-01",
+      "name": "农家草垛",
+      "kind": "prop",
+      "source": "Art/Props/haystack",
+      "worldTopLeft": [
+        1545.0,
+        3970
+      ],
+      "worldSize": [
+        150,
+        150
+      ],
+      "worldGroundFoot": [
+        1620,
+        4118.75
+      ],
+      "atlasRect": [
+        236.502685546875,
+        607.71240234375,
+        22.96142578125,
+        22.96142578125
+      ]
+    },
+    {
+      "id": "plot-paifang",
+      "name": "青石牌坊",
+      "kind": "building",
+      "source": "Art/Props/paifang",
+      "worldTopLeft": [
+        3370.0,
+        3764.7576
+      ],
+      "worldSize": [
+        720,
+        392.5975
+      ],
+      "worldGroundFoot": [
+        3730,
+        4143.5547
+      ],
+      "atlasRect": [
+        515.86669921875,
+        576.2946814453124,
+        110.21484375,
+        60.097322387695314
+      ]
+    },
+    {
+      "id": "plot-paifang-drum-west",
+      "name": "牌坊抱鼓石",
+      "kind": "prop",
+      "source": "Art/Props/Nov7/white-marble-drum",
+      "worldTopLeft": [
+        3493.4672,
+        4068.4918
+      ],
+      "worldSize": [
+        81.0656,
+        100
+      ],
+      "worldGroundFoot": [
+        3534,
+        4168.0
+      ],
+      "atlasRect": [
+        534.766585546875,
+        622.7891500488281,
+        12.40921171875,
+        15.3076171875
+      ]
+    },
+    {
+      "id": "plot-paifang-drum-east",
+      "name": "牌坊抱鼓石",
+      "kind": "prop",
+      "source": "Art/Props/Nov7/white-marble-drum",
+      "worldTopLeft": [
+        3925.4672,
+        4068.4918
+      ],
+      "worldSize": [
+        81.0656,
+        100
+      ],
+      "worldGroundFoot": [
+        3966,
+        4168.0
+      ],
+      "atlasRect": [
+        600.895491796875,
+        622.7891500488281,
+        12.40921171875,
+        15.3076171875
+      ]
+    },
+    {
+      "id": "clutter-haystack-blacksmith",
+      "name": "古槐北草垛",
+      "kind": "prop",
+      "source": "Art/Props/haystack",
+      "worldTopLeft": [
+        2885.0,
+        4080
+      ],
+      "worldSize": [
+        110,
+        110
+      ],
+      "worldGroundFoot": [
+        2940,
+        4189.0833
+      ],
+      "atlasRect": [
+        441.624755859375,
+        624.55078125,
+        16.83837890625,
+        16.83837890625
+      ]
+    },
+    {
+      "id": "plot-firewood",
+      "name": "柴堆",
+      "kind": "prop",
+      "source": "Art/Props/firewood-pile",
+      "worldTopLeft": [
+        2560.0,
+        4071.25
+      ],
+      "worldSize": [
+        120,
+        120
+      ],
+      "worldGroundFoot": [
+        2620,
+        4190.0
+      ],
+      "atlasRect": [
+        391.875,
+        623.2113647460938,
+        18.369140625,
+        18.369140625
+      ]
+    },
+    {
+      "id": "plot-temple-gate",
+      "name": "青石山门",
+      "kind": "building",
+      "source": "Art/Props/temple-gate",
+      "worldTopLeft": [
+        4980.0,
+        3555.0849
+      ],
+      "worldSize": [
+        720,
+        645.4972
+      ],
+      "worldGroundFoot": [
+        5340,
+        4200.0
+      ],
+      "atlasRect": [
+        762.3193359375,
+        544.1987871826171,
+        110.21484375,
+        98.81024033203126
+      ]
+    },
+    {
+      "id": "plot-pine-west-02",
+      "name": "垂柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        1752.5,
+        3980
+      ],
+      "worldSize": [
+        275,
+        275
+      ],
+      "worldGroundFoot": [
+        1890,
+        4252.7083
+      ],
+      "atlasRect": [
+        268.2659912109375,
+        609.2431640625,
+        42.095947265625,
+        42.095947265625
+      ]
+    },
+    {
+      "id": "plot-pine-east-01",
+      "name": "东街夹道树",
+      "kind": "tree",
+      "source": "Art/Props/mountain-pine",
+      "worldTopLeft": [
+        6290.0,
+        3960
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        6440,
+        4257.5
+      ],
+      "atlasRect": [
+        962.84912109375,
+        606.181640625,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-forge-rubble",
+      "name": "打铁碎石堆",
+      "kind": "prop",
+      "source": "Art/Props/rubble",
+      "worldTopLeft": [
+        4420.0,
+        4270
+      ],
+      "worldSize": [
+        120,
+        120
+      ],
+      "worldGroundFoot": [
+        4480,
+        4388.75
+      ],
+      "atlasRect": [
+        676.5966796875,
+        653.63525390625,
+        18.369140625,
+        18.369140625
+      ]
+    },
+    {
+      "id": "plot-haystack",
+      "name": "谷草垛",
+      "kind": "prop",
+      "source": "Art/Props/haystack",
+      "worldTopLeft": [
+        2525.0,
+        4280
+      ],
+      "worldSize": [
+        130,
+        130
+      ],
+      "worldGroundFoot": [
+        2590,
+        4408.9167
+      ],
+      "atlasRect": [
+        386.517333984375,
+        655.166015625,
+        19.89990234375,
+        19.89990234375
+      ]
+    },
+    {
+      "id": "clutter-rubble-locust",
+      "name": "古槐西乱石",
+      "kind": "prop",
+      "source": "Art/Props/rubble",
+      "worldTopLeft": [
+        2670.0,
+        4350
+      ],
+      "worldSize": [
+        100,
+        100
+      ],
+      "worldGroundFoot": [
+        2720,
+        4448.9583
+      ],
+      "atlasRect": [
+        408.71337890625,
+        665.88134765625,
+        15.3076171875,
+        15.3076171875
+      ]
+    },
+    {
+      "id": "clutter-reeds-ditch",
+      "name": "广场东芦苇",
+      "kind": "prop",
+      "source": "Art/Props/reeds",
+      "worldTopLeft": [
+        4560.0,
+        4340
+      ],
+      "worldSize": [
+        120,
+        120
+      ],
+      "worldGroundFoot": [
+        4620,
+        4459.0
+      ],
+      "atlasRect": [
+        698.02734375,
+        664.3505859375,
+        18.369140625,
+        18.369140625
+      ]
+    },
+    {
+      "id": "plot-fortune-stall",
+      "name": "测字布棚",
+      "kind": "stall",
+      "source": "Art/Props/market-stall",
+      "worldTopLeft": [
+        3020.0,
+        4380
+      ],
+      "worldSize": [
+        140,
+        180
+      ],
+      "worldGroundFoot": [
+        3090,
+        4558.2422
+      ],
+      "atlasRect": [
+        462.2900390625,
+        670.4736328125,
+        21.4306640625,
+        27.5537109375
+      ]
+    },
+    {
+      "id": "clutter-haystack-school",
+      "name": "村塾草垛",
+      "kind": "prop",
+      "source": "Art/Props/haystack",
+      "worldTopLeft": [
+        4950.0,
+        4480
+      ],
+      "worldSize": [
+        100,
+        100
+      ],
+      "worldGroundFoot": [
+        5000,
+        4579.1667
+      ],
+      "atlasRect": [
+        757.72705078125,
+        685.78125,
+        15.3076171875,
+        15.3076171875
+      ]
+    },
+    {
+      "id": "clutter-rubble-well",
+      "name": "井台西碎石",
+      "kind": "prop",
+      "source": "Art/Props/rubble",
+      "worldTopLeft": [
+        2000.0,
+        4550
+      ],
+      "worldSize": [
+        80,
+        80
+      ],
+      "worldGroundFoot": [
+        2040,
+        4629.1667
+      ],
+      "atlasRect": [
+        306.15234375,
+        696.49658203125,
+        12.24609375,
+        12.24609375
+      ]
+    },
+    {
+      "id": "plot-ancient-locust",
+      "name": "镇中古槐（现有原型，祈福红绸待美术）",
+      "kind": "tree",
+      "source": "Art/Props/ancient-locust",
+      "worldTopLeft": [
+        3836.0,
+        4184.3333
+      ],
+      "worldSize": [
+        520,
+        520
+      ],
+      "worldGroundFoot": [
+        4096,
+        4700.0
+      ],
+      "atlasRect": [
+        587.2001953125,
+        640.521723413086,
+        79.599609375,
+        79.599609375
+      ]
+    },
+    {
+      "id": "plot-village-well",
+      "name": "老水井",
+      "kind": "prop",
+      "source": "Art/Props/village-well",
+      "worldTopLeft": [
+        3000.0,
+        4670
+      ],
+      "worldSize": [
+        120,
+        120
+      ],
+      "worldGroundFoot": [
+        3060,
+        4788.625
+      ],
+      "atlasRect": [
+        459.228515625,
+        714.86572265625,
+        18.369140625,
+        18.369140625
+      ]
+    },
+    {
+      "id": "plot-lantern-street-02",
+      "name": "街巷灯笼",
+      "kind": "prop",
+      "source": "Art/Props/lantern-pole",
+      "worldTopLeft": [
+        3680.0,
+        4736.4648
+      ],
+      "worldSize": [
+        60,
+        150
+      ],
+      "worldGroundFoot": [
+        3710,
+        4885.0
+      ],
+      "atlasRect": [
+        563.3203125,
+        725.0398998046875,
+        9.1845703125,
+        22.96142578125
+      ]
+    },
+    {
+      "id": "plot-street-square-tea",
+      "name": "广场北沿茶寮",
+      "kind": "building",
+      "source": "Art/Props/teahouse-v2",
+      "worldTopLeft": [
+        3189.62265,
+        4177.1698
+      ],
+      "worldSize": [
+        480.7547,
+        772.8302
+      ],
+      "worldGroundFoot": [
+        3430,
+        4942.4528
+      ],
+      "atlasRect": [
+        488.25522498779293,
+        639.4251622558593,
+        73.59208908691406,
+        118.30188852539062
+      ]
+    },
+    {
+      "id": "clutter-firewood-tea",
+      "name": "茶棚柴堆",
+      "kind": "prop",
+      "source": "Art/Props/firewood-pile",
+      "worldTopLeft": [
+        4882.5,
+        4950.9896
+      ],
+      "worldSize": [
+        95,
+        95
+      ],
+      "worldGroundFoot": [
+        4930,
+        5045.0
+      ],
+      "atlasRect": [
+        747.3944091796875,
+        757.8785349609375,
+        14.542236328125,
+        14.542236328125
+      ]
+    },
+    {
+      "id": "plot-pine-east-04",
+      "name": "东街夹道树",
+      "kind": "tree",
+      "source": "Art/Props/bamboo",
+      "worldTopLeft": [
+        6510.0,
+        4840
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        6660,
+        5128.4375
+      ],
+      "atlasRect": [
+        996.52587890625,
+        740.888671875,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-pine-west-03",
+      "name": "西街夹道树",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        1410.0,
+        4840
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        1560,
+        5137.5
+      ],
+      "atlasRect": [
+        215.83740234375,
+        740.888671875,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-lantern-market",
+      "name": "市口灯笼",
+      "kind": "prop",
+      "source": "Art/Props/lantern-pole",
+      "worldTopLeft": [
+        3260.0,
+        4991.4648
+      ],
+      "worldSize": [
+        60,
+        150
+      ],
+      "worldGroundFoot": [
+        3290,
+        5140.0
+      ],
+      "atlasRect": [
+        499.0283203125,
+        764.0743236328125,
+        9.1845703125,
+        22.96142578125
+      ]
+    },
+    {
+      "id": "plot-market-cart",
+      "name": "载货木轮车",
+      "kind": "stall",
+      "source": "Art/Props/market-cart",
+      "worldTopLeft": [
+        3065.0,
+        5025.0
+      ],
+      "worldSize": [
+        140,
+        120
+      ],
+      "worldGroundFoot": [
+        3135,
+        5143.8281
+      ],
+      "atlasRect": [
+        469.178466796875,
+        769.207763671875,
+        21.4306640625,
+        18.369140625
+      ]
+    },
+    {
+      "id": "plot-notice-board",
+      "name": "告示木牌",
+      "kind": "prop",
+      "source": "Art/Props/notice-board",
+      "worldTopLeft": [
+        3665.0,
+        5020
+      ],
+      "worldSize": [
+        130,
+        130
+      ],
+      "worldGroundFoot": [
+        3730,
+        5148.6458
+      ],
+      "atlasRect": [
+        561.024169921875,
+        768.4423828125,
+        19.89990234375,
+        19.89990234375
+      ]
+    },
+    {
+      "id": "plot-lantern-street-04",
+      "name": "街巷灯笼",
+      "kind": "prop",
+      "source": "Art/Props/lantern-pole",
+      "worldTopLeft": [
+        4320.0,
+        5031.4648
+      ],
+      "worldSize": [
+        60,
+        150
+      ],
+      "worldGroundFoot": [
+        4350,
+        5180.0
+      ],
+      "atlasRect": [
+        661.2890625,
+        770.1973705078125,
+        9.1845703125,
+        22.96142578125
+      ]
+    },
+    {
+      "id": "clutter-rubble-gate",
+      "name": "东口乱石",
+      "kind": "prop",
+      "source": "Art/Props/rubble",
+      "worldTopLeft": [
+        5562.5,
+        5130
+      ],
+      "worldSize": [
+        95,
+        95
+      ],
+      "worldGroundFoot": [
+        5610,
+        5224.0104
+      ],
+      "atlasRect": [
+        851.4862060546875,
+        785.28076171875,
+        14.542236328125,
+        14.542236328125
+      ]
+    },
+    {
+      "id": "plot-herbal-garden",
+      "name": "梯田药圃",
+      "kind": "building",
+      "source": "Art/Props/residence",
+      "worldTopLeft": [
+        5055.05715,
+        4860
+      ],
+      "worldSize": [
+        389.8857,
+        377
+      ],
+      "worldGroundFoot": [
+        5250,
+        5233.3184
+      ],
+      "atlasRect": [
+        773.8087971313475,
+        743.9501953125,
+        59.68221042480469,
+        57.709716796875
+      ]
+    },
+    {
+      "id": "clutter-rubble-notice",
+      "name": "广场西沿乱石",
+      "kind": "prop",
+      "source": "Art/Props/rubble",
+      "worldTopLeft": [
+        2995.0,
+        5150
+      ],
+      "worldSize": [
+        90,
+        90
+      ],
+      "worldGroundFoot": [
+        3040,
+        5239.0625
+      ],
+      "atlasRect": [
+        458.463134765625,
+        788.34228515625,
+        13.77685546875,
+        13.77685546875
+      ]
+    },
+    {
+      "id": "plot-teahouse",
+      "name": "草亭茶棚",
+      "kind": "building",
+      "source": "Art/Props/teahouse-v2",
+      "worldTopLeft": [
+        4389.62265,
+        4477.1698
+      ],
+      "worldSize": [
+        480.7547,
+        772.8302
+      ],
+      "worldGroundFoot": [
+        4630,
+        5242.4528
+      ],
+      "atlasRect": [
+        671.946631237793,
+        685.3480138183593,
+        73.59208908691406,
+        118.30188852539062
+      ]
+    },
+    {
+      "id": "plot-street-locust-tea",
+      "name": "古槐荫下茶摊",
+      "kind": "building",
+      "source": "Art/Props/teahouse-v2",
+      "worldTopLeft": [
+        2604.30565,
+        4477.1698
+      ],
+      "worldSize": [
+        480.7547,
+        772.8302
+      ],
+      "worldGroundFoot": [
+        2844.683,
+        5242.4528
+      ],
+      "atlasRect": [
+        398.65713929443353,
+        685.3480138183593,
+        73.59208908691406,
+        118.30188852539062
+      ]
+    },
+    {
+      "id": "clutter-washing-south",
+      "name": "戏台西浣衣石",
+      "kind": "prop",
+      "source": "Art/Props/washing-stone",
+      "worldTopLeft": [
+        2645.0,
+        5320
+      ],
+      "worldSize": [
+        90,
+        90
+      ],
+      "worldGroundFoot": [
+        2690,
+        5409.0625
+      ],
+      "atlasRect": [
+        404.886474609375,
+        814.365234375,
+        13.77685546875,
+        13.77685546875
+      ]
+    },
+    {
+      "id": "plot-street-east-gate",
+      "name": "东口铺面",
+      "kind": "building",
+      "source": "Art/Props/shop-front-v2",
+      "worldTopLeft": [
+        6050.3848,
+        4950
+      ],
+      "worldSize": [
+        448.3984,
+        520
+      ],
+      "worldGroundFoot": [
+        6274.584,
+        5464.9219
+      ],
+      "atlasRect": [
+        926.1697435546874,
+        757.72705078125,
+        68.639110546875,
+        79.599609375
+      ]
+    },
+    {
+      "id": "plot-pine-east-03",
+      "name": "东街夹道树",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        6510.0,
+        5176
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        6660,
+        5473.5
+      ],
+      "atlasRect": [
+        996.52587890625,
+        792.322265625,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-pine-west-04",
+      "name": "西街夹道树",
+      "kind": "tree",
+      "source": "Art/Props/mountain-pine",
+      "worldTopLeft": [
+        1930.0,
+        5300
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        2080,
+        5597.5
+      ],
+      "atlasRect": [
+        295.43701171875,
+        811.3037109375,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "clutter-bamboo-cloth",
+      "name": "布庄后竹丛",
+      "kind": "prop",
+      "source": "Art/Props/bamboo",
+      "worldTopLeft": [
+        5115.0,
+        6070
+      ],
+      "worldSize": [
+        150,
+        150
+      ],
+      "worldGroundFoot": [
+        5190,
+        6214.2188
+      ],
+      "atlasRect": [
+        782.984619140625,
+        929.17236328125,
+        22.96142578125,
+        22.96142578125
+      ]
+    },
+    {
+      "id": "clutter-firewood-opera",
+      "name": "戏台后柴堆",
+      "kind": "prop",
+      "source": "Art/Props/firewood-pile",
+      "worldTopLeft": [
+        1350.0,
+        6131.0417
+      ],
+      "worldSize": [
+        100,
+        100
+      ],
+      "worldGroundFoot": [
+        1400,
+        6230.0
+      ],
+      "atlasRect": [
+        206.65283203125,
+        938.5163930419922,
+        15.3076171875,
+        15.3076171875
+      ]
+    },
+    {
+      "id": "plot-street-east-home",
+      "name": "东街石屋",
+      "kind": "building",
+      "source": "Art/Props/stone-house-v2",
+      "worldTopLeft": [
+        6061.782999999999,
+        5497.1698
+      ],
+      "worldSize": [
+        650.566,
+        772.8302
+      ],
+      "worldGroundFoot": [
+        6387.066,
+        6262.4528
+      ],
+      "atlasRect": [
+        927.914536376953,
+        841.4857091308593,
+        99.58615283203126,
+        118.30188852539062
+      ]
+    },
+    {
+      "id": "plot-opera-stage",
+      "name": "万年台（戏台）",
+      "kind": "building",
+      "source": "Art/Props/Nov7/opera-stage-complete",
+      "worldTopLeft": [
+        1400.0,
+        5982.1833
+      ],
+      "worldSize": [
+        600,
+        403.0997
+      ],
+      "worldGroundFoot": [
+        1700,
+        6382.4528
+      ],
+      "atlasRect": [
+        214.306640625,
+        915.7297190185546,
+        91.845703125,
+        61.70495895996093
+      ]
+    },
+    {
+      "id": "plot-market-vignette",
+      "name": "西市酒坛石磨柴棚",
+      "kind": "prop",
+      "source": "Art/Props/qingshi-market-vignette",
+      "worldTopLeft": [
+        2510.0,
+        6140
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        2660,
+        6436.25
+      ],
+      "atlasRect": [
+        384.22119140625,
+        939.8876953125,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-farm-willow-01",
+      "name": "田埂柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        1960.0,
+        6140
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        2110,
+        6437.5
+      ],
+      "atlasRect": [
+        300.029296875,
+        939.8876953125,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-lantern-street-06",
+      "name": "街巷灯笼",
+      "kind": "prop",
+      "source": "Art/Props/lantern-pole",
+      "worldTopLeft": [
+        5510.0,
+        6511.4648
+      ],
+      "worldSize": [
+        60,
+        150
+      ],
+      "worldGroundFoot": [
+        5540,
+        6660.0
+      ],
+      "atlasRect": [
+        843.44970703125,
+        996.7501048828125,
+        9.1845703125,
+        22.96142578125
+      ]
+    },
+    {
+      "id": "plot-street-east-store",
+      "name": "东沿杂货铺",
+      "kind": "building",
+      "source": "Art/Props/shop-front-v2",
+      "worldTopLeft": [
+        5097.3584,
+        6240
+      ],
+      "worldSize": [
+        405.2832,
+        470
+      ],
+      "worldGroundFoot": [
+        5300,
+        6705.4102
+      ],
+      "atlasRect": [
+        780.284110546875,
+        955.1953125,
+        62.03920078125,
+        71.94580078125
+      ]
+    },
+    {
+      "id": "plot-farm-willow-02",
+      "name": "田埂柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        2010.0,
+        6460
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        2160,
+        6757.5
+      ],
+      "atlasRect": [
+        307.68310546875,
+        988.8720703125,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-farm-willow-03",
+      "name": "田埂柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        1694.0,
+        6500
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        1844,
+        6797.5
+      ],
+      "atlasRect": [
+        259.31103515625,
+        994.9951171875,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-town-gate-south",
+      "name": "青石镇南门楼",
+      "kind": "building",
+      "source": "Art/Buildings/town-gate-south-wide",
+      "worldTopLeft": [
+        2833.0,
+        5329.5326
+      ],
+      "worldSize": [
+        2254,
+        1627.8889
+      ],
+      "worldGroundFoot": [
+        3960,
+        6953.247399999999
+      ],
+      "atlasRect": [
+        433.664794921875,
+        815.8244482910155,
+        345.03369140625,
+        249.19100104980467
+      ]
+    },
+    {
+      "id": "bamboo-market-01",
+      "name": "竹丛",
+      "kind": "tree",
+      "source": "Art/Props/bamboo",
+      "worldTopLeft": [
+        2580.0,
+        6820
+      ],
+      "worldSize": [
+        240,
+        240
+      ],
+      "worldGroundFoot": [
+        2700,
+        7050.75
+      ],
+      "atlasRect": [
+        394.9365234375,
+        1043.9794921875,
+        36.73828125,
+        36.73828125
+      ]
+    },
+    {
+      "id": "plot-street-east-wine",
+      "name": "东沿临街酒楼",
+      "kind": "building",
+      "source": "Art/Props/teahouse-v2",
+      "worldTopLeft": [
+        6043.84065,
+        6297.1698
+      ],
+      "worldSize": [
+        480.7547,
+        772.8302
+      ],
+      "worldGroundFoot": [
+        6284.218,
+        7062.4528
+      ],
+      "atlasRect": [
+        925.1679901245118,
+        963.9466466308593,
+        73.59208908691406,
+        118.30188852539062
+      ]
+    },
+    {
+      "id": "clutter-firewood-grain",
+      "name": "粮行柴堆",
+      "kind": "prop",
+      "source": "Art/Props/firewood-pile",
+      "worldTopLeft": [
+        1725.0,
+        6961.1458
+      ],
+      "worldSize": [
+        110,
+        110
+      ],
+      "worldGroundFoot": [
+        1780,
+        7070.0
+      ],
+      "atlasRect": [
+        264.056396484375,
+        1065.5855509277344,
+        16.83837890625,
+        16.83837890625
+      ]
+    },
+    {
+      "id": "plot-field-haystack-01",
+      "name": "田间草垛",
+      "kind": "prop",
+      "source": "Art/Props/haystack",
+      "worldTopLeft": [
+        2970.0,
+        7020
+      ],
+      "worldSize": [
+        140,
+        140
+      ],
+      "worldGroundFoot": [
+        3040,
+        7158.8333
+      ],
+      "atlasRect": [
+        454.63623046875,
+        1074.5947265625,
+        21.4306640625,
+        21.4306640625
+      ]
+    },
+    {
+      "id": "plot-pine-south-03",
+      "name": "农家柴堆",
+      "kind": "prop",
+      "source": "Art/Props/firewood-pile",
+      "worldTopLeft": [
+        3377.5,
+        7060
+      ],
+      "worldSize": [
+        125,
+        125
+      ],
+      "worldGroundFoot": [
+        3440,
+        7183.6979
+      ],
+      "atlasRect": [
+        517.0147705078125,
+        1080.7177734375,
+        19.134521484375,
+        19.134521484375
+      ]
+    },
+    {
+      "id": "plot-field-haystack-02",
+      "name": "田间草垛",
+      "kind": "prop",
+      "source": "Art/Props/haystack",
+      "worldTopLeft": [
+        5280.0,
+        7050
+      ],
+      "worldSize": [
+        140,
+        140
+      ],
+      "worldGroundFoot": [
+        5350,
+        7188.8333
+      ],
+      "atlasRect": [
+        808.2421875,
+        1079.18701171875,
+        21.4306640625,
+        21.4306640625
+      ]
+    },
+    {
+      "id": "plot-millstone",
+      "name": "青石磨盘",
+      "kind": "prop",
+      "source": "Art/Props/millstone",
+      "worldTopLeft": [
+        1725.0,
+        7101.0312
+      ],
+      "worldSize": [
+        110,
+        110
+      ],
+      "worldGroundFoot": [
+        1780,
+        7210.0
+      ],
+      "atlasRect": [
+        264.056396484375,
+        1086.9986724609375,
+        16.83837890625,
+        16.83837890625
+      ]
+    },
+    {
+      "id": "plot-grain-shop",
+      "name": "粮行",
+      "kind": "building",
+      "source": "Art/Props/residence",
+      "worldTopLeft": [
+        1762.18845,
+        6810
+      ],
+      "worldSize": [
+        455.0391,
+        440
+      ],
+      "worldGroundFoot": [
+        1989.708,
+        7245.7031
+      ],
+      "atlasRect": [
+        269.74906204833985,
+        1042.44873046875,
+        69.65564348144531,
+        67.353515625
+      ]
+    },
+    {
+      "id": "plot-pine-south-02",
+      "name": "垂柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        4207.5,
+        6980
+      ],
+      "worldSize": [
+        285,
+        285
+      ],
+      "worldGroundFoot": [
+        4350,
+        7262.625
+      ],
+      "atlasRect": [
+        644.0679931640625,
+        1068.4716796875,
+        43.626708984375,
+        43.626708984375
+      ]
+    },
+    {
+      "id": "plot-pine-south-04",
+      "name": "农家草垛",
+      "kind": "prop",
+      "source": "Art/Props/haystack",
+      "worldTopLeft": [
+        4512.5,
+        7180
+      ],
+      "worldSize": [
+        155,
+        155
+      ],
+      "worldGroundFoot": [
+        4590,
+        7333.7083
+      ],
+      "atlasRect": [
+        690.7562255859375,
+        1099.0869140625,
+        23.726806640625,
+        23.726806640625
+      ]
+    },
+    {
+      "id": "plot-farm-willow-04",
+      "name": "田埂柳",
+      "kind": "tree",
+      "source": "Art/Props/bamboo",
+      "worldTopLeft": [
+        2590.0,
+        7080
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        2740,
+        7368.4375
+      ],
+      "atlasRect": [
+        396.46728515625,
+        1083.779296875,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-lantern-street-03",
+      "name": "街巷灯笼",
+      "kind": "prop",
+      "source": "Art/Props/lantern-pole",
+      "worldTopLeft": [
+        5220.0,
+        7291.4648
+      ],
+      "worldSize": [
+        60,
+        150
+      ],
+      "worldGroundFoot": [
+        5250,
+        7440.0
+      ],
+      "atlasRect": [
+        799.0576171875,
+        1116.1495189453124,
+        9.1845703125,
+        22.96142578125
+      ]
+    },
+    {
+      "id": "market-stall-south-01",
+      "name": "市集干货摊",
+      "kind": "stall",
+      "source": "Art/Props/Nov7/market-dry-goods-stall",
+      "worldTopLeft": [
+        1810.0,
+        7287.9352
+      ],
+      "worldSize": [
+        140,
+        152.6621
+      ],
+      "worldGroundFoot": [
+        1880,
+        7440.0
+      ],
+      "atlasRect": [
+        277.06787109375,
+        1115.6092212890626,
+        21.4306640625,
+        23.368929858398438
+      ]
+    },
+    {
+      "id": "market-stall-south-02",
+      "name": "市集菜摊",
+      "kind": "stall",
+      "source": "Art/Props/market-stall",
+      "worldTopLeft": [
+        2210.0,
+        7261.7578
+      ],
+      "worldSize": [
+        140,
+        180
+      ],
+      "worldGroundFoot": [
+        2280,
+        7440.0
+      ],
+      "atlasRect": [
+        338.29833984375,
+        1111.602085107422,
+        21.4306640625,
+        27.5537109375
+      ]
+    },
+    {
+      "id": "plot-pine-south-01",
+      "name": "官道夹道松",
+      "kind": "tree",
+      "source": "Art/Props/mountain-pine",
+      "worldTopLeft": [
+        3012.0,
+        7170
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        3162,
+        7467.5
+      ],
+      "atlasRect": [
+        461.0654296875,
+        1097.55615234375,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-cloth-shop",
+      "name": "布庄",
+      "kind": "building",
+      "source": "Art/Props/shop-front",
+      "worldTopLeft": [
+        4690.0,
+        6970
+      ],
+      "worldSize": [
+        520.0,
+        520
+      ],
+      "worldGroundFoot": [
+        4950,
+        7481.3333
+      ],
+      "atlasRect": [
+        717.92724609375,
+        1066.94091796875,
+        79.599609375,
+        79.599609375
+      ]
+    },
+    {
+      "id": "plot-lantern-street-05",
+      "name": "街巷灯笼",
+      "kind": "prop",
+      "source": "Art/Props/lantern-pole",
+      "worldTopLeft": [
+        1770.0,
+        7371.4648
+      ],
+      "worldSize": [
+        60,
+        150
+      ],
+      "worldGroundFoot": [
+        1800,
+        7520.0
+      ],
+      "atlasRect": [
+        270.94482421875,
+        1128.3956126953124,
+        9.1845703125,
+        22.96142578125
+      ]
+    },
+    {
+      "id": "plot-pine-south-06",
+      "name": "打谷石磨",
+      "kind": "prop",
+      "source": "Art/Props/millstone",
+      "worldTopLeft": [
+        4572.5,
+        7510
+      ],
+      "worldSize": [
+        135,
+        135
+      ],
+      "worldGroundFoot": [
+        4640,
+        7643.7344
+      ],
+      "atlasRect": [
+        699.9407958984375,
+        1149.60205078125,
+        20.665283203125,
+        20.665283203125
+      ]
+    },
+    {
+      "id": "market-stall-south-04",
+      "name": "市集皮货摊",
+      "kind": "stall",
+      "source": "Art/Props/Nov7/market-leather-stall",
+      "worldTopLeft": [
+        5000.0,
+        7531.4359
+      ],
+      "worldSize": [
+        140,
+        149.2778
+      ],
+      "worldGroundFoot": [
+        5070,
+        7680.0
+      ],
+      "atlasRect": [
+        765.380859375,
+        1152.8833762939453,
+        21.4306640625,
+        22.850874169921877
+      ]
+    },
+    {
+      "id": "market-stall-south-03",
+      "name": "市集布头摊",
+      "kind": "stall",
+      "source": "Art/Props/Nov7/market-cloth-stall",
+      "worldTopLeft": [
+        4760.0,
+        7536.5203
+      ],
+      "worldSize": [
+        140,
+        144.1756
+      ],
+      "worldGroundFoot": [
+        4830,
+        7680.0
+      ],
+      "atlasRect": [
+        728.642578125,
+        1153.6616767822266,
+        21.4306640625,
+        22.06984892578125
+      ]
+    },
+    {
+      "id": "plot-pine-south-05",
+      "name": "垂柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        3175.0,
+        7490
+      ],
+      "worldSize": [
+        270,
+        270
+      ],
+      "worldGroundFoot": [
+        3310,
+        7757.75
+      ],
+      "atlasRect": [
+        486.016845703125,
+        1146.54052734375,
+        41.33056640625,
+        41.33056640625
+      ]
+    },
+    {
+      "id": "plot-field-willow-01",
+      "name": "田头柳",
+      "kind": "tree",
+      "source": "Art/Props/willow",
+      "worldTopLeft": [
+        5270.0,
+        7520
+      ],
+      "worldSize": [
+        300,
+        300
+      ],
+      "worldGroundFoot": [
+        5420,
+        7817.5
+      ],
+      "atlasRect": [
+        806.71142578125,
+        1151.1328125,
+        45.9228515625,
+        45.9228515625
+      ]
+    },
+    {
+      "id": "plot-pine-south-07",
+      "name": "农家草垛",
+      "kind": "prop",
+      "source": "Art/Props/haystack",
+      "worldTopLeft": [
+        3385.0,
+        7800
+      ],
+      "worldSize": [
+        150,
+        150
+      ],
+      "worldGroundFoot": [
+        3460,
+        7948.75
+      ],
+      "atlasRect": [
+        518.162841796875,
+        1193.994140625,
+        22.96142578125,
+        22.96142578125
+      ]
+    },
+    {
+      "id": "plot-pine-south-08",
+      "name": "农家柴堆",
+      "kind": "prop",
+      "source": "Art/Props/firewood-pile",
+      "worldTopLeft": [
+        4500.0,
+        7860
+      ],
+      "worldSize": [
+        120,
+        120
+      ],
+      "worldGroundFoot": [
+        4560,
+        7978.75
+      ],
+      "atlasRect": [
+        688.8427734375,
+        1203.1787109375,
+        18.369140625,
+        18.369140625
+      ]
+    },
+    {
+      "id": "plot-street-opera-west",
+      "name": "戏台西邻民居",
+      "kind": "building",
+      "source": "Art/Props/Nov7/opera-stage-complete",
+      "worldTopLeft": [
+        2651.676,
+        7329.7305
+      ],
+      "worldSize": [
+        600,
+        403.0997
+      ],
+      "worldGroundFoot": [
+        2951.676,
+        7730.0
+      ],
+      "atlasRect": [
+        405.9084111328125,
+        1122.0070858154297,
+        91.845703125,
+        61.70495895996093
+      ]
+    }
+  ],
+  "terrainPixels": {
+    "grass": 3044349,
+    "mountain-foot": 831531,
+    "farmland": 1527446,
+    "plaza": 107112,
+    "riverbank": 109332,
+    "dirt-road": 1084919,
+    "stone-road": 754513,
+    "mountain-path": 34894,
+    "water": 236945,
+    "mountain": 1623495,
+    "bridge": 82648
+  },
+  "labels": "Runtime overlays only; actual town landmarks and building ground coordinates. No baked fictional names.",
+  "outputRepresentation": "20 building feet and three through-bridges calibrated. Current99-plot list is conditioning/layout metadata; 81 original non-building props were not independently calibrated, and 2 drying-rack placements are now removed.",
+  "paintingInputs": [
+    {
+      "path": "output/imagegen/nov9-corrections/atlas-generated-1.png",
+      "sha256": "9ba97fd64a069b6cefc361c792d1d2d351aa46eec90caf7f3a9490a985a53f82"
+    },
+    {
+      "path": "Tools/logs/nov9-menu-scroll-art-correction-20261109/before/GameClient/TwelveJade/Assets/Resources/Art/UI/Nov8/qingshi-town-atlas.png",
+      "sha256": "420e85e9273c12334bb61ef0d414a47ae603091e0dc794884500dcbbbcb60c01"
+    },
+    {
+      "path": "Tools/logs/nov8-screenshot-remediation-20261108/inputs/13.jpg",
+      "sha256": "006233805a5f610be69089a261ba5417c9c4bc82dc74e679eabbc99ae939d7cc"
+    }
+  ],
+  "calibration": {
+    "buildings": [
+      {
+        "id": "plot-ancestral-hall",
+        "kind": "building-foot",
+        "name": "张氏祠堂",
+        "sourcePixel": [
+          524.0,
+          315.0
+        ],
+        "targetPixel": [
+          523.5205078125,
+          344.42138671875
+        ],
+        "targetWorld": [
+          3420.0,
+          2250.0
+        ],
+        "targetWorldNormalized": [
+          0.41748046875,
+          0.274658203125
+        ],
+        "initialDisplacementPx": 29.425293697975427,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 1,
+        "inverseFitResidualPx": 9.58886306942056e-12,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 5.133056163787842
+      },
+      {
+        "id": "plot-blacksmith",
+        "kind": "building-foot",
+        "name": "守渡铁匠铺",
+        "sourcePixel": [
+          568.0,
+          469.0
+        ],
+        "targetPixel": [
+          558.72802734375,
+          513.5586013916017
+        ],
+        "targetWorld": [
+          3650.0,
+          3354.9219000000003
+        ],
+        "targetWorldNormalized": [
+          0.445556640625,
+          0.40953636474609384
+        ],
+        "initialDisplacementPx": 45.51305785062011,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 2,
+        "inverseFitResidualPx": 8.95531938718158e-12,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 3.958155393600464
+      },
+      {
+        "id": "plot-school",
+        "kind": "building-foot",
+        "name": "北街村塾",
+        "sourcePixel": [
+          304.0,
+          470.0
+        ],
+        "targetPixel": [
+          303.8805402832031,
+          524.4682636230469
+        ],
+        "targetWorld": [
+          1985.159,
+          3426.1914
+        ],
+        "targetWorldNormalized": [
+          0.247802734375,
+          0.4182362548828126
+        ],
+        "initialDisplacementPx": 54.88425786318661,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 3,
+        "inverseFitResidualPx": 3.2355841246402877e-12,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 4.0303874015808105
+      },
+      {
+        "id": "plot-paifang",
+        "kind": "building-foot",
+        "name": "青石牌坊",
+        "sourcePixel": [
+          579.0,
+          588.0
+        ],
+        "targetPixel": [
+          570.97412109375,
+          634.279491430664
+        ],
+        "targetWorld": [
+          3730.0,
+          4143.5547
+        ],
+        "targetWorldNormalized": [
+          0.455322265625,
+          0.5058050170898437
+        ],
+        "initialDisplacementPx": 46.970267822301125,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 4,
+        "inverseFitResidualPx": 1.0370458250673629e-11,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 4.274531841278076
+      },
+      {
+        "id": "plot-temple-gate",
+        "kind": "building-foot",
+        "name": "青石山门",
+        "sourcePixel": [
+          847.0,
+          597.0
+        ],
+        "targetPixel": [
+          817.4267578125,
+          642.919921875
+        ],
+        "targetWorld": [
+          5340.0,
+          4200.0
+        ],
+        "targetWorldNormalized": [
+          0.65185546875,
+          0.5126953125
+        ],
+        "initialDisplacementPx": 54.61882348134783,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 5,
+        "inverseFitResidualPx": 1.1598286387067537e-11,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 4.235401153564453
+      },
+      {
+        "id": "plot-stone-house",
+        "kind": "building-foot",
+        "name": "石门柴扉",
+        "sourcePixel": [
+          426.0,
+          572.0
+        ],
+        "targetPixel": [
+          445.1655607910156,
+          620.79318984375
+        ],
+        "targetWorld": [
+          2908.131,
+          4055.4528
+        ],
+        "targetWorldNormalized": [
+          0.341796875,
+          0.49505039062500006
+        ],
+        "initialDisplacementPx": 48.86312120628229,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 6,
+        "inverseFitResidualPx": 8.795313703617798e-12,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 4.120792388916016
+      },
+      {
+        "id": "shop-north-street-01",
+        "kind": "building-foot",
+        "name": "北街街铺",
+        "sourcePixel": [
+          722.0,
+          576.0
+        ],
+        "targetPixel": [
+          717.4272993164063,
+          621.948486328125
+        ],
+        "targetWorld": [
+          4686.734,
+          4063.0
+        ],
+        "targetWorldNormalized": [
+          0.56640625,
+          0.4959716796875
+        ],
+        "initialDisplacementPx": 47.42125751087055,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 7,
+        "inverseFitResidualPx": 8.2929073982254e-12,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 4.201623439788818
+      },
+      {
+        "id": "plot-street-square-tea",
+        "kind": "building-foot",
+        "name": "广场北沿茶寮",
+        "sourcePixel": [
+          532.0,
+          704.0
+        ],
+        "targetPixel": [
+          525.05126953125,
+          756.571754296875
+        ],
+        "targetWorld": [
+          3430.0,
+          4942.4528
+        ],
+        "targetWorldNormalized": [
+          0.418701171875,
+          0.6033267578125
+        ],
+        "initialDisplacementPx": 53.0289940030766,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 8,
+        "inverseFitResidualPx": 8.571113005460013e-12,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 3.8762950897216797
+      },
+      {
+        "id": "plot-teahouse",
+        "kind": "building-foot",
+        "name": "草亭茶棚",
+        "sourcePixel": [
+          730.0,
+          747.0
+        ],
+        "targetPixel": [
+          708.74267578125,
+          802.494605859375
+        ],
+        "targetWorld": [
+          4630.0,
+          5242.4528
+        ],
+        "targetWorldNormalized": [
+          0.565185546875,
+          0.6399478515625
+        ],
+        "initialDisplacementPx": 59.426636388310236,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 9,
+        "inverseFitResidualPx": 1.5662399254592424e-11,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 3.81903338432312
+      },
+      {
+        "id": "plot-herbal-garden",
+        "kind": "building-foot",
+        "name": "梯田药圃",
+        "sourcePixel": [
+          838.0,
+          744.0
+        ],
+        "targetPixel": [
+          803.64990234375,
+          801.096346875
+        ],
+        "targetWorld": [
+          5250.0,
+          5233.3184
+        ],
+        "targetWorldNormalized": [
+          0.640869140625,
+          0.6388328125
+        ],
+        "initialDisplacementPx": 66.63273996665778,
+        "manualUncertaintyPx": 6,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 10,
+        "inverseFitResidualPx": 9.18333536299287e-12,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 5.861971378326416
+      },
+      {
+        "id": "plot-street-east-gate",
+        "kind": "building-foot",
+        "name": "东口铺面",
+        "sourcePixel": [
+          1004.0,
+          766.0
+        ],
+        "targetPixel": [
+          960.489298828125,
+          836.5493240478517
+        ],
+        "targetWorld": [
+          6274.584,
+          5464.9219
+        ],
+        "targetWorldNormalized": [
+          0.75927734375,
+          0.6671047241210938
+        ],
+        "initialDisplacementPx": 87.56318267755019,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 11,
+        "inverseFitResidualPx": 1.1482370609883219e-11,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 4.022054672241211
+      },
+      {
+        "id": "plot-street-locust-tea",
+        "kind": "building-foot",
+        "name": "古槐荫下茶摊",
+        "sourcePixel": [
+          413.0,
+          749.0
+        ],
+        "targetPixel": [
+          435.4531838378906,
+          802.494605859375
+        ],
+        "targetWorld": [
+          2844.683,
+          5242.4528
+        ],
+        "targetWorldNormalized": [
+          0.333251953125,
+          0.6399478515625
+        ],
+        "initialDisplacementPx": 53.71836522642267,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 12,
+        "inverseFitResidualPx": 9.761853896956408e-12,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 3.9788248538970947
+      },
+      {
+        "id": "plot-street-east-wine",
+        "kind": "building-foot",
+        "name": "东沿临街酒楼",
+        "sourcePixel": [
+          1008.0,
+          1028.0
+        ],
+        "targetPixel": [
+          961.9640346679687,
+          1081.093238671875
+        ],
+        "targetWorld": [
+          6284.218,
+          7062.4528
+        ],
+        "targetWorldNormalized": [
+          0.75439453125,
+          0.8621158203125
+        ],
+        "initialDisplacementPx": 81.61838075343861,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 13,
+        "inverseFitResidualPx": 7.081512877629137e-12,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 4.3509602546691895
+      },
+      {
+        "id": "plot-opera-stage",
+        "kind": "building-foot",
+        "name": "万年台（戏台）",
+        "sourcePixel": [
+          220.0,
+          909.0
+        ],
+        "targetPixel": [
+          260.2294921875,
+          977.001441796875
+        ],
+        "targetWorld": [
+          1700.0,
+          6382.4528
+        ],
+        "targetWorldNormalized": [
+          0.20751953125,
+          0.7791080078125
+        ],
+        "initialDisplacementPx": 79.01017737050023,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 14,
+        "inverseFitResidualPx": 9.884913639045783e-12,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 4.082454681396484
+      },
+      {
+        "id": "plot-street-opera-west",
+        "kind": "building-foot",
+        "name": "戏台西邻民居",
+        "sourcePixel": [
+          416.0,
+          1208.0
+        ],
+        "targetPixel": [
+          451.8312626953125,
+          1183.27880859375
+        ],
+        "targetWorld": [
+          2951.676,
+          7730.0
+        ],
+        "targetWorldNormalized": [
+          0.3369140625,
+          0.9963931640625
+        ],
+        "initialDisplacementPx": 41.98174569882186,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 15,
+        "inverseFitResidualPx": 1.0500042723298844e-11,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 3.9969005584716797
+      },
+      {
+        "id": "plot-street-east-home",
+        "kind": "building-foot",
+        "name": "东街石屋",
+        "sourcePixel": [
+          1005.0,
+          902.0
+        ],
+        "targetPixel": [
+          977.7076127929687,
+          958.632301171875
+        ],
+        "targetWorld": [
+          6387.066,
+          6262.4528
+        ],
+        "targetWorldNormalized": [
+          0.7568359375,
+          0.7644595703125
+        ],
+        "initialDisplacementPx": 79.5935236582884,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 16,
+        "inverseFitResidualPx": 6.425066726908331e-12,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 4.1135945320129395
+      },
+      {
+        "id": "plot-street-east-store",
+        "kind": "building-foot",
+        "name": "东沿杂货铺",
+        "sourcePixel": [
+          851.0,
+          982.0
+        ],
+        "targetPixel": [
+          811.3037109375,
+          1026.4385242675783
+        ],
+        "targetWorld": [
+          5300.0,
+          6705.4102
+        ],
+        "targetWorldNormalized": [
+          0.64697265625,
+          0.8185315185546876
+        ],
+        "initialDisplacementPx": 59.5867250687072,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 17,
+        "inverseFitResidualPx": 1.2170864929508817e-11,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 3.879941940307617
+      },
+      {
+        "id": "plot-cloth-shop",
+        "kind": "building-foot",
+        "name": "布庄",
+        "sourcePixel": [
+          801.0,
+          1111.0
+        ],
+        "targetPixel": [
+          757.72705078125,
+          1145.213862084961
+        ],
+        "targetWorld": [
+          4950.0,
+          7481.3333
+        ],
+        "targetWorldNormalized": [
+          0.604248046875,
+          0.9132486938476563
+        ],
+        "initialDisplacementPx": 55.16463081411173,
+        "manualUncertaintyPx": 4,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 18,
+        "inverseFitResidualPx": 1.3983481039758772e-11,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 4.4163031578063965
+      },
+      {
+        "id": "plot-grain-shop",
+        "kind": "building-foot",
+        "name": "粮行",
+        "sourcePixel": [
+          290.0,
+          1070.0
+        ],
+        "targetPixel": [
+          304.5768837890625,
+          1109.1444930908203
+        ],
+        "targetWorld": [
+          1989.708,
+          7245.7031
+        ],
+        "targetWorldNormalized": [
+          0.25390625,
+          0.8844852416992187
+        ],
+        "initialDisplacementPx": 48.360754665107194,
+        "manualUncertaintyPx": 6,
+        "note": "Manually identified visible ground/apron baseline; soft ink edge limits precision.",
+        "number": 19,
+        "inverseFitResidualPx": 1.3158729675089338e-11,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 6.361504077911377
+      },
+      {
+        "id": "plot-town-gate-south",
+        "kind": "building-foot",
+        "name": "青石镇南门楼",
+        "sourcePixel": [
+          619.0,
+          1024.0
+        ],
+        "targetPixel": [
+          606.181640625,
+          1064.3764940917968
+        ],
+        "targetWorld": [
+          3960.0,
+          6953.247399999999
+        ],
+        "targetWorldNormalized": [
+          0.4833984375,
+          0.8487850830078124
+        ],
+        "initialDisplacementPx": 42.362384401867054,
+        "manualUncertaintyPx": 6,
+        "note": "Ground/contact baseline center; not roof apex. Gate foot is baseline interpolated between piers.",
+        "number": 20,
+        "inverseFitResidualPx": 1.2717690794647399e-11,
+        "estimatedTargetUncertaintyPxFromLocalJacobian": 6.024466514587402
+      }
+    ],
+    "bridges": [
+      {
+        "id": "main",
+        "configIndex": 0,
+        "sourceDeckRectPx": [
+          620,
+          320,
+          692,
+          382
+        ],
+        "worldCenter": [
+          4236,
+          2462.8404645120695
+        ],
+        "worldHalfWidth": 280,
+        "worldHalfLength": 205,
+        "completeCrossing": true
+      },
+      {
+        "id": "west",
+        "configIndex": 1,
+        "sourceDeckRectPx": [
+          337,
+          339,
+          400,
+          414
+        ],
+        "worldCenter": [
+          2400,
+          2839.575079121764
+        ],
+        "worldHalfWidth": 210,
+        "worldHalfLength": 205,
+        "completeCrossing": true
+      },
+      {
+        "id": "east",
+        "configIndex": 2,
+        "sourceDeckRectPx": [
+          878,
+          331,
+          941,
+          414
+        ],
+        "worldCenter": [
+          5800,
+          2711.341308971383
+        ],
+        "worldHalfWidth": 210,
+        "worldHalfLength": 205,
+        "completeCrossing": true
+      }
+    ],
+    "warp": {
+      "method": "inverse thin-plate radial basis spline, exact controls, degree=1, smoothing=0, one Lanczos4 remap",
+      "controlCount": 187,
+      "maxLandmarkDisplacementPx": 87.56318267755019,
+      "maxBuildingDisplacementPx": 87.56318267755019,
+      "maxInverseControlResidualPx": 1.8843228967944615e-11,
+      "jacobianDetMin": 0.3904440999031067,
+      "jacobianDetMax": 2.905327558517456,
+      "nonpositiveJacobianPixels": 0,
+      "outsideSourcePixels": 2781,
+      "bottomSourceMarginCroppedApproximatelyPx": 41,
+      "maxOutsideDistancePx": 1.6304656267166138,
+      "maxDenseInverseDisplacementPx": 89.08328688612067,
+      "outsideSourcePolicy": "Lanczos border replication only at raster edge; no holes or missing interior pixels.",
+      "independentObservedControls": 63,
+      "derivedStructureSupportCount": 104,
+      "frameStabilizers": 20,
+      "maxEstimatedBuildingTargetUncertaintyPx": 6.361504077911377,
+      "uncertaintyPropagationNote": "Linearized local sensitivity estimate only, not an independent observed residual or a confidence interval."
+    },
+    "boundaries": [
+      "Manual ground points are uncertain by 4-6 source pixels; bridge deck ends about 3px; river ink boundary about 5px. Exact spline residual is a numerical fit result, not an independent visual accuracy guarantee.",
+      "All 20 principal buildings were individually identified; 81 non-building plots were not individually re-registered. Foliage and brushwork remain interpretive.",
+      "Only visible foot centers and sampled bridge/river landmarks are calibrated. Full silhouette extents, every road edge, elevation projection and collision are NOT proven.",
+      "Southern theatre is intentionally near the bottom world boundary; generated bottom decorative margin is cropped to place its true foot.",
+      "No Unity, compilation, SaveChecks, extra agents, product writes, or installation.",
+      "Three confirmed invented pavilions removed with feathered natural-texture replacement before warp; source PNG retained unchanged."
+    ],
+    "ferry": {
+      "config": {
+        "x": 5100.0,
+        "half": 90.0
+      },
+      "sourceInterpretation": "south-bank landing and stairs, not an invented fourth through-bridge",
+      "evidence": [
+        {
+          "path": "Tools/make-world-mask.py",
+          "line": 161
+        },
+        {
+          "path": "GameClient/TwelveJade/Assets/Resources/Config/town-map.json",
+          "line": 120310
+        }
+      ],
+      "runtimeWalkabilityNotTested": true
+    },
+    "repairs": [
+      {
+        "id": "extra-riverbank-pavilion",
+        "polygon": [
+          [
+            404,
+            410
+          ],
+          [
+            420,
+            392
+          ],
+          [
+            446,
+            394
+          ],
+          [
+            468,
+            407
+          ],
+          [
+            470,
+            432
+          ],
+          [
+            454,
+            449
+          ],
+          [
+            410,
+            449
+          ],
+          [
+            399,
+            432
+          ]
+        ],
+        "donorRect": [
+          1090,
+          475,
+          1190,
+          575
+        ],
+        "bbox": [
+          396,
+          390,
+          478,
+          455
+        ],
+        "expected": "plot-riverbank-bamboo",
+        "reason": "Original manifest has bamboo here and no building registration; generated roof/columns are invented."
+      },
+      {
+        "id": "extra-east-willow-pavilion",
+        "polygon": [
+          [
+            701,
+            442
+          ],
+          [
+            719,
+            425
+          ],
+          [
+            735,
+            417
+          ],
+          [
+            755,
+            425
+          ],
+          [
+            770,
+            440
+          ],
+          [
+            773,
+            474
+          ],
+          [
+            749,
+            484
+          ],
+          [
+            709,
+            480
+          ]
+        ],
+        "donorRect": [
+          1090,
+          1010,
+          1190,
+          1110
+        ],
+        "bbox": [
+          697,
+          413,
+          779,
+          487
+        ],
+        "expected": "plot-river-willow-east",
+        "reason": "Original manifest shows willow/reeds here, not a pavilion; preserve nearby real ferry."
+      },
+      {
+        "id": "extra-south-bamboo-pavilion",
+        "polygon": [
+          [
+            382,
+            1056
+          ],
+          [
+            393,
+            1040
+          ],
+          [
+            411,
+            1045
+          ],
+          [
+            427,
+            1038
+          ],
+          [
+            441,
+            1050
+          ],
+          [
+            434,
+            1070
+          ],
+          [
+            432,
+            1093
+          ],
+          [
+            387,
+            1093
+          ]
+        ],
+        "donorRect": [
+          1090,
+          1010,
+          1190,
+          1110
+        ],
+        "bbox": [
+          378,
+          1035,
+          446,
+          1097
+        ],
+        "expected": "bamboo-market-01 / plot-farm-willow-04",
+        "reason": "This is non-building bamboo/vegetation in the original configuration."
+      }
+    ]
+  },
+  "nov10Cleanup": {
+    "removedPlots": [
+      "plot-pine-east-02",
+      "plot-drying-rack"
+    ],
+    "originalPlotCount": 101,
+    "currentPlotCount": 99,
+    "visibleRackRemovedPx": [
+      [
+        1043,
+        594
+      ],
+      [
+        1076,
+        594
+      ],
+      [
+        1080,
+        608
+      ],
+      [
+        1077,
+        627
+      ],
+      [
+        1068,
+        634
+      ],
+      [
+        1040,
+        629
+      ],
+      [
+        1038,
+        615
+      ]
+    ],
+    "pixelScope": "Only source polygon changed; other pixels identical. One obvious painted rack east of pine removed. The herbal-garden rack does not have a separately identifiable painted depiction; both real scene registrations removed.",
+    "remainingPropsUnchanged": true,
+    "worldCollision": "Only blockers owned by the two removed prop registrations cease to register; all other plot collision metadata remains byte-equivalent at JSON value level.",
+    "localRestoration": {
+      "method": "Nearby authored grass/earth texture with3.4px inside-only feather; no changes outside polygon",
+      "donorRect": [
+        1040,
+        550,
+        1083,
+        591
+      ]
+    }
+  },
+  "nov11LayoutReprojection": {
+    "moves": [
+      {
+        "id": "plot-school",
+        "name": "北街村塾",
+        "from": [
+          2030,
+          3040
+        ],
+        "to": [
+          1985.159,
+          3040
+        ],
+        "delta": [
+          -44.840999999999894,
+          0
+        ],
+        "reason": [
+          "72 world-unit facade setback from 2400.0 street"
+        ]
+      },
+      {
+        "id": "plot-stone-house",
+        "name": "石门柴扉",
+        "from": [
+          2800,
+          3290.1698
+        ],
+        "to": [
+          2908.131,
+          3290.1698
+        ],
+        "delta": [
+          108.13099999999986,
+          0.0
+        ],
+        "reason": [
+          "72 world-unit facade setback from 2400.0 street"
+        ]
+      },
+      {
+        "id": "shop-north-street-01",
+        "name": "北街街铺",
+        "from": [
+          4640,
+          3650
+        ],
+        "to": [
+          4686.734,
+          3650
+        ],
+        "delta": [
+          46.73400000000038,
+          0
+        ],
+        "reason": [
+          "72 world-unit facade setback from 4096 street"
+        ]
+      },
+      {
+        "id": "plot-street-east-gate",
+        "name": "东口铺面",
+        "from": [
+          6220,
+          4950
+        ],
+        "to": [
+          6274.584,
+          4950
+        ],
+        "delta": [
+          54.58399999999983,
+          0
+        ],
+        "reason": [
+          "72 world-unit facade setback from 5800.0 street"
+        ]
+      },
+      {
+        "id": "plot-street-locust-tea",
+        "name": "古槐荫下茶摊",
+        "from": [
+          2730,
+          4477.1698
+        ],
+        "to": [
+          2844.683,
+          4477.1698
+        ],
+        "delta": [
+          114.68299999999999,
+          0.0
+        ],
+        "reason": [
+          "72 world-unit facade setback from 2400.0 street"
+        ]
+      },
+      {
+        "id": "plot-street-east-wine",
+        "name": "东沿临街酒楼",
+        "from": [
+          6180,
+          6297.1698
+        ],
+        "to": [
+          6284.218,
+          6297.1698
+        ],
+        "delta": [
+          104.21799999999985,
+          0.0
+        ],
+        "reason": [
+          "72 world-unit facade setback from 5800.0 street"
+        ]
+      },
+      {
+        "id": "plot-street-opera-west",
+        "name": "戏台西邻民居",
+        "from": [
+          2760,
+          7762.1833
+        ],
+        "to": [
+          2951.676,
+          7329.7305
+        ],
+        "delta": [
+          191.67599999999993,
+          -432.4528
+        ],
+        "reason": [
+          "southern stage forecourt kept within world bounds",
+          "72 world-unit facade setback from 2400.0 street"
+        ]
+      },
+      {
+        "id": "plot-street-east-home",
+        "name": "东街石屋",
+        "from": [
+          6200,
+          5497.1698
+        ],
+        "to": [
+          6387.066,
+          5497.1698
+        ],
+        "delta": [
+          187.0659999999998,
+          0.0
+        ],
+        "reason": [
+          "72 world-unit facade setback from 5800.0 street"
+        ]
+      },
+      {
+        "id": "plot-grain-shop",
+        "name": "粮行",
+        "from": [
+          2080,
+          6810
+        ],
+        "to": [
+          1989.708,
+          6810
+        ],
+        "delta": [
+          -90.29199999999992,
+          0
+        ],
+        "reason": [
+          "72 world-unit facade setback from 2400.0 street"
+        ]
+      }
+    ],
+    "method": "inverse thin plate spline local silhouette supports, registered bridge and frame pins, Lanczos4",
+    "minimumJacobianDeterminant": 0.47419169545173645,
+    "nonpositiveJacobianPixels": 0,
+    "input": "Tools\\logs\\nov11-wilderness-boss-expansion\\main\\before\\GameClient\\TwelveJade\\Assets\\Resources\\Art\\UI\\Nov8\\qingshi-town-atlas.png",
+    "limitation": "Ground anchors follow current layout; painterly road contours remain interpretive, not runtime collision geometry.",
+    "encounters": "All three former town encounters are now western wilderness spawns. Final wolf800/5450 and mandrill580/6350 leave further clearance from the isolated western theatre. Creature coordinates do not move painted building or bridge controls."
+  }
+}

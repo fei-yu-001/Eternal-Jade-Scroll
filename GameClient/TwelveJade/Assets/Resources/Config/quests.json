@@ -1,0 +1,128 @@
+{
+  "quests": [
+    {
+      "id": "tax-and-labor",
+      "title": "税与役",
+      "chapter": 1,
+      "status": "Available",
+      "objectives": [
+        { "id": "answer-summons", "type": "talk", "count": 1 }
+      ],
+      "prerequisites": [],
+      "rewards": { "coins": 0, "items": [], "flags": ["chapter-1-tax-settled"] },
+      "next": "night-beast-roar"
+    },
+    {
+      "id": "night-beast-roar",
+      "title": "夜里的兽吼",
+      "chapter": 1,
+      "status": "Locked",
+      "objectives": [
+        { "id": "drive-off-the-boar", "type": "defeat", "target": "encounter-boar-01", "count": 1 }
+      ],
+      "prerequisites": ["tax-and-labor"],
+      "rewards": { "coins": 0, "items": [], "flags": ["chapter-1-first-beast-slain"] },
+      "next": "beast-origin"
+    },
+    {
+      "id": "beast-origin",
+      "title": "兽之来历",
+      "chapter": 1,
+      "status": "Locked",
+      "objectives": [
+        { "id": "hear-the-hunter", "type": "talk", "count": 1 },
+        { "id": "compare-the-wound", "type": "clue", "count": 1 }
+      ],
+      "prerequisites": ["night-beast-roar"],
+      "rewards": { "coins": 0, "items": [], "flags": [] },
+      "next": "guide-investigation"
+    },
+    {
+      "id": "guide-investigation",
+      "title": "谁是引路人",
+      "chapter": 1,
+      "status": "Locked",
+      "objectives": [
+        { "id": "weigh-the-testimony", "type": "clue", "count": 1 }
+      ],
+      "prerequisites": ["beast-origin"],
+      "rewards": { "coins": 0, "items": [], "flags": [] },
+      "next": "town-day"
+    },
+    {
+      "id": "town-day",
+      "title": "镇上的一天",
+      "chapter": 1,
+      "status": "Locked",
+      "objectives": [],
+      "prerequisites": ["guide-investigation"],
+      "rewards": { "coins": 0, "items": [], "flags": [] },
+      "next": "fortune-teller-change"
+    },
+    {
+      "id": "fortune-teller-change",
+      "title": "神算惊变",
+      "chapter": 1,
+      "status": "Locked",
+      "objectives": [],
+      "prerequisites": ["town-day"],
+      "rewards": { "coins": 0, "items": [], "flags": [] },
+      "next": "leave-qingshi"
+    },
+    {
+      "id": "leave-qingshi",
+      "title": "离镇",
+      "chapter": 1,
+      "status": "Locked",
+      "objectives": [],
+      "prerequisites": ["fortune-teller-change"],
+      "rewards": { "coins": 0, "items": [], "flags": ["chapter-1-left-qingshi"] },
+      "next": ""
+    },
+    {
+      "id": "quest-herbal-rescue",
+      "giverNpc": "npc-yao-lao",
+      "turnInNpc": "npc-yao-lao",
+      "title": "药圃解围",
+      "chapter": 1,
+      "status": "Available",
+      "objectives": [
+        { "id": "slay-the-boar", "type": "defeat", "target": "encounter-boar-01", "count": 1 },
+        { "id": "report-to-yaolao", "type": "talk", "target": "npc-yao-lao", "count": 1 }
+      ],
+      "prerequisites": [],
+      "rewards": { "coins": 0, "items": [{ "itemId": "jinchuangyao", "count": 3 }], "flags": ["herb-boy-saved"] },
+      "next": ""
+    },
+    {
+      "id": "quest-shitou-promise",
+      "title": "寒巷旧诺",
+      "chapter": 1,
+      "status": "Available",
+      "objectives": [
+        { "id": "hear-of-shitou", "type": "talk", "target": "npc-shenhuai-an", "count": 1 },
+        { "id": "buy-a-blade", "type": "collect", "target": "cudao", "count": 1 },
+        { "id": "give-the-blade", "type": "talk", "target": "npc-shitou", "count": 1 }
+      ],
+      "prerequisites": [],
+      "rewards": { "coins": 0, "items": [
+        { "itemId": "red-string", "count": 1 },
+        { "itemId": "black-box-relic", "count": 1 }
+      ], "flags": ["bonded:npc-shitou", "got-luck-cord"] },
+      "next": ""
+    },
+    {
+      "id": "quest-bridge-blackmarket",
+      "title": "双桥夜探",
+      "chapter": 1,
+      "status": "Available",
+      "objectives": [
+        { "id": "meet-at-bridges", "type": "reach", "target": "bridges", "count": 1 },
+        { "id": "buy-the-scrap", "type": "collect", "target": "fulu", "count": 1 }
+      ],
+      "prerequisites": [],
+      "rewards": { "coins": 0, "items": [], "flags": ["blackmarket-tried"] },
+      "next": ""
+    }
+  ]
+}

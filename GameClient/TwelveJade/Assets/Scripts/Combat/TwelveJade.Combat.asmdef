@@ -1,0 +1,6 @@
+{
+  "name": "TwelveJade.Combat",
+  "rootNamespace": "TwelveJade",
+  "references": ["TwelveJade.Core"],
+  "noEngineReferences": true
+}

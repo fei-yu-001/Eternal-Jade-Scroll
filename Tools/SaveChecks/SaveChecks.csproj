@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <!-- dotnet SDK 10.0.400 起：本地没下 .NETCore.App 剪裁包数据时，
+         框架解析会报 NETSDK1226 直接中止（旧 SDK 静默跳过）。
+         这两个 csproj 只用 BCL，不依赖剪裁数据，踩过就钉死。 -->
+    <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
+    <!-- 源文件一律 UTF-8 无 BOM，csc 默认按系统 ANSI 读会把中文解成乱码：
+         乱码进了 JSON 测试数据就会破坏引号平衡，报出与真实原因无关的解析错误。 -->
+    <CodePage>65001</CodePage>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Core/*.cs" Link="Core/%(Filename)%(Extension)" />
+    <!-- 员工 L：行囊手艺与经济层是纯 C#（不依赖 UnityEngine），并入控制台门禁，
+         这样背包/理包/手艺/物价/善行的判据在没有 Unity 的机器上也有人值守。 -->
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Economy/*.cs" Link="Economy/%(Filename)%(Extension)" />
+    <!-- 员工 K：妖兽 2.0 表、战力与耐久、命途映射都是纯 C#（不依赖 UnityEngine），
+         并入控制台门禁，这样部位倍率对表、耐久归零回退、战败账单在没有 Unity 的机器上也有人值守。 -->
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Combat/*.cs" Link="Combat/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

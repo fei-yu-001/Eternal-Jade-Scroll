@@ -1,0 +1,21 @@
+{
+  "profile": "gift-project-art-20261106",
+  "baseUrl": "https://chuanapi.com/v1",
+  "model": "gpt-image-2.5-sunburst",
+  "n": 1,
+  "quality": "high",
+  "size": "1024x1536",
+  "outputFormat": "png",
+  "background": "transparent",
+  "maxRetries": 0,
+  "timeoutSeconds": 240,
+  "maxParallelGenerationRequests": 1,
+  "budgetUserStatedCny": null,
+  "createdAt": "2026-11-06T08:57:15.804255+08:00",
+  "expiryUserStated": null,
+  "credentialStorage": "none; resolve only the matching authorized user message in memory",
+  "scope": "New NPC fullbody master then identity-preserving directions. Original held player request not repeated.",
+  "globalSettingsChanged": false,
+  "accountPreflight": "Use authenticated account user_quota field; fixed 0.04 USD credit price per request.",
+  "supersedes": "acomb gpt-image-2.5: one HTTP403 insufficient_user_quota, zero charge; user cancelled."
+}

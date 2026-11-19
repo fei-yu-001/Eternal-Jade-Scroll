@@ -1,0 +1,56 @@
+{
+  "portraits": [
+    {
+      "id": "hero-male",
+      "resource": "Art/Portraits/Nov7/hero-male-bust"
+    },
+    {
+      "id": "hero-female",
+      "resource": "Art/Portraits/Nov7/hero-female-bust"
+    },
+    {
+      "id": "npc-shenhuai-an",
+      "resource": "Art/Portraits/Nov7/npc-shenhuai-an-bust"
+    },
+    {
+      "id": "npc-shitou",
+      "resource": "Art/Portraits/Nov7/npc-shitou-bust"
+    },
+    {
+      "id": "npc-zhao-da",
+      "resource": "Art/Portraits/Nov7/npc-zhao-da-bust"
+    },
+    {
+      "id": "npc-yao-lao",
+      "resource": "Art/Portraits/Nov7/npc-yao-lao-bust"
+    },
+    {
+      "id": "huolang",
+      "resource": "Art/Portraits/Nov7/huolang-bust"
+    },
+    {
+      "id": "npc-liu-sao",
+      "resource": "Art/Portraits/Nov7/npc-liu-sao-bust"
+    },
+    {
+      "id": "npc-a-xing",
+      "resource": "Art/Portraits/Nov7/npc-a-xing-bust"
+    },
+    {
+      "id": "npc-he-er-niang",
+      "resource": "Art/Portraits/Nov7/npc-he-er-niang-bust"
+    },
+    {
+      "id": "npc-hu-san",
+      "resource": "Art/Portraits/Nov7/npc-hu-san-bust"
+    },
+    {
+      "id": "npc-a-he",
+      "resource": "Art/Portraits/Nov7/npc-a-he-bust"
+    },
+    {
+      "id": "npc-xiao-man",
+      "resource": "Art/Portraits/Nov7/npc-xiao-man-bust"
+    }
+  ]
+}

@@ -1,0 +1,332 @@
+{
+  "merchants": [
+    {
+      "id": "huolang",
+      "name": "货郎老栓",
+      "title": "走街串巷的独脚货郎",
+      "greeting": "客官眼生——头一回来青石镇？山里的路子我熟，缺什么张嘴就是。",
+      "buys": [
+        "chishi",
+        "cailiao",
+        "qiyong"
+      ],
+      "stock": [
+        {
+          "itemId": "wheat-flour",
+          "count": 6
+        },
+        {
+          "itemId": "licorice",
+          "count": 6
+        },
+        {
+          "itemId": "pipa",
+          "count": 1
+        },
+        {
+          "itemId": "guqin",
+          "count": 1
+        },
+        {
+          "itemId": "ganliang",
+          "count": 12
+        },
+        {
+          "itemId": "chuibing",
+          "count": 12
+        },
+        {
+          "itemId": "larou",
+          "count": 8
+        },
+        {
+          "itemId": "jinchuangyao",
+          "count": 6
+        },
+        {
+          "itemId": "caoyao",
+          "count": 20
+        },
+        {
+          "itemId": "cudao",
+          "count": 2
+        },
+        {
+          "itemId": "zhudi",
+          "count": 1
+        },
+        {
+          "itemId": "manual-sword-fragment",
+          "count": 4
+        },
+        {
+          "itemId": "manual-thunder-fragment",
+          "count": 4
+        },
+        {
+          "itemId": "manual-clarity-fragment",
+          "count": 4
+        },
+        {
+          "itemId": "iron-ore",
+          "count": 12
+        },
+        {
+          "itemId": "qinglingcao",
+          "count": 10
+        },
+        {
+          "itemId": "red-dew-pill",
+          "count": 4
+        },
+        {
+          "itemId": "jade-renew-pill",
+          "count": 2
+        },
+        {
+          "itemId": "wolf-fur",
+          "count": 4
+        },
+        {
+          "itemId": "wolf-fang",
+          "count": 4
+        }
+      ],
+      "hidden": [
+        {
+          "itemId": "elixir-warm",
+          "count": 3
+        },
+        {
+          "itemId": "tiejian",
+          "count": 1
+        },
+        {
+          "itemId": "hetiehe",
+          "count": 1
+        }
+      ],
+      "memory": [
+        {
+          "at": 0,
+          "line": "头回见面，我这人只认现钱。"
+        },
+        {
+          "at": 1,
+          "line": "上回那买卖还算爽快，我记着呢。"
+        },
+        {
+          "at": 3,
+          "line": "你这后生在我这买过三回干粮了——也不嫌干。"
+        },
+        {
+          "at": 6,
+          "line": "旁人都说我奸，你倒是不怕我。要紧的话，我能给你留点别的。"
+        },
+        {
+          "at": 12,
+          "line": "我走南闯北二十年，头一回有人拿我当自己人。"
+        }
+      ]
+    },
+    {
+      "id": "npc-shenhuai-an",
+      "name": "沈怀安",
+      "title": "市集古槐下的摸骨相士",
+      "greeting": "这……老夫这么说吧：你这脸，是打外头来的。坐，把手搁这儿。",
+      "buys": [
+        "cailiao",
+        "qiyong"
+      ],
+      "stock": [
+        {
+          "itemId": "fulu",
+          "count": 3
+        },
+        {
+          "itemId": "caoyao",
+          "count": 6
+        },
+        {
+          "itemId": "qinglingcao",
+          "count": 2
+        }
+      ],
+      "hidden": [
+        {
+          "itemId": "dongxiao",
+          "count": 1
+        }
+      ],
+      "memory": [
+        {
+          "at": 0,
+          "line": "老夫只看看手，不收钱——命这东西，看一眼是缘，看两眼就是生意了。"
+        },
+        {
+          "at": 2,
+          "line": "你且坐。上回那卦应了没有？……罢了，应了也别告诉老夫，老夫怕自己算得太准。"
+        },
+        {
+          "at": 5,
+          "line": "嘻嘻嘻。老夫这摊子摆了四十年，头一回有人肯回回都听我啰嗦。"
+        },
+        {
+          "at": 9,
+          "line": "嗐……你这骨相，老夫年轻时见过一回。那回那位，也是从死人堆里爬出来的。得嘞，不多说了。"
+        }
+      ]
+    },
+    {
+      "id": "npc-shitou",
+      "name": "石头",
+      "title": "西巷拾遗队的苦孩子",
+      "greeting": "……你来啦。",
+      "buys": [
+        "cailiao",
+        "qiyong"
+      ],
+      "stock": [
+        {
+          "itemId": "chuibing",
+          "count": 3
+        },
+        {
+          "itemId": "ganliang",
+          "count": 2
+        },
+        {
+          "itemId": "cubupao",
+          "count": 1
+        }
+      ],
+      "hidden": [],
+      "memory": [
+        {
+          "at": 0,
+          "line": "……你来啦。坐门槛上吧，屋里乱。"
+        },
+        {
+          "at": 2,
+          "line": "这袋炒豆你揣着，别饿着。我不饿，我真不饿。"
+        },
+        {
+          "at": 5,
+          "line": "你别总往我这儿跑。让人瞧见说你跟拾遗的混在一处，不好听。"
+        },
+        {
+          "at": 9,
+          "line": "活着比什么都强。……别的都松了，就那个没松。"
+        }
+      ]
+    },
+    {
+      "id": "npc-zhao-da",
+      "name": "赵大",
+      "title": "守渡铁匠铺的打铁汉子",
+      "greeting": "看什么看！要打刀就候着，不打别挡着风箱！",
+      "buys": [
+        "cailiao",
+        "bingqi"
+      ],
+      "stock": [
+        {
+          "itemId": "iron-ore",
+          "count": 8
+        },
+        {
+          "itemId": "leather-bracer",
+          "count": 2
+        },
+        {
+          "itemId": "wood-bow",
+          "count": 1
+        },
+        {
+          "itemId": "dark-iron-armor",
+          "count": 1
+        },
+        {
+          "itemId": "cudao",
+          "count": 2
+        },
+        {
+          "itemId": "tiejian",
+          "count": 1
+        }
+      ],
+      "hidden": [
+        {
+          "itemId": "hetiehe",
+          "count": 1
+        }
+      ],
+      "memory": [
+        {
+          "at": 0,
+          "line": "看什么看！要打刀就候着，不打别挡着风箱！"
+        },
+        {
+          "at": 2,
+          "line": "哟，又是你。上回那把刀使得顺手不？使坏了拿来，我给你重开刃，不收钱。"
+        },
+        {
+          "at": 5,
+          "line": "我跟你说句掏心窝子的：这世道手里没把硬家伙，你连自己的门都守不住。"
+        },
+        {
+          "at": 9,
+          "line": "当年守渡，我那队三十七个人，回来四个。……罢了，不说这个。刀拿好，别弄丢了。"
+        }
+      ]
+    },
+    {
+      "id": "npc-yao-lao",
+      "name": "药老",
+      "title": "北山药圃的悬壶郎中",
+      "greeting": "抓药还是问事？山里的草药通人性，你待它善，它便救你的命。",
+      "buys": [
+        "cailiao",
+        "yaodan"
+      ],
+      "stock": [
+        {
+          "itemId": "jinchuangyao",
+          "count": 3
+        },
+        {
+          "itemId": "caoyao",
+          "count": 20
+        },
+        {
+          "itemId": "qinglingcao",
+          "count": 5
+        }
+      ],
+      "hidden": [
+        {
+          "itemId": "elixir-warm",
+          "count": 1
+        }
+      ],
+      "memory": [
+        {
+          "at": 0,
+          "line": "山里的草药通人性，你待它善，它便救你的命。"
+        },
+        {
+          "at": 2,
+          "line": "上回那味青灵草，你用得可还成？少了就再来，我这园子里还有。"
+        },
+        {
+          "at": 5,
+          "line": "我在这山上守了三十年药圃。草一年比一年少，人一年比一年多——这话我只跟你说。"
+        },
+        {
+          "at": 9,
+          "line": "你身上带着伤，自己不觉得，我闻得出来。这瓶金疮药你拿着，别推。"
+        }
+      ]
+    }
+  ]
+}

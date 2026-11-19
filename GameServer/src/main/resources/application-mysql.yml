@@ -1,0 +1,36 @@
+# 《十二玉楼长生经》服务端 · MySQL 档（默认不激活）
+#
+# 启用方式：java -jar game-server.jar --spring.profiles.active=mysql
+# 全部连接信息来自环境变量，仓库里不留账号密码：
+#   TWELVEJADE_DB_URL        例 jdbc:mysql://127.0.0.1:3306/twelvejade?useSSL=false&connectionTimeZone=UTC
+#   TWELVEJADE_DB_USERNAME   例 root
+#   TWELVEJADE_DB_PASSWORD   （无默认值，必须由环境提供）
+#
+# 时区语义（T102/W2-A）：DATETIME(6) 列不做时区转换，Instant 的 UTC 语义完全靠
+# 驱动按 connectionTimeZone=UTC 解释墙钟字面量——这个参数是硬性要求，分三层兜底：
+#   1. 下面 data-source-properties 已默认注入 connectionTimeZone=UTC（连接串漏带参数时的保险；
+#      若连接串里也显式写了该参数，以连接串为准）；
+#   2. 启动期自检 MysqlUtcSemanticsCheck 写→读回→比对一次，连接时区不是 UTC 时直接
+#      拒绝启动，错误信息指名 TWELVEJADE_DB_URL 要加 connectionTimeZone=UTC；
+#   3. ddl-auto: validate 只比列类型，看不见时区语义——类型对不等于语义对，
+#      这一层只能靠上面两条自己证明。
+#
+# M6-02-C：MySQL 档 ddl-auto=validate——每次启动只读校验实体与真表结构一致：
+# V1 脚本未执行或实体与 DDL 失配时启动直接失败（保护机制，宁可起不来也不带病运行）。
+# 建表/变更仍必须走 Database/SQL/ 版本化脚本，Hibernate 永不自动改表。
+spring:
+  datasource:
+    url: ${TWELVEJADE_DB_URL:}
+    username: ${TWELVEJADE_DB_USERNAME:}
+    password: ${TWELVEJADE_DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      data-source-properties:
+        connectionTimeZone: UTC
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  h2:
+    console:
+      enabled: false

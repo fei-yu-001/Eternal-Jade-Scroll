@@ -1,0 +1,59 @@
+# 《十二玉楼长生经》服务端 · 默认配置
+#
+# M6-02 修订（受控，原 M6-01"默认不连库"决策至此收口）：默认档改用 **H2 内存库**——
+# 零配置、重启即清空，方便本地起服务联调；生产/真库用 --spring.profiles.active=mysql
+# 激活 application-mysql.yml，那一档连接信息全部走环境变量，不在仓库里留账号密码。
+# 表结构由 JPA 按实体注解自动建（ddl-auto: update）；MySQL 档不自建表，
+# 建表 DDL 用 Database/SQL/V1__user_cloud_save.sql（与实体注解一一对应）。
+server:
+  port: ${TWELVEJADE_PORT:18080}
+  error:
+    # W3-D 审计修订（原为 always）：未捕获异常走 Spring 默认 /error 时，这个开关会把
+    # 异常 message 原样放进响应体——DIVE 类异常的 message 里带 SQL 语句与表名，
+    # 等于把内部结构泄露给客户端。业务错误全部走 ApiResponse 信封（message 在信封里），
+    # 默认 error JSON 的 message 对客户端没有任何契约价值，关掉。
+    include-message: never
+  tomcat:
+    # M6-03-S：表单体上限同步到 256KB。注意 JSON 请求体 Tomcat 不拦，
+    # 存档原文 256KB 的硬上限在 SaveController 应用层强制（先量再存），两处口径一致。
+    max-http-form-post-size: 262144
+
+spring:
+  application:
+    name: twelve-jade-server
+  servlet:
+    multipart:
+      # M6-02-C：multipart 前置防御（超限走 GlobalExceptionAdvice → 400/40001）。
+      # 注意 multipart 上限对 JSON 请求体无效——存档 256KB 硬上限在
+      # SaveController 应用层强制（先量再存），两处口径一致。
+      max-file-size: 256KB
+      max-request-size: 256KB
+  datasource:
+    url: jdbc:h2:mem:twelvejade
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  h2:
+    console:
+      enabled: true   # 调试用：http://127.0.0.1:18080/h2-console（JDBC URL jdbc:h2:mem:twelvejade）
+  jackson:
+    # M6-02 修订：不再用全局 non_null——它会把业务数据里所有 Map 的 null 值一并吞掉，
+    # 云存档 payload 必须原文往返。"data 为 null 不输出"策略已收回为 ApiResponse 类上的
+    # @JsonInclude(NON_NULL) 注解，只作用于返回信封本身。
+  mvc:
+    problemdetails:
+      enabled: false                      # 错误一律走 ApiResponse，不混用 ProblemDetail
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+logging:
+  level:
+    com.twelvejade: INFO

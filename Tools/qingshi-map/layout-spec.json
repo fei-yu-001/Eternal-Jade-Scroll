@@ -1,0 +1,370 @@
+{
+ "version": 1,
+ "comment": "2026-11-05 installed layout source. World geometry generator, mask, elevation renderer and gates consume these values.",
+ "terrainOverrides": {
+  "mainRoad": {
+   "baseX": 4096,
+   "amp": 140,
+   "periodY": 1500,
+   "half": 250,
+   "widthZones": []
+  },
+  "plaza": {
+   "x": 4096,
+   "y": 4700,
+   "r": 320
+  },
+  "crossPlaza": {
+   "x": 4096,
+   "y": 4700,
+   "halfX": 300,
+   "halfY": 260
+  },
+  "market": {
+   "x": 3100,
+   "y": 4950,
+   "r": 130
+  },
+  "crossRoads": [
+   {
+    "baseY": 4300,
+    "amp": 45,
+    "period": 800,
+    "half": 70
+   },
+   {
+    "baseY": 3500,
+    "amp": 45,
+    "period": 800,
+    "half": 90
+   },
+   {
+    "baseY": 6000,
+    "amp": 45,
+    "period": 800,
+    "half": 100
+   },
+   {
+    "baseY": 4700,
+    "amp": 45,
+    "period": 800,
+    "half": 90
+   }
+  ],
+  "pavedNodes": [
+   {
+    "x": 3960,
+    "y": 7080,
+    "r": 130
+   },
+   {
+    "x": 5800,
+    "y": 4300,
+    "r": 130
+   },
+   {
+    "x": 4236,
+    "y": 2560,
+    "r": 140
+   },
+   {
+    "x": 5100,
+    "y": 2820,
+    "r": 140
+   }
+  ],
+  "pavingRects": [
+   {
+    "id": "ancestral-terrace",
+    "x0": 2580,
+    "y0": 1640,
+    "x1": 3710,
+    "y1": 2360
+   },
+   {
+    "id": "view-terrace",
+    "x0": 4760,
+    "y0": 1800,
+    "x1": 5380,
+    "y1": 2200
+   },
+   {
+    "id": "market-edge",
+    "x0": 2680,
+    "y0": 4680,
+    "x1": 3540,
+    "y1": 5300
+   }
+  ],
+  "townPaving": false,
+  "alleys": [
+   {
+    "id": "alley-upper-west",
+    "axis": "ns",
+    "x": 3100.0,
+    "half": 100.0,
+    "y0": 2900.0,
+    "y1": 4260.0
+   },
+   {
+    "id": "alley-upper-east",
+    "axis": "ns",
+    "x": 5000,
+    "half": 60,
+    "y0": 2900.0,
+    "y1": 4260.0
+   },
+   {
+    "id": "alley-plaza-south",
+    "axis": "ew",
+    "y": 5350.0,
+    "half": 100.0,
+    "x0": 2900.0,
+    "x1": 4800
+   },
+   {
+    "id": "alley-south-west",
+    "axis": "ns",
+    "x": 3320,
+    "half": 80,
+    "y0": 5350.0,
+    "y1": 6200.0
+   },
+   {
+    "id": "alley-south-east",
+    "axis": "ns",
+    "x": 4700.0,
+    "half": 100.0,
+    "y0": 5350.0,
+    "y1": 6200.0
+   },
+   {
+    "id": "alley-shuikou",
+    "axis": "ns",
+    "x": 5500.0,
+    "half": 100.0,
+    "y0": 2900.0,
+    "y1": 3500.0
+   }
+  ],
+  "bridges": [
+   {
+    "x": 4236,
+    "half": 280
+   },
+   {
+    "x": 2400,
+    "half": 210
+   },
+   {
+    "x": 5800,
+    "half": 210
+   }
+  ]
+ },
+ "landmarkOverrides": {
+  "south-gate": [
+   3960,
+   7040
+  ],
+  "ancestral-hall": [
+   3450,
+   2385
+  ],
+  "wenchang": [
+   5070,
+   2100
+  ],
+  "market": [
+   3100,
+   4950
+  ]
+ },
+ "elevation": {
+  "version": 1,
+  "stepHeight": 24,
+  "defaultLevel": 0,
+  "maxStepHeight": 5,
+  "sampleDistance": 4,
+  "regions": [
+   {
+    "id": "river-basin",
+    "shape": "river",
+    "level": -1,
+    "feather": 64
+   },
+   {
+    "id": "raised-main-street",
+    "shape": "road",
+    "level": 1,
+    "feather": 72
+   },
+   {
+    "id": "west-shops",
+    "shape": "rect",
+    "rect": [
+     3420,
+     2890,
+     3930,
+     4200
+    ],
+    "level": 1,
+    "feather": 64
+   },
+   {
+    "id": "east-shops",
+    "shape": "rect",
+    "rect": [
+     4460,
+     3590,
+     4910,
+     4200
+    ],
+    "level": 1,
+    "feather": 64
+   },
+   {
+    "id": "main-bridge",
+    "shape": "bridge",
+    "bridgeIndex": 0,
+    "level": 1,
+    "feather": 160
+   },
+   {
+    "id": "west-bridge",
+    "shape": "bridge",
+    "bridgeIndex": 1,
+    "level": 1,
+    "feather": 160
+   },
+   {
+    "id": "east-bridge",
+    "shape": "bridge",
+    "bridgeIndex": 2,
+    "level": 1,
+    "feather": 160
+   },
+   {
+    "id": "ancestral-terrace",
+    "shape": "rect",
+    "rect": [
+     2580,
+     1640,
+     3710,
+     2360
+    ],
+    "level": 2,
+    "feather": 0
+   },
+   {
+    "id": "view-terrace",
+    "shape": "rect",
+    "rect": [
+     4760,
+     1800,
+     5380,
+     2200
+    ],
+    "level": 2,
+    "feather": 0
+   },
+   {
+    "id": "ancestral-steps",
+    "shape": "ramp",
+    "rect": [
+     3340,
+     2360,
+     3560,
+     2450
+    ],
+    "axis": "y",
+    "from": 2,
+    "to": 0
+   },
+   {
+    "id": "view-steps",
+    "shape": "ramp",
+    "rect": [
+     4960,
+     2200,
+     5180,
+     2320
+    ],
+    "axis": "y",
+    "from": 2,
+    "to": 0
+   },
+   {
+    "id": "ferry-landing",
+    "shape": "rect",
+    "rect": [
+     5030,
+     2690,
+     5170,
+     2870
+    ],
+    "level": -1,
+    "feather": 0
+   },
+   {
+    "id": "ferry-steps",
+    "shape": "ramp",
+    "rect": [
+     5030,
+     2870,
+     5170,
+     3010
+    ],
+    "axis": "y",
+    "from": -1,
+    "to": 0
+   },
+   {
+    "id": "south-gate-platform",
+    "shape": "rect",
+    "rect": [
+     2809,
+     6637,
+     5111,
+     6972
+    ],
+    "level": 1,
+    "feather": 72
+   }
+  ]
+ },
+ "pendingDesign": [],
+ "approvedAssets": {
+  "southGate": {
+   "art": "Art/Buildings/town-gate-south-wide",
+   "sha256": "36c9f9022be112410c0fb1f6cfe639fbd6d6ed48d7169b3d6dab9c645e01e407",
+   "approval": "用户2026-11-05实机备忘录5/6/7，原字节正向立面",
+   "sourceSize": [
+    1080,
+    780
+   ],
+   "contentBBox": [
+    2,
+    2,
+    1078,
+    778
+   ],
+   "contentHeight": 776,
+   "groundOpeningSourcePixels": 301,
+   "groundBandFraction": 0.15,
+   "status": "LANDMARK_APPROVED_PENDING_CURRENT_RUNTIME",
+   "platform": "south-gate-platform",
+   "buildingClass": "gate-landmark",
+   "requiredClearWidth": 620,
+   "displaySize": [
+    2254,
+    1627.8889
+   ],
+   "groundAnchor": [
+    3960,
+    6953.2474
+   ],
+   "scaleDecision": "2026-11-06 pK: city-gate landmark, original aspect; ordinary two-storey remains 3.5..4.5"
+  }
+ }
+}

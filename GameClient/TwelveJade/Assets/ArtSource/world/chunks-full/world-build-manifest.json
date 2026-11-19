@@ -1,0 +1,841 @@
+{
+  "status": "complete",
+  "generation_input": {
+    "sha256": "a7a4b333ee3142a1ef0df70ebb9c49b798627ab6688ac123200f653dbe9400a9",
+    "inputs": {
+      "terrainShape": {
+        "version": 1,
+        "comment": "由 make-world-greybox.py 导出的地形形状参数。make-world-mask.py 按此表求值生成语义 mask；坐标全部来自本文件，脚本内不得再写死。所有函数为 world units，y 轴向下增大。",
+        "mountain": {
+          "baseY": 1400.0,
+          "wave": [
+            {
+              "amp": 150,
+              "period": 1200,
+              "phase": 0.3
+            },
+            {
+              "amp": 60,
+              "period": 470,
+              "phase": 0.0
+            }
+          ]
+        },
+        "river": {
+          "baseY": 2700.0,
+          "wave": [
+            {
+              "amp": 170,
+              "period": 980,
+              "phase": 0.0
+            },
+            {
+              "amp": 80,
+              "period": 430,
+              "phase": 1.1
+            }
+          ],
+          "waterHalf": 125,
+          "bankHalf": 185
+        },
+        "mainRoad": {
+          "baseX": 4096,
+          "amp": 140,
+          "periodY": 1500,
+          "half": 250,
+          "widthZones": []
+        },
+        "crossRoads": [
+          {
+            "baseY": 4300,
+            "amp": 45,
+            "period": 800,
+            "half": 70
+          },
+          {
+            "baseY": 3500,
+            "amp": 45,
+            "period": 800,
+            "half": 90
+          },
+          {
+            "baseY": 6000,
+            "amp": 45,
+            "period": 800,
+            "half": 100
+          },
+          {
+            "baseY": 4700,
+            "amp": 45,
+            "period": 800,
+            "half": 90
+          }
+        ],
+        "sideRoads": [
+          {
+            "baseX": 2400.0,
+            "amp": 40,
+            "periodY": 900,
+            "half": 150.0,
+            "phase": 0.0
+          },
+          {
+            "baseX": 5800.0,
+            "amp": 40,
+            "periodY": 900,
+            "half": 150.0,
+            "phase": 1.0
+          }
+        ],
+        "alleys": [
+          {
+            "id": "alley-upper-west",
+            "axis": "ns",
+            "x": 3100.0,
+            "half": 100.0,
+            "y0": 2900.0,
+            "y1": 4260.0
+          },
+          {
+            "id": "alley-upper-east",
+            "axis": "ns",
+            "x": 5000,
+            "half": 60,
+            "y0": 2900.0,
+            "y1": 4260.0
+          },
+          {
+            "id": "alley-plaza-south",
+            "axis": "ew",
+            "y": 5350.0,
+            "half": 100.0,
+            "x0": 2900.0,
+            "x1": 4800
+          },
+          {
+            "id": "alley-south-west",
+            "axis": "ns",
+            "x": 3320,
+            "half": 80,
+            "y0": 5350.0,
+            "y1": 6200.0
+          },
+          {
+            "id": "alley-south-east",
+            "axis": "ns",
+            "x": 4700.0,
+            "half": 100.0,
+            "y0": 5350.0,
+            "y1": 6200.0
+          },
+          {
+            "id": "alley-shuikou",
+            "axis": "ns",
+            "x": 5500.0,
+            "half": 100.0,
+            "y0": 2900.0,
+            "y1": 3500.0
+          },
+          {
+            "id": "alley-paifang-v2",
+            "axis": "ns",
+            "x": 3742,
+            "half": 64,
+            "y0": 3860,
+            "y1": 4370
+          },
+          {
+            "id": "alley-temple-apron-v2",
+            "axis": "ns",
+            "x": 5340,
+            "half": 205,
+            "y0": 4120,
+            "y1": 4350
+          },
+          {
+            "id": "alley-temple-courtyard-v2",
+            "axis": "ns",
+            "x": 5340,
+            "half": 375,
+            "y0": 3900,
+            "y1": 4240
+          },
+          {
+            "id": "alley-ancestral-front-20261108",
+            "axis": "ew",
+            "y": 2305,
+            "half": 55,
+            "x0": 3160,
+            "x1": 4300
+          },
+          {
+            "id": "alley-ancestral-doorstep-20261108",
+            "axis": "ns",
+            "x": 3420,
+            "half": 180,
+            "y0": 2180,
+            "y1": 2350
+          }
+        ],
+        "bridges": [
+          {
+            "x": 4236,
+            "half": 280
+          },
+          {
+            "x": 2400,
+            "half": 210
+          },
+          {
+            "x": 5800,
+            "half": 210
+          }
+        ],
+        "ferry": {
+          "x": 5100.0,
+          "half": 90.0
+        },
+        "plaza": {
+          "x": 4096,
+          "y": 4700,
+          "r": 320
+        },
+        "crossPlaza": {
+          "x": 4096,
+          "y": 4700,
+          "halfX": 300,
+          "halfY": 260
+        },
+        "market": {
+          "x": 3100,
+          "y": 4950,
+          "r": 130
+        },
+        "townRadius": 1600.0,
+        "mountainPath": {
+          "baseX": 3796.0,
+          "amp": 60,
+          "periodY": 600,
+          "half": 120.0,
+          "y0": 0.0,
+          "y1": 2500.0
+        },
+        "pavedNodes": [
+          {
+            "x": 3960,
+            "y": 7080,
+            "r": 130
+          },
+          {
+            "x": 5800,
+            "y": 4300,
+            "r": 130
+          },
+          {
+            "x": 4236,
+            "y": 2560,
+            "r": 140
+          },
+          {
+            "x": 5100,
+            "y": 2820,
+            "r": 140
+          }
+        ],
+        "foothill": {
+          "y0": 1600,
+          "y1": 2500
+        },
+        "farmland": [
+          {
+            "y0": 2900,
+            "y1": 4250,
+            "x0": 0,
+            "x1": 3200
+          },
+          {
+            "y0": 2900,
+            "y1": 4250,
+            "x0": 5000,
+            "x1": 8192
+          },
+          {
+            "y0": 5500,
+            "y1": 6600,
+            "x0": 0,
+            "x1": 3200
+          },
+          {
+            "y0": 5500,
+            "y1": 6600,
+            "x0": 5000,
+            "x1": 8192
+          }
+        ],
+        "pavingRects": [
+          {
+            "id": "market-edge",
+            "x0": 2680,
+            "y0": 4680,
+            "x1": 3540,
+            "y1": 5300
+          }
+        ],
+        "townPaving": false
+      },
+      "elevation": {
+        "version": 1,
+        "stepHeight": 24,
+        "defaultLevel": 0,
+        "maxStepHeight": 5,
+        "sampleDistance": 4,
+        "regions": [
+          {
+            "id": "river-basin",
+            "shape": "river",
+            "level": -1,
+            "feather": 64
+          },
+          {
+            "id": "raised-main-street",
+            "shape": "road",
+            "level": 1,
+            "feather": 72
+          },
+          {
+            "id": "west-shops",
+            "shape": "rect",
+            "rect": [
+              3420,
+              2890,
+              3930,
+              4200
+            ],
+            "level": 1,
+            "feather": 64
+          },
+          {
+            "id": "east-shops",
+            "shape": "rect",
+            "rect": [
+              4460,
+              3590,
+              4910,
+              4200
+            ],
+            "level": 1,
+            "feather": 64
+          },
+          {
+            "id": "main-bridge",
+            "shape": "bridge",
+            "bridgeIndex": 0,
+            "level": 1,
+            "feather": 160
+          },
+          {
+            "id": "west-bridge",
+            "shape": "bridge",
+            "bridgeIndex": 1,
+            "level": 1,
+            "feather": 160
+          },
+          {
+            "id": "east-bridge",
+            "shape": "bridge",
+            "bridgeIndex": 2,
+            "level": 1,
+            "feather": 160
+          },
+          {
+            "id": "ferry-landing",
+            "shape": "rect",
+            "rect": [
+              5030,
+              2690,
+              5170,
+              2870
+            ],
+            "level": -1,
+            "feather": 0
+          },
+          {
+            "id": "ferry-steps",
+            "shape": "ramp",
+            "rect": [
+              5030,
+              2870,
+              5170,
+              3010
+            ],
+            "axis": "y",
+            "from": -1,
+            "to": 0
+          },
+          {
+            "id": "south-gate-platform",
+            "shape": "rect",
+            "rect": [
+              2809,
+              6637,
+              5111,
+              6972
+            ],
+            "level": 1,
+            "feather": 72
+          }
+        ]
+      },
+      "compose": {
+        "version": 1,
+        "maskPath": "GameClient/TwelveJade/Assets/ArtSource/world/masks/world-mask.png",
+        "materialsDir": "GameClient/TwelveJade/Assets/ArtSource/world/materials",
+        "outputDir": "GameClient/TwelveJade/Assets/ArtSource/world/chunks-full",
+        "chunkSize": 1024,
+        "columns": 8,
+        "rows": 8,
+        "overlap": 128,
+        "blurRadiusPixels": 18,
+        "noiseAmplitude": 0,
+        "paperGrainStrength": 0,
+        "colorVariationStrength": 0,
+        "edgeDilate": {
+          "waterToRiverbank": 14,
+          "roadToRoadEdge": 36,
+          "mountainToMountainFoot": 18
+        },
+        "seamThresholds": {
+          "meanAbsDiffMax": 4.0,
+          "p95AbsDiffMax": 12.0,
+          "maxAbsDiffMax": 30.0,
+          "warnBand": {
+            "relativeExcessMax": 0.1,
+            "absoluteExcessMax": 1.0,
+            "_note": "仅作用于 boundary relative（观感判据）：超出 baseline P99 但幅度 <=10% 或 <=1 灰阶时记 PASS_WITH_WARN。inner severe（结构判据）零容忍，触发即 FAIL。绝对容差 1 灰阶用于吸收边界 p95 统计量的整数化台阶（样本值只能是 6 或 7）。"
+          },
+          "_note": "meanAbsDiffMax/p95AbsDiffMax/maxAbsDiffMax 在 seam_judge_v21 中已降级为 INFO，不参与 RESULT；实际判定是 boundary relative + inner severe + warnBand。"
+        },
+        "pathNotes": {
+          "maskPath": "仓库相对路径（含 GameClient/ 前缀）。脚本经 Tools/world_paths.py 解析。",
+          "materialsDir": "仓库相对路径，正式 ArtSource 根在 Unity 工程内。",
+          "outputDir": "正式8×8源分块；Tools/qingshi-map/install_world.py 校验64块后同步到 Resources/Art/World/Chunks，保留已有GUID。"
+        },
+        "_note": "overlap 保持 128。Gate C1-A 收口实测 192/256/384 三档对中心 2×2 四条缝数值一位不差——采样 UV 由输出像素的绝对世界坐标决定，与裁切窗口大小无关，故 overlap 不是接缝杠杆，已从 192 回退 128。",
+        "materialNoiseAmplitude": {},
+        "materialBrightness": {},
+        "roadVergeLayer": {
+          "enabled": false,
+          "reason": "Replaced by native photo textures and three organic alpha stages."
+        },
+        "pavingCoreInsetWorld": 12,
+        "materialSampling": {
+          "stone-road.png": {
+            "periodWorldUnits": 768,
+            "nativePixels": 2048,
+            "allowUpscale": false
+          },
+          "plaza.png": {
+            "periodWorldUnits": 768,
+            "nativePixels": 2048,
+            "allowUpscale": false
+          },
+          "bridge.png": {
+            "periodWorldUnits": 512,
+            "nativePixels": 2048,
+            "allowUpscale": false
+          },
+          "grass.png": {
+            "periodWorldUnits": 1024,
+            "nativePixels": 2048,
+            "allowUpscale": false
+          },
+          "dirt-road.png": {
+            "periodWorldUnits": 1024,
+            "nativePixels": 2048,
+            "allowUpscale": false
+          },
+          "road-edge.png": {
+            "periodWorldUnits": 1024,
+            "nativePixels": 2048,
+            "allowUpscale": false
+          },
+          "mountain.png": {
+            "periodWorldUnits": 1536,
+            "nativePixels": 2048,
+            "allowUpscale": false
+          },
+          "mountain-path.png": {
+            "periodWorldUnits": 1024,
+            "nativePixels": 2048,
+            "allowUpscale": false
+          },
+          "farmland.png": {
+            "periodWorldUnits": 1024,
+            "nativePixels": 2048,
+            "allowUpscale": false
+          },
+          "riverbank.png": {
+            "periodWorldUnits": 1024,
+            "nativePixels": 2048,
+            "allowUpscale": false
+          },
+          "mountain-foot.png": {
+            "periodWorldUnits": 1024,
+            "nativePixels": 2048,
+            "allowUpscale": false
+          },
+          "water.png": {
+            "periodWorldUnits": 1024,
+            "nativePixels": 1024,
+            "allowUpscale": false
+          }
+        },
+        "organicGroundTransition": {
+          "enabled": true,
+          "sourceTypes": [
+            "stone-road",
+            "plaza"
+          ],
+          "breakupMaterial": "grass.png",
+          "blendBreakupStrength": 0.72,
+          "edgeBreakupWorld": 22,
+          "allowedTypes": [
+            "stone-road",
+            "plaza",
+            "road-edge",
+            "dirt-road",
+            "grass",
+            "farmland",
+            "mountain-foot"
+          ],
+          "layers": [
+            {
+              "material": "grass.png",
+              "startWorld": 18,
+              "peakWorld": 42,
+              "endWorld": 78,
+              "maxAlpha": 0.65
+            },
+            {
+              "material": "mountain-path.png",
+              "startWorld": -4,
+              "peakWorld": 20,
+              "endWorld": 52,
+              "maxAlpha": 0.68
+            },
+            {
+              "material": "road-edge.png",
+              "startWorld": -12,
+              "peakWorld": 3,
+              "endWorld": 29,
+              "maxAlpha": 0.82
+            }
+          ],
+          "sourceDetail": "Photographed turf luminance controls boundary breakup. No synthetic noise/grain is added to the surface."
+        }
+      },
+      "files": {
+        "GameClient/TwelveJade/Assets/Resources/Config/terrain-types.json": "54fd7eff0f3d445c423148b6ba8c155f36978e90461422e2b3089184d4543f22",
+        "Tools/make-world-mask.py": "78958949e6345dde8efbeed43645c08094a6923f8f1fc53c330d3f87fe6019d1",
+        "Tools/compose-world-chunks.py": "b0219a2a9c69fbf187a41ae9bcd04df8551bce09132fcbd937cdf969ae50affa",
+        "Tools/world_elevation_art.py": "809ac45ddeefc1e5e97d135ea1f9bd8f85ebcbefbfe3baba17833b811a14261e",
+        "Tools/world_geometry.py": "3451d0364c627cbf9861c90da0822599be1fa1df22c86d8f88fceb7361085134",
+        "Tools/world_paths.py": "6e5b93a73e469ac6ada07b61687244affb357bd5d63256916a7a4792a1ccbafc",
+        "Tools/world_river_surface.py": "663ba765fbeba269bfc09115cac85a2a71555c07ab9f4d5a92134588b08a8ef4",
+        "Tools/world_build_manifest.py": "dc9b681e2586ff2a09af38f0450a9bfea17937d01251ae9dcaca022073c630ab",
+        "GameClient/TwelveJade/Assets/ArtSource/world/masks/world-mask.png": "dd9328c86b4c51007c06e7ac62aabb7722f01dd1ce1bbef54f6b8680502de15f",
+        "GameClient/TwelveJade/Assets/Resources/Config/world-material-gen.json": "054e565858c9f0ee5d9761ca3bedf70dffdd99d3cb1af7b6dd3701654e010e92",
+        "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/grass.png": "8eda0032b33ea56a9dee25b6c834fbae29da331be10b6297e1a82a205eb6e3c5",
+        "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/stone-road.png": "234d9c58b5fb7a42ec85ae800df865f23b464067ba7977ed72025c557b44a47d",
+        "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/dirt-road.png": "d415f4aece4a9f7425d68a4eaf0050cfa74ff1a605b099dc1533c99c1cf34284",
+        "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/plaza.png": "f2a200c297a2137cdd4e9ded4ada474cdede279f81322bbe4de38595da9bfee3",
+        "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/bridge.png": "1908fa971411562bb18d5029539f1a3001e5fa52c3556424a99871dc0ef5dc79",
+        "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/mountain.png": "632785f2ba899495506c1ed92bb3b72cba5e6b651f72ba71a672891c55b4c9e6",
+        "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/mountain-path.png": "a134444270732c5ca3e7c31fd71f312d5833beb7ee1c0d8e4f17f978b99de061",
+        "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/farmland.png": "522d61b6eaa1e835eb83d60a149bc858b7380ed2ae3c603f3bca686df7ba904a",
+        "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/riverbank.png": "bf96803889776a0099c5c272c0a3950a612f48cee729c3d3b95c561606b4bab2",
+        "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/road-edge.png": "0ebc2bc8a57418b4f568ae8792345f9bc63fc1b4fa42e19b2a054bdb966a9945",
+        "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/mountain-foot.png": "299d9d018321f3461bad27e030118fce403016724af58977467c37e1c7ef454b",
+        "GameClient/TwelveJade/Assets/ArtSource/world/materials/bridge.png": "1908fa971411562bb18d5029539f1a3001e5fa52c3556424a99871dc0ef5dc79",
+        "GameClient/TwelveJade/Assets/ArtSource/world/materials/dirt-road.png": "d415f4aece4a9f7425d68a4eaf0050cfa74ff1a605b099dc1533c99c1cf34284",
+        "GameClient/TwelveJade/Assets/ArtSource/world/materials/farmland.png": "522d61b6eaa1e835eb83d60a149bc858b7380ed2ae3c603f3bca686df7ba904a",
+        "GameClient/TwelveJade/Assets/ArtSource/world/materials/grass.png": "8eda0032b33ea56a9dee25b6c834fbae29da331be10b6297e1a82a205eb6e3c5",
+        "GameClient/TwelveJade/Assets/ArtSource/world/materials/mountain-foot.png": "299d9d018321f3461bad27e030118fce403016724af58977467c37e1c7ef454b",
+        "GameClient/TwelveJade/Assets/ArtSource/world/materials/mountain-path.png": "a134444270732c5ca3e7c31fd71f312d5833beb7ee1c0d8e4f17f978b99de061",
+        "GameClient/TwelveJade/Assets/ArtSource/world/materials/mountain.png": "632785f2ba899495506c1ed92bb3b72cba5e6b651f72ba71a672891c55b4c9e6",
+        "GameClient/TwelveJade/Assets/ArtSource/world/materials/plaza.png": "f2a200c297a2137cdd4e9ded4ada474cdede279f81322bbe4de38595da9bfee3",
+        "GameClient/TwelveJade/Assets/ArtSource/world/materials/riverbank.png": "bf96803889776a0099c5c272c0a3950a612f48cee729c3d3b95c561606b4bab2",
+        "GameClient/TwelveJade/Assets/ArtSource/world/materials/road-edge.png": "0ebc2bc8a57418b4f568ae8792345f9bc63fc1b4fa42e19b2a054bdb966a9945",
+        "GameClient/TwelveJade/Assets/ArtSource/world/materials/stone-road.png": "234d9c58b5fb7a42ec85ae800df865f23b464067ba7977ed72025c557b44a47d",
+        "GameClient/TwelveJade/Assets/ArtSource/world/materials/water.png": "e91631160a831952b35143bde348a8027f16d6316530c0100077c5a1f987c760"
+      }
+    }
+  },
+  "candidate": false,
+  "mask_input": {
+    "file": "GameClient/TwelveJade/Assets/ArtSource/world/masks/world-mask.png",
+    "sha256": "dd9328c86b4c51007c06e7ac62aabb7722f01dd1ce1bbef54f6b8680502de15f"
+  },
+  "chunks": [
+    {
+      "file": "chunk_0_0.png",
+      "sha256": "2e57f1ad157f550feb0c45e9c5d52cad9000a566cf2e40600ac83e7fdbe37fad"
+    },
+    {
+      "file": "chunk_1_0.png",
+      "sha256": "009efae895f78485965e3b6b927116d056288c7300b875d06ad29bd15b01c976"
+    },
+    {
+      "file": "chunk_2_0.png",
+      "sha256": "db6cea224cf7ddae1ba7c8ef321e0d6db81ef84247a089d625f563a0b9e717e1"
+    },
+    {
+      "file": "chunk_3_0.png",
+      "sha256": "2e57f1ad157f550feb0c45e9c5d52cad9000a566cf2e40600ac83e7fdbe37fad"
+    },
+    {
+      "file": "chunk_4_0.png",
+      "sha256": "009efae895f78485965e3b6b927116d056288c7300b875d06ad29bd15b01c976"
+    },
+    {
+      "file": "chunk_5_0.png",
+      "sha256": "db6cea224cf7ddae1ba7c8ef321e0d6db81ef84247a089d625f563a0b9e717e1"
+    },
+    {
+      "file": "chunk_6_0.png",
+      "sha256": "2e57f1ad157f550feb0c45e9c5d52cad9000a566cf2e40600ac83e7fdbe37fad"
+    },
+    {
+      "file": "chunk_7_0.png",
+      "sha256": "009efae895f78485965e3b6b927116d056288c7300b875d06ad29bd15b01c976"
+    },
+    {
+      "file": "chunk_0_1.png",
+      "sha256": "2bfa11bfb35ff9bfd3f152723f1c1608b517d34ec608e3a042decbaddfd1b99b"
+    },
+    {
+      "file": "chunk_1_1.png",
+      "sha256": "4f971326e0b634cc4c216a9fadda5edace1f9c03bcfad3acf498e93355c2dfab"
+    },
+    {
+      "file": "chunk_2_1.png",
+      "sha256": "7c169b77923dd0f76201c59632f8e7ec72ddeb03f641b240929f9076c575b4fc"
+    },
+    {
+      "file": "chunk_3_1.png",
+      "sha256": "a5455136718edbfc647ae345c4833f91996c968d7eaf6df71a0e48f40aa9cbcb"
+    },
+    {
+      "file": "chunk_4_1.png",
+      "sha256": "a6e38559b333bc81b6f0a274d253f1e01638d592b1bcb2b9dd9f6406f9a21bc0"
+    },
+    {
+      "file": "chunk_5_1.png",
+      "sha256": "5714982cc5a5a193223f7d974fcfa41d3166551e36849888c433646da49b7e34"
+    },
+    {
+      "file": "chunk_6_1.png",
+      "sha256": "051279ba05c993d189b35707d02af76b2c5e6859fbd03228f7d881965a09c540"
+    },
+    {
+      "file": "chunk_7_1.png",
+      "sha256": "cfeb7be07dc648d39504eb7077e3e67035fcf745986507ebf20d51c670fa74df"
+    },
+    {
+      "file": "chunk_0_2.png",
+      "sha256": "a63bc36a02412bdc4a90cab1895c353dee5996ceec716ab844a00e4b3cf5b64d"
+    },
+    {
+      "file": "chunk_1_2.png",
+      "sha256": "7f31928850cb261239c6eb74472b0f6fefd0b25ac275c313976998dacbafb471"
+    },
+    {
+      "file": "chunk_2_2.png",
+      "sha256": "97106f4f1313e1aab89f70f6c02c7c26bd2427a5f069008f2fd70acb5461c93c"
+    },
+    {
+      "file": "chunk_3_2.png",
+      "sha256": "7efdd9e4d3901adbf46273c819ff2951431f857b238256815c314405c08ac27f"
+    },
+    {
+      "file": "chunk_4_2.png",
+      "sha256": "39fded2653c7391aa3a4079ae1a0e410b09bf8c534408144a46666a2a1923e5a"
+    },
+    {
+      "file": "chunk_5_2.png",
+      "sha256": "04b01333838fc96e221ac970642887dd672a7953f5077d09a5b9bf82f1d686f1"
+    },
+    {
+      "file": "chunk_6_2.png",
+      "sha256": "999d2d3160668620d9fd173465e8a6efc4b36741b5af7a3d21069b727a63df37"
+    },
+    {
+      "file": "chunk_7_2.png",
+      "sha256": "90b5beb1b23c147ae6ec1bb1a1cc67c8e97cc8fbc815f73e50303480c567c3df"
+    },
+    {
+      "file": "chunk_0_3.png",
+      "sha256": "22da0423fe12921b8a171037025c19fa4d7c04457c71280bb177df141ae79ade"
+    },
+    {
+      "file": "chunk_1_3.png",
+      "sha256": "dfb60d3ec46e03e46e3f97617e4558226502f91700b755ee8627cd86ab132099"
+    },
+    {
+      "file": "chunk_2_3.png",
+      "sha256": "35c25d457b2cdaeda14a9370b2d5b2bb6613e4fe087d552ea13d3a2b836594f6"
+    },
+    {
+      "file": "chunk_3_3.png",
+      "sha256": "3bd3d93982d422765892de223a49568e1bf4ce8508b7031a7157da9fae5a3e87"
+    },
+    {
+      "file": "chunk_4_3.png",
+      "sha256": "d13e71dded6b3c92b5c2a550d27203b96177ae6a1d4af110a0afbf14e74657fe"
+    },
+    {
+      "file": "chunk_5_3.png",
+      "sha256": "3392febce91bc9e6f16756b723e5eeee6736209de53bdff2cf93ea94dafab106"
+    },
+    {
+      "file": "chunk_6_3.png",
+      "sha256": "657912cbb692f7de86901ab3bddd2d255ee88b71d3f1a65f6a6b5f71530ad318"
+    },
+    {
+      "file": "chunk_7_3.png",
+      "sha256": "6521b182a6a454e5407b7a6330f1c501d4164183e167eb11933f137d94475439"
+    },
+    {
+      "file": "chunk_0_4.png",
+      "sha256": "5e6b4e8998a9d16f95000a0bc4d8308906813fbbd2958e44ba81d6e93a9b907b"
+    },
+    {
+      "file": "chunk_1_4.png",
+      "sha256": "9eae3fefa545a740987d23ba1f9eaae4d14cf4e619b3b1ca2b0019223b8b45ce"
+    },
+    {
+      "file": "chunk_2_4.png",
+      "sha256": "5882f8515e38c2701d9314bf755764ae667eae00cad3233e427fa524fb0c4257"
+    },
+    {
+      "file": "chunk_3_4.png",
+      "sha256": "96691b59772d07a8ccfd20617db44d742fc31099fcb07b96b87da8b5059c3108"
+    },
+    {
+      "file": "chunk_4_4.png",
+      "sha256": "dadf88dad43d3f91c3f51be20e4ce79556f1168c6e552f6a54719f55fe46d263"
+    },
+    {
+      "file": "chunk_5_4.png",
+      "sha256": "b20f643e6db0a8f060cc7b9811edc1668563405439f5daf6e8f709f72a85df5c"
+    },
+    {
+      "file": "chunk_6_4.png",
+      "sha256": "d659315eccab8f1d7a2e6560eb88de954da55c5c59b870792f8ce02682d46e67"
+    },
+    {
+      "file": "chunk_7_4.png",
+      "sha256": "17cc3d9d1b5f1aeb0ebfdfe40bc5fa6e02b79e190e10b76a59a52833746bc2b7"
+    },
+    {
+      "file": "chunk_0_5.png",
+      "sha256": "53ed80bf741406db7ce87620a8881bfdeb1b9a243cc4ce2cdd214259f3e53b86"
+    },
+    {
+      "file": "chunk_1_5.png",
+      "sha256": "4c746c2654aa7a8748a2be34ea8128c6533294a5415b79f32cb38647d487939e"
+    },
+    {
+      "file": "chunk_2_5.png",
+      "sha256": "0c8de18d6adc4dd79f1dde62014973fe3d601382089f4de4d4cb9df7ef78bdd5"
+    },
+    {
+      "file": "chunk_3_5.png",
+      "sha256": "1e0c4ba99481e1844d932a3432bc1141ff1d33c664323829406bb62bab2f9131"
+    },
+    {
+      "file": "chunk_4_5.png",
+      "sha256": "162736df1b7f9ade8cf2824f84a6ba8cdea8442b81bb1ba8491e4be011b691a9"
+    },
+    {
+      "file": "chunk_5_5.png",
+      "sha256": "a01d4a2e65039093ccc18c56130b34addf89edbe603734759da12debe0adeb5a"
+    },
+    {
+      "file": "chunk_6_5.png",
+      "sha256": "48fa687b775bee6098d65a68e9c1d323fdd727cbedb63d6c6fb3b2c1ab2a841c"
+    },
+    {
+      "file": "chunk_7_5.png",
+      "sha256": "b6de98edb74d27c1b7e84d422fb00c2ffb50e6b260fd738b57dad5c6352296b7"
+    },
+    {
+      "file": "chunk_0_6.png",
+      "sha256": "1f15f2de49d742a06f2cbb1bf2717f4d13ce2bbca628b63a2c14db2da29895aa"
+    },
+    {
+      "file": "chunk_1_6.png",
+      "sha256": "059e4569e03482e1d54ee0486b5ec937861cc11555c55cb2fe4cdc08acf79f8b"
+    },
+    {
+      "file": "chunk_2_6.png",
+      "sha256": "859d554dd929889d372aaa624a5534223051d8955c00cbfe038a1420b102de3d"
+    },
+    {
+      "file": "chunk_3_6.png",
+      "sha256": "13985d5234d59ff5a5d7e1e718347db69dde4e0bc98b808bbaa5a4fb66952132"
+    },
+    {
+      "file": "chunk_4_6.png",
+      "sha256": "29100b9e7b9773a437e6b7399fcaf6e63d4483c3b803cb103b997427773506bc"
+    },
+    {
+      "file": "chunk_5_6.png",
+      "sha256": "51db18332f6cf5aefc6c7a5954a729a76f6b6a210cc5fa25699575b4993b1a4e"
+    },
+    {
+      "file": "chunk_6_6.png",
+      "sha256": "2fa095aabfb224d64a2eee18de3a2304e3d1f97418bc10da803b8545404c4ab1"
+    },
+    {
+      "file": "chunk_7_6.png",
+      "sha256": "3726b1054a2fe39998720ac1b4a481396fb9ff65ce7b57b3eff32f723a93059d"
+    },
+    {
+      "file": "chunk_0_7.png",
+      "sha256": "b09c8e1de4ba3ac0ab1099c16f66ef227b79f1054f4c21d5a25ddb6b8f86fe45"
+    },
+    {
+      "file": "chunk_1_7.png",
+      "sha256": "b09c8e1de4ba3ac0ab1099c16f66ef227b79f1054f4c21d5a25ddb6b8f86fe45"
+    },
+    {
+      "file": "chunk_2_7.png",
+      "sha256": "abd524a77723473dc3406cd53fa0ebceb8091adcab5471a13353739260b9d50f"
+    },
+    {
+      "file": "chunk_3_7.png",
+      "sha256": "00218870109d4165e85740c520bc7f3d3e9b4262aec4eb9abfc46021b04e56af"
+    },
+    {
+      "file": "chunk_4_7.png",
+      "sha256": "4cd6587aaca52bd88043802cf697745e72303025273c6ccec165256ee9a8d8c4"
+    },
+    {
+      "file": "chunk_5_7.png",
+      "sha256": "eaa05344e9359369a457a6d1c95631c8871ace1411363beb7697734bc476bb72"
+    },
+    {
+      "file": "chunk_6_7.png",
+      "sha256": "b09c8e1de4ba3ac0ab1099c16f66ef227b79f1054f4c21d5a25ddb6b8f86fe45"
+    },
+    {
+      "file": "chunk_7_7.png",
+      "sha256": "b09c8e1de4ba3ac0ab1099c16f66ef227b79f1054f4c21d5a25ddb6b8f86fe45"
+    }
+  ],
+  "overview": {
+    "file": "world-overview-thumb.png",
+    "sha256": "4380d148e8c3a24da323798a1185b5b36ab0c2aa250b8740803457ce75691b98"
+  }
+}

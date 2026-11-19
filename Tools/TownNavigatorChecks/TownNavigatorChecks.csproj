@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
+    <NuGetAudit>false</NuGetAudit>
+    <CodePage>65001</CodePage>
+    <CoreRoot Condition="'$(CoreRoot)' == ''">$(MSBuildThisFileDirectory)../../GameClient/TwelveJade/Assets/Scripts/Core</CoreRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="$(CoreRoot)/TownMap.cs" Link="Core/TownMap.cs" />
+    <Compile Include="$(CoreRoot)/TownElevation.cs" Link="Core/TownElevation.cs" />
+    <Compile Include="$(CoreRoot)/TownNavigator.cs" Link="Core/TownNavigator.cs" />
+    <Compile Include="$(CoreRoot)/Json.cs" Link="Core/Json.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,100 @@
+# TD-05 / TD-17 / TD-28 最小 CI（**不跑 Unity**）
+#
+# 任务依据：架构文档.md → `## Y-4 员工 D 任务书`「D-05 最小 CI（不需 Unity）」、
+#           `## Z-5`「D-17 最小 CI（续）」、`### D-21 ~ D-30`「D-28 CI 扩项」。
+# 按 `## AA-7` 裁决第 1/2 条，员工任务编号带 `T` 前缀（TD-05 / TD-17 / TD-28）。
+#
+# ⚠ 三条写在前面的实话（改这个文件前请先读）：
+#
+# 1. **本机（有 Unity）与 CI（无 Unity）能跑的关不一样**。
+#    `Tools/UnityCompileChecks/UnityCompileChecks.csproj` 里硬编码了本机 Unity 安装路径
+#    （`<EditorManaged>D:/ruangong/unity/...</EditorManaged>`）并 `Reference` 了 Unity 托管 DLL，
+#    所以在 GitHub  hosted runner 上**必然编译不过**——那个红**不是代码问题**。
+#    ⇒ 编译门单独放在下面 `unity-compile` 这个 job 里，**默认关闭**，
+#      需要用自托管 runner 或自行装 Unity 的人把仓库变量 `ENABLE_UNITY_COMPILE` 设成 `true` 才跑。
+#      **不许用 `continue-on-error` 把它"跑一遍再忽略"** —— 那是把红变绿的假动作。
+#
+# 2. **本 CI 首次运行是红的，有两个真原因**（都不是 CI 配置的毛病，已如实登记）：
+#      a. `SaveChecks` 抛未处理异常：
+#         `FAIL: D-49 覆盖：Resources/Art 下每个有图的目录都有一档（缺档：Art/豆包）`
+#      b. `run-gates.sh --self-check` 报：
+#         `以下关跑了却没产出任何 RESULT:/SELFTEST: 行 ... [check-town-overlap.py]`
+#    **修它们要靠改判据/补档，属别人域 ⇒ 不许为了"让 CI 变绿"去改判据或删断言**
+#    （`## Z-6` 红线 2、`## Y-4` 总禁止第 1 条）。红着就是红着。
+#
+# 3. `Tools/ingest-external-art.py` **盘上不存在**（本轮实测 MISSING），
+#    所以 D-17/D-28 要求纳入的这一项**没有加进来**——不写一个必然失败的步骤。
+#    等它落地后在这里补一行即可。
+#
+# 为什么 `SaveChecks` / `PuppetRigChecks` 能进 CI：这两个 csproj 的注释写明
+# 「纯 C#（不依赖 UnityEngine）…在没有 Unity 的机器上也有人值守」，已实测本地可跑。
+
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  gates:
+    name: 纯逻辑门禁（不需要 Unity）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install python gate deps
+        # 世界/地形类门禁依赖 numpy + Pillow；run-gates.sh 会自己挑一个装了这两个的解释器，
+        # 挑不到就红着退出（不会假绿），所以这里必须装。
+        run: python -m pip install --upgrade pip numpy pillow
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # ---- 1. python 侧门禁汇总 + 自证（防"某道关被静默跳过却算成绿"）----
+      - name: run-gates.sh --self-check
+        run: bash Tools/run-gates.sh --self-check
+
+      # ---- 2. 纸偶骨架/步态数学与脚步 DSP（纯 C#）----
+      - name: PuppetRigChecks
+        run: dotnet run --project Tools/PuppetRigChecks/PuppetRigChecks.csproj
+
+      # ---- 3. 存档 / 配置 / 经济 / 战斗表（纯 C#）----
+      - name: SaveChecks
+        run: dotnet run --project Tools/SaveChecks/SaveChecks.csproj
+
+      # ---- 4. 外部收图预处理（去水印 / 统一取景 / 统一底色）的自证 ----
+      - name: prep-external-art.py --selftest
+        run: python Tools/prep-external-art.py --selftest
+
+      # ---- 待补（等文件落地）----
+      # - name: ingest-external-art.py --selftest
+      #   run: python Tools/ingest-external-art.py --selftest
+      # （TD-17 / TD-28 点名要纳入；本轮实测该文件不存在，故不启用。）
+
+  unity-compile:
+    name: 编译门（需要 Unity 托管 DLL，默认关闭）
+    runs-on: ubuntu-latest
+    # 见文件头第 1 条：UnityCompileChecks.csproj 硬编码了本机 Unity 路径，
+    # 在 github-hosted runner 上必然失败，且那个失败不反映代码好坏。
+    # ⇒ 默认不跑；有自托管 runner / 装了 Unity 的环境，把仓库变量 ENABLE_UNITY_COMPILE 设成 true 启用。
+    # ⇒ **不许改成 continue-on-error**：那等于把红变绿。
+    if: ${{ vars.ENABLE_UNITY_COMPILE == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # 编译验收一律 --no-incremental（§2 通用规则第 1 条：增量构建会造出假象）。
+      - name: UnityCompileChecks
+        run: dotnet build Tools/UnityCompileChecks/UnityCompileChecks.csproj --no-incremental

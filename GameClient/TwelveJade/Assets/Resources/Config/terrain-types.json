@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "maskScale": 4,
+  "worldSize": 8192,
+  "chunkSize": 1024,
+  "columns": 8,
+  "rows": 8,
+  "comment": "地形类型表。世界尺寸/分块/掩码比例来自 town-map.json（唯一真源），此处同步一份供脚本读取。",
+  "types": [
+    {
+      "id": "void",
+      "value": 0,
+      "name": "未定义区域",
+      "walkable": false,
+      "debugColor": "#1A1A1A",
+      "material": null
+    },
+    {
+      "id": "grass",
+      "value": 1,
+      "name": "草地",
+      "walkable": true,
+      "debugColor": "#7FA678",
+      "material": "grass.png"
+    },
+    {
+      "id": "dirt-road",
+      "value": 2,
+      "name": "泥土路",
+      "walkable": true,
+      "debugColor": "#B79A6B",
+      "material": "dirt-road.png"
+    },
+    {
+      "id": "stone-road",
+      "value": 3,
+      "name": "石板路",
+      "walkable": true,
+      "debugColor": "#9E9E96",
+      "material": "stone-road.png"
+    },
+    {
+      "id": "plaza",
+      "value": 4,
+      "name": "广场/镇区空地",
+      "walkable": true,
+      "debugColor": "#C8BFA8",
+      "material": "plaza.png"
+    },
+    {
+      "id": "water",
+      "value": 5,
+      "name": "河流",
+      "walkable": false,
+      "debugColor": "#4F7C8C",
+      "material": "water.png"
+    },
+    {
+      "id": "bridge",
+      "value": 6,
+      "name": "桥面",
+      "walkable": true,
+      "debugColor": "#A88B62",
+      "material": "bridge.png"
+    },
+    {
+      "id": "mountain",
+      "value": 7,
+      "name": "山体",
+      "walkable": false,
+      "debugColor": "#5E6658",
+      "material": "mountain.png"
+    },
+    {
+      "id": "mountain-path",
+      "value": 8,
+      "name": "山径",
+      "walkable": true,
+      "debugColor": "#B49A72",
+      "material": "mountain-path.png"
+    },
+    {
+      "id": "farmland",
+      "value": 9,
+      "name": "农田",
+      "walkable": true,
+      "debugColor": "#C2B26A",
+      "material": "farmland.png"
+    },
+    {
+      "id": "riverbank",
+      "value": 10,
+      "name": "河岸",
+      "walkable": true,
+      "debugColor": "#8C9A6A",
+      "material": "riverbank.png"
+    },
+    {
+      "id": "road-edge",
+      "value": 11,
+      "name": "路肩过渡",
+      "walkable": true,
+      "debugColor": "#A9966F",
+      "material": "road-edge.png"
+    },
+    {
+      "id": "mountain-foot",
+      "value": 12,
+      "name": "山脚过渡",
+      "walkable": true,
+      "debugColor": "#77806D",
+      "material": "mountain-foot.png"
+    }
+  ]
+}

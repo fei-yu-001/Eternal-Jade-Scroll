@@ -1,0 +1,241 @@
+[
+  {
+    "id": "recipe-rou-fu",
+    "name": "秘制肉脯",
+    "craftType": "cooking",
+    "station": "kitchen-stove",
+    "ingredients": [
+      {
+        "itemId": "larou",
+        "count": 1
+      },
+      {
+        "itemId": "wheat-flour",
+        "count": 1
+      }
+    ],
+    "result": {
+      "itemId": "rou-fu",
+      "count": 1
+    },
+    "doubleChance": 0.15
+  },
+  {
+    "id": "recipe-jinchuang-san",
+    "name": "凝血金疮散",
+    "craftType": "alchemy",
+    "station": "herbal-furnace",
+    "ingredients": [
+      {
+        "itemId": "caoyao",
+        "count": 2
+      },
+      {
+        "itemId": "licorice",
+        "count": 1
+      }
+    ],
+    "result": {
+      "itemId": "jinchuang-san",
+      "count": 1
+    },
+    "doubleChance": 0.2
+  },
+  {
+    "id": "recipe-qinggang-sword",
+    "name": "青罡剑",
+    "craftType": "forging",
+    "station": "smith-anvil",
+    "ingredients": [
+      {
+        "itemId": "iron-ore",
+        "count": 5
+      },
+      {
+        "itemId": "jade-vein-core",
+        "count": 1
+      }
+    ],
+    "result": {
+      "itemId": "qinggang-sword",
+      "count": 1
+    },
+    "doubleChance": 0
+  },
+  {
+    "id": "recipe-jade-lamellar",
+    "name": "玉纹轻甲",
+    "craftType": "forging",
+    "station": "smith-anvil",
+    "ingredients": [
+      {
+        "itemId": "iron-ore",
+        "count": 4
+      },
+      {
+        "itemId": "wolf-fur",
+        "count": 2
+      }
+    ],
+    "result": {
+      "itemId": "jade-lamellar",
+      "count": 1
+    },
+    "doubleChance": 0
+  },
+  {
+    "id": "recipe-cloud-silk-robe",
+    "name": "流云道袍",
+    "craftType": "forging",
+    "station": "smith-anvil",
+    "ingredients": [
+      {
+        "itemId": "cubupao",
+        "count": 1
+      },
+      {
+        "itemId": "wolf-fur",
+        "count": 1
+      },
+      {
+        "itemId": "qinglingcao",
+        "count": 2
+      }
+    ],
+    "result": {
+      "itemId": "cloud-silk-robe",
+      "count": 1
+    },
+    "doubleChance": 0
+  },
+  {
+    "id": "recipe-swift-boots",
+    "name": "踏风履",
+    "craftType": "forging",
+    "station": "smith-anvil",
+    "ingredients": [
+      {
+        "itemId": "wolf-fur",
+        "count": 1
+      },
+      {
+        "itemId": "wolf-fang",
+        "count": 1
+      },
+      {
+        "itemId": "iron-ore",
+        "count": 1
+      }
+    ],
+    "result": {
+      "itemId": "swift-boots",
+      "count": 1
+    },
+    "doubleChance": 0
+  },
+  {
+    "id": "recipe-dark-iron-armor",
+    "name": "玄铁甲",
+    "craftType": "forging",
+    "station": "smith-anvil",
+    "ingredients": [
+      {
+        "itemId": "iron-ore",
+        "count": 6
+      },
+      {
+        "itemId": "mandrill-stone",
+        "count": 1
+      }
+    ],
+    "result": {
+      "itemId": "dark-iron-armor",
+      "count": 1
+    },
+    "doubleChance": 0
+  },
+  {
+    "id": "recipe-red-dew-pill",
+    "name": "赤露丹",
+    "craftType": "alchemy",
+    "station": "herbal-furnace",
+    "ingredients": [
+      {
+        "itemId": "caoyao",
+        "count": 2
+      },
+      {
+        "itemId": "licorice",
+        "count": 1
+      }
+    ],
+    "result": {
+      "itemId": "red-dew-pill",
+      "count": 1
+    },
+    "doubleChance": 0.12
+  },
+  {
+    "id": "recipe-jade-renew-pill",
+    "name": "玉露还元丹",
+    "craftType": "alchemy",
+    "station": "herbal-furnace",
+    "ingredients": [
+      {
+        "itemId": "qinglingcao",
+        "count": 2
+      },
+      {
+        "itemId": "beast-gall",
+        "count": 1
+      }
+    ],
+    "result": {
+      "itemId": "jade-renew-pill",
+      "count": 1
+    },
+    "doubleChance": 0.12
+  },
+  {
+    "id": "recipe-golden-return-pill",
+    "name": "金霞回生丹",
+    "craftType": "alchemy",
+    "station": "herbal-furnace",
+    "ingredients": [
+      {
+        "itemId": "qinglingcao",
+        "count": 3
+      },
+      {
+        "itemId": "jade-vein-core",
+        "count": 1
+      }
+    ],
+    "result": {
+      "itemId": "golden-return-pill",
+      "count": 1
+    },
+    "doubleChance": 0.12
+  },
+  {
+    "id": "recipe-elixir-warm",
+    "name": "暖阳丹",
+    "craftType": "alchemy",
+    "station": "herbal-furnace",
+    "ingredients": [
+      {
+        "itemId": "qinglingcao",
+        "count": 2
+      },
+      {
+        "itemId": "licorice",
+        "count": 2
+      }
+    ],
+    "result": {
+      "itemId": "elixir-warm",
+      "count": 1
+    },
+    "doubleChance": 0.12
+  }
+]

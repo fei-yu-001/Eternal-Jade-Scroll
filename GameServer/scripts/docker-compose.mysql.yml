@@ -1,0 +1,21 @@
+# TwelveJade Server - throwaway local MySQL 8 instance for scripts/verify-mysql.ps1 (W3-B).
+# Provides ONLY the database service and an empty database; the script does everything else.
+# The credentials below are for this disposable local dev container ONLY - never reuse
+# them for any real database (the repo keeps no real credentials, see MySQL接入手册.md).
+#
+# Usage:
+#   docker compose -f scripts/docker-compose.mysql.yml up -d
+#   $env:TWELVEJADE_DB_URL      = "jdbc:mysql://127.0.0.1:3306/twelvejade?useSSL=false&connectionTimeZone=UTC"
+#   $env:TWELVEJADE_DB_USERNAME = "root"
+#   $env:TWELVEJADE_DB_PASSWORD = "twelvejade-dev"
+#   powershell -ExecutionPolicy Bypass -File scripts/verify-mysql.ps1
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: twelvejade-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: twelvejade-dev
+      MYSQL_DATABASE: twelvejade
+    ports:
+      - "3306:3306"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci

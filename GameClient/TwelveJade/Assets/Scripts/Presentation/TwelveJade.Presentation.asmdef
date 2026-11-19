@@ -1,0 +1,5 @@
+{
+  "name": "TwelveJade.Presentation",
+  "rootNamespace": "TwelveJade",
+  "references": ["TwelveJade.Core", "TwelveJade.Combat", "TwelveJade.Economy", "UnityEngine.UI", "Unity.TextMeshPro", "Unity.InputSystem"]
+}

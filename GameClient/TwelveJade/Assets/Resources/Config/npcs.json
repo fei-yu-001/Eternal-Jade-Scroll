@@ -1,0 +1,100 @@
+{
+  "npcs": [
+    {
+      "id": "huolang",
+      "name": "货郎老栓",
+      "title": "走街串巷的独脚货郎",
+      "temper": "Greedy",
+      "greeting": "客官眼生——头一回来青石镇？缺什么张嘴就是。价钱好商量，钱不够那就……再说吧。",
+      "goals": [
+        {
+          "id": "fill-the-box",
+          "title": "把货箱走空",
+          "detail": "走南闯北二十年，就指望着这箱货换过冬的棉衣",
+          "target": 20
+        },
+        {
+          "id": "learn-the-north-road",
+          "title": "摸清北边那条路",
+          "detail": "有人说北岭新开了条商路，货比南边便宜三成",
+          "target": 1
+        }
+      ]
+    },
+    {
+      "id": "yaoshi",
+      "name": "林药师",
+      "title": "青石镇唯一的坐堂郎中",
+      "temper": "Wary",
+      "greeting": "抓药还是问事？问事按问事算——我这儿的实话，不白给。",
+      "goals": [
+        {
+          "id": "find-the-real-source",
+          "title": "查清青灵草的来路",
+          "detail": "山上的草一年比一年少，总有个说法的",
+          "target": 2
+        }
+      ]
+    },
+    {
+      "id": "npc-shenhuai-an",
+      "name": "沈怀安",
+      "title": "青石镇摸骨测字的老先生",
+      "temper": "Wary",
+      "greeting": "这……老夫这么说吧，命这东西，说透了就不值钱了。",
+      "goals": [
+        {
+          "id": "read-the-bone",
+          "title": "摸一摸这后生的骨相",
+          "detail": "四十年来头一回有人的命他算不全",
+          "target": 1
+        }
+      ]
+    },
+    {
+      "id": "npc-shitou",
+      "name": "石头",
+      "title": "西巷拾遗队的苦孩子",
+      "temper": "Honest",
+      "greeting": "……你来啦。",
+      "goals": [
+        {
+          "id": "keep-the-box",
+          "title": "守住匣子里那点念想",
+          "detail": "整只江湖都在抢秘宝，没人要这块破石头",
+          "target": 1
+        }
+      ]
+    },
+    {
+      "id": "npc-zhao-da",
+      "name": "赵大",
+      "title": "守渡退伍的铁匠",
+      "temper": "Bold",
+      "greeting": "要打刀就候着，不打别挡着风箱！",
+      "goals": [
+        {
+          "id": "forge-a-blade",
+          "title": "打出一把能守门的刀",
+          "detail": "当年守渡那队三十七个人，回来四个",
+          "target": 1
+        }
+      ]
+    },
+    {
+      "id": "npc-yao-lao",
+      "name": "药老",
+      "title": "北山药圃的悬壶郎中",
+      "temper": "Kind",
+      "greeting": "抓药还是问事？问事另算。",
+      "goals": [
+        {
+          "id": "rescue-the-herb-boy",
+          "title": "把困在后山的采药童子接回来",
+          "detail": "东郊后山的野猪妖挡了采药的路",
+          "target": 1
+        }
+      ]
+    }
+  ]
+}

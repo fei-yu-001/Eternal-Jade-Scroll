@@ -1,0 +1,277 @@
+{
+  "version": 1,
+  "regions": [
+    {
+      "id": "western-wilds",
+      "name": "镇外 · 苍松荒坡",
+      "x": 900,
+      "y": 5300,
+      "radius": 1400,
+      "entranceX": 2230,
+      "entranceY": 4300
+    },
+    {
+      "id": "qingshi-boss-domain",
+      "name": "禁地 · 玄岩石谷",
+      "x": 950,
+      "y": 7300,
+      "radius": 680,
+      "entranceX": 1740,
+      "entranceY": 7300,
+      "art": "Art/World/Wilderness/qingshi-boss-domain",
+      "width": 1400,
+      "height": 1400
+    }
+  ],
+  "spawns": [
+    {
+      "encounter": "encounter-boar-01",
+      "roamRadius": 180,
+      "leashRadius": 340,
+      "aggroRadius": 210,
+      "speed": 72,
+      "height": 160,
+      "walk": "Art/Characters/Nov11/boar-demon-walk"
+    },
+    {
+      "encounter": "encounter-wolf-01",
+      "roamRadius": 240,
+      "leashRadius": 420,
+      "aggroRadius": 250,
+      "speed": 104,
+      "height": 190,
+      "walk": "Art/Characters/Nov11/nether-wolf-walk"
+    },
+    {
+      "encounter": "encounter-mandrill-01",
+      "roamRadius": 150,
+      "leashRadius": 320,
+      "aggroRadius": 205,
+      "speed": 62,
+      "height": 235,
+      "walk": "Art/Characters/Nov11/stone-mandrill-walk"
+    },
+    {
+      "encounter": "encounter-boss-qingshi",
+      "roamRadius": 105,
+      "leashRadius": 340,
+      "aggroRadius": 260,
+      "speed": 58,
+      "height": 560,
+      "walk": "Art/Characters/Nov11/qingshi-mountain-lord-walk",
+      "strikes": "Art/Characters/Nov11/qingshi-mountain-lord-strikes"
+    }
+  ],
+  "mines": [
+    {
+      "id": "iron-01",
+      "name": "玄铁矿脉",
+      "x": 4570,
+      "y": 1850,
+      "item": "iron-ore",
+      "count": 2,
+      "seconds": 2.4,
+      "art": "Art/Props/Wilderness/iron-ore-node",
+      "spentArt": "Art/Props/Wilderness/ore-spent",
+      "height": 125
+    },
+    {
+      "id": "iron-02",
+      "name": "玄铁矿脉",
+      "x": 4770,
+      "y": 2080,
+      "item": "iron-ore",
+      "count": 2,
+      "seconds": 2.4,
+      "art": "Art/Props/Wilderness/iron-ore-node",
+      "spentArt": "Art/Props/Wilderness/ore-spent",
+      "height": 125
+    },
+    {
+      "id": "iron-03",
+      "name": "玄铁矿脉",
+      "x": 1550,
+      "y": 4780,
+      "item": "iron-ore",
+      "count": 2,
+      "seconds": 2.4,
+      "art": "Art/Props/Wilderness/iron-ore-node",
+      "spentArt": "Art/Props/Wilderness/ore-spent",
+      "height": 125
+    },
+    {
+      "id": "iron-04",
+      "name": "玄铁矿脉",
+      "x": 850,
+      "y": 5800,
+      "item": "iron-ore",
+      "count": 2,
+      "seconds": 2.4,
+      "art": "Art/Props/Wilderness/iron-ore-node",
+      "spentArt": "Art/Props/Wilderness/ore-spent",
+      "height": 125
+    },
+    {
+      "id": "iron-05",
+      "name": "玄铁矿脉",
+      "x": 2000,
+      "y": 6670,
+      "item": "iron-ore",
+      "count": 2,
+      "seconds": 2.4,
+      "art": "Art/Props/Wilderness/iron-ore-node",
+      "spentArt": "Art/Props/Wilderness/ore-spent",
+      "height": 125
+    },
+    {
+      "id": "iron-06",
+      "name": "玄铁矿脉",
+      "x": 1650,
+      "y": 7750,
+      "item": "iron-ore",
+      "count": 2,
+      "seconds": 2.4,
+      "art": "Art/Props/Wilderness/iron-ore-node",
+      "spentArt": "Art/Props/Wilderness/ore-spent",
+      "height": 125
+    }
+  ],
+  "domainBlockers": [
+    {
+      "x": 678.75,
+      "y": 6600.0,
+      "width": 271.25,
+      "height": 306.25
+    },
+    {
+      "x": 547.5,
+      "y": 6713.75,
+      "width": 227.5,
+      "height": 253.75
+    },
+    {
+      "x": 394.375,
+      "y": 6831.875,
+      "width": 240.625,
+      "height": 210.0
+    },
+    {
+      "x": 941.25,
+      "y": 6735.625,
+      "width": 188.125,
+      "height": 223.125
+    },
+    {
+      "x": 1116.25,
+      "y": 6818.75,
+      "width": 166.25,
+      "height": 183.75
+    },
+    {
+      "x": 1278.125,
+      "y": 6849.375,
+      "width": 126.875,
+      "height": 188.125
+    },
+    {
+      "x": 298.125,
+      "y": 6985.0,
+      "width": 262.5,
+      "height": 179.375
+    },
+    {
+      "x": 258.75,
+      "y": 7063.75,
+      "width": 135.625,
+      "height": 157.5
+    },
+    {
+      "x": 289.375,
+      "y": 7256.25,
+      "width": 153.125,
+      "height": 175.0
+    },
+    {
+      "x": 372.5,
+      "y": 7387.5,
+      "width": 175.0,
+      "height": 183.75
+    },
+    {
+      "x": 503.75,
+      "y": 7571.25,
+      "width": 131.25,
+      "height": 175.0
+    },
+    {
+      "x": 591.25,
+      "y": 7641.25,
+      "width": 157.5,
+      "height": 135.625
+    },
+    {
+      "x": 1483.75,
+      "y": 6971.875,
+      "width": 131.25,
+      "height": 166.25
+    },
+    {
+      "x": 1505.625,
+      "y": 7133.75,
+      "width": 144.375,
+      "height": 175.0
+    },
+    {
+      "x": 1488.125,
+      "y": 7300.0,
+      "width": 161.875,
+      "height": 192.5
+    },
+    {
+      "x": 1457.5,
+      "y": 7461.875,
+      "width": 140.0,
+      "height": 153.125
+    },
+    {
+      "x": 1405.0,
+      "y": 7545.0,
+      "width": 140.0,
+      "height": 87.5
+    },
+    {
+      "x": 941.25,
+      "y": 7676.25,
+      "width": 210.0,
+      "height": 170.625
+    },
+    {
+      "x": 1133.75,
+      "y": 7702.5,
+      "width": 166.25,
+      "height": 157.5
+    },
+    {
+      "x": 862.5,
+      "y": 7772.5,
+      "width": 201.25,
+      "height": 113.75
+    }
+  ],
+  "decorations": [
+    {
+      "id": "domain-east-jade",
+      "art": "Art/Props/Wilderness/jade-boulders",
+      "x": 1490,
+      "y": 7600,
+      "height": 270
+    },
+    {
+      "id": "domain-entry-rubble",
+      "art": "Art/Props/Wilderness/slate-rubble",
+      "x": 1710,
+      "y": 7300,
+      "height": 110
+    }
+  ]
+}

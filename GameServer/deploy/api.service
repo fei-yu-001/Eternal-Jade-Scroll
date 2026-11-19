@@ -1,0 +1,30 @@
+[Unit]
+Description=Twelve Jade Scroll account and cloud-save API
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=twelvejade
+Group=twelvejade
+WorkingDirectory=/opt/harmonyos/services/eternal-jade-scroll
+EnvironmentFile=/etc/twelvejade/api.env
+ExecStart=/usr/bin/java -Xms64m -Xmx256m -XX:MaxMetaspaceSize=160m -XX:ReservedCodeCacheSize=64m -Xss512k -XX:ActiveProcessorCount=2 -XX:+UseSerialGC -jar /opt/harmonyos/services/eternal-jade-scroll/current.jar
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=30
+SuccessExitStatus=143
+MemoryHigh=448M
+MemoryMax=512M
+CPUQuota=100%
+TasksMax=96
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+StateDirectory=twelvejade
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

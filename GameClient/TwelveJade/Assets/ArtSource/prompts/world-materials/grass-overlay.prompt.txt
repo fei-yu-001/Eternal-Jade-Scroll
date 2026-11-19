@@ -1,0 +1,24 @@
+Generate one square 1024x1024 seamless tileable low-contrast micro texture overlay for a 2D Chinese ink-wash xianxia open-world RPG terrain material.
+Asset type: micro texture overlay, not a terrain material, not a scene.
+View: strict orthographic top-down, no perspective, no isometric, no 3D camera.
+The texture must tile seamlessly in X and Y, with no visible grid, no border, no frame, no vignette, no repeated obvious pattern.
+It must be opaque, clean, low saturation, and contain only flat micro surface detail.
+The image is a neutral overlay layer: mid-gray average, very low contrast, no large shapes, no strong structures.
+
+Use case: subtle rice-paper fiber, faint ink speckles, tiny dust and moss stains to overlay onto a procedural grass/dirt ground base.
+
+Subject:
+rice-paper fiber, faint ink speckles, tiny dust particles, very subtle moss stain, dry brush grain, flat micro surface detail.
+
+Color palette:
+neutral warm gray, pale rice-paper beige, faint ink black, very subtle moss green tint, low saturation.
+
+Texture details:
+fiber and speckle detail smaller than 8 pixels, extremely low contrast, no shapes larger than 16 pixels, no directional streaks, even coverage across the whole image.
+
+Important: no objects, no props, no landmarks, no horizon, no sky, no cast shadows. Only flat micro surface detail viewed from above.
+If any detail approaches an edge, it must continue naturally on the opposite edge.
+
+
+Avoid:
+grass, grass blades, grass tufts, plants, leaves, flowers, bushes, shrubs, tree canopy, forest, rocks, boulders, stones, cracks, roads, buildings, houses, walls, roofs, doors, windows, people, animals, text, letters, numbers, watermark, logo, UI, icons, markers, arrows, black borders, white borders, frame, vignette, perspective, isometric, 3D render, photorealistic, blurry, lowres, jpeg artifacts, visible seams, repeated pattern grid, high contrast, large shapes, strong structures.

@@ -1,0 +1,145 @@
+# ============ Unity（GameClient/ 下） ============
+GameClient/*/Library/
+GameClient/*/Temp/
+GameClient/*/Obj/
+GameClient/*/Build/
+GameClient/*/Builds/
+GameClient/*/Logs/
+GameClient/*/UserSettings/
+GameClient/*/MemoryCaptures/
+GameClient/*/Recorded/
+GameClient/*/*.csproj
+GameClient/*/*.sln
+GameClient/*/*.unityproj
+GameClient/*/*.suo
+GameClient/*/*.tmp
+GameClient/*/*.userprefs
+GameClient/*/*.pidb
+GameClient/*/*.booproj
+GameClient/*/*.svd
+GameClient/*/*.pdb
+GameClient/*/*.mdb
+GameClient/*/*.opendb
+GameClient/*/*.apk
+GameClient/*/*.aab
+GameClient/*/*.unitypackage
+GameClient/*/*.app
+GameClient/*/*.unitypackage.meta
+
+# ============ Java / Maven（GameServer/ 下） ============
+GameServer/*/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# ============ 数据库导出（大文件不入库） ============
+*.sql.bak
+*.dump
+
+# ============ IDE ============
+.idea/
+*.iml
+.vs/
+.vscode/
+*.swp
+*.swo
+
+# ============ 操作系统 ============
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============ 日志 ============
+*.log
+# 自证证据日志要入库：--self-check 证明自己跑过的凭证，不能被 *.log 一并挡在本机
+!Tools/logs/night1-selfcheck-*.log
+
+# 开发截图（不入库）
+Tools/screenshots/*
+!Tools/screenshots/.gitkeep
+
+# 验证过程截图（证据图不入库；文本结论 .md/.json 照常入库）
+# 背景：Tools/logs 下曾有 336 张 png 入库、260MB，而全目录实测 1763 张 1.1GB，
+# 结论与数据都在同名 .md/.json 里，图本身可复跑重生成。
+Tools/logs/**/*.png
+Tools/logs/**/*.jpg
+Tools/logs/**/*.out
+Tools/logs/**/*.pkl
+
+# numpy 诊断中间产物（compose 脚本的 _diag_*.npy，无运行期消费点、无代码引用）
+**/_diag_*.npy
+
+# 会话导出目录与本地工具状态（迁移前遗留在根的孤儿目录 / 编辑器面板状态）
+/01a13b6c-*/
+.codebuddy/
+.qoder-credits/
+
+# Local secrets, generated caches and verification output
+.env
+.env.*
+!.env.example
+**/bin/
+**/obj/
+Tools/TestResults/
+output/
+tmp/
+*.user
+*.bak
+
+# Unity 批处理临时日志
+GameClient/TwelveJade/*-log.txt
+
+# Unity 崩溃恢复场景（编辑器自动写入，不入库）
+GameClient/TwelveJade/Assets/_Recovery/
+GameClient/TwelveJade/Assets/_Recovery.meta
+
+# Python 缓存与抠图脚本的临时预览、运行日志
+__pycache__/
+*.pyc
+
+Tools/art-cleanup-preview/
+Tools/art-cleanup-run.log
+
+# 并行会话的 Unity 批处理副本工程（放在仓库内是为了不触发"工作目录外"的权限弹框；
+# 每个副本含自己的 Library，体积数 GB，一律不入库）
+.batch/
+*.unitylock
+
+# 外部参考项目：只入库架构师的心得 .md，拉下来的第三方代码与素材一律不入库
+# （用 Reference/* 而非 Reference/ 才能让 ! 例外生效）
+Reference/*
+!Reference/*.md
+
+# 世界 chunk 参数实验产物（compose-world-chunks.py 临时 outputDir；可确定性复跑、405MB、
+# 运行期无消费点——正式贴图在 Resources/Art/World/Chunks 且已全部跟踪）。
+# 不入库依据：架构文档 §30「实验产物 chunks-art-test/ 不入库」+ 09 日志 2632「按惯例不入库」。
+# 盘点报告：Tools/logs/asset-triage/asset-triage-report.md（2026-10-11 员工盘点 + 架构师执行）。
+GameClient/TwelveJade/Assets/ArtSource/world/chunks-art-test/
+
+# 一次性施工脚手架的抢救归档（不参与构建，仅留证据）
+Tools/attic/
+
+# 2026-11-19: keep source snapshots free of duplicate projects and generated evidence.
+/My project/
+/Tools/logs/
+/Artifacts/
+/Docs_local/
+/me/
+/.agents/
+/GameServer/target/
+/_bank_small.png
+/_ref_shot.png
+/_water_small.png
+/beam_check.png
+/beam_orig.png
+/frame_first.png
+/frame_mid.png
+/frame_last.png
+# Local credentials and operational exports never belong to the public repository.
+*.pem
+*.p12
+*.pfx
+*.keystore
+*.jks
+*.sql.gz

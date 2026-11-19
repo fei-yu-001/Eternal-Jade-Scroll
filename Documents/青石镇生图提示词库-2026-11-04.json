@@ -1,0 +1,1599 @@
+{
+  "schema": "qingshi-art-planning-v1",
+  "date": "2026-11-05",
+  "source_batch": "2026-11-04",
+  "status": "planning_not_generated",
+  "body_reference_world_px": 170,
+  "items": [
+    {
+      "id": "Q01",
+      "slug": "teahouse-front",
+      "name": "两层茶楼·正面",
+      "priority": "P0",
+      "status": "替换功能占位",
+      "plot_width": 480,
+      "plot_height": 720,
+      "zone": "C 广场东南街坊",
+      "target_plot": "plot-teahouse",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "现行building视觉高门限1.5–3.5身位；本规格约98%内容高超过3.5，需正式分级契约或等比降档后才可安装",
+      "canvas_ratio": "2:3",
+      "recommended_source_px": [
+        960,
+        1440
+      ],
+      "runtime_canvas_px": [
+        960,
+        1440
+      ],
+      "plot_height_in_bodies": 4.24,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-teahouse-front-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一栋完整的两层江南木构茶楼，门面正对画面下方，底层三开间敞门与半高茶柜，二层有连续木栏和两扇格窗，灰瓦双层屋檐，入口有一低木阶，门旁一面空白茶幌，茶具只占柜面，不画门外桌椅。底层门洞视觉高约一名成人的1.2倍，两层清晰可辨。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比2:3，建议输出960×1440像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，单层茅亭，三层以上楼阁，巨大外摆桌，整条街景，茶字或乱码"
+    },
+    {
+      "id": "Q02",
+      "slug": "medicine-shop",
+      "name": "药铺·带药柜门面",
+      "priority": "P0",
+      "status": "运行时缺失；药圃不能替代药铺",
+      "plot_width": 480,
+      "plot_height": 560,
+      "zone": "D 东街医药作坊",
+      "target_plot": "new:plot-medicine-shop",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "6:7",
+      "recommended_source_px": [
+        960,
+        1120
+      ],
+      "runtime_canvas_px": [
+        960,
+        1120
+      ],
+      "plot_height_in_bodies": 3.29,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-medicine-shop-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一间一层半高的中药铺独立建筑，正面三开间，门内可看见整齐小抽屉药柜，侧窗下少量编竹药筛和悬挂药束，灰瓦白墙深木门，空白木匾，门槛干净，入口在正面中央；无室外菜地，无巨大药草园。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比6:7，建议输出960×1120像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，现代十字标志，玻璃药瓶墙，医院，炼丹炉占满入口，药材文字标签"
+    },
+    {
+      "id": "Q03",
+      "slug": "blacksmith-workshop",
+      "name": "守渡铁匠铺·真实作坊",
+      "priority": "P0",
+      "status": "替换 shop-front-v2；先复核旧候选",
+      "plot_width": 520,
+      "plot_height": 560,
+      "zone": "B 北街西侧作坊",
+      "target_plot": "plot-blacksmith",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "13:14",
+      "recommended_source_px": [
+        1040,
+        1120
+      ],
+      "runtime_canvas_px": [
+        1040,
+        1120
+      ],
+      "plot_height_in_bodies": 3.29,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-blacksmith-workshop-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。单层半开放铁匠作坊，灰瓦低屋顶，前部两根粗木柱，一侧砖砌小炉灶，炉内仅少量暖红余火，后墙挂钳锤与农具，中央保留宽敞工作口；铁砧与大型工具架另出，不占门前通道，粗朴旧木和烟熏灰墙。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比13:14，建议输出1040×1120像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，西式锻造厂，蒸汽设备，机械齿轮，满屏火花，铁砧焊死在大地台上"
+    },
+    {
+      "id": "Q04",
+      "slug": "ancestral-hall",
+      "name": "张氏祠堂·正厅",
+      "priority": "P0",
+      "status": "替换 temple-gate 借图",
+      "plot_width": 620,
+      "plot_height": 680,
+      "zone": "B 北街西侧宗族院",
+      "target_plot": "plot-ancestral-hall",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "现行building视觉高门限1.5–3.5身位；本规格约98%内容高超过3.5，需正式分级契约或等比降档后才可安装",
+      "canvas_ratio": "31:34",
+      "recommended_source_px": [
+        1240,
+        1360
+      ],
+      "runtime_canvas_px": [
+        1240,
+        1360
+      ],
+      "plot_height_in_bodies": 4.0,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-ancestral-hall-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。宗族祠堂正厅单体，宽三开间，左右对称而略有旧损差异，灰瓦高屋脊与端正木梁，厚木双门半开，门内只见暗色供案轮廓，白墙石基、两级窄石阶、空白横匾，庄重克制，完整接地；不附带围墙和整院地面。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比31:34，建议输出1240×1360像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，佛塔，皇宫红墙金顶，佛像外露，门楼替代正厅，姓氏题字，整片院落底板"
+    },
+    {
+      "id": "Q05",
+      "slug": "temple-main-hall",
+      "name": "小庙正殿·与山门配套",
+      "priority": "P0",
+      "status": "新增院落主体",
+      "plot_width": 640,
+      "plot_height": 600,
+      "zone": "A 东北庙院",
+      "target_plot": "new:plot-temple-main-hall",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "16:15",
+      "recommended_source_px": [
+        1280,
+        1200
+      ],
+      "runtime_canvas_px": [
+        1280,
+        1200
+      ],
+      "plot_height_in_bodies": 3.53,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-temple-main-hall-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。民间小庙的三开间正殿，低饱和灰瓦木梁，粉白墙与局部暗赭木门，屋脊简朴，前檐浅廊与两根柱子，中央半开门中有模糊供桌暗部，微弱香火暖色仅在室内，石阶与主体相连，不画院墙、香炉与户外地面。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比16:15，建议输出1280×1200像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，巨佛，金色大殿，皇家建筑，密集仙光，庙会人群，完整寺院鸟瞰"
+    },
+    {
+      "id": "Q06",
+      "slug": "temple-gate-open",
+      "name": "庙院山门·可穿行",
+      "priority": "P0",
+      "status": "现有 temple-gate 门洞与主体待复核",
+      "plot_width": 440,
+      "plot_height": 500,
+      "zone": "A 东北庙院南侧",
+      "target_plot": "plot-temple-gate",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "22:25",
+      "recommended_source_px": [
+        880,
+        1000
+      ],
+      "runtime_canvas_px": [
+        880,
+        1000
+      ],
+      "plot_height_in_bodies": 2.94,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-temple-gate-open-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一座民间小庙山门，灰瓦屋顶、白墙两侧短墩、木门框，正面朝画面下方；中央门洞完全打开且内部能看见透明背景，左右门扇退到两侧，不伸进门道；门洞净宽占画布至少40%，保持到落地线连续通透，柱脚清楚，空白匾。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比22:25，建议输出880×1000像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，封死门洞，黑色实心洞，洞内画街景，门槛横封地面，连接长院墙，寺庙正殿"
+    },
+    {
+      "id": "Q07",
+      "slug": "theater-stage",
+      "name": "万年台·独立戏台",
+      "priority": "P0",
+      "status": "替换 teahouse-v2 借图",
+      "plot_width": 640,
+      "plot_height": 560,
+      "zone": "C 广场西南看戏边界",
+      "target_plot": "plot-opera-stage",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "8:7",
+      "recommended_source_px": [
+        1280,
+        1120
+      ],
+      "runtime_canvas_px": [
+        1280,
+        1120
+      ],
+      "plot_height_in_bodies": 3.29,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-theater-stage-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。单层开敞古戏台，横向宽台口，四根深木柱撑灰瓦檐，台面离地低矮，后方素色旧布幕，左右各一小边门，前缘两三级台阶；无演员、无观众，舞台台口明显宽于普通店铺，梁枋有少量克制雕花，不挂文字标语。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比8:7，建议输出1280×1120像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，茶楼上下两层，皇宫楼阁，现代舞台灯，红色庆典气球，观众座椅连成背景"
+    },
+    {
+      "id": "Q08",
+      "slug": "wall-front-joint",
+      "name": "院墙·正面可拼直段",
+      "priority": "P0",
+      "status": "先加工 incoming 院墙；接头不合格才补画",
+      "plot_width": 480,
+      "plot_height": 240,
+      "zone": "A 庙院 / B 宗族院",
+      "target_plot": "new:plot-courtyard-wall-front-*",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "2:1",
+      "recommended_source_px": [
+        960,
+        480
+      ],
+      "runtime_canvas_px": [
+        960,
+        480
+      ],
+      "plot_height_in_bodies": 1.41,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-wall-front-joint-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。单独一段东西走向的粉白院墙，正面朝画面下方，青灰瓦压顶，低石脚，少量潮痕与细裂，墙面连续；左右两端平直齐口、同高度可无缝衔接，不带翘起的大端柱，不画门窗；墙脚为水平直线，瓦顶线清晰。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比2:1，建议输出960×480像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，整院，马头墙两端重复高耸，强斜透视，墙上写字，门洞，底部草地板"
+    },
+    {
+      "id": "Q09",
+      "slug": "wall-back-joint",
+      "name": "院墙·背面可拼直段",
+      "priority": "P0",
+      "status": "缺朝向变体",
+      "plot_width": 480,
+      "plot_height": 240,
+      "zone": "A 庙院北缘 / B 后院",
+      "target_plot": "new:plot-courtyard-wall-back-*",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "2:1",
+      "recommended_source_px": [
+        960,
+        480
+      ],
+      "runtime_canvas_px": [
+        960,
+        480
+      ],
+      "plot_height_in_bodies": 1.41,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-wall-back-joint-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一段东西走向院墙的背面，保持同套墙的高度和瓦帽，背面石脚更粗朴、抹灰略不均，柔和青灰瓦顶可见少量背坡，平直齐口接头；正面装饰不出现，光线仍来自画面左上，不翻转光源。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比2:1，建议输出960×480像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，正面匾饰，左右光向颠倒，门窗，背景屋顶，强倾斜消失点，厚地台"
+    },
+    {
+      "id": "Q10",
+      "slug": "wall-east-run",
+      "name": "院墙·纵向东侧段",
+      "priority": "P0",
+      "status": "缺纵向墙",
+      "plot_width": 240,
+      "plot_height": 480,
+      "zone": "A 庙院东缘",
+      "target_plot": "new:plot-courtyard-wall-east-*",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:2",
+      "recommended_source_px": [
+        480,
+        960
+      ],
+      "runtime_canvas_px": [
+        480,
+        960
+      ],
+      "plot_height_in_bodies": 2.82,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-wall-east-run-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。南北走向的院墙模块，画面纵向延伸，近端在下、远端在上，主要可见墙的西侧面和瓦帽，粉白墙灰瓦石脚；线条按同一固定镜头投影，无远端缩小；顶端与底端留清楚平齐拼接口，不带转角，不带门窗。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比1:2，建议输出480×960像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，横向墙硬旋转90度，墙躺在地上，消失点透视，三面院墙合体，背景地面"
+    },
+    {
+      "id": "Q11",
+      "slug": "wall-west-run",
+      "name": "院墙·纵向西侧段",
+      "priority": "P0",
+      "status": "缺纵向墙；独立图不依赖运行期镜像",
+      "plot_width": 240,
+      "plot_height": 480,
+      "zone": "A 庙院西缘",
+      "target_plot": "new:plot-courtyard-wall-west-*",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:2",
+      "recommended_source_px": [
+        480,
+        960
+      ],
+      "runtime_canvas_px": [
+        480,
+        960
+      ],
+      "plot_height_in_bodies": 2.82,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-wall-west-run-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。南北走向院墙的西侧模块，近端在下、远端在上，主要可见墙的东侧面和瓦帽；与东侧模块同高同瓦型，画面左上光源保持固定，粉白旧灰泥墙与低石基，端头平齐可拼，无门窗。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比1:2，建议输出480×960像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，把东墙连光影一起镜像，横向墙旋转，端头变粗，收缩透视，整院背景"
+    },
+    {
+      "id": "Q12",
+      "slug": "wall-corner-inner",
+      "name": "院墙·内转角",
+      "priority": "P0",
+      "status": "缺可连接内角",
+      "plot_width": 320,
+      "plot_height": 320,
+      "zone": "A/B 院墙转角",
+      "target_plot": "new:plot-wall-corner-inner-*",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:1",
+      "recommended_source_px": [
+        640,
+        640
+      ],
+      "runtime_canvas_px": [
+        640,
+        640
+      ],
+      "plot_height_in_bodies": 1.88,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-wall-corner-inner-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。两段短院墙组成一个90度内角，凹口朝画面下方，能看到内侧墙面，粉白墙和连续灰瓦压顶，转角瓦缝真实相接，两臂外端都是平接口，同一高度，短墙不延伸到画布边缘；转角内部全透明。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比1:1，建议输出640×640像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，独立两堵墙互不连接，三角尖角，地面三角底板，假棋盘格，过长墙臂"
+    },
+    {
+      "id": "Q14",
+      "slug": "town-gate-south-wide",
+      "name": "南门楼·宽门洞适配版",
+      "priority": "P0",
+      "status": "条件补画：两张 incoming 候选相同且门洞偏窄",
+      "plot_width": 1020,
+      "plot_height": 850,
+      "zone": "F 南门入口",
+      "target_plot": "replace:plot-paifang -> plot-town-gate-south",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "现行building视觉高门限1.5–3.5身位；本规格约98%内容高超过3.5，需正式分级契约或等比降档后才可安装；门楼不可仅等比缩小，否则60%洞宽不足500主街；需正式地标档或重画约1020×600且洞宽≥600的低宽版",
+      "canvas_ratio": "6:5",
+      "recommended_source_px": [
+        2040,
+        1700
+      ],
+      "runtime_canvas_px": [
+        2040,
+        1700
+      ],
+      "plot_height_in_bodies": 5.0,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-town-gate-south-wide-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。沿用 incoming 南门候选的旧木二层门楼、灰瓦屋面、灰石门墩造型，正面近乎对称；主拱门净宽至少占画布60%，洞从门楣到底边连续透明，门扇完全收在侧壁；两侧厚墩落地，门楼总宽大于总高，低饱和古朴，无附属城墙。上部楼体保持比例，单独重构宽门洞，不能把整图横向拉胖。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比6:5，建议输出2040×1700像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，窄门洞，洞里实心黑色或街景，门扇斜挡通道，巨大皇城，复制第二座门楼，文字城名"
+    },
+    {
+      "id": "Q15",
+      "slug": "dock-stone-steps",
+      "name": "河埠·青石下水台阶",
+      "priority": "P0",
+      "status": "运行时缺失",
+      "plot_width": 520,
+      "plot_height": 300,
+      "zone": "E 渡口南岸",
+      "target_plot": "new:plot-ferry-stone-steps",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "26:15",
+      "recommended_source_px": [
+        1040,
+        600
+      ],
+      "runtime_canvas_px": [
+        1040,
+        600
+      ],
+      "plot_height_in_bodies": 1.76,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-dock-stone-steps-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一组宽阔低缓的青石河埠台阶，岸上端在画面下方、入水端朝画面上方，五级旧石阶，边缘潮湿苔痕克制，左右两枚短系船石，阶面轻俯视可读；只画实体台阶，不画水面、河流、船和大块岸土地板，石阶尽端自然收边。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比26:15，建议输出1040×600像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，向镜头下水的反向台阶，瀑布，陡峭楼梯，完整桥梁，水面大矩形，漂浮石头"
+    },
+    {
+      "id": "Q46",
+      "slug": "ground-flagstone-tile",
+      "name": "青石板路·无缝俯视版",
+      "priority": "P0",
+      "status": "优先加工 incoming 地表；接缝不合格才重画",
+      "plot_width": 1024,
+      "plot_height": 1024,
+      "zone": "全镇主街与巷道",
+      "target_plot": "material:stone-road.png",
+      "kind": "tile",
+      "suggested_runtime_kind": "none-ground",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:1",
+      "recommended_source_px": [
+        2048,
+        2048
+      ],
+      "runtime_canvas_px": [
+        1024,
+        1024
+      ],
+      "plot_height_in_bodies": 6.02,
+      "height_note": "地表投影范围；立体身高为0，不作为独立阻挡plot",
+      "output_file": "qingshi-ground-flagstone-tile-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "青石镇游戏地表贴图，元末明初江南水乡的低饱和手绘写实材质，严格垂直俯视，正交投影，均匀漫射照明。严格垂直俯视的青灰石板道路材质，大小适中的长方石板错缝铺设，磨圆边角和细窄灰缝，少量灰绿潮痕，低饱和、低对比，软漫射光；四边无缝循环，石板透视大小一致，不出现侧立面，整张填满材质，无任何独立物件。 画布宽高比1:1，建议输出2048×2048像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，砖砌竖墙，地平线，斜拍路面，夸张厚缝黑网格，强方向阴影，白色反光斑，文字，树叶垃圾，镶边地毯"
+    },
+    {
+      "id": "Q13",
+      "slug": "wall-corner-outer",
+      "name": "院墙·外转角",
+      "priority": "P1",
+      "status": "缺可连接外角",
+      "plot_width": 320,
+      "plot_height": 320,
+      "zone": "A/B 院落外角",
+      "target_plot": "new:plot-wall-corner-outer-*",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:1",
+      "recommended_source_px": [
+        640,
+        640
+      ],
+      "runtime_canvas_px": [
+        640,
+        640
+      ],
+      "plot_height_in_bodies": 1.88,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-wall-corner-outer-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。两段短粉白院墙构成90度凸外角，转角朝画面下方，能看见两个外墙面，连续灰瓦帽与石脚沿转角延伸，端头齐口，同套建筑的轻俯视固定镜头；无门窗、无院内内容。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比1:1，建议输出640×640像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，内凹角，墙高不一致，悬空瓦帽，投影地板，凸起城堡塔楼"
+    },
+    {
+      "id": "Q16",
+      "slug": "academy",
+      "name": "村塾·小书院正房",
+      "priority": "P1",
+      "status": "替换 shop-front-v2 借图",
+      "plot_width": 560,
+      "plot_height": 680,
+      "zone": "B 北街安静侧",
+      "target_plot": "plot-school",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "现行building视觉高门限1.5–3.5身位；本规格约98%内容高超过3.5，需正式分级契约或等比降档后才可安装",
+      "canvas_ratio": "14:17",
+      "recommended_source_px": [
+        1120,
+        1360
+      ],
+      "runtime_canvas_px": [
+        1120,
+        1360
+      ],
+      "plot_height_in_bodies": 4.0,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-academy-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一座两进意象但只画前部正房的乡塾，灰瓦白墙，中央木门，左右长格窗，室内隐约有整齐矮书案；二层局部藏书阁形成高低轮廓，正面空白木匾，窄石阶接地，门前不堆书、不画院墙。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比14:17，建议输出1120×1360像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，现代学校标志，宫殿大门，书本飞舞，学生人物，整张室内剖面图"
+    },
+    {
+      "id": "Q17",
+      "slug": "grocery-shop",
+      "name": "杂货铺·货架门面",
+      "priority": "P1",
+      "status": "替换重复街铺图",
+      "plot_width": 440,
+      "plot_height": 500,
+      "zone": "D 东街 / B 北街",
+      "target_plot": "plot-street-east-store",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "22:25",
+      "recommended_source_px": [
+        880,
+        1000
+      ],
+      "runtime_canvas_px": [
+        880,
+        1000
+      ],
+      "plot_height_in_bodies": 2.94,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-grocery-shop-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。单层临街杂货铺，灰瓦木门面，前方敞开的柜台后有竹篓、麻绳、陶器和小木盒，货架收在檐下，门在一侧并保留连续通路，白墙有轻微旧痕，一块无字店招，完整独立建筑。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比22:25，建议输出880×1000像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，现代包装袋，塑料，玻璃橱窗，招牌文字，摊货堆满街面，药柜抽屉墙"
+    },
+    {
+      "id": "Q18",
+      "slug": "grain-shop",
+      "name": "粮行·米斗柜台",
+      "priority": "P1",
+      "status": "替换 residence 借图",
+      "plot_width": 520,
+      "plot_height": 500,
+      "zone": "F 南街物资节点",
+      "target_plot": "plot-grain-shop",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "26:25",
+      "recommended_source_px": [
+        1040,
+        1000
+      ],
+      "runtime_canvas_px": [
+        1040,
+        1000
+      ],
+      "plot_height_in_bodies": 2.94,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-grain-shop-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一层朴实粮行门面，宽木柜台、两个开口米斗和扎口麻袋均在屋檐内，后部厚木门可关仓，灰瓦灰白墙，石基防潮，侧门单独留出，低矮而横向舒展，空白招牌。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比26:25，建议输出1040×1000像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，现代米袋商标，食品包装文字，粮食铺满地面，住宅大院，夸张三层楼"
+    },
+    {
+      "id": "Q19",
+      "slug": "cloth-shop",
+      "name": "布庄·悬布门面",
+      "priority": "P1",
+      "status": "替换 shop-front 借图",
+      "plot_width": 480,
+      "plot_height": 560,
+      "zone": "F 南街东侧",
+      "target_plot": "plot-cloth-shop",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "6:7",
+      "recommended_source_px": [
+        960,
+        1120
+      ],
+      "runtime_canvas_px": [
+        960,
+        1120
+      ],
+      "plot_height_in_bodies": 3.29,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-cloth-shop-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一间江南布庄，底层木柜台摆少量卷布，檐内挂靛蓝、灰绿、米白三幅短布样，窗棂和门框清楚，灰瓦屋顶，门在中央，布匹不落地不挡门，空白竖幌，旧木与柔和织物质感。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比6:7，建议输出960×1120像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，现代服装模特，饱和大红布海，文字商标，布帘封住门口，巨型户外晾架"
+    },
+    {
+      "id": "Q20",
+      "slug": "wine-shop",
+      "name": "酒肆·两层小楼",
+      "priority": "P1",
+      "status": "替换 teahouse-v2 借图",
+      "plot_width": 480,
+      "plot_height": 680,
+      "zone": "D 东街临水支路",
+      "target_plot": "plot-street-east-wine",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "现行building视觉高门限1.5–3.5身位；本规格约98%内容高超过3.5，需正式分级契约或等比降档后才可安装",
+      "canvas_ratio": "12:17",
+      "recommended_source_px": [
+        960,
+        1360
+      ],
+      "runtime_canvas_px": [
+        960,
+        1360
+      ],
+      "plot_height_in_bodies": 4.0,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-wine-shop-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。两层木构小酒肆，一层敞口酒柜，檐下两个封泥酒坛，二层局部栏杆和窄窗，灰瓦，暖灰墙，侧挂无字布旗；建筑比茶楼更粗朴，酒坛留在建筑轮廓内，门前不带桌椅和人物。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比12:17，建议输出960×1360像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，酒字，现代酒瓶酒杯，霓虹酒吧，巨大红灯笼串，西式木桶酒馆"
+    },
+    {
+      "id": "Q21",
+      "slug": "dye-workshop",
+      "name": "染坊·临水作坊",
+      "priority": "P1",
+      "status": "新增生产功能外观",
+      "plot_width": 560,
+      "plot_height": 560,
+      "zone": "E 河埠东侧后排",
+      "target_plot": "new:plot-dye-workshop",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:1",
+      "recommended_source_px": [
+        1120,
+        1120
+      ],
+      "runtime_canvas_px": [
+        1120,
+        1120
+      ],
+      "plot_height_in_bodies": 3.29,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-dye-workshop-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。江南小染坊的单层建筑，灰瓦白墙，前檐内两口矮染缸，侧屋连一短晾布架，少量靛蓝和灰紫布垂挂，保留独立出入口；晾架不超出主画布，水渍只留在缸体和石基，不画排污河水。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比1:1，建议输出1120×1120像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，化工厂，烟囱，彩虹布瀑布，大范围染色地面，现代印染机械"
+    },
+    {
+      "id": "Q23",
+      "slug": "residence-front",
+      "name": "院落民居·正面",
+      "priority": "P1",
+      "status": "替换缩小茶楼充民居的占位",
+      "plot_width": 420,
+      "plot_height": 460,
+      "zone": "D 东街 / C 戏台邻居",
+      "target_plot": "plot-street-opera-west",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "21:23",
+      "recommended_source_px": [
+        840,
+        920
+      ],
+      "runtime_canvas_px": [
+        840,
+        920
+      ],
+      "plot_height_in_bodies": 2.71,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-residence-front-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。单层徽郡民居正面，白灰泥墙、灰瓦屋顶、小马头山墙，木门略偏左，两扇朴素格窗，低石脚，屋檐下可有一只空竹篓；只画房屋，不画院墙、庭院地面、花树，门洞约一名成人高。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比21:23，建议输出840×920像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，茶楼二层栏杆，现代玻璃窗，日式纸拉门，联排三栋，完整庭院场景"
+    },
+    {
+      "id": "Q24",
+      "slug": "residence-face-east",
+      "name": "院落民居·入口朝画面右前",
+      "priority": "P1",
+      "status": "缺街西侧朝向图",
+      "plot_width": 420,
+      "plot_height": 460,
+      "zone": "B/C 街西侧住宅",
+      "target_plot": "new:plot-residence-west-row-*",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "21:23",
+      "recommended_source_px": [
+        840,
+        920
+      ],
+      "runtime_canvas_px": [
+        840,
+        920
+      ],
+      "plot_height_in_bodies": 2.71,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-residence-face-east-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。同规格单层白墙灰瓦民居，固定镜头不转动，房屋转向使入口朝画面右前方即街道侧，主要门面和少量另一侧山墙可见；保留石脚、木门和小格窗，侧墙不要再画一个门，左上柔光。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比21:23，建议输出840×920像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，镜像文字，左右翻转光源，入口仍朝左前，过深强透视，整条街景"
+    },
+    {
+      "id": "Q25",
+      "slug": "residence-face-west",
+      "name": "院落民居·入口朝画面左前",
+      "priority": "P1",
+      "status": "缺街东侧朝向图",
+      "plot_width": 420,
+      "plot_height": 460,
+      "zone": "D 街东侧住宅",
+      "target_plot": "plot-street-east-home",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "21:23",
+      "recommended_source_px": [
+        840,
+        920
+      ],
+      "runtime_canvas_px": [
+        840,
+        920
+      ],
+      "plot_height_in_bodies": 2.71,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-residence-face-west-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。同规格单层白墙灰瓦民居，入口朝画面左前方即街道侧，固定镜头，主要门面与少量侧山墙同时可见；木门、素窗、旧石脚，无字，无院墙，左上柔光方向保持一致。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比21:23，建议输出840×920像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，把另一朝向的阴影直接翻转，右前门，低机位摄影，日式小屋，街景背景"
+    },
+    {
+      "id": "Q26",
+      "slug": "residence-two-story",
+      "name": "二层临街民居",
+      "priority": "P1",
+      "status": "新增住宅高度层次",
+      "plot_width": 440,
+      "plot_height": 660,
+      "zone": "B 北街次要立面",
+      "target_plot": "new:plot-residence-two-story",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "现行building视觉高门限1.5–3.5身位；本规格约98%内容高超过3.5，需正式分级契约或等比降档后才可安装",
+      "canvas_ratio": "2:3",
+      "recommended_source_px": [
+        880,
+        1320
+      ],
+      "runtime_canvas_px": [
+        880,
+        1320
+      ],
+      "plot_height_in_bodies": 3.88,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-residence-two-story-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一栋窄面宽两层民居，上层木格窗和半封闭小廊，下层白灰墙木门，灰瓦小马头山墙，屋顶轮廓端正，贫富适中的居住感；无商铺柜台、无招旗、无外置楼梯，保留独立门口。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比2:3，建议输出880×1320像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，茶馆商铺，三层楼，现代阳台铁栏，豪宅宫殿，门口一整片院子"
+    },
+    {
+      "id": "Q27",
+      "slug": "teahouse-face-east",
+      "name": "两层茶楼·入口朝右前",
+      "priority": "P1",
+      "status": "缺侧向图；复用 Q01 结构",
+      "plot_width": 480,
+      "plot_height": 720,
+      "zone": "C 主街西侧转角",
+      "target_plot": "new:plot-teahouse-west-corner",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "现行building视觉高门限1.5–3.5身位；本规格约98%内容高超过3.5，需正式分级契约或等比降档后才可安装",
+      "canvas_ratio": "2:3",
+      "recommended_source_px": [
+        960,
+        1440
+      ],
+      "runtime_canvas_px": [
+        960,
+        1440
+      ],
+      "plot_height_in_bodies": 4.24,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-teahouse-face-east-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。两层江南木构茶楼，与正面版同层高、瓦型和门窗数；主入口朝画面右前方，保持固定镜头与左上柔光，可见带空白茶幌的门面和素净侧墙，上层连续木栏，底层柜台收内，无户外桌椅。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比2:3，建议输出960×1440像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，额外楼层，左右反转光影，茶字，第二个入口，透视街景"
+    },
+    {
+      "id": "Q28",
+      "slug": "teahouse-face-west",
+      "name": "两层茶楼·入口朝左前",
+      "priority": "P1",
+      "status": "缺侧向图；复用 Q01 结构",
+      "plot_width": 480,
+      "plot_height": 720,
+      "zone": "C 主街东侧转角",
+      "target_plot": "new:plot-teahouse-east-corner",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "现行building视觉高门限1.5–3.5身位；本规格约98%内容高超过3.5，需正式分级契约或等比降档后才可安装",
+      "canvas_ratio": "2:3",
+      "recommended_source_px": [
+        960,
+        1440
+      ],
+      "runtime_canvas_px": [
+        960,
+        1440
+      ],
+      "plot_height_in_bodies": 4.24,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-teahouse-face-west-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。两层江南木构茶楼，与正面版同层高、同灰瓦和旧木配色；主入口朝画面左前方，素侧墙与主要门面清楚，空白茶幌，二层木栏，不改变镜头高度，光线始终从画面左上来。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比2:3，建议输出960×1440像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，直接镜像阴影，反字，屋顶被裁切，四十五度等距城市模型，整片街道"
+    },
+    {
+      "id": "Q33",
+      "slug": "dock-timber",
+      "name": "木码头与系船桩",
+      "priority": "P1",
+      "status": "运行时缺失",
+      "plot_width": 480,
+      "plot_height": 240,
+      "zone": "E 渡口岸边",
+      "target_plot": "new:plot-ferry-timber-pier",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "2:1",
+      "recommended_source_px": [
+        960,
+        480
+      ],
+      "runtime_canvas_px": [
+        960,
+        480
+      ],
+      "plot_height_in_bodies": 1.41,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-dock-timber-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一段低平木码头，木板沿横向排布，朝画面上方延伸入水，两侧短系船桩与一圈麻绳，旧木有温和湿痕，近岸端平齐方便接台阶；只画木构实体，无船、无人、无水面底板。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比2:1，建议输出960×480像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，水面矩形，现代浮桥，铁栏杆，海港吊机，巨大栈桥，透明棋盘格"
+    },
+    {
+      "id": "Q34",
+      "slug": "river-boat",
+      "name": "乌篷小舟·无人物",
+      "priority": "P1",
+      "status": "新增水路生活线索",
+      "plot_width": 480,
+      "plot_height": 200,
+      "zone": "E 渡口水面边",
+      "target_plot": "new:plot-ferry-boat",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "12:5",
+      "recommended_source_px": [
+        960,
+        400
+      ],
+      "runtime_canvas_px": [
+        960,
+        400
+      ],
+      "plot_height_in_bodies": 1.18,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-river-boat-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一条江南小木舟，船头朝画面左前，低矮黑褐乌篷、旧木船舷、两支收拢短桨和细系泊绳，轻俯视能看见少量舱口，水线明确但不画水面、波纹、阴影底板和人物。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比12:5，建议输出960×400像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，大海帆船，龙舟装饰，游客，透明水盘，现代发动机，载满人物"
+    },
+    {
+      "id": "Q35",
+      "slug": "stall-cooked-food",
+      "name": "炊饼熟食摊",
+      "priority": "P1",
+      "status": "替换六摊同图之一",
+      "plot_width": 240,
+      "plot_height": 240,
+      "zone": "C 西市靠南摊位",
+      "target_plot": "market-stall-south-01",
+      "kind": "sprite",
+      "suggested_runtime_kind": "stall",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:1",
+      "recommended_source_px": [
+        480,
+        480
+      ],
+      "runtime_canvas_px": [
+        480,
+        480
+      ],
+      "plot_height_in_bodies": 1.41,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-stall-cooked-food-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一个小型炊饼摊独立物件，旧木台、低泥灶与铁鏊子，台上竹盘放少量圆饼，顶部米灰小布篷，侧面空白布幌，支脚完整可见，灶火仅一点暖色；无人，无蒸汽遮边，入口与服务面朝下。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比1:1，建议输出480×480像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，现代餐车，煤气罐，人物厨师，浓烟，大量文字菜单，地面摊位底板"
+    },
+    {
+      "id": "Q36",
+      "slug": "stall-vegetables",
+      "name": "时蔬竹筐摊",
+      "priority": "P1",
+      "status": "替换六摊同图之一",
+      "plot_width": 240,
+      "plot_height": 240,
+      "zone": "C 西市靠东摊位",
+      "target_plot": "market-stall-south-02",
+      "kind": "sprite",
+      "suggested_runtime_kind": "stall",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:1",
+      "recommended_source_px": [
+        480,
+        480
+      ],
+      "runtime_canvas_px": [
+        480,
+        480
+      ],
+      "plot_height_in_bodies": 1.41,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-stall-vegetables-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一个乡镇菜摊，低木案与三只竹筐，少量萝卜、叶菜、葫芦，灰蓝短布篷，木支架不粗壮，服务面朝画面下方，绿色低饱和，筐和菜全部收在单个摊位轮廓内，无人无地面。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比1:1，建议输出480×480像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，现代水果超市，塑料箱，艳丽热带水果，大幅度外摆，菜农人物"
+    },
+    {
+      "id": "Q37",
+      "slug": "stall-cloth-hides",
+      "name": "布头摊",
+      "priority": "P1",
+      "status": "替换六摊同图；两版共用骨架",
+      "plot_width": 240,
+      "plot_height": 240,
+      "zone": "C 西市靠西摊位",
+      "target_plot": "market-stall-south-03",
+      "kind": "sprite",
+      "suggested_runtime_kind": "stall",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:1",
+      "recommended_source_px": [
+        480,
+        480
+      ],
+      "runtime_canvas_px": [
+        480,
+        480
+      ],
+      "plot_height_in_bodies": 1.41,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-stall-cloth-hides-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一个灰麻布篷木架小摊，台面摆靛蓝与灰白卷布、木尺和两个扎口布包，支脚完整，服务面朝画面下方；骨架与台面边界清楚，布料只占台面，不垂到地上，没有人物，独立完整单件。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比1:1，建议输出480×480像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，文字价签，现代卷尺，动物尸体，两个摊位拼一张，布匹拖地，人物"
+    },
+    {
+      "id": "Q38",
+      "slug": "household-wash-work",
+      "name": "宅侧洗晒与作业小件",
+      "priority": "P1",
+      "status": "优先拆 incoming 小品；被遮挡部位才补画",
+      "plot_width": 300,
+      "plot_height": 300,
+      "zone": "D 民居附属凹位",
+      "target_plot": "new:plot-household-wash-work",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:1",
+      "recommended_source_px": [
+        600,
+        600
+      ],
+      "runtime_canvas_px": [
+        600,
+        600
+      ],
+      "plot_height_in_bodies": 1.76,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-household-wash-work-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一个紧凑宅侧洗晒作业组：两根竹竿撑一条旧麻布，旁边一只半满木桶和一只低陶缸，一小叠整齐柴；各物件留可分离间隙，不互相遮住主体，正面略俯视，接地线清楚，无茅棚顶、无人、无桌椅和磨盘。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比1:1，建议输出600×600像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，整套生活场景拥挤拼贴，重复井台磨盘，大地板，人物洗衣，现代塑料盆"
+    },
+    {
+      "id": "Q47",
+      "slug": "ground-courtyard-worn",
+      "name": "院落与小广场·磨旧铺装",
+      "priority": "P1",
+      "status": "优先调色加工已有 plaza；缺小尺度结构才补画",
+      "plot_width": 1024,
+      "plot_height": 1024,
+      "zone": "A/B 院落 / C 紧凑广场",
+      "target_plot": "material:plaza.png",
+      "kind": "tile",
+      "suggested_runtime_kind": "none-ground",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:1",
+      "recommended_source_px": [
+        2048,
+        2048
+      ],
+      "runtime_canvas_px": [
+        1024,
+        1024
+      ],
+      "plot_height_in_bodies": 6.02,
+      "height_note": "地表投影范围；立体身高为0，不作为独立阻挡plot",
+      "output_file": "qingshi-ground-courtyard-worn-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "青石镇游戏地表贴图，元末明初江南水乡的低饱和手绘写实材质，严格垂直俯视，正交投影，均匀漫射照明。严格垂直俯视的旧庭院青灰石铺装，石块比主路略小，规整但有年代感，少量浅灰补石，低对比暗缝和轻微磨损，整体中等亮度，颜色接近旧青灰石而不发白；四边无缝，结构均匀，画面全幅材质。 画布宽高比1:1，建议输出2048×2048像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，白色大理石，瓷砖，放射图案，巨大圆形广场，光斑过曝，地面文字，独立建筑阴影"
+    },
+    {
+      "id": "Q49",
+      "slug": "wall-end-post",
+      "name": "院墙端柱与短收头",
+      "priority": "P1",
+      "status": "缺短墙结束件；避免每段都用大马头墙",
+      "plot_width": 120,
+      "plot_height": 240,
+      "zone": "A/B 院墙断口",
+      "target_plot": "new:plot-wall-end-post-*",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:2",
+      "recommended_source_px": [
+        240,
+        480
+      ],
+      "runtime_canvas_px": [
+        240,
+        480
+      ],
+      "plot_height_in_bodies": 1.41,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-wall-end-post-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一根粉白院墙的简朴端柱，窄灰瓦帽，低石脚，柱旁只保留极短同高墙茬用于接直墙模块；顶高与标准墙一致，接地清楚，正面轻俯视，无字无灯，无延伸长墙。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比1:2，建议输出240×480像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，城墙角楼，巨大马头翘角，石狮，花盆，门洞，独立柱基高台"
+    },
+    {
+      "id": "Q51",
+      "slug": "stall-hides",
+      "name": "皮货摊·独立台面版",
+      "priority": "P1",
+      "status": "替换六摊同图之一",
+      "plot_width": 240,
+      "plot_height": 240,
+      "zone": "C 西市南侧",
+      "target_plot": "market-stall-south-04",
+      "kind": "sprite",
+      "suggested_runtime_kind": "stall",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "1:1",
+      "recommended_source_px": [
+        480,
+        480
+      ],
+      "runtime_canvas_px": [
+        480,
+        480
+      ],
+      "plot_height_in_bodies": 1.41,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-stall-hides-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一个低矮旧木皮货摊，灰麻短布篷与四根木脚，台上整齐摊两张棕褐色鞣制兽皮和小扎皮绳，皮料收在台面内，服务面朝下，无人物、无悬挂动物、无地面；骨架与布头摊尺寸一致，视觉重心放在台面。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比1:1，建议输出480×480像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，动物尸体，血迹，猎人，现代皮包，文字价签，皮革拖地，多个摊位拼图"
+    },
+    {
+      "id": "Q52",
+      "slug": "north-incense-grocery",
+      "name": "北街香烛杂货铺·独立门面",
+      "priority": "P1",
+      "status": "与Q17有真实结构及货物差异，避免建筑复用硬闸",
+      "plot_width": 460,
+      "plot_height": 520,
+      "zone": "B 北街小商业",
+      "target_plot": "shop-north-street-01",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "23:26",
+      "recommended_source_px": [
+        920,
+        1040
+      ],
+      "runtime_canvas_px": [
+        920,
+        1040
+      ],
+      "plot_height_in_bodies": 3.06,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-north-incense-grocery-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一间窄面宽北街香烛与日用杂货铺，灰瓦白墙，侧开厚木门，另一侧敞口木柜，柜内竹筒装素色香束和扎好的米黄蜡烛，檐下仅两只竹编器具，前缘低石阶，无字小木牌；与普通杂货铺不同的门窗布局，不附加庭院地面。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比23:26，建议输出920×1040像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，现代包装商标，红灯笼海，宗教祭坛，文字，复制另一栋店铺门窗，人物"
+    },
+    {
+      "id": "Q53",
+      "slug": "outdoor-tea-stall",
+      "name": "槐下露天茶摊",
+      "priority": "P1",
+      "status": "把缩小茶楼占位改为真实低矮茶摊",
+      "plot_width": 300,
+      "plot_height": 260,
+      "zone": "C 广场西侧与古槐边",
+      "target_plot": "plot-street-square-tea / plot-street-locust-tea",
+      "kind": "sprite",
+      "suggested_runtime_kind": "stall",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "15:13",
+      "recommended_source_px": [
+        600,
+        520
+      ],
+      "runtime_canvas_px": [
+        600,
+        520
+      ],
+      "plot_height_in_bodies": 1.53,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-outdoor-tea-stall-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一个低矮露天茶摊，四根细旧木柱撑短灰麻棚，下面一小茶柜、陶壶和两只杯，旁边一张短凳，服务口朝画面下方，顶棚简朴轻薄；不是可进入房屋，不画两层屋面，不画人物、树、地面或远景。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比15:13，建议输出600×520像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，两层茶楼，住宅墙壁，封闭房间，人物喝茶，茶字，整片广场，桌椅堆满入口"
+    },
+    {
+      "id": "Q22",
+      "slug": "pawn-shop",
+      "name": "当铺·厚门高柜",
+      "priority": "P2",
+      "status": "新增经济与乱世叙事节点",
+      "plot_width": 440,
+      "plot_height": 600,
+      "zone": "D 东街内侧",
+      "target_plot": "new:plot-pawn-shop",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "11:15",
+      "recommended_source_px": [
+        880,
+        1200
+      ],
+      "runtime_canvas_px": [
+        880,
+        1200
+      ],
+      "plot_height_in_bodies": 3.53,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-pawn-shop-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一间克制的旧当铺，一层高挑门面、厚木双门、内收高柜台，小而密的木格窗，灰瓦白墙，石门槛，空白方木招牌；材质结实、少装饰，柜台收在门内，门口保持干净。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比11:15，建议输出880×1200像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，当字，现代银行，金库保险箱，铁丝网，西洋栅栏，珠宝广告"
+    },
+    {
+      "id": "Q29",
+      "slug": "farmhouse-thatch",
+      "name": "镇缘茅顶农舍",
+      "priority": "P2",
+      "status": "新增贫富与城乡过渡",
+      "plot_width": 420,
+      "plot_height": 400,
+      "zone": "G 南郊田头",
+      "target_plot": "new:plot-farmhouse-thatch",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "21:20",
+      "recommended_source_px": [
+        840,
+        800
+      ],
+      "runtime_canvas_px": [
+        840,
+        800
+      ],
+      "plot_height_in_bodies": 2.35,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-farmhouse-thatch-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一间低矮农舍，旧茅顶、夯土与少量木板墙，简朴柴门、小通气窗，短石脚防潮，屋脊有压草竹竿，门旁只一小农具；整体可居住但不破败，轮廓完整，门前不附带农田地板。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比21:20，建议输出840×800像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，废墟危房，童话蘑菇屋，北欧茅屋，现代铁皮顶，田地背景"
+    },
+    {
+      "id": "Q30",
+      "slug": "granary",
+      "name": "公共粮仓",
+      "priority": "P2",
+      "status": "新增仓储建筑",
+      "plot_width": 520,
+      "plot_height": 500,
+      "zone": "F 粮行后院",
+      "target_plot": "new:plot-granary",
+      "kind": "sprite",
+      "suggested_runtime_kind": "building",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "26:25",
+      "recommended_source_px": [
+        1040,
+        1000
+      ],
+      "runtime_canvas_px": [
+        1040,
+        1000
+      ],
+      "plot_height_in_bodies": 2.94,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-granary-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。小型公共粮仓，灰瓦高通风屋顶，木板墙配白灰石基，基座略高防潮，厚双木门，侧墙短通风百叶，门前两级窄阶，不画成粮食店柜台，外观稳重朴素，空白木牌。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比26:25，建议输出1040×1000像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，现代筒仓，欧式谷仓，水泥厂，漏粮满地，巨型金库，悬空高脚楼"
+    },
+    {
+      "id": "Q31",
+      "slug": "shed-pigpen",
+      "name": "柴棚与矮猪圈",
+      "priority": "P2",
+      "status": "新增宅后附属空间",
+      "plot_width": 280,
+      "plot_height": 260,
+      "zone": "D 民居后院 / G 农舍侧",
+      "target_plot": "new:plot-shed-pigpen",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "14:13",
+      "recommended_source_px": [
+        560,
+        520
+      ],
+      "runtime_canvas_px": [
+        560,
+        520
+      ],
+      "plot_height_in_bodies": 1.53,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-shed-pigpen-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一组紧凑宅后附属建筑，半边旧木柴棚，半边低矮木栏猪圈，朴素瓦片与茅草混合顶，柴堆在棚内；不画动物，门栏有清楚开合位置，不带院子地面，完整单体轮廓。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比14:13，建议输出560×520像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，猪和人物，现代铁丝网，血污，垃圾场，主体房屋，地面矩形底座"
+    },
+    {
+      "id": "Q32",
+      "slug": "earth-god-shrine",
+      "name": "土地小龛·凡俗修仙过渡",
+      "priority": "P2",
+      "status": "地标有名但缺对应小件",
+      "plot_width": 180,
+      "plot_height": 240,
+      "zone": "F 南门内侧 / E 水口",
+      "target_plot": "new:plot-tudi-shrine",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "3:4",
+      "recommended_source_px": [
+        360,
+        480
+      ],
+      "runtime_canvas_px": [
+        360,
+        480
+      ],
+      "plot_height_in_bodies": 1.41,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-earth-god-shrine-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一座不到两人高的民间土地小龛，旧石基、浅灰瓦小顶，木质龛门，内部只画一小尊朴素模糊泥塑轮廓，前沿小香槽，无字；些许青苔与香火痕迹，安静低调，没有发光特效。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比3:4，建议输出360×480像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，巨大神像，佛塔，金身大殿，日式鸟居，红色符文文字，漂浮仙光"
+    },
+    {
+      "id": "Q39",
+      "slug": "blank-shop-hanging-sign",
+      "name": "空白招幌与木匾",
+      "priority": "P2",
+      "status": "附着件；离线合成到建筑",
+      "plot_width": 100,
+      "plot_height": 160,
+      "zone": "B/C/D 店铺门面",
+      "target_plot": "attachment:shop-facade",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "5:8",
+      "recommended_source_px": [
+        200,
+        320
+      ],
+      "runtime_canvas_px": [
+        200,
+        320
+      ],
+      "plot_height_in_bodies": 0.94,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-blank-shop-hanging-sign-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一面古镇店铺窄竖布幌，短木横杆和两段细绳，米灰麻布自然下垂，下边有轻微旧损，布面完全留白，旁边不要另画招牌；单件正面轻俯视，轮廓利落，物体与背景分离，接头可辨。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比5:8，建议输出200×320像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，汉字，印章，标志，广告海报，整栋建筑，多个招牌拼版，现代金属灯箱"
+    },
+    {
+      "id": "Q40",
+      "slug": "riverbank-reeds-cluster",
+      "name": "岸边芦苇与水草变体",
+      "priority": "P2",
+      "status": "已有 reeds；缺成带变化",
+      "plot_width": 300,
+      "plot_height": 180,
+      "zone": "E 河岸非通行边缘",
+      "target_plot": "new:plot-riverbank-reeds-*",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "5:3",
+      "recommended_source_px": [
+        600,
+        360
+      ],
+      "runtime_canvas_px": [
+        600,
+        360
+      ],
+      "plot_height_in_bodies": 1.06,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-riverbank-reeds-cluster-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一小簇疏密有别的芦苇、低水草与少量枯穗，长势由左低右高自然过渡，低饱和灰绿、淡褐茎，根部聚拢，左右边缘参差方便多次拼接；只画植物，不画水、土块、石头和倒影。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比5:3，建议输出600×360像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，热带花卉，整片密不透风草墙，水面底板，花盆，硬矩形草坪"
+    },
+    {
+      "id": "Q41",
+      "slug": "river-willow-bent",
+      "name": "河岸弯干柳树变体",
+      "priority": "P2",
+      "status": "已有 willow；优先复用再补轮廓",
+      "plot_width": 320,
+      "plot_height": 420,
+      "zone": "E 渡口侧 / G 水口",
+      "target_plot": "new:plot-willow-variant-*",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "16:21",
+      "recommended_source_px": [
+        640,
+        840
+      ],
+      "runtime_canvas_px": [
+        640,
+        840
+      ],
+      "plot_height_in_bodies": 2.47,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-river-willow-bent-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一株中等大小弯干河柳，树干略向右伸，灰绿细叶枝条自然垂落，树冠留可透视空隙，下半部主干清楚，根部完整，颜色较古槐更冷更浅；无地面、无水、无石头、无人物，保留全树。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比16:21，建议输出640×840像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，古槐粗圆树冠，柳条密成实心矩形，春季鲜绿荧光，树根连大片泥地，裁断枝梢"
+    },
+    {
+      "id": "Q42",
+      "slug": "paddy-bed-empty",
+      "name": "水田田底·无作物",
+      "priority": "P2",
+      "status": "地表缺分层田底；不附带种植系统",
+      "plot_width": 480,
+      "plot_height": 240,
+      "zone": "G 南郊农田",
+      "target_plot": "terrain-patch:paddy-bed",
+      "kind": "ground_patch",
+      "suggested_runtime_kind": "none-ground",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "2:1",
+      "recommended_source_px": [
+        960,
+        480
+      ],
+      "runtime_canvas_px": [
+        960,
+        480
+      ],
+      "plot_height_in_bodies": 1.41,
+      "height_note": "地表投影范围；立体身高为0，不作为独立阻挡plot",
+      "output_file": "qingshi-paddy-bed-empty-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "青石镇游戏地表贴图，元末明初江南水乡的低饱和手绘写实材质，严格垂直俯视，正交投影，均匀漫射照明。俯视正交的一小块江南水田田底，浅薄浑水覆盖湿泥，几条细泥埂分开田块，安静低对比，水纹细小而无天空倒影，无秧苗无植物；只画田底材质，四边结构可连接相邻田块，不画立体底座。 画布宽高比2:1，建议输出960×480像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，成株稻谷，农民，镜面天空倒影，等距浮岛，厚黑田埂，插画风景"
+    },
+    {
+      "id": "Q43",
+      "slug": "vegetable-bed-empty",
+      "name": "菜畦田底·无作物",
+      "priority": "P2",
+      "status": "地表缺可组合菜畦",
+      "plot_width": 480,
+      "plot_height": 240,
+      "zone": "G 民居外菜地",
+      "target_plot": "terrain-patch:vegetable-bed",
+      "kind": "ground_patch",
+      "suggested_runtime_kind": "none-ground",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "2:1",
+      "recommended_source_px": [
+        960,
+        480
+      ],
+      "runtime_canvas_px": [
+        960,
+        480
+      ],
+      "plot_height_in_bodies": 1.41,
+      "height_note": "地表投影范围；立体身高为0，不作为独立阻挡plot",
+      "output_file": "qingshi-vegetable-bed-empty-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "青石镇游戏地表贴图，元末明初江南水乡的低饱和手绘写实材质，严格垂直俯视，正交投影，均匀漫射照明。俯视正交的低矮旱地菜畦，五条平行湿褐土垄，窄排水沟，土粒细腻低对比，垄高通过克制明暗表达，左右端自然可连接；没有蔬菜、工具、人物、围栏和大阴影，可作后续作物底图。 画布宽高比2:1，建议输出960×480像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，成熟蔬菜，明显透视，盆栽，木盒菜床，浮岛底座，夸张深坑"
+    },
+    {
+      "id": "Q44",
+      "slug": "herb-crop-cluster",
+      "name": "药草苗簇·独立覆盖层",
+      "priority": "P2",
+      "status": "替换药圃住宅借图的一部分",
+      "plot_width": 240,
+      "plot_height": 180,
+      "zone": "A 山脚药圃 / D 药铺后院",
+      "target_plot": "overlay:herbal-garden",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "4:3",
+      "recommended_source_px": [
+        480,
+        360
+      ],
+      "runtime_canvas_px": [
+        480,
+        360
+      ],
+      "plot_height_in_bodies": 1.06,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-herb-crop-cluster-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。几丛低矮朴素药草苗，窄叶、圆叶各少量，低饱和青绿，叶簇高度有小差异，根部收在紧凑范围，略俯视可看见叶形；不画药名字牌、花盆、土壤底板，所有植株在透明背景上，草与草略留间隙。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比4:3，建议输出480×360像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，仙草发光，巨大彩色花朵，标签文字，泥土矩形底，完整田园，房屋"
+    },
+    {
+      "id": "Q45",
+      "slug": "weathered-spirit-stone",
+      "name": "旧石界标·微弱修仙线索",
+      "priority": "P2",
+      "status": "可选点景；先完成凡俗街区",
+      "plot_width": 120,
+      "plot_height": 160,
+      "zone": "A 山脚支路 / E 水口",
+      "target_plot": "new:plot-old-spirit-stone",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "3:4",
+      "recommended_source_px": [
+        240,
+        320
+      ],
+      "runtime_canvas_px": [
+        240,
+        320
+      ],
+      "plot_height_in_bodies": 0.94,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-weathered-spirit-stone-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一块半人至一人高的旧青石界标，外形不规则但稳稳落地，表面少量不可读的抽象磨损线刻和苔痕，一道天然浅青矿脉，不发光，不漂浮；细腻旧石材，单体完整，没有底座和周围石阵。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比3:4，建议输出240×320像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，可读符咒文字，霓虹符文，法阵，能量柱，浮空，巨大水晶簇，宝箱"
+    },
+    {
+      "id": "Q48",
+      "slug": "riverbank-transition",
+      "name": "河岸湿石泥边·可接地表",
+      "priority": "P2",
+      "status": "地形过渡补充；先复核已有 riverbank",
+      "plot_width": 512,
+      "plot_height": 256,
+      "zone": "E 河埠两侧",
+      "target_plot": "terrain-patch:riverbank-transition",
+      "kind": "ground_patch",
+      "suggested_runtime_kind": "none-ground",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "2:1",
+      "recommended_source_px": [
+        1024,
+        512
+      ],
+      "runtime_canvas_px": [
+        1024,
+        512
+      ],
+      "plot_height_in_bodies": 1.51,
+      "height_note": "地表投影范围；立体身高为0，不作为独立阻挡plot",
+      "output_file": "qingshi-riverbank-transition-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "青石镇游戏地表贴图，元末明初江南水乡的低饱和手绘写实材质，严格垂直俯视，正交投影，均匀漫射照明。垂直俯视的河岸过渡窄带，上侧为暗湿泥边，下侧为青灰碎石与少量干土，过渡自然、颗粒尺寸一致，左右可以连续拼接；没有植物、岸墙、河水反光、木桩和人物，整体低对比，非立体底座。 画布宽高比2:1，建议输出1024×512像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，海滩贝壳，巨石悬崖，整条河流，泡沫白边，水面矩形，强透视"
+    },
+    {
+      "id": "Q50",
+      "slug": "courtyard-moon-gate",
+      "name": "小院月洞门",
+      "priority": "P2",
+      "status": "可选内院连接件",
+      "plot_width": 360,
+      "plot_height": 400,
+      "zone": "B 宗族内院 / D 民居院",
+      "target_plot": "new:plot-courtyard-moon-gate",
+      "kind": "sprite",
+      "suggested_runtime_kind": "prop",
+      "scale_gate_note": "以最终alpha内容框跑现行门禁；名义plot高度不代表已通过",
+      "canvas_ratio": "9:10",
+      "recommended_source_px": [
+        720,
+        800
+      ],
+      "runtime_canvas_px": [
+        720,
+        800
+      ],
+      "plot_height_in_bodies": 2.35,
+      "height_note": "画布投影高/170；实际视觉高需按alpha内容框复测，不等于物理建筑米数",
+      "output_file": "qingshi-courtyard-moon-gate-v1.png",
+      "variants_per_request": 1,
+      "install_rule": "验收后才入 Resources；未选候选保留 ArtSource；本JSON不是 building-plots.json",
+      "positive_prompt": "十二玉楼长生经的青石镇游戏资产，元末明初江南徽郡凡俗古镇，克制的修仙水乡气质。精细手绘写实与淡彩笔触结合，灰瓦、旧木、灰白墙、灰绿为主，低饱和，柔和左上光，无强投影。固定轻俯视约15度、近正交视图，不出现消失点。一段简朴粉白院墙中开圆形月洞门，灰瓦帽、低青石脚；圆洞下端与接地线连通，没有封门槛，洞中完全透明，左右短墙完整，门洞净宽不少于画布55%；朴素、无园林背景。独立单件，全物体完整居中，接地线在画布高度98%至99%，上侧和左右留少量透明安全边。优先真实透明背景；若不支持透明，背景统一纯中灰#808080且无渐变、无环境、无背景反光，供后期抠图。不得画出棋盘格。 画布宽高比9:10，建议输出720×800像素；单张只画一个本条资产。",
+      "negative_prompt": "人物，动物，文字，汉字，英文字母，水印，logo，界面，现代物件，西式建筑，日式鸟居，动漫Q版，像素画，塑料3D质感，高饱和，过曝，硬阴影，模糊，噪点，裁切主体，透视畸变，多视图拼版，画框，矩形纸底，白边，黑边，伪透明棋盘格，圆洞填山水画，封闭圆窗，豪华园林，门洞底部高墙阻挡，文字楹联"
+    }
+  ]
+}

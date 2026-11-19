@@ -1,0 +1,8 @@
+{
+  "comment": "线上账号与云存档服务；本地联调可改为 http://localhost:18080。maxPayloadBytes 与服务端保持 256KB 一致。",
+  "serverBaseUrl": "https://jade.ddyu.online",
+  "timeoutSeconds": 6,
+  "maxRetryCount": 3,
+  "retryBackoffBaseMs": 500,
+  "maxPayloadBytes": 262144
+}

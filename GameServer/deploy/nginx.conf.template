@@ -1,0 +1,32 @@
+limit_req_zone $binary_remote_addr zone=twelvejade_api:1m rate=20r/s;
+server {
+    listen 80;
+    listen [::]:80;
+    server_name __DOMAIN__;
+    return 301 https://$host$request_uri;
+}
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name __DOMAIN__;
+    ssl_certificate /etc/letsencrypt/live/__CERT__/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/__CERT__/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    client_max_body_size 512k;
+    access_log /var/log/nginx/twelvejade-access.log;
+    error_log /var/log/nginx/twelvejade-error.log;
+    add_header X-Content-Type-Options nosniff always;
+    location /api/ {
+        limit_req zone=twelvejade_api burst=40 nodelay;
+        limit_req_status 429;
+        proxy_pass http://127.0.0.1:18080;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 20s;
+    }
+    location / { return 404; }
+}

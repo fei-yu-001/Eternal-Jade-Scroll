@@ -1,0 +1,148 @@
+{
+  "version": 1,
+  "maskPath": "GameClient/TwelveJade/Assets/ArtSource/world/masks/world-mask.png",
+  "materialsDir": "GameClient/TwelveJade/Assets/ArtSource/world/materials",
+  "outputDir": "GameClient/TwelveJade/Assets/ArtSource/world/chunks-full",
+  "chunkSize": 1024,
+  "columns": 8,
+  "rows": 8,
+  "overlap": 128,
+  "blurRadiusPixels": 18,
+  "noiseAmplitude": 0,
+  "paperGrainStrength": 0,
+  "colorVariationStrength": 0,
+  "edgeDilate": {
+    "waterToRiverbank": 14,
+    "roadToRoadEdge": 36,
+    "mountainToMountainFoot": 18
+  },
+  "seamThresholds": {
+    "meanAbsDiffMax": 4.0,
+    "p95AbsDiffMax": 12.0,
+    "maxAbsDiffMax": 30.0,
+    "warnBand": {
+      "relativeExcessMax": 0.1,
+      "absoluteExcessMax": 1.0,
+      "_note": "仅作用于 boundary relative（观感判据）：超出 baseline P99 但幅度 <=10% 或 <=1 灰阶时记 PASS_WITH_WARN。inner severe（结构判据）零容忍，触发即 FAIL。绝对容差 1 灰阶用于吸收边界 p95 统计量的整数化台阶（样本值只能是 6 或 7）。"
+    },
+    "_note": "meanAbsDiffMax/p95AbsDiffMax/maxAbsDiffMax 在 seam_judge_v21 中已降级为 INFO，不参与 RESULT；实际判定是 boundary relative + inner severe + warnBand。"
+  },
+  "pathNotes": {
+    "maskPath": "仓库相对路径（含 GameClient/ 前缀）。脚本经 Tools/world_paths.py 解析。",
+    "materialsDir": "仓库相对路径，正式 ArtSource 根在 Unity 工程内。",
+    "outputDir": "正式8×8源分块；Tools/qingshi-map/install_world.py 校验64块后同步到 Resources/Art/World/Chunks，保留已有GUID。"
+  },
+  "_note": "overlap 保持 128。Gate C1-A 收口实测 192/256/384 三档对中心 2×2 四条缝数值一位不差——采样 UV 由输出像素的绝对世界坐标决定，与裁切窗口大小无关，故 overlap 不是接缝杠杆，已从 192 回退 128。",
+  "materialNoiseAmplitude": {},
+  "materialBrightness": {},
+  "roadVergeLayer": {
+    "enabled": false,
+    "reason": "Replaced by native photo textures and three organic alpha stages."
+  },
+  "pavingCoreInsetWorld": 12,
+  "materialSampling": {
+    "stone-road.png": {
+      "periodWorldUnits": 768,
+      "nativePixels": 2048,
+      "allowUpscale": false
+    },
+    "plaza.png": {
+      "periodWorldUnits": 768,
+      "nativePixels": 2048,
+      "allowUpscale": false
+    },
+    "bridge.png": {
+      "periodWorldUnits": 512,
+      "nativePixels": 2048,
+      "allowUpscale": false
+    },
+    "grass.png": {
+      "periodWorldUnits": 1024,
+      "nativePixels": 2048,
+      "allowUpscale": false
+    },
+    "dirt-road.png": {
+      "periodWorldUnits": 1024,
+      "nativePixels": 2048,
+      "allowUpscale": false
+    },
+    "road-edge.png": {
+      "periodWorldUnits": 1024,
+      "nativePixels": 2048,
+      "allowUpscale": false
+    },
+    "mountain.png": {
+      "periodWorldUnits": 1536,
+      "nativePixels": 2048,
+      "allowUpscale": false
+    },
+    "mountain-path.png": {
+      "periodWorldUnits": 1024,
+      "nativePixels": 2048,
+      "allowUpscale": false
+    },
+    "farmland.png": {
+      "periodWorldUnits": 1024,
+      "nativePixels": 2048,
+      "allowUpscale": false
+    },
+    "riverbank.png": {
+      "periodWorldUnits": 1024,
+      "nativePixels": 2048,
+      "allowUpscale": false
+    },
+    "mountain-foot.png": {
+      "periodWorldUnits": 1024,
+      "nativePixels": 2048,
+      "allowUpscale": false
+    },
+    "water.png": {
+      "periodWorldUnits": 1024,
+      "nativePixels": 1024,
+      "allowUpscale": false
+    }
+  },
+  "organicGroundTransition": {
+    "enabled": true,
+    "sourceTypes": [
+      "stone-road",
+      "plaza"
+    ],
+    "breakupMaterial": "grass.png",
+    "blendBreakupStrength": 0.72,
+    "edgeBreakupWorld": 22,
+    "allowedTypes": [
+      "stone-road",
+      "plaza",
+      "road-edge",
+      "dirt-road",
+      "grass",
+      "farmland",
+      "mountain-foot"
+    ],
+    "layers": [
+      {
+        "material": "grass.png",
+        "startWorld": 18,
+        "peakWorld": 42,
+        "endWorld": 78,
+        "maxAlpha": 0.65
+      },
+      {
+        "material": "mountain-path.png",
+        "startWorld": -4,
+        "peakWorld": 20,
+        "endWorld": 52,
+        "maxAlpha": 0.68
+      },
+      {
+        "material": "road-edge.png",
+        "startWorld": -12,
+        "peakWorld": 3,
+        "endWorld": 29,
+        "maxAlpha": 0.82
+      }
+    ],
+    "sourceDetail": "Photographed turf luminance controls boundary breakup. No synthetic noise/grain is added to the surface."
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 10,
+  "slot": 3,
+  "characterId": "farmer",
+  "characterName": "\u5939\u51773",
+  "createdUtc": "2026-10-05T14:39:38.1689533\u002B00:00",
+  "updatedUtc": "2026-10-05T14:39:38.1777358\u002B00:00",
+  "location": "CharacterPreview",
+  "facing": 0,
+  "gender": "male",
+  "faceStyle": 0,
+  "traits": [],
+  "destiny": "",
+  "coins": 300,
+  "localReputation": 0,
+  "bag": [
+    {
+      "IsEmpty": false,
+      "id": "ganliang",
+      "count": 5
+    },
+    {
+      "IsEmpty": false,
+      "id": "jinchuangyao",
+      "count": 2
+    },
+    {
+      "IsEmpty": false,
+      "id": "cudao",
+      "count": 1
+    },
+    {
+      "IsEmpty": false,
+      "id": "cubupao",
+      "count": 1
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    }
+  ],
+  "merchants": [],
+  "oneTimeFlags": [],
+  "quests": [],
+  "worldDay": 1,
+  "worldMinuteOfDay": 360,
+  "npcs": [],
+  "clues": [],
+  "dialogue": null,
+  "chapter": {
+    "reached": 0,
+    "settled": []
+  },
+  "karmaEvents": [
+    {
+      "eventId": "carry-back-herbs",
+      "kind": "deed",
+      "day": 5,
+      "minuteOfDay": 600,
+      "times": 2
+    },
+    {
+      "eventId": "keep-a-secret",
+      "kind": "deed",
+      "day": 3,
+      "minuteOfDay": 1200,
+      "times": 1
+    },
+    {
+      "eventId": "teahouse-tale",
+      "kind": "chance",
+      "day": 4,
+      "minuteOfDay": 1500,
+      "times": 1
+    }
+  ],
+  "bagClipped": false
+}

@@ -1,0 +1,24 @@
+Generate one square 1024x1024 seamless tileable low-contrast micro texture overlay for a 2D Chinese ink-wash xianxia open-world RPG terrain material.
+Asset type: micro texture overlay, not a terrain material, not a scene.
+View: strict orthographic top-down, no perspective, no isometric, no 3D camera.
+The texture must tile seamlessly in X and Y, with no visible grid, no border, no frame, no vignette, no repeated obvious pattern.
+It must be opaque, clean, low saturation, and contain only flat micro surface detail.
+The image is a neutral overlay layer: mid-gray average, very low contrast, no large shapes, no strong structures.
+
+Use case: subtle worn stone surface grain, dust, faint scratches, and ink wash to overlay onto a procedural flagstone road base.
+
+Subject:
+worn stone micro surface, fine grain, faint scratches, dust, subtle ink wash, tiny mineral speckles.
+
+Color palette:
+neutral gray, warm gray, pale blue-gray, faint ink black, low saturation.
+
+Texture details:
+grain and speckle detail smaller than 8 pixels, extremely low contrast, no shapes larger than 16 pixels, no directional streaks, even coverage across the whole image.
+
+Important: no objects, no props, no landmarks, no horizon, no sky, no cast shadows. Only flat micro surface detail viewed from above.
+If any detail approaches an edge, it must continue naturally on the opposite edge.
+
+
+Avoid:
+flagstone layout, stone slabs, mortar lines, joints, cracks, pebbles, rocks, boulders, roads, streets, buildings, houses, walls, trees, plants, grass, flowers, people, animals, text, letters, numbers, watermark, logo, UI, icons, markers, arrows, black borders, white borders, frame, vignette, perspective, isometric, 3D render, photorealistic, blurry, lowres, jpeg artifacts, visible seams, repeated pattern grid, high contrast, large shapes, strong structures.

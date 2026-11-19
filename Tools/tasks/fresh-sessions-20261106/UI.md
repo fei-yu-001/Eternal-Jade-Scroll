@@ -1,0 +1,5 @@
+# pF UI验收与最小修复新会话
+读COMMON.md。本线限定FrontEndController.cs/FrontEndCharacters.cs/UiKit.cs/MenuVideoBackdrop.cs/MenuOrnament.cs/MenuButtonGlow.cs及meta、Assets/Editor/MenuVideoShot.cs和Tools/logs/menu-ui-memo-20261105/**、ui-independent-audit/memo-revision/**；不写地图/Core/素材/Packages，不起Unity。
+产品已完成并冻结：Tools/logs/menu-ui-memo-20261105/UI_MEMO_READY.json、product-contract-implementation.md、changed-paths.json。首页绿罩/标题/6卡片移除，叩弦长生+右上乾坤玉牒掩卷，menu/slots视频AspectCover；名牒三卷左28%、右真实字段；承卷/立传直达Town、归尘二次确认；public旧API兼容。build exit0/0error/3旧Preview警告，无input drift。不要重复实现。
+原审计Halley会话已关闭。只读Tools/logs/temp-chief-asset-integration-20261105/ui-independent-audit/memo-revision/COMPACT-HANDOFF.md；MenuVideoShot最新SHA7644db6317191a5e7ea41b5471106246abcea01d6d1de31066b05b8bbbb2a041已对齐UI，尚0次compile；compile-inputs-before.json为最新冻结。下一步只需一次离线编译（复用产品compile-01离线NuGet包，避免再联网restore/复制大型缓存），成功给UI_MEMO_TEST_READY并通过Herdr通知pE唯一执行Unity。失败只修具体编译错，不泛审计。pE原unity_owner.py和ui-run-02为正确运行模板。
+真正运行交互验证：冷启动不重试、自然loop、slots选卷真实字段、空/已有直Town、取消/确认删除仅所选卷，scratch saves不可碰用户存档。新UI断言不能拿旧48/48代替。运行后短读结果与截图修具体问题，结束。

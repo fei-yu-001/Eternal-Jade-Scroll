@@ -1,0 +1,36 @@
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    env_file: /etc/twelvejade/mysql.env
+    ports:
+      - "127.0.0.1:3316:3306"
+    volumes:
+      - twelvejade-db:/var/lib/mysql
+      - /opt/harmonyos/services/eternal-jade-scroll/schema:/docker-entrypoint-initdb.d:ro
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --innodb-buffer-pool-size=64M
+      - --innodb-log-buffer-size=8M
+      - --innodb-redo-log-capacity=128M
+      - --max-connections=30
+      - --table-open-cache=128
+      - --performance-schema=OFF
+      - --mysqlx=OFF
+    mem_limit: 512m
+    memswap_limit: 640m
+    cpus: 0.75
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_PASSWORD mysql -u$$MYSQL_USER -Nse 'SELECT 1' $$MYSQL_DATABASE >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+volumes:
+  twelvejade-db:

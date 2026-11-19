@@ -1,0 +1,126 @@
+[
+  {
+    "file": "anchor-front-v1.png",
+    "view": "front",
+    "mode": "generations",
+    "model": "gpt-image-2.5",
+    "size": "1024x1365",
+    "reference": null,
+    "bytes": 2798404,
+    "creditsCharged": 1,
+    "creditsRemaining": 81,
+    "promptFile": "anchor-front-v1.txt"
+  },
+  {
+    "file": "anchor-side-v1.png",
+    "view": "side",
+    "mode": "edits",
+    "model": "gpt-image-2.5",
+    "size": "1024x1365",
+    "reference": "anchor-front-v1.png",
+    "bytes": 2171808,
+    "creditsCharged": 1,
+    "creditsRemaining": 80,
+    "promptFile": "anchor-side-v1.txt"
+  },
+  {
+    "file": "anchor-back-v1.png",
+    "view": "back",
+    "mode": "edits",
+    "model": "gpt-image-2.5",
+    "size": "1024x1365",
+    "reference": "anchor-front-v1.png",
+    "bytes": 2370388,
+    "creditsCharged": 1,
+    "creditsRemaining": 79,
+    "promptFile": "anchor-back-v1.txt"
+  },
+  {
+    "file": "side-contact-v1.png",
+    "view": "side",
+    "mode": "edits",
+    "model": "gpt-image-2.5",
+    "size": "1024x1365",
+    "reference": "anchor-side-v1.png",
+    "bytes": 1989332,
+    "creditsCharged": 1,
+    "creditsRemaining": 78,
+    "promptFile": "side-contact-v1.txt"
+  },
+  {
+    "file": "side-pass-v1.png",
+    "view": "side",
+    "mode": "edits",
+    "model": "gpt-image-2.5",
+    "size": "1024x1365",
+    "reference": "anchor-side-v1.png",
+    "bytes": 2000900,
+    "creditsCharged": 1,
+    "creditsRemaining": 77,
+    "promptFile": "side-pass-v1.txt"
+  },
+  {
+    "file": "side-f00-v1.png",
+    "view": "side",
+    "poseFrame": 0,
+    "mode": "edits",
+    "model": "gpt-image-2.5",
+    "size": "1024x1365",
+    "references": [
+      "anchor-side-v1.png",
+      "guide-00.png"
+    ],
+    "bytes": 1978052,
+    "creditsCharged": 1,
+    "creditsRemaining": 76,
+    "promptFile": "side-f00-v1.txt"
+  },
+  {
+    "file": "side-f01-v1.png",
+    "view": "side",
+    "poseFrame": 1,
+    "mode": "edits",
+    "model": "gpt-image-2.5",
+    "size": "1024x1365",
+    "references": [
+      "anchor-side-v1.png",
+      "guide-01.png"
+    ],
+    "bytes": 1887444,
+    "creditsCharged": 1,
+    "creditsRemaining": 75,
+    "promptFile": "side-f01-v1.txt"
+  },
+  {
+    "file": "side-f02-v1.png",
+    "view": "side",
+    "poseFrame": 2,
+    "mode": "edits",
+    "model": "gpt-image-2.5",
+    "size": "1024x1365",
+    "references": [
+      "anchor-side-v1.png",
+      "guide-02.png"
+    ],
+    "bytes": 1918224,
+    "creditsCharged": 1,
+    "creditsRemaining": 74,
+    "promptFile": "side-f02-v1.txt"
+  },
+  {
+    "file": "side-f03-v1.png",
+    "view": "side",
+    "poseFrame": 3,
+    "mode": "edits",
+    "model": "gpt-image-2.5",
+    "size": "1024x1365",
+    "references": [
+      "anchor-side-v1.png",
+      "guide-03.png"
+    ],
+    "bytes": 1904348,
+    "creditsCharged": 1,
+    "creditsRemaining": 73,
+    "promptFile": "side-f03-v1.txt"
+  }
+]

@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <!-- dotnet SDK 10.0.400 起：本地没下 .NETCore.App 剪裁包数据时，
+         框架解析会报 NETSDK1226 直接中止（旧 SDK 静默跳过）。
+         这两个 csproj 只用 BCL，不依赖剪裁数据，踩过就钉死。 -->
+    <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
+    <DefineConstants>UNITY_EDITOR;UNITY_6000_3;ENABLE_INPUT_SYSTEM</DefineConstants>
+    <EditorManaged>D:/ruangong/unity/Editor/6000.3.25f1/Editor/Data/Managed</EditorManaged>
+    <TemplateAssemblies>D:/ruangong/unity/Editor/6000.3.25f1/Editor/Data/Resources/PackageManager/ProjectTemplates/libcache/com.unity.template.2d-cross-platform-2d-6.1.6/ScriptAssemblies</TemplateAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Core/*.cs" Link="Core/%(Filename)%(Extension)" />
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Presentation/*.cs" Link="Presentation/%(Filename)%(Extension)" />
+    <!-- M6-03-C：网络域新目录纳入编译门禁（Editor/NetworkShot.cs 引用 Network/UI 类型，
+         不纳入则共享门禁被 CS0246 打破；由员工 G 最小适配并在开发日志披露）。 -->
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Network/*.cs" Link="Network/%(Filename)%(Extension)" />
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/UI/Auth/*.cs" Link="UIAuth/%(Filename)%(Extension)" />
+    <!-- 任务书 L：经济域新目录纳入编译门禁（Presentation/FrontEndInventory.cs 与
+         Editor/InventoryEconomyShot.cs 都要引用 TwelveJade.Economy，不纳入则门禁被
+         CS0234 打破）。与 M6-03-C 纳 Network 同一处置法，已在开发日志披露。 -->
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Economy/*.cs" Link="Economy/%(Filename)%(Extension)" />
+    <!-- 任务书 K：战斗域新目录纳入编译门禁（Presentation/FrontEndCombat.cs 与
+         Editor/CombatEngineShot.cs 都要引用 TwelveJade.Combat，不纳入则共享门禁被
+         CS0246 打破）。与 M6-03-C 纳 Network、L 线纳 Economy 同一处置法，已在开发日志披露。 -->
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Combat/*.cs" Link="Combat/%(Filename)%(Extension)" />
+    <Compile Include="../../GameClient/TwelveJade/Assets/Editor/*.cs" Link="Editor/%(Filename)%(Extension)" />
+    <Reference Include="$(EditorManaged)/UnityEngine.dll" />
+    <Reference Include="$(EditorManaged)/UnityEditor.dll" />
+    <Reference Include="$(EditorManaged)/UnityEngine/*.dll" />
+    <Reference Include="$(TemplateAssemblies)/UnityEngine.UI.dll" />
+    <Reference Include="$(TemplateAssemblies)/Unity.TextMeshPro.dll" />
+    <Reference Include="$(TemplateAssemblies)/Unity.InputSystem.dll" />
+  </ItemGroup>
+</Project>

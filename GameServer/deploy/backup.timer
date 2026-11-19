@@ -1,0 +1,8 @@
+[Unit]
+Description=Daily Twelve Jade Scroll database backup
+[Timer]
+OnCalendar=*-*-* 03:20:00 UTC
+RandomizedDelaySec=600
+Persistent=true
+[Install]
+WantedBy=timers.target

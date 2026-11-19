@@ -1,0 +1,202 @@
+{
+  "enemies": [
+    {
+      "id": "boar-demon",
+      "name": "野猪妖",
+      "maxHp": 60,
+      "attack": 9,
+      "defense": 2,
+      "stamina": 50,
+      "moveSpeed": 60,
+      "habitat": "镇郊草伏",
+      "hitProfile": [
+        { "part": "body", "multiplier": 1.0 },
+        { "part": "head", "multiplier": 1.5 }
+      ],
+      "parts": [
+        { "id": "body", "name": "皮糙厚肉", "multiplier": 1.0, "dodgeChance": 0.05, "weakPoint": false },
+        { "id": "head", "name": "獠牙头颅", "multiplier": 1.5, "dodgeChance": 0.2, "weakPoint": true }
+      ],
+      "attacks": [
+        { "id": "tusk", "name": "尖牙挑击", "action": "light", "power": 6, "startup": 0.18, "active": 0.1, "recovery": 0.22, "range": 1.3, "stamina": 8, "whiffPenalty": 0.12 },
+        { "id": "rush", "name": "蛮牛冲撞", "action": "heavy", "power": 10, "startup": 0.5, "active": 0.2, "recovery": 0.6, "range": 1.65, "stamina": 20, "knockback": 0.45, "whiffPenalty": 0.3 }
+      ],
+      "ai": { "behavior": "boar-charge", "moveset": "profile2", "preferredRange": 1.1, "aggressionSeconds": 1.5 },
+      "drops": [
+        { "itemId": "larou", "count": 2 },
+        { "itemId": "caoyao", "count": 3 },
+        { "itemId": "beast-gall", "count": 1 }
+      ],
+      "coins": 24
+    },
+    {
+      "id": "nether-wolf",
+      "name": "幽谷冥狼",
+      "maxHp": 90,
+      "attack": 24,
+      "defense": 4,
+      "stamina": 110,
+      "moveSpeed": 90,
+      "habitat": "北山石涧",
+      "hitProfile": [
+        { "part": "leg", "multiplier": 1.4 },
+        { "part": "body", "multiplier": 1.0 }
+      ],
+      "parts": [
+        { "id": "leg", "name": "后腿弱筋", "multiplier": 1.4, "dodgeChance": 0.25, "weakPoint": true },
+        { "id": "body", "name": "精瘦狼躯", "multiplier": 1.0, "dodgeChance": 0.1, "weakPoint": false }
+      ],
+      "attacks": [
+        { "id": "bite", "name": "锁喉撕咬", "action": "light", "power": 26, "startup": 0.2, "active": 0.15, "recovery": 0.35, "range": 1.35, "stamina": 8 },
+        { "id": "rend", "name": "前爪重击撕咬", "action": "heavy", "power": 18, "startup": 0.32, "active": 0.18, "recovery": 0.46, "range": 1.3, "stamina": 20, "bleedSeconds": 3.0 }
+      ],
+      "ai": { "behavior": "wolf-pounce", "moveset": "profile2", "preferredRange": 1.2, "aggressionSeconds": 1.15 },
+      "drops": [
+        { "itemId": "wolf-fur", "count": 2 },
+        { "itemId": "wolf-fang", "count": 1 }
+      ],
+      "coins": 35
+    },
+    {
+      "id": "stone-mandrill",
+      "name": "石铠山魈",
+      "maxHp": 200,
+      "attack": 30,
+      "defense": 15,
+      "stamina": 70,
+      "moveSpeed": 38,
+      "habitat": "后山古冢入口",
+      "hitProfile": [
+        { "part": "back-scar", "multiplier": 2.0 },
+        { "part": "stone-chest", "multiplier": 0.6 }
+      ],
+      "parts": [
+        { "id": "back-scar", "name": "后背旧伤", "multiplier": 2.0, "dodgeChance": 0.35, "weakPoint": true },
+        { "id": "stone-chest", "name": "石化前胸", "multiplier": 0.6, "dodgeChance": 0.0, "weakPoint": false, "bulwark": true }
+      ],
+      "attacks": [
+        { "id": "smash", "name": "撼地重拳", "action": "heavy", "power": 38, "startup": 0.6, "active": 0.25, "recovery": 0.7, "range": 1.5, "stamina": 20, "knockback": 0.35, "bulwark": true, "whiffPenalty": 0.25 }
+      ],
+      "ai": { "behavior": "mandrill-bulwark", "moveset": "profile2", "preferredRange": 1.3, "aggressionSeconds": 2.2 },
+      "drops": [
+        { "itemId": "mandrill-stone", "count": 1 },
+        { "itemId": "iron-ore", "count": 3 }
+      ],
+      "coins": 60
+    },
+    {
+      "id": "qingshi-mountain-lord",
+      "name": "玄岩山君",
+      "maxHp": 680,
+      "attack": 18,
+      "defense": 8,
+      "stamina": 130,
+      "moveSpeed": 46,
+      "habitat": "玄岩山君领域",
+      "hitProfile": [
+        {
+          "part": "stone-armor",
+          "multiplier": 1.0
+        },
+        {
+          "part": "jade-core",
+          "multiplier": 1.6
+        }
+      ],
+      "parts": [
+        {
+          "id": "stone-armor",
+          "name": "苍岩甲胄",
+          "multiplier": 1.0,
+          "dodgeChance": 0.0,
+          "weakPoint": false,
+          "bulwark": true
+        },
+        {
+          "id": "jade-core",
+          "name": "胸前玉魄",
+          "multiplier": 1.6,
+          "dodgeChance": 0.1,
+          "weakPoint": true
+        }
+      ],
+      "attacks": [
+        {
+          "id": "mountain-sweep",
+          "name": "横断山门",
+          "action": "heavy",
+          "power": 12,
+          "startup": 0.82,
+          "active": 0.2,
+          "recovery": 0.72,
+          "range": 1.65,
+          "stamina": 16,
+          "knockback": 0.28
+        },
+        {
+          "id": "earth-fissure",
+          "name": "裂地惊潮",
+          "action": "heavy",
+          "power": 17,
+          "startup": 1.12,
+          "active": 0.78,
+          "recovery": 0.9,
+          "range": 6.5,
+          "stamina": 24,
+          "knockback": 0.36,
+          "bulwark": true
+        },
+        {
+          "id": "seal-stonefall",
+          "name": "镇岳落石",
+          "action": "heavy",
+          "power": 21,
+          "startup": 1.35,
+          "active": 0.26,
+          "recovery": 0.92,
+          "range": 6.5,
+          "stamina": 28,
+          "knockback": 0.2,
+          "bulwark": true
+        }
+      ],
+      "ai": {
+        "behavior": "qingshi-domain",
+        "moveset": "profile2",
+        "preferredRange": 1.25,
+        "aggressionSeconds": 2.4
+      },
+      "drops": [
+        {
+          "itemId": "beast-gall",
+          "count": 3
+        },
+        {
+          "itemId": "caoyao",
+          "count": 8
+        },
+        {
+          "itemId": "wolf-fang",
+          "count": 2
+        },
+        {
+          "itemId": "jade-vein-core",
+          "count": 2
+        },
+        {
+          "itemId": "manual-sword-fragment",
+          "count": 1
+        },
+        {
+          "itemId": "manual-thunder-fragment",
+          "count": 1
+        },
+        {
+          "itemId": "manual-clarity-fragment",
+          "count": 1
+        }
+      ],
+      "coins": 180
+    }
+  ]
+}

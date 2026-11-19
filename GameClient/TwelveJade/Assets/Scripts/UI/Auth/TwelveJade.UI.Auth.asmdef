@@ -1,0 +1,5 @@
+{
+    "name": "TwelveJade.UI.Auth",
+    "rootNamespace": "TwelveJade",
+    "references": ["TwelveJade.Core", "TwelveJade.Presentation", "TwelveJade.Network", "Unity.TextMeshPro", "UnityEngine.UI", "Unity.InputSystem"]
+}

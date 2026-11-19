@@ -1,0 +1,442 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+
+namespace TwelveJade.Core
+{
+    // Storage has no Unity dependency: it can be tested without opening the editor.
+    public sealed class SaveRepository
+    {
+        public const int SlotCount = 3;
+        readonly string root;
+        readonly IJsonCodec codec;
+        // 物品表：由 Unity 启动时注入，校验与迁移才能按单品堆叠上限卡。
+        // 为空时退回存档层全局上限（99），只影响外部写入的脏档。
+        public ItemTable Items { get; set; }
+
+        public SaveRepository(string root, IJsonCodec codec)
+        {
+            this.root = root ?? throw new ArgumentNullException(nameof(root));
+            this.codec = codec ?? throw new ArgumentNullException(nameof(codec));
+        }
+
+        string SlotPath(int slot)
+        {
+            if (slot < 1 || slot > SlotCount) throw new ArgumentOutOfRangeException(nameof(slot));
+            return Path.Combine(root, $"slot-{slot}.json");
+        }
+
+        public SlotInfo[] ReadAll() => Enumerable.Range(1, SlotCount).Select(Read).ToArray();
+
+        public SlotInfo Latest() => ReadAll().Where(x => x.CanLoad)
+            .OrderByDescending(x => DateTimeOffset.Parse(x.Data.updatedUtc)).FirstOrDefault();
+
+        public SlotInfo Read(int slot)
+        {
+            var path = SlotPath(slot);
+            var primary = ReadFile(path, slot);
+            // Never downgrade a save created by a newer version.
+            if (primary.State == SlotState.Ready || primary.State == SlotState.FutureVersion) return primary;
+            var backup = ReadFile(path + ".bak", slot);
+            if (backup.CanLoad) return new SlotInfo(slot, SlotState.Recovered, backup.Data);
+            if (backup.State == SlotState.FutureVersion) return backup;
+            return primary.State == SlotState.Empty && backup.State == SlotState.Empty
+                ? primary : new SlotInfo(slot, SlotState.Corrupt);
+        }
+
+        SlotInfo ReadFile(string path, int slot)
+        {
+            if (!File.Exists(path)) return new SlotInfo(slot, SlotState.Empty);
+            try
+            {
+                var json = File.ReadAllText(path, Encoding.UTF8);
+                // JsonUtility applies field initializers to missing fields; require a version explicitly.
+                if (!json.Contains("\"schemaVersion\"")) return new SlotInfo(slot, SlotState.Corrupt);
+                var data = codec.Deserialize<SaveData>(json);
+                if (data == null) return new SlotInfo(slot, SlotState.Corrupt);
+                if (data.schemaVersion > SaveData.CurrentSchemaVersion) return new SlotInfo(slot, SlotState.FutureVersion);
+                // 迁移在读取处完成：旧档在内存里就补齐 v3 的铜钱与行囊，写回时按当前 schema 落盘。
+                SaveData.Migrate(data, Items);
+                return IsValid(data, slot) ? new SlotInfo(slot, SlotState.Ready, data)
+                    : new SlotInfo(slot, SlotState.Corrupt);
+            }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException ||
+                                        ex is ArgumentException || ex is FormatException)
+            { return new SlotInfo(slot, SlotState.Corrupt); }
+        }
+
+        bool IsValid(SaveData data, int slot) =>
+            data.slot == slot &&
+            data.schemaVersion >= 1 && data.schemaVersion <= SaveData.CurrentSchemaVersion &&
+            !string.IsNullOrWhiteSpace(data.characterId) &&
+            !string.IsNullOrWhiteSpace(data.characterName) &&
+            data.characterName.Length <= 16 &&
+            data.location == "CharacterPreview" &&
+            data.facing >= 0 && data.facing <= 3 &&
+            (data.schemaVersion == 1 || SaveData.IsValidGender(data.gender)) &&
+            (data.schemaVersion == 1 || SaveData.IsValidFaceStyle(data.faceStyle)) &&
+            (data.traits == null || data.traits.Length <= CharacterGen.TraitsPerCharacter) &&
+            (data.destiny == null || data.destiny.Length <= 32) &&
+            (data.schemaVersion < 3 || (SaveData.IsValidCoins(data.coins) &&
+                SaveData.IsValidReputation(data.localReputation) && InventoryRules.IsValid(data.bag, Items))) &&
+            (data.schemaVersion < 4 || IsValidMerchants(data.merchants)) &&
+            (data.schemaVersion < 5 || IsValidFlags(data.oneTimeFlags)) &&
+            (data.schemaVersion < 6 || IsValidQuests(data.quests)) &&
+            (data.schemaVersion < 7 || IsValidWorldTime(data.worldDay, data.worldMinuteOfDay)) &&
+            (data.schemaVersion < 8 || IsValidNpcs(data.npcs)) &&
+            (data.schemaVersion < 9 || IsValidClues(data.clues)) &&
+            (data.schemaVersion < 10 || IsValidChapter(data.chapter)) &&
+            // 气运账簿（W-A 指出的洞）：字段是 10 号期间纯增量加上的，所以校验**从 10 起生效**。
+            // 按 11 起判会让现存那些已经带着善行账的 10 号档整批躲过检查——那正是要查的那批。
+            (data.schemaVersion < 10 || IsValidKarma(data.karmaEvents)) &&
+            (data.schemaVersion < 11 || (IsValidGear(data.gear) && IsValidCrafts(data.crafts))) &&
+            AtlasExploration.IsValid(data.atlasExploration) &&
+            CultivationRules.IsValid(data.cultivation) &&
+            ManualStudyRules.IsValid(data.manualStudies) &&
+            MiningRules.IsValid(data.mining) &&
+            DateTimeOffset.TryParse(data.createdUtc, out _) &&
+            DateTimeOffset.TryParse(data.updatedUtc, out _);
+
+        // 气运账簿：结构自洽即可——id 非空不重复、kind 只有两类、日子在世界时间范围内、次数 ≥1。
+        // **不按 karma.json 判成员**：与 IsValidClues 同一条口径（表会变，玩家真做过的事不该
+        // 因为"表里现在没这条"被判成脏档清零）。表成员那一侧的对表在套件里，走"台账登记"不走红。
+        static bool IsValidKarma(KarmaEntry[] events)
+        {
+            if (events == null) return false;
+            if (events.Length > KarmaTableCapacity) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var entry in events)
+            {
+                if (entry == null || string.IsNullOrWhiteSpace(entry.eventId) || entry.eventId.Length > 48) return false;
+                if (entry.kind != KarmaKinds.Deed && entry.kind != KarmaKinds.Chance) return false;
+                if (!seen.Add(entry.eventId)) return false;
+                if (entry.day < WorldTime.StartDay || entry.day > WorldTime.MaxDays) return false;
+                if (entry.minuteOfDay < 0 || entry.minuteOfDay >= WorldTime.MinutesPerDay) return false;
+                if (entry.times < 1) return false;
+            }
+            return true;
+        }
+
+        // 一次升版最多能攒多少条善事：25 条是清单上限，留一倍余量给"清单以后会长"。
+        const int KarmaTableCapacity = 64;
+
+        // 装备行：槽名必须认识、同槽不重复、耐久非负且有上界（9999 是"明显写坏了"的哨兵，不是玩法数值）。
+        static bool IsValidGear(GearLine[] gear)
+        {
+            if (gear == null) return false;
+            if (gear.Length > GearSlots.All.Length) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var line in gear)
+            {
+                if (line == null || !GearSlots.IsKnown(line.slot)) return false;
+                if (string.IsNullOrWhiteSpace(line.itemId) || line.itemId.Length > 48) return false;
+                if (line.durability < 0 || line.durability > 9999) return false;
+                if (!seen.Add(line.slot)) return false;
+            }
+            return true;
+        }
+
+        // 制作次数：方子 id 不重复、次数至少 1（做过 0 次不该占一行）。上限按配方表留余量。
+        static bool IsValidCrafts(CraftLine[] crafts)
+        {
+            if (crafts == null) return false;
+            if (crafts.Length > 128) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var line in crafts)
+            {
+                if (line == null || string.IsNullOrWhiteSpace(line.recipeId) || line.recipeId.Length > 48) return false;
+                if (line.times < 1) return false;
+                if (!seen.Add(line.recipeId)) return false;
+            }
+            return true;
+        }
+
+        // 章进度：段落名必须是真的、不能重复、reached 不得越过已结算的段。
+        static bool IsValidChapter(ChapterState chapter)
+        {
+            if (chapter == null) return false;
+            if (chapter.settled == null) return false;
+            if (chapter.settled.Length > 16) return false;
+            if (chapter.reached < (int)ChapterSegment.Prologue || chapter.reached > (int)ChapterSegment.Departure) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var name in chapter.settled)
+            {
+                if (!System.Enum.TryParse<ChapterSegment>(name, out var segment)) return false;
+                if ((int)segment > chapter.reached) return false;
+                if (!seen.Add(name)) return false;
+            }
+            return true;
+        }
+
+        // 线索账本：id 不重复、不超上限、时间像样。与人物表解耦——表会变，存档不该因此判脏。
+        static bool IsValidClues(ClueEntry[] clues)
+        {
+            if (clues == null) return false;
+            if (clues.Length > ClueLedger.MaxClues) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var clue in clues)
+            {
+                if (clue == null || string.IsNullOrWhiteSpace(clue.id) || clue.id.Length > 48) return false;
+                if (!seen.Add(clue.id)) return false;
+                if (clue.day < WorldTime.StartDay || clue.day > WorldTime.MaxDays) return false;
+                if (clue.minuteOfDay < 0 || clue.minuteOfDay >= WorldTime.MinutesPerDay) return false;
+            }
+            return true;
+        }
+
+        // NPC 状态：id 不重复、关系三轴在 ±100 内、记忆与目标条目结构合法。
+        // 这里不查人物表——表会变，存档不该因为"表里现在没这个人"就被判脏。
+        static bool IsValidNpcs(NpcState[] npcs)
+        {
+            if (npcs == null) return false;
+            if (npcs.Length > 64) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var npc in npcs)
+            {
+                if (npc == null || string.IsNullOrWhiteSpace(npc.id) || npc.id.Length > 48) return false;
+                if (!seen.Add(npc.id)) return false;
+                if (npc.relation == null || !npc.relation.IsValid) return false;
+                if (!IsValidMemories(npc.memory)) return false;
+                if (!IsValidGoalStates(npc.goals)) return false;
+            }
+            return true;
+        }
+
+        static bool IsValidMemories(NpcMemoryEntry[] memory)
+        {
+            if (memory == null || memory.Length > NpcLedger.MaxMemories) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var entry in memory)
+            {
+                if (entry == null || string.IsNullOrWhiteSpace(entry.eventId) || entry.eventId.Length > 48) return false;
+                if (!seen.Add(entry.eventId)) return false;
+                if (entry.strength < 1 || entry.strength > 100) return false;
+                if (entry.day < WorldTime.StartDay || entry.day > WorldTime.MaxDays) return false;
+                if (entry.minuteOfDay < 0 || entry.minuteOfDay >= WorldTime.MinutesPerDay) return false;
+            }
+            return true;
+        }
+
+        static bool IsValidGoalStates(NpcGoalState[] goals)
+        {
+            if (goals == null || goals.Length > NpcLedger.MaxGoals) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var goal in goals)
+            {
+                if (goal == null || string.IsNullOrWhiteSpace(goal.goalId) || goal.goalId.Length > 48) return false;
+                if (!seen.Add(goal.goalId)) return false;
+                if (goal.progress < 0 || goal.progress > 9999) return false;
+                if (goal.blockedBy != null && goal.blockedBy.Length > 48) return false;
+            }
+            return true;
+        }
+
+        // 世界时间：日子在 1–3650、当天分钟在 0–1439。存档只存这两个整数，不存时间戳。
+        static bool IsValidWorldTime(int day, int minuteOfDay) =>
+            day >= WorldTime.StartDay && day <= WorldTime.MaxDays &&
+            minuteOfDay >= 0 && minuteOfDay < WorldTime.MinutesPerDay;
+
+        // 任务状态：id 不重复、状态在五档之内、进度不为负且不越界。
+        static bool IsValidQuests(QuestState[] quests)
+        {
+            if (quests == null) return false;
+            if (quests.Length > 256) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var quest in quests)
+            {
+                if (quest == null || string.IsNullOrWhiteSpace(quest.id) || quest.id.Length > 48) return false;
+                if (!seen.Add(quest.id)) return false;
+                if (!QuestLedger.IsKnownStatus(quest.status)) return false;
+                if (quest.progress == null || quest.progress.Length > 32) return false;
+                foreach (var step in quest.progress)
+                    if (step < 0 || step > 999) return false;
+            }
+            return true;
+        }
+
+        // 一次性标记：非空、不重复、长度受限。
+        static bool IsValidFlags(string[] flags)
+        {
+            if (flags == null) return false;
+            if (flags.Length > 32) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var flag in flags)
+            {
+                if (string.IsNullOrWhiteSpace(flag) || flag.Length > 48) return false;
+                if (!seen.Add(flag)) return false;
+            }
+            return true;
+        }
+
+        // 商人状态：id 不重复、不为空，条数与数量都在合理范围内。
+        static bool IsValidMerchants(MerchantState[] merchants)
+        {
+            if (merchants == null) return false;
+            var seen = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+            foreach (var merchant in merchants)
+            {
+                if (merchant == null || string.IsNullOrWhiteSpace(merchant.id) || merchant.id.Length > 32) return false;
+                if (!seen.Add(merchant.id)) return false;
+                if (merchant.trades < 0 || merchant.trades > 99999) return false;
+                if (merchant.goodwill < 0 || merchant.goodwill > 9999) return false;
+                if (!IsValidStock(merchant.stock) || !IsValidStock(merchant.hidden)) return false;
+            }
+            return true;
+        }
+
+        static bool IsValidStock(StockLine[] lines)
+        {
+            if (lines == null) return false;
+            if (lines.Length > 64) return false;
+            foreach (var line in lines)
+            {
+                if (line == null || string.IsNullOrWhiteSpace(line.itemId) || line.itemId.Length > 32) return false;
+                if (line.count < 0 || line.count > Trade.MaxQuantity) return false;
+            }
+            return true;
+        }
+
+        public SaveData Create(int slot, string characterId, string name) =>
+            Create(slot, characterId, name, SaveData.Genders[0], 0, null, null);
+
+        public SaveData Create(int slot, string characterId, string name, string gender, int faceStyle,
+            string[] traits, string destiny)
+        {
+            if (Read(slot).State != SlotState.Empty) throw new InvalidOperationException("档位已有记录，请先在档位管理中删除。");
+            if (string.IsNullOrWhiteSpace(characterId)) throw new ArgumentException("请选择角色外观。");
+            if (!SaveData.IsValidGender(gender)) throw new ArgumentException("性别无效。");
+            if (!SaveData.IsValidFaceStyle(faceStyle)) throw new ArgumentException("面容款式无效。");
+            traits = traits ?? Array.Empty<string>();
+            if (traits.Length > CharacterGen.TraitsPerCharacter) throw new ArgumentException("词条数量过多。");
+            foreach (var trait in traits)
+                if (CharacterGen.FindTrait(trait) == null) throw new ArgumentException("未知词条：" + trait);
+            if (!string.IsNullOrEmpty(destiny) && CharacterGen.FindDestiny(destiny) == null)
+                throw new ArgumentException("未知命运：" + destiny);
+            name = (name ?? string.Empty).Trim();
+            if (name.Length == 0 || name.Length > 16 || name.Any(char.IsControl))
+                throw new ArgumentException("角色名字需要 1–16 个字，不能包含控制字符。");
+            var now = DateTimeOffset.UtcNow.ToString("O");
+            var data = new SaveData { slot = slot, characterId = characterId, characterName = name,
+                gender = gender, faceStyle = faceStyle, traits = traits, destiny = destiny ?? "",
+                coins = ItemTable.StartingCoins, localReputation = 0, bag = SaveData.StartingBag(),
+                createdUtc = now, updatedUtc = now };
+            Write(data);
+            return data;
+        }
+
+        public void Write(SaveData data)
+        {
+            if (data == null) throw new ArgumentNullException(nameof(data));
+            var path = SlotPath(data.slot);
+            // 存档一律以当前 schema 落盘：旧版本对象在写回时完成升级。
+            // 迁移在写前补一次缺省字段（新建对象的 chapter/clues 是 null，直接写会被 IsValid 拒）。
+            // 只补**整体为 null 的集合**，绝不逐条净化——null 元素、越界堆叠这些脏东西
+            // 必须由 IsValid 当场拒掉；在迁移里洗白等于让脏档混过去。
+            if (data.chapter == null) data.chapter = new ChapterState();
+            if (data.clues == null) data.clues = Array.Empty<ClueEntry>();
+            if (data.merchants == null) data.merchants = Array.Empty<MerchantState>();
+            if (data.bag == null) data.bag = InventoryRules.NewBag();
+            // v10 的气运账簿与 v11 的装备/次数同样是"整体为 null 就被 IsValid 拒"的字段。
+            // 老代码路径（直接 new SaveData 再 Write，没经过 Read）不该因为没走 Migrate 就炸。
+            if (data.karmaEvents == null) data.karmaEvents = Array.Empty<KarmaEntry>();
+            if (data.gear == null) data.gear = Array.Empty<GearLine>();
+            if (data.crafts == null) data.crafts = Array.Empty<CraftLine>();
+            data.schemaVersion = SaveData.CurrentSchemaVersion;
+            if (!IsValid(data, data.slot)) throw new ArgumentException("存档内容无效。");
+            if (Read(data.slot).State == SlotState.FutureVersion)
+                throw new InvalidOperationException("此存档由更新版本创建，不能覆盖。");
+            data.updatedUtc = DateTimeOffset.UtcNow.ToString("O");
+            // If primary is corrupt, preserve the valid backup until replacement succeeds.
+            AtomicWrite(path, codec.Serialize(data), ReadFile(path, data.slot).CanLoad);
+        }
+
+        public void Delete(int slot)
+        {
+            var path = SlotPath(slot);
+            // Remove the primary first. If it is locked, keep its valid backup intact.
+            foreach (var suffix in new[] { "", ".bak", ".tmp" })
+                if (File.Exists(path + suffix)) File.Delete(path + suffix);
+        }
+
+        public UserSettings LoadSettings(out SettingsLoadState state)
+        {
+            var path = Path.Combine(root, "settings.json");
+            var primary = ReadSettingsFile(path);
+            if (primary.State == SettingsFileState.Ready)
+            {
+                state = SettingsLoadState.Ready;
+                return primary.Data;
+            }
+            if (primary.State == SettingsFileState.FutureVersion)
+            {
+                state = SettingsLoadState.FutureVersion;
+                return new UserSettings();
+            }
+            var backup = ReadSettingsFile(path + ".bak");
+            if (backup.State == SettingsFileState.Ready)
+            {
+                state = SettingsLoadState.Recovered;
+                return backup.Data;
+            }
+            if (backup.State == SettingsFileState.FutureVersion)
+            {
+                state = SettingsLoadState.FutureVersion;
+                return new UserSettings();
+            }
+            state = primary.State == SettingsFileState.Missing && backup.State == SettingsFileState.Missing
+                ? SettingsLoadState.Default : SettingsLoadState.Reset;
+            return new UserSettings();
+        }
+
+        enum SettingsFileState { Missing, Ready, Corrupt, FutureVersion }
+
+        (SettingsFileState State, UserSettings Data) ReadSettingsFile(string path)
+        {
+            if (!File.Exists(path)) return (SettingsFileState.Missing, null);
+            try
+            {
+                var json = File.ReadAllText(path, Encoding.UTF8);
+                var settings = codec.Deserialize<UserSettings>(json);
+                if (!json.Contains("\"schemaVersion\"") || settings == null)
+                    return (SettingsFileState.Corrupt, null);
+                if (settings.schemaVersion > 1) return (SettingsFileState.FutureVersion, null);
+                if (settings.schemaVersion != 1) return (SettingsFileState.Corrupt, null);
+                settings.Normalize();
+                return (SettingsFileState.Ready, settings);
+            }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException ||
+                                        ex is ArgumentException || ex is FormatException)
+            { return (SettingsFileState.Corrupt, null); }
+        }
+
+        public void SaveSettings(UserSettings settings)
+        {
+            if (settings == null) throw new ArgumentNullException(nameof(settings));
+            if (settings.schemaVersion != 1) throw new InvalidOperationException("无法保存其他版本的设置文件。");
+            var path = Path.Combine(root, "settings.json");
+            var primary = ReadSettingsFile(path);
+            if (primary.State == SettingsFileState.FutureVersion ||
+                ReadSettingsFile(path + ".bak").State == SettingsFileState.FutureVersion)
+                throw new InvalidOperationException("设置文件由更新版本创建，当前版本不会覆盖。");
+            settings.Normalize();
+            // A damaged primary must not replace the only valid backup.
+            AtomicWrite(path, codec.Serialize(settings), primary.State == SettingsFileState.Ready);
+        }
+
+        void AtomicWrite(string path, string json, bool preservePrevious)
+        {
+            Directory.CreateDirectory(root);
+            var temp = path + ".tmp";
+            using (var stream = new FileStream(temp, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
+            {
+                writer.Write(json);
+                writer.Flush();
+                stream.Flush(true);
+            }
+            if (File.Exists(path)) File.Replace(temp, path, preservePrevious ? path + ".bak" : null);
+            else File.Move(temp, path);
+        }
+    }
+}

@@ -1,0 +1,123 @@
+{
+  "entries": [
+    {
+      "id": "huolang",
+      "stand": "Art/Characters/Nov7/Stand/huolang",
+      "walk": "Art/Characters/Nov7/Walk/huolang",
+      "frames": 4,
+      "nativeFacing": "right"
+    },
+    {
+      "id": "npc-a-he",
+      "stand": "Art/Characters/Nov7/Stand/npc-a-he",
+      "walk": "Art/Characters/Nov7/Walk/npc-a-he",
+      "frames": 4,
+      "nativeFacing": "left"
+    },
+    {
+      "id": "npc-a-xing",
+      "stand": "Art/Characters/Nov7/Stand/npc-a-xing",
+      "walk": "Art/Characters/Nov7/Walk/npc-a-xing",
+      "frames": 4,
+      "nativeFacing": "right"
+    },
+    {
+      "id": "npc-he-er-niang",
+      "stand": "Art/Characters/Nov7/Stand/npc-he-er-niang",
+      "walk": "Art/Characters/Nov7/Walk/npc-he-er-niang",
+      "frames": 4,
+      "nativeFacing": "right"
+    },
+    {
+      "id": "npc-hu-san",
+      "stand": "Art/Characters/Nov7/Stand/npc-hu-san",
+      "walk": "Art/Characters/Nov7/Walk/npc-hu-san",
+      "frames": 4,
+      "nativeFacing": "right"
+    },
+    {
+      "id": "npc-liu-sao",
+      "stand": "Art/Characters/Nov7/Stand/npc-liu-sao",
+      "walk": "Art/Characters/Nov7/Walk/npc-liu-sao",
+      "frames": 4,
+      "nativeFacing": "right"
+    },
+    {
+      "id": "npc-shenhuai-an",
+      "stand": "Art/Characters/Nov7/Stand/npc-shenhuai-an",
+      "walk": "Art/Characters/Nov7/Walk/npc-shenhuai-an",
+      "frames": 4,
+      "nativeFacing": "right"
+    },
+    {
+      "id": "npc-shitou",
+      "stand": "Art/Characters/Nov7/Stand/npc-shitou",
+      "walk": "Art/Characters/Nov7/Walk/npc-shitou",
+      "frames": 4,
+      "nativeFacing": "right"
+    },
+    {
+      "id": "npc-xiao-man",
+      "stand": "Art/Characters/Nov7/Stand/npc-xiao-man",
+      "walk": "Art/Characters/Nov7/Walk/npc-xiao-man",
+      "frames": 4,
+      "nativeFacing": "right"
+    },
+    {
+      "id": "npc-yao-lao",
+      "stand": "Art/Characters/Nov7/Stand/npc-yao-lao",
+      "walk": "Art/Characters/Nov7/Walk/npc-yao-lao",
+      "frames": 4,
+      "nativeFacing": "right"
+    },
+    {
+      "id": "npc-zhao-da",
+      "stand": "Art/Characters/Nov7/Stand/npc-zhao-da",
+      "walk": "Art/Characters/Nov7/Walk/npc-zhao-da",
+      "frames": 4,
+      "nativeFacing": "right"
+    },
+    {
+      "id": "hero-male-front",
+      "stand": "Art/Characters/Nov7/Stand/hero-male-front",
+      "walk": "Art/Characters/Nov7/Walk/hero-male-front",
+      "frames": 8,
+      "cycleDistance": 132
+    },
+    {
+      "id": "hero-male-side",
+      "stand": "Art/Characters/Nov7/Stand/hero-male-side",
+      "walk": "Art/Characters/Nov7/Walk/hero-male-side",
+      "frames": 8,
+      "cycleDistance": 290
+    },
+    {
+      "id": "hero-male-back",
+      "stand": "Art/Characters/Nov7/Stand/hero-male-back",
+      "walk": "Art/Characters/Nov7/Walk/hero-male-back",
+      "frames": 8,
+      "cycleDistance": 132
+    },
+    {
+      "id": "hero-female-front",
+      "stand": "Art/Characters/Nov7/Stand/hero-female-front",
+      "walk": "Art/Characters/Nov7/Walk/hero-female-front",
+      "frames": 8,
+      "cycleDistance": 132
+    },
+    {
+      "id": "hero-female-side",
+      "stand": "Art/Characters/Nov7/Stand/hero-female-side",
+      "walk": "Art/Characters/Nov7/Walk/hero-female-side",
+      "frames": 8,
+      "cycleDistance": 290
+    },
+    {
+      "id": "hero-female-back",
+      "stand": "Art/Characters/Nov7/Stand/hero-female-back",
+      "walk": "Art/Characters/Nov7/Walk/hero-female-back",
+      "frames": 8,
+      "cycleDistance": 132
+    }
+  ]
+}

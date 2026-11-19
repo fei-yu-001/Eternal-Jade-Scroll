@@ -1,0 +1,5 @@
+{
+    "name": "TwelveJade.Network",
+    "rootNamespace": "TwelveJade",
+    "references": ["TwelveJade.Core", "TwelveJade.Presentation"]
+}

@@ -1,0 +1,7 @@
+[Unit]
+Description=Back up Twelve Jade Scroll database
+After=docker.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/twelvejade-backup
+Nice=10

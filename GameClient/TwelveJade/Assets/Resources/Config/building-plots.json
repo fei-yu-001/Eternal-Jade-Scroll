@@ -1,0 +1,5118 @@
+{
+  "comment": "2026-11-06 用户备忘录6/7：170世界单位=1.75米。二层建筑3.5–4.5身位；底脚10–20%碰撞，groundFootOffset为真实地面脚点。新G01原比例/实际双墩，500街门洞仍不满足，禁止借空碰撞宣称通过。 | NOV7_AESTHETIC_V1: remove duplicate well millstone and ancestral rubble; replace complete hall/opera art; old count100 remains historical.; 2026-11-07 section4: carved pine planters off roads and identified mountain gate compound.",
+  "plots": [
+    {
+      "id": "plot-mountain-pine",
+      "kind": "tree",
+      "name": "崖畔苍松",
+      "footX": 3700,
+      "footY": 1390,
+      "width": 250,
+      "height": 250,
+      "art": "Art/Props/mountain-pine",
+      "radius": 0,
+      "collisionDepth": 247.9167,
+      "collisionTop": 218.75,
+      "collisionRects": [
+        {
+          "x0": -109.6354,
+          "y0": 218.75,
+          "x1": 81.7708,
+          "y1": 247.9167,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 247.9167,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "dd25a60b01db41c840e65a515817494416b773b0dbd9646f7742012f4e3764c6",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          840,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -95.0521,
+        "x1": 67.1874,
+        "y": 233.3333,
+        "radius": 14.5833
+      }
+    },
+    {
+      "id": "plot-ancestral-hall",
+      "kind": "building",
+      "name": "张氏祠堂",
+      "footX": 3420,
+      "footY": 1552.5301,
+      "width": 1265.0602,
+      "height": 700,
+      "art": "Art/Props/Nov7/ancestral-hall-complete",
+      "radius": 0,
+      "collisionDepth": 698.3133,
+      "collisionTop": 445.3012,
+      "buildingClass": "gateway",
+      "collisionRects": [
+        {
+          "x0": -583.6145,
+          "y0": 624.9398,
+          "x1": -393.012,
+          "y1": 674.6988,
+          "role": "west-connected-wall"
+        },
+        {
+          "x0": -393.012,
+          "y0": 635.9036,
+          "x1": -229.3976,
+          "y1": 684.8193,
+          "role": "west-closed-door-bay"
+        },
+        {
+          "x0": -229.3976,
+          "y0": 626.6265,
+          "x1": -172.8916,
+          "y1": 698.3133,
+          "role": "west-pier"
+        },
+        {
+          "x0": -172.8916,
+          "y0": 597.1084,
+          "x1": -102.8916,
+          "y1": 640.9639,
+          "role": "west-open-leaf"
+        },
+        {
+          "x0": 102.8916,
+          "y0": 597.1084,
+          "x1": 178.7952,
+          "y1": 640.9639,
+          "role": "east-open-leaf"
+        },
+        {
+          "x0": 178.7952,
+          "y0": 626.6265,
+          "x1": 236.1446,
+          "y1": 698.3133,
+          "role": "east-pier"
+        },
+        {
+          "x0": 236.1446,
+          "y0": 635.9036,
+          "x1": 368.5542,
+          "y1": 684.8193,
+          "role": "east-closed-door-bay"
+        },
+        {
+          "x0": 368.5542,
+          "y0": 624.9398,
+          "x1": 588.6747,
+          "y1": 674.6988,
+          "role": "east-connected-wall"
+        },
+        {
+          "x0": -102.8916,
+          "y0": 445.3012,
+          "x1": 102.8916,
+          "y1": 462.1687,
+          "role": "inner-wall"
+        }
+      ],
+      "groundFootOffset": 697.4699,
+      "footprint": {
+        "version": 3,
+        "shape": "rectangles",
+        "sourceSha256": "a2d95375f20df8db5ab6fdae1f42fd3a5abc4b0ae5e936c0223435a8e715be99",
+        "rawSource": "Tools/logs/scale-plinth-gait-20261108/art/raw/ancestral-street-gate-v1.png",
+        "sourceCrop": [
+          18,
+          56,
+          1518,
+          886
+        ],
+        "sourceGroundPixel": 827,
+        "groundPreserved": false,
+        "groundWorldY": 2250,
+        "sourceCollisionRects": [
+          [
+            76,
+            797,
+            302,
+            856,
+            "west-connected-wall"
+          ],
+          [
+            302,
+            810,
+            496,
+            868,
+            "west-closed-door-bay"
+          ],
+          [
+            496,
+            799,
+            563,
+            884,
+            "west-pier"
+          ],
+          [
+            563,
+            764,
+            646,
+            816,
+            "west-open-leaf"
+          ],
+          [
+            890,
+            764,
+            980,
+            816,
+            "east-open-leaf"
+          ],
+          [
+            980,
+            799,
+            1048,
+            884,
+            "east-pier"
+          ],
+          [
+            1048,
+            810,
+            1205,
+            868,
+            "east-closed-door-bay"
+          ],
+          [
+            1205,
+            797,
+            1466,
+            856,
+            "east-connected-wall"
+          ],
+          [
+            646,
+            584,
+            890,
+            604,
+            "inner-wall"
+          ]
+        ],
+        "doorOpeningPixels": [
+          646,
+          470,
+          890,
+          806
+        ],
+        "doorClearHeightWorld": 283.3735,
+        "doorClearWidthWorld": 205.7831,
+        "heroHeightWorld": 170,
+        "reason": "20261108 producer correction: street gatehouse only, measured human-scale opening, integral two-step doorstep. No freestanding elevation platform."
+      },
+      "blocks": true,
+      "cameraFraming": true,
+      "occlusion": {
+        "enabled": true
+      }
+    },
+    {
+      "id": "plot-pine-02",
+      "kind": "tree",
+      "name": "垂柳",
+      "footX": 3860,
+      "footY": 1710,
+      "width": 250,
+      "height": 240,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 238.0,
+      "collisionTop": 209.75,
+      "collisionRects": [
+        {
+          "x0": -90.8854,
+          "y0": 209.75,
+          "x1": 99.2188,
+          "y1": 238.0,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 238.0,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -76.7604,
+        "x1": 85.0938,
+        "y": 223.875,
+        "radius": 14.125
+      }
+    },
+    {
+      "id": "clutter-reeds-bridge2",
+      "kind": "prop",
+      "name": "桥南芦苇",
+      "footX": 3120,
+      "footY": 2384.0,
+      "width": 100,
+      "height": 100,
+      "art": "Art/Props/reeds",
+      "radius": 0,
+      "collisionDepth": 99.1667,
+      "collisionTop": 81.5625,
+      "collisionRects": [
+        {
+          "x0": -38.6458,
+          "y0": 81.5625,
+          "x1": 45.625,
+          "y1": 99.1667,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 99.1667,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "b00c3351a1cb0247e96258f4f82c84f872ecc6389094d51e021aea2c90206159",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          783,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -29.8437,
+        "x1": 36.8229,
+        "y": 90.3646,
+        "radius": 8.8021
+      }
+    },
+    {
+      "id": "old-willow-riverside-01",
+      "kind": "tree",
+      "name": "老柳",
+      "footX": 4640,
+      "footY": 2720,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 297.5,
+      "collisionTop": 262.1875,
+      "collisionRects": [
+        {
+          "x0": -109.0625,
+          "y0": 262.1875,
+          "x1": 119.0625,
+          "y1": 297.5,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 297.5,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -91.4062,
+        "x1": 101.4062,
+        "y": 279.8438,
+        "radius": 17.6562
+      }
+    },
+    {
+      "id": "plot-blacksmith",
+      "kind": "building",
+      "name": "守渡铁匠铺",
+      "footX": 3650,
+      "footY": 2840,
+      "width": 448.3984,
+      "height": 520,
+      "art": "Art/Props/shop-front-v2",
+      "radius": 0,
+      "collisionDepth": 514.9219,
+      "collisionTop": 445.8594,
+      "buildingClass": "single-storey",
+      "collisionRects": [
+        {
+          "x0": -135.332,
+          "y0": 445.8594,
+          "x1": 142.9492,
+          "y1": 514.9219,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 514.9219,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "0169fdaf3a24f08a03eb1c268729359f9f5a545070c291cbdf7da7d95ba0c0e9",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          878,
+          1014
+        ]
+      }
+    },
+    {
+      "id": "plot-washing-stone",
+      "kind": "prop",
+      "name": "浣衣石",
+      "footX": 5320,
+      "footY": 2850,
+      "width": 140,
+      "height": 140,
+      "art": "Art/Props/washing-stone",
+      "radius": 0,
+      "collisionDepth": 138.5417,
+      "collisionTop": 133.4375,
+      "collisionRects": [
+        {
+          "x0": -63.875,
+          "y0": 133.4375,
+          "x1": 57.3125,
+          "y1": 138.5417,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 138.5417,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "537d94428393ee7b4216a929e61033f44d5c8c12b1f2ca6a64e90101dc17c827",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          915,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -61.3229,
+        "x1": 54.7604,
+        "y": 135.9896,
+        "radius": 2.5521
+      }
+    },
+    {
+      "id": "clutter-reeds-bridge",
+      "kind": "prop",
+      "name": "桥西芦苇",
+      "footX": 3360,
+      "footY": 2930,
+      "width": 110,
+      "height": 110,
+      "art": "Art/Props/reeds",
+      "radius": 0,
+      "collisionDepth": 109.0833,
+      "collisionTop": 89.7188,
+      "collisionRects": [
+        {
+          "x0": -42.5104,
+          "y0": 89.7188,
+          "x1": 50.1875,
+          "y1": 109.0833,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 109.0833,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "b00c3351a1cb0247e96258f4f82c84f872ecc6389094d51e021aea2c90206159",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          783,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -32.8282,
+        "x1": 40.5053,
+        "y": 99.401,
+        "radius": 9.6822
+      }
+    },
+    {
+      "id": "plot-wharf-reeds",
+      "kind": "prop",
+      "name": "埠头芦苇",
+      "footX": 6000,
+      "footY": 2940,
+      "width": 150,
+      "height": 150,
+      "art": "Art/Props/reeds",
+      "radius": 0,
+      "collisionDepth": 148.75,
+      "collisionTop": 122.3438,
+      "collisionRects": [
+        {
+          "x0": -57.9688,
+          "y0": 122.3438,
+          "x1": 68.4375,
+          "y1": 148.75,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 148.75,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "b00c3351a1cb0247e96258f4f82c84f872ecc6389094d51e021aea2c90206159",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          783,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -44.7657,
+        "x1": 55.2344,
+        "y": 135.5469,
+        "radius": 13.2031
+      }
+    },
+    {
+      "id": "plot-school",
+      "kind": "building",
+      "name": "北街村塾",
+      "footX": 1985.159,
+      "footY": 3040,
+      "width": 336.2988,
+      "height": 390,
+      "art": "Art/Props/shop-front-v2",
+      "radius": 0,
+      "collisionDepth": 386.1914,
+      "collisionTop": 334.3945,
+      "buildingClass": "single-storey",
+      "collisionRects": [
+        {
+          "x0": -101.499,
+          "y0": 334.3945,
+          "x1": 107.2119,
+          "y1": 386.1914,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 386.1914,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "0169fdaf3a24f08a03eb1c268729359f9f5a545070c291cbdf7da7d95ba0c0e9",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          878,
+          1014
+        ]
+      }
+    },
+    {
+      "id": "plot-riverbank-bamboo",
+      "kind": "tree",
+      "name": "河岸竹丛",
+      "footX": 2840,
+      "footY": 2980,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/bamboo",
+      "radius": 0,
+      "collisionDepth": 288.4375,
+      "collisionTop": 254.0625,
+      "collisionRects": [
+        {
+          "x0": -120.9375,
+          "y0": 254.0625,
+          "x1": 115.0,
+          "y1": 288.4375,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 288.4375,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "7d6389136f2250296670171399e75da696fe2d1fda2c6c7f112483fe5f903074",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          813,
+          923
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -103.75,
+        "x1": 97.8125,
+        "y": 271.25,
+        "radius": 17.1875
+      }
+    },
+    {
+      "id": "plot-shuikou-willow-01",
+      "kind": "tree",
+      "name": "水口林老柳",
+      "footX": 5236,
+      "footY": 3100,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 297.5,
+      "collisionTop": 262.1875,
+      "collisionRects": [
+        {
+          "x0": -109.0625,
+          "y0": 262.1875,
+          "x1": 119.0625,
+          "y1": 297.5,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 297.5,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -91.4062,
+        "x1": 101.4062,
+        "y": 279.8438,
+        "radius": 17.6562
+      }
+    },
+    {
+      "id": "plot-river-willow-east",
+      "kind": "tree",
+      "name": "东岸垂柳",
+      "footX": 4800,
+      "footY": 3130,
+      "width": 244,
+      "height": 244,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 241.9667,
+      "collisionTop": 213.2458,
+      "collisionRects": [
+        {
+          "x0": -88.7042,
+          "y0": 213.2458,
+          "x1": 96.8375,
+          "y1": 241.9667,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 241.9667,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -74.3438,
+        "x1": 82.4771,
+        "y": 227.6062,
+        "radius": 14.3605
+      }
+    },
+    {
+      "id": "plot-river-reeds",
+      "kind": "prop",
+      "name": "浅滩芦苇",
+      "footX": 4556,
+      "footY": 3140,
+      "width": 140,
+      "height": 140,
+      "art": "Art/Props/reeds",
+      "radius": 0,
+      "collisionDepth": 138.8333,
+      "collisionTop": 114.1875,
+      "collisionRects": [
+        {
+          "x0": -54.1042,
+          "y0": 114.1875,
+          "x1": 63.875,
+          "y1": 138.8333,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 138.8333,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "b00c3351a1cb0247e96258f4f82c84f872ecc6389094d51e021aea2c90206159",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          783,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -41.7813,
+        "x1": 51.5521,
+        "y": 126.5104,
+        "radius": 12.3229
+      }
+    },
+    {
+      "id": "plot-forge-anvil",
+      "kind": "prop",
+      "name": "打铁砧炉",
+      "footX": 3360,
+      "footY": 3260,
+      "width": 96,
+      "height": 96,
+      "art": "Art/Props/forge-anvil",
+      "radius": 0,
+      "collisionDepth": 94.9,
+      "collisionTop": 78.7,
+      "collisionRects": [
+        {
+          "x0": -20.0,
+          "y0": 78.7,
+          "x1": 41.1,
+          "y1": 94.9,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 94.9,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "da3950f3430e033552749fe00d0aaf7c005450a4a41630491446a0e742653566",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          787,
+          949
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -11.9,
+        "x1": 33.0,
+        "y": 86.8,
+        "radius": 8.1
+      }
+    },
+    {
+      "id": "plot-paifang",
+      "kind": "building",
+      "name": "青石牌坊",
+      "footX": 3730,
+      "footY": 3764.7576,
+      "width": 720,
+      "height": 392.5975,
+      "art": "Art/Props/paifang",
+      "radius": 0,
+      "collisionDepth": 391.6457,
+      "collisionTop": 293.6153,
+      "blocks": true,
+      "collisionRects": [
+        {
+          "x0": -224.3754,
+          "y0": 342.6305,
+          "x1": -157.7528,
+          "y1": 387.3629,
+          "role": "outer-pier-west"
+        },
+        {
+          "x0": -126.8209,
+          "y0": 328.8301,
+          "x1": -42.115,
+          "y1": 379.273,
+          "role": "inner-pier-west"
+        },
+        {
+          "x0": 64.957,
+          "y0": 305.5122,
+          "x1": 147.7594,
+          "y1": 358.8103,
+          "role": "inner-pier-east"
+        },
+        {
+          "x0": 172.9808,
+          "y0": 293.6153,
+          "x1": 252.928,
+          "y1": 345.9617,
+          "role": "outer-pier-east"
+        },
+        {
+          "x0": -354.7654,
+          "y0": 305.0364,
+          "x1": -224.3754,
+          "y1": 391.6457,
+          "role": "west-return-wall-planter"
+        },
+        {
+          "x0": 252.928,
+          "y0": 295.5188,
+          "x1": 358.5724,
+          "y1": 326.4508,
+          "role": "east-return-wall-planter"
+        }
+      ],
+      "buildingClass": "gateway",
+      "groundFootOffset": 378.7971,
+      "footprint": {
+        "version": 4,
+        "shape": "rectangles",
+        "sourceSha256": "4459f217760ea050967a6d38f855855e0d1a0f662bea125eb9ddb6184c39064f",
+        "alphaThreshold": 128,
+        "rawSource": "Tools/logs/nov7-v2-20261107/world/raw/paifang-volume-v1.png",
+        "sourceCrop": [
+          11,
+          69,
+          1524,
+          894
+        ],
+        "sourceGroundPixel": 796,
+        "groundPreserved": 4143.5547,
+        "sourceCollisionRects": [
+          [
+            296,
+            789,
+            436,
+            883,
+            "outer-pier-west"
+          ],
+          [
+            501,
+            760,
+            679,
+            866,
+            "inner-pier-west"
+          ],
+          [
+            904,
+            711,
+            1078,
+            823,
+            "inner-pier-east"
+          ],
+          [
+            1131,
+            686,
+            1299,
+            796,
+            "outer-pier-east"
+          ],
+          [
+            22,
+            710,
+            296,
+            892,
+            "west-return-wall-planter"
+          ],
+          [
+            1299,
+            690,
+            1521,
+            755,
+            "east-return-wall-planter"
+          ]
+        ],
+        "reason": "V2 volumetric roof and courtyard, source-pixel ground contacts; center walk passage open; existing building fade and silhouette enabled."
+      },
+      "occlusion": {
+        "enabled": true
+      },
+      "cameraFraming": true
+    },
+    {
+      "id": "plot-river-willow-west",
+      "kind": "tree",
+      "name": "西岸垂柳",
+      "footX": 3380,
+      "footY": 3520,
+      "width": 268,
+      "height": 268,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 265.7667,
+      "collisionTop": 234.2208,
+      "collisionRects": [
+        {
+          "x0": -97.4292,
+          "y0": 234.2208,
+          "x1": 106.3625,
+          "y1": 265.7667,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 265.7667,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -81.6562,
+        "x1": 90.5895,
+        "y": 249.9938,
+        "radius": 15.773
+      }
+    },
+    {
+      "id": "plot-temple-gate",
+      "kind": "building",
+      "name": "青石山门",
+      "footX": 5340,
+      "footY": 3555.0849,
+      "width": 720,
+      "height": 645.4972,
+      "art": "Art/Props/temple-gate",
+      "radius": 0,
+      "collisionDepth": 593.1124,
+      "collisionTop": 323.6217,
+      "buildingClass": "gateway",
+      "collisionRects": [
+        {
+          "x0": -348.3589,
+          "y0": 519.7736,
+          "x1": -160.9378,
+          "y1": 565.1738,
+          "role": "west-wall-planter"
+        },
+        {
+          "x0": -162.6839,
+          "y0": 478.4479,
+          "x1": -105.0606,
+          "y1": 511.0428,
+          "role": "west-door-pier"
+        },
+        {
+          "x0": 105.0606,
+          "y0": 478.4479,
+          "x1": 160.9378,
+          "y1": 511.0428,
+          "role": "east-door-pier"
+        },
+        {
+          "x0": 160.9378,
+          "y0": 519.7736,
+          "x1": 353.0154,
+          "y1": 565.1738,
+          "role": "east-wall-planter"
+        },
+        {
+          "x0": -333.8076,
+          "y0": 370.1859,
+          "x1": -159.7736,
+          "y1": 495.3274,
+          "role": "west-courtyard-front-wall"
+        },
+        {
+          "x0": 160.9378,
+          "y0": 370.1859,
+          "x1": 337.882,
+          "y1": 495.3274,
+          "role": "east-courtyard-front-wall"
+        },
+        {
+          "x0": -334.3897,
+          "y0": 323.6217,
+          "x1": -256.3945,
+          "y1": 370.1859,
+          "role": "west-courtyard-return"
+        },
+        {
+          "x0": 256.3945,
+          "y0": 323.6217,
+          "x1": 336.7179,
+          "y1": 370.1859,
+          "role": "east-courtyard-return"
+        },
+        {
+          "x0": -256.3945,
+          "y0": 332.3525,
+          "x1": 256.3945,
+          "y1": 353.3064,
+          "role": "courtyard-rear-wall"
+        },
+        {
+          "x0": -185.966,
+          "y0": 533.1609,
+          "x1": -117.2838,
+          "y1": 593.1124,
+          "role": "west-stair-balustrade"
+        },
+        {
+          "x0": 113.2094,
+          "y0": 533.1609,
+          "x1": 183.6378,
+          "y1": 593.1124,
+          "role": "east-stair-balustrade"
+        }
+      ],
+      "groundFootOffset": 644.9151,
+      "footprint": {
+        "version": 4,
+        "shape": "rectangles",
+        "sourceSha256": "8ea073cd3875ec17f3d182cf7cf736ae73b7317864fb391dbf90ff66899631d5",
+        "alphaThreshold": 128,
+        "rawSource": "Tools/logs/nov7-v2-20261107/world/raw/temple-courtyard-v2.png",
+        "sourceCrop": [
+          8,
+          59,
+          1245,
+          1168
+        ],
+        "sourceGroundPixel": 1108,
+        "groundPreserved": 4200,
+        "sourceCollisionRects": [
+          [
+            28,
+            952,
+            350,
+            1030,
+            "west-wall-planter"
+          ],
+          [
+            347,
+            881,
+            446,
+            937,
+            "west-door-pier"
+          ],
+          [
+            807,
+            881,
+            903,
+            937,
+            "east-door-pier"
+          ],
+          [
+            903,
+            952,
+            1233,
+            1030,
+            "east-wall-planter"
+          ],
+          [
+            53,
+            695,
+            352,
+            910,
+            "west-courtyard-front-wall"
+          ],
+          [
+            903,
+            695,
+            1207,
+            910,
+            "east-courtyard-front-wall"
+          ],
+          [
+            52,
+            615,
+            186,
+            695,
+            "west-courtyard-return"
+          ],
+          [
+            1067,
+            615,
+            1205,
+            695,
+            "east-courtyard-return"
+          ],
+          [
+            186,
+            630,
+            1067,
+            666,
+            "courtyard-rear-wall"
+          ],
+          [
+            307,
+            975,
+            425,
+            1078,
+            "west-stair-balustrade"
+          ],
+          [
+            821,
+            975,
+            942,
+            1078,
+            "east-stair-balustrade"
+          ]
+        ],
+        "reason": "V2 volumetric roof and courtyard, source-pixel ground contacts; center walk passage open; existing building fade and silhouette enabled."
+      },
+      "blocks": true,
+      "occlusion": {
+        "enabled": true
+      },
+      "cameraFraming": true
+    },
+    {
+      "id": "plot-haystack-02",
+      "kind": "prop",
+      "name": "谷草垛",
+      "footX": 1780,
+      "footY": 3620,
+      "width": 140,
+      "height": 140,
+      "art": "Art/Props/haystack",
+      "radius": 0,
+      "collisionDepth": 138.8333,
+      "collisionTop": 116.6667,
+      "collisionRects": [
+        {
+          "x0": -65.3333,
+          "y0": 116.6667,
+          "x1": 65.625,
+          "y1": 138.8333,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 138.8333,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "f6515baab93bed69715de56dadfcefabd3cbb240843e584906456230c2bc9bff",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          800,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -54.25,
+        "x1": 54.5417,
+        "y": 127.75,
+        "radius": 11.0833
+      }
+    },
+    {
+      "id": "plot-shuikou-reeds",
+      "kind": "prop",
+      "name": "水口浅苇",
+      "footX": 5528,
+      "footY": 3620,
+      "width": 150,
+      "height": 150,
+      "art": "Art/Props/reeds",
+      "radius": 0,
+      "collisionDepth": 148.75,
+      "collisionTop": 122.3438,
+      "collisionRects": [
+        {
+          "x0": -57.9688,
+          "y0": 122.3438,
+          "x1": 68.4375,
+          "y1": 148.75,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 148.75,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "b00c3351a1cb0247e96258f4f82c84f872ecc6389094d51e021aea2c90206159",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          783,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -44.7657,
+        "x1": 55.2344,
+        "y": 135.5469,
+        "radius": 13.2031
+      }
+    },
+    {
+      "id": "plot-stone-house",
+      "kind": "building",
+      "name": "石门柴扉",
+      "footX": 2908.131,
+      "footY": 3290.1698,
+      "width": 650.566,
+      "height": 772.8302,
+      "art": "Art/Props/stone-house-v2",
+      "radius": 0,
+      "collisionDepth": 765.283,
+      "collisionTop": 662.6415,
+      "buildingClass": "two-storey",
+      "collisionRects": [
+        {
+          "x0": -193.9623,
+          "y0": 662.6415,
+          "x1": 196.2264,
+          "y1": 765.283,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 765.283,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "6785ae149166fe364f000d3256886b191693cb1129ce35691789bf28a4d751cc",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          878,
+          1014
+        ]
+      }
+    },
+    {
+      "id": "shop-north-street-01",
+      "kind": "building",
+      "name": "北街街铺",
+      "footX": 4686.734,
+      "footY": 3650,
+      "width": 420.0,
+      "height": 420,
+      "art": "Art/Props/shop-front",
+      "radius": 0,
+      "collisionDepth": 413.0,
+      "collisionTop": 372.75,
+      "buildingClass": "single-storey",
+      "collisionRects": [
+        {
+          "x0": -172.375,
+          "y0": 372.75,
+          "x1": 189.0,
+          "y1": 413.0,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 413.0,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "d56592ae4625991c2da99c9ca92b644ac5c28477cd1d2709effb876bee2c6b51",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          852,
+          944
+        ]
+      }
+    },
+    {
+      "id": "plot-shuikou-willow-02",
+      "kind": "tree",
+      "name": "水口林垂柳",
+      "footX": 6080,
+      "footY": 3660,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 297.5,
+      "collisionTop": 262.1875,
+      "collisionRects": [
+        {
+          "x0": -109.0625,
+          "y0": 262.1875,
+          "x1": 119.0625,
+          "y1": 297.5,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 297.5,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -91.4062,
+        "x1": 101.4062,
+        "y": 279.8438,
+        "radius": 17.6562
+      }
+    },
+    {
+      "id": "plot-lantern-street-01",
+      "kind": "prop",
+      "name": "街巷灯笼",
+      "footX": 4890,
+      "footY": 3914.4648,
+      "width": 60,
+      "height": 150,
+      "art": "Art/Props/lantern-pole",
+      "radius": 0,
+      "collisionDepth": 148.5352,
+      "collisionTop": 122.6074,
+      "collisionRects": [
+        {
+          "x0": -9.6585,
+          "y0": 122.6074,
+          "x1": 7.6098,
+          "y1": 148.5352,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 148.5352,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "c3cf481edbf3c94fc46ef8d8c3fd7c7da10b777df757f1dde3bd0a3d88ebfca1",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          837,
+          1014
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -1.0244,
+        "x1": -1.0244,
+        "y": 135.5713,
+        "radius": 8.6341
+      },
+      "hostPlotId": "shop-north-street-01",
+      "vignetteGroup": "north-shop-edge"
+    },
+    {
+      "id": "plot-street-square-tea",
+      "kind": "building",
+      "name": "广场北沿茶寮",
+      "footX": 3430,
+      "footY": 4177.1698,
+      "width": 480.7547,
+      "height": 772.8302,
+      "art": "Art/Props/teahouse-v2",
+      "radius": 0,
+      "collisionDepth": 765.283,
+      "collisionTop": 662.6415,
+      "buildingClass": "two-storey",
+      "collisionRects": [
+        {
+          "x0": -187.5472,
+          "y0": 662.6415,
+          "x1": 196.6038,
+          "y1": 765.283,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 765.283,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "cdfc8d24dde39e97ff0aac8ced7ee5eadb14fd30e083de70b2ac18ab056c1b74",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          878,
+          1014
+        ]
+      }
+    },
+    {
+      "id": "plot-firewood",
+      "kind": "prop",
+      "name": "柴堆",
+      "footX": 2620,
+      "footY": 4071.25,
+      "width": 120,
+      "height": 120,
+      "art": "Art/Props/firewood-pile",
+      "radius": 0,
+      "collisionDepth": 118.75,
+      "collisionTop": 102.125,
+      "collisionRects": [
+        {
+          "x0": -56.0,
+          "y0": 102.125,
+          "x1": 56.0,
+          "y1": 118.75,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 118.75,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "32ead71d55edf92a9c7f151d56f98de5c9e972550899eb23bc588e3fec5d1419",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          817,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -47.6875,
+        "x1": 47.6875,
+        "y": 110.4375,
+        "radius": 8.3125
+      },
+      "hostPlotId": "plot-stone-house",
+      "vignetteGroup": "stone-house-yard"
+    },
+    {
+      "id": "plot-pine-west-02",
+      "kind": "tree",
+      "name": "垂柳",
+      "footX": 1890,
+      "footY": 3980,
+      "width": 275,
+      "height": 275,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 272.7083,
+      "collisionTop": 240.3385,
+      "collisionRects": [
+        {
+          "x0": -99.974,
+          "y0": 240.3385,
+          "x1": 109.1406,
+          "y1": 272.7083,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 272.7083,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -83.7891,
+        "x1": 92.9557,
+        "y": 256.5234,
+        "radius": 16.1849
+      }
+    },
+    {
+      "id": "plot-pine-east-01",
+      "kind": "tree",
+      "name": "东街夹道树",
+      "footX": 6440,
+      "footY": 3960,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/mountain-pine",
+      "radius": 0,
+      "collisionDepth": 297.5,
+      "collisionTop": 262.5,
+      "collisionRects": [
+        {
+          "x0": -131.5625,
+          "y0": 262.5,
+          "x1": 98.125,
+          "y1": 297.5,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 297.5,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "dd25a60b01db41c840e65a515817494416b773b0dbd9646f7742012f4e3764c6",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          840,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -114.0625,
+        "x1": 80.625,
+        "y": 280.0,
+        "radius": 17.5
+      }
+    },
+    {
+      "id": "plot-pine-west-01",
+      "kind": "prop",
+      "name": "农家草垛",
+      "footX": 1620,
+      "footY": 3970,
+      "width": 150,
+      "height": 150,
+      "art": "Art/Props/haystack",
+      "radius": 0,
+      "collisionDepth": 148.75,
+      "collisionTop": 125.0,
+      "collisionRects": [
+        {
+          "x0": -70.0,
+          "y0": 125.0,
+          "x1": 70.3125,
+          "y1": 148.75,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 148.75,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "f6515baab93bed69715de56dadfcefabd3cbb240843e584906456230c2bc9bff",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          800,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -58.125,
+        "x1": 58.4375,
+        "y": 136.875,
+        "radius": 11.875
+      }
+    },
+    {
+      "id": "clutter-haystack-blacksmith",
+      "kind": "prop",
+      "name": "古槐北草垛",
+      "footX": 2940,
+      "footY": 4080,
+      "width": 110,
+      "height": 110,
+      "art": "Art/Props/haystack",
+      "radius": 0,
+      "collisionDepth": 109.0833,
+      "collisionTop": 91.6667,
+      "collisionRects": [
+        {
+          "x0": -51.3333,
+          "y0": 91.6667,
+          "x1": 51.5625,
+          "y1": 109.0833,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 109.0833,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "f6515baab93bed69715de56dadfcefabd3cbb240843e584906456230c2bc9bff",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          800,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -42.625,
+        "x1": 42.8542,
+        "y": 100.375,
+        "radius": 8.7083
+      }
+    },
+    {
+      "id": "plot-firewood-02",
+      "kind": "prop",
+      "name": "村塾院角柴堆",
+      "footX": 1940,
+      "footY": 3531.3542,
+      "width": 130,
+      "height": 130,
+      "art": "Art/Props/firewood-pile",
+      "radius": 0,
+      "collisionDepth": 128.6458,
+      "collisionTop": 110.6354,
+      "collisionRects": [
+        {
+          "x0": -60.6667,
+          "y0": 110.6354,
+          "x1": 60.6667,
+          "y1": 128.6458,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 128.6458,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "32ead71d55edf92a9c7f151d56f98de5c9e972550899eb23bc588e3fec5d1419",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          817,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -51.6615,
+        "x1": 51.6615,
+        "y": 119.6406,
+        "radius": 9.0052
+      },
+      "hostPlotId": "plot-school",
+      "vignetteGroup": "school-yard"
+    },
+    {
+      "id": "plot-haystack",
+      "kind": "prop",
+      "name": "谷草垛",
+      "footX": 2590,
+      "footY": 4280,
+      "width": 130,
+      "height": 130,
+      "art": "Art/Props/haystack",
+      "radius": 0,
+      "collisionDepth": 128.9167,
+      "collisionTop": 108.3333,
+      "collisionRects": [
+        {
+          "x0": -60.6667,
+          "y0": 108.3333,
+          "x1": 60.9375,
+          "y1": 128.9167,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 128.9167,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "f6515baab93bed69715de56dadfcefabd3cbb240843e584906456230c2bc9bff",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          800,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -50.375,
+        "x1": 50.6458,
+        "y": 118.625,
+        "radius": 10.2917
+      }
+    },
+    {
+      "id": "plot-forge-rubble",
+      "kind": "prop",
+      "name": "打铁碎石堆",
+      "footX": 4480,
+      "footY": 4270,
+      "width": 120,
+      "height": 120,
+      "art": "Art/Props/rubble",
+      "radius": 0,
+      "collisionDepth": 118.75,
+      "collisionTop": 111.875,
+      "collisionRects": [
+        {
+          "x0": -56.0,
+          "y0": 111.875,
+          "x1": 53.75,
+          "y1": 118.75,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 118.75,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "beeb4f286da9697153fd8c488096dd488cf25bd5ca2aaddfbaa43b8e9e53b51b",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          895,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -52.5625,
+        "x1": 50.3125,
+        "y": 115.3125,
+        "radius": 3.4375
+      }
+    },
+    {
+      "id": "market-stall-south-04",
+      "kind": "stall",
+      "name": "市集皮货摊",
+      "footX": 5070,
+      "footY": 7531.4359,
+      "width": 140,
+      "height": 149.2778,
+      "art": "Art/Props/Nov7/market-leather-stall",
+      "radius": 0,
+      "collisionDepth": 148.6831,
+      "collisionTop": 121.6822,
+      "collisionRects": [
+        {
+          "x0": -58.1054,
+          "y0": 121.6822,
+          "x1": 58.3432,
+          "y1": 148.6831,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 148.5641,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "de622a2b039c497b877b513b88f3bfaa02cd555d0349a9d3a0c2d079e9aa13b0",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          1023,
+          1249
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -44.6049,
+        "x1": 44.8428,
+        "y": 135.1827,
+        "radius": 13.5004
+      },
+      "hostPlotId": "plot-cloth-shop",
+      "vignetteGroup": "cloth-front"
+    },
+    {
+      "id": "plot-fortune-stall",
+      "kind": "stall",
+      "name": "测字布棚",
+      "footX": 3090,
+      "footY": 4380,
+      "width": 140,
+      "height": 180,
+      "art": "Art/Props/market-stall",
+      "radius": 0,
+      "collisionDepth": 178.2422,
+      "collisionTop": 147.1289,
+      "collisionRects": [
+        {
+          "x0": -57.6884,
+          "y0": 147.1289,
+          "x1": 57.5126,
+          "y1": 178.2422,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 178.2422,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "d0c58ca6e3ef371075a383a4190eeb0e5322a6b32c18f25eb0a43a987209e1de",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          837,
+          1014
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -42.1317,
+        "x1": 41.9559,
+        "y": 162.6855,
+        "radius": 15.5567
+      }
+    },
+    {
+      "id": "market-stall-south-03",
+      "kind": "stall",
+      "name": "市集布头摊",
+      "footX": 4830,
+      "footY": 7536.5203,
+      "width": 140,
+      "height": 144.1756,
+      "art": "Art/Props/Nov7/market-cloth-stall",
+      "radius": 0,
+      "collisionDepth": 143.5957,
+      "collisionTop": 117.4979,
+      "collisionRects": [
+        {
+          "x0": -53.9934,
+          "y0": 117.4979,
+          "x1": 55.6172,
+          "y1": 143.5957,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 143.4797,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "2fcbcef1f417626d15bf4988ba22ee3446b54a6af65d0ee070fec835c06834e3",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          1013,
+          1237
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -40.9445,
+        "x1": 42.5684,
+        "y": 130.5468,
+        "radius": 13.0489
+      },
+      "hostPlotId": "plot-cloth-shop",
+      "vignetteGroup": "cloth-front"
+    },
+    {
+      "id": "clutter-rubble-locust",
+      "kind": "prop",
+      "name": "古槐西乱石",
+      "footX": 2720,
+      "footY": 4350,
+      "width": 100,
+      "height": 100,
+      "art": "Art/Props/rubble",
+      "radius": 0,
+      "collisionDepth": 98.9583,
+      "collisionTop": 93.2292,
+      "collisionRects": [
+        {
+          "x0": -46.6667,
+          "y0": 93.2292,
+          "x1": 44.7917,
+          "y1": 98.9583,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 98.9583,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "beeb4f286da9697153fd8c488096dd488cf25bd5ca2aaddfbaa43b8e9e53b51b",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          895,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -43.8022,
+        "x1": 41.9272,
+        "y": 96.0938,
+        "radius": 2.8645
+      }
+    },
+    {
+      "id": "clutter-reeds-ditch",
+      "kind": "prop",
+      "name": "广场东芦苇",
+      "footX": 4620,
+      "footY": 4340,
+      "width": 120,
+      "height": 120,
+      "art": "Art/Props/reeds",
+      "radius": 0,
+      "collisionDepth": 119.0,
+      "collisionTop": 97.875,
+      "collisionRects": [
+        {
+          "x0": -46.375,
+          "y0": 97.875,
+          "x1": 54.75,
+          "y1": 119.0,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 119.0,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "b00c3351a1cb0247e96258f4f82c84f872ecc6389094d51e021aea2c90206159",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          783,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -35.8125,
+        "x1": 44.1875,
+        "y": 108.4375,
+        "radius": 10.5625
+      }
+    },
+    {
+      "id": "plot-village-well",
+      "kind": "prop",
+      "name": "老水井",
+      "footX": 3060,
+      "footY": 4670,
+      "width": 120,
+      "height": 120,
+      "art": "Art/Props/village-well",
+      "radius": 0,
+      "collisionDepth": 118.625,
+      "collisionTop": 100.25,
+      "collisionRects": [
+        {
+          "x0": -30.75,
+          "y0": 100.25,
+          "x1": 28.125,
+          "y1": 118.625,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 118.625,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "963b5f9ab02ed8435a670f556edb60e1680ffd5576714d981382bb3400f86ca9",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          802,
+          949
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -21.5625,
+        "x1": 18.9375,
+        "y": 109.4375,
+        "radius": 9.1875
+      }
+    },
+    {
+      "id": "clutter-haystack-school",
+      "kind": "prop",
+      "name": "村塾草垛",
+      "footX": 5000,
+      "footY": 4480,
+      "width": 100,
+      "height": 100,
+      "art": "Art/Props/haystack",
+      "radius": 0,
+      "collisionDepth": 99.1667,
+      "collisionTop": 83.3333,
+      "collisionRects": [
+        {
+          "x0": -46.6667,
+          "y0": 83.3333,
+          "x1": 46.875,
+          "y1": 99.1667,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 99.1667,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "f6515baab93bed69715de56dadfcefabd3cbb240843e584906456230c2bc9bff",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          800,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -38.75,
+        "x1": 38.9583,
+        "y": 91.25,
+        "radius": 7.9167
+      }
+    },
+    {
+      "id": "clutter-rubble-well",
+      "kind": "prop",
+      "name": "井台西碎石",
+      "footX": 2040,
+      "footY": 4550,
+      "width": 80,
+      "height": 80,
+      "art": "Art/Props/rubble",
+      "radius": 0,
+      "collisionDepth": 79.1667,
+      "collisionTop": 74.5833,
+      "collisionRects": [
+        {
+          "x0": -37.3333,
+          "y0": 74.5833,
+          "x1": 35.8333,
+          "y1": 79.1667,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 79.1667,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "beeb4f286da9697153fd8c488096dd488cf25bd5ca2aaddfbaa43b8e9e53b51b",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          895,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -35.0416,
+        "x1": 33.5416,
+        "y": 76.875,
+        "radius": 2.2917
+      }
+    },
+    {
+      "id": "plot-teahouse",
+      "kind": "building",
+      "name": "草亭茶棚",
+      "footX": 4630,
+      "footY": 4477.1698,
+      "width": 480.7547,
+      "height": 772.8302,
+      "art": "Art/Props/teahouse-v2",
+      "radius": 0,
+      "collisionDepth": 765.283,
+      "collisionTop": 662.6415,
+      "buildingClass": "two-storey",
+      "collisionRects": [
+        {
+          "x0": -187.5472,
+          "y0": 662.6415,
+          "x1": 196.6038,
+          "y1": 765.283,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 765.283,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "cdfc8d24dde39e97ff0aac8ced7ee5eadb14fd30e083de70b2ac18ab056c1b74",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          878,
+          1014
+        ]
+      }
+    },
+    {
+      "id": "plot-lantern-market",
+      "kind": "prop",
+      "name": "市口灯笼",
+      "footX": 3290,
+      "footY": 4991.4648,
+      "width": 60,
+      "height": 150,
+      "art": "Art/Props/lantern-pole",
+      "radius": 0,
+      "collisionDepth": 148.5352,
+      "collisionTop": 122.6074,
+      "collisionRects": [
+        {
+          "x0": -9.6585,
+          "y0": 122.6074,
+          "x1": 7.6098,
+          "y1": 148.5352,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 148.5352,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "c3cf481edbf3c94fc46ef8d8c3fd7c7da10b777df757f1dde3bd0a3d88ebfca1",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          837,
+          1014
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -1.0244,
+        "x1": -1.0244,
+        "y": 135.5713,
+        "radius": 8.6341
+      },
+      "hostPlotId": "plot-street-square-tea",
+      "vignetteGroup": "tea-market-edge"
+    },
+    {
+      "id": "plot-lantern-street-02",
+      "kind": "prop",
+      "name": "街巷灯笼",
+      "footX": 3710,
+      "footY": 4736.4648,
+      "width": 60,
+      "height": 150,
+      "art": "Art/Props/lantern-pole",
+      "radius": 0,
+      "collisionDepth": 148.5352,
+      "collisionTop": 122.6074,
+      "collisionRects": [
+        {
+          "x0": -9.6585,
+          "y0": 122.6074,
+          "x1": 7.6098,
+          "y1": 148.5352,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 148.5352,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "c3cf481edbf3c94fc46ef8d8c3fd7c7da10b777df757f1dde3bd0a3d88ebfca1",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          837,
+          1014
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -1.0244,
+        "x1": -1.0244,
+        "y": 135.5713,
+        "radius": 8.6341
+      },
+      "hostPlotId": "plot-street-square-tea",
+      "vignetteGroup": "tea-market-edge"
+    },
+    {
+      "id": "plot-market-cart",
+      "kind": "stall",
+      "name": "载货木轮车",
+      "footX": 3135,
+      "footY": 5025.0,
+      "width": 140,
+      "height": 120,
+      "art": "Art/Props/market-cart",
+      "radius": 0,
+      "collisionDepth": 118.8281,
+      "collisionTop": 102.6562,
+      "collisionRects": [
+        {
+          "x0": -53.9498,
+          "y0": 102.6562,
+          "x1": 54.1841,
+          "y1": 118.8281,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 118.8281,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "3b2ceb0ae98e10c6edd1d19129cf3bd22e6c92f8ca8a9a323be5862b577a3c29",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          876,
+          1014
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -45.8638,
+        "x1": 46.0981,
+        "y": 110.7422,
+        "radius": 8.086
+      },
+      "hostPlotId": "plot-street-square-tea",
+      "vignetteGroup": "tea-market-edge"
+    },
+    {
+      "id": "plot-market-vignette",
+      "kind": "prop",
+      "name": "西市酒坛石磨柴棚",
+      "footX": 2660,
+      "footY": 6140,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/qingshi-market-vignette",
+      "radius": 0,
+      "collisionTop": 247.0833,
+      "collisionDepth": 296.25,
+      "collisionRects": [
+        {
+          "x0": -77.9167,
+          "y0": 247.0833,
+          "x1": 141.6667,
+          "y1": 296.25,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 296.25,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "cac4cb658a133c1604c41e37b959cc93de5eecb7e2ef544c6a2152d2808cbaa5",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          593,
+          711
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -53.3334,
+        "x1": 117.0833,
+        "y": 271.6667,
+        "radius": 24.5833
+      }
+    },
+    {
+      "id": "plot-ancestral-lion-west",
+      "kind": "prop",
+      "name": "张氏祠堂西石狮",
+      "footX": 3200,
+      "footY": 2169.5122,
+      "width": 90.3512,
+      "height": 126,
+      "art": "Art/Props/Nov7/lion-sumeru-plinth",
+      "radius": 0,
+      "collisionDepth": 125.4878,
+      "collisionTop": 109.4878,
+      "collisionRects": [
+        {
+          "x0": -38.851,
+          "x1": 38.851,
+          "y0": 109.4878,
+          "y1": 125.4878,
+          "role": "sumeru-plinth"
+        }
+      ],
+      "groundFootOffset": 125.4878,
+      "footprint": {
+        "version": 2,
+        "shape": "rectangles",
+        "sourceSha256": "f912e716c523f452c29b1f0d99343b62522c47793b0dbb1ac8ef7dea9badcae2",
+        "alphaThreshold": 128,
+        "groundPreserved": 2380.0
+      },
+      "hostPlotId": "plot-ancestral-hall",
+      "vignetteGroup": "ancestral-entry"
+    },
+    {
+      "id": "plot-ancestral-lion-east",
+      "kind": "prop",
+      "name": "张氏祠堂东石狮",
+      "footX": 3640,
+      "footY": 2169.5122,
+      "width": 90.3512,
+      "height": 126,
+      "art": "Art/Props/Nov7/lion-sumeru-plinth",
+      "radius": 0,
+      "collisionDepth": 125.4878,
+      "collisionTop": 109.4878,
+      "collisionRects": [
+        {
+          "x0": -38.851,
+          "x1": 38.851,
+          "y0": 109.4878,
+          "y1": 125.4878,
+          "role": "sumeru-plinth"
+        }
+      ],
+      "groundFootOffset": 125.4878,
+      "footprint": {
+        "version": 2,
+        "shape": "rectangles",
+        "sourceSha256": "f912e716c523f452c29b1f0d99343b62522c47793b0dbb1ac8ef7dea9badcae2",
+        "alphaThreshold": 128,
+        "groundPreserved": 2380.0
+      },
+      "hostPlotId": "plot-ancestral-hall",
+      "vignetteGroup": "ancestral-entry"
+    },
+    {
+      "id": "plot-ancient-locust",
+      "kind": "tree",
+      "name": "镇中古槐（现有原型，祈福红绸待美术）",
+      "footX": 4096,
+      "footY": 4184.3333,
+      "width": 520,
+      "height": 520,
+      "art": "Art/Props/ancient-locust",
+      "radius": 0,
+      "collisionDepth": 515.6667,
+      "collisionTop": 454.4583,
+      "collisionRects": [
+        {
+          "x0": -165.2083,
+          "y0": 454.4583,
+          "x1": 152.75,
+          "y1": 515.6667,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 515.6667,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "9d501500196a7d08a37f3d62dd99f6fcac17e9a8132fbf6c68a6079d15d6299c",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -134.6041,
+        "x1": 122.1458,
+        "y": 485.0625,
+        "radius": 30.6042
+      }
+    },
+    {
+      "id": "plot-pine-east-04",
+      "kind": "tree",
+      "name": "东街夹道树",
+      "footX": 6660,
+      "footY": 4840,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/bamboo",
+      "radius": 0,
+      "collisionDepth": 288.4375,
+      "collisionTop": 254.0625,
+      "collisionRects": [
+        {
+          "x0": -120.9375,
+          "y0": 254.0625,
+          "x1": 115.0,
+          "y1": 288.4375,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 288.4375,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "7d6389136f2250296670171399e75da696fe2d1fda2c6c7f112483fe5f903074",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          813,
+          923
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -103.75,
+        "x1": 97.8125,
+        "y": 271.25,
+        "radius": 17.1875
+      }
+    },
+    {
+      "id": "plot-pine-west-03",
+      "kind": "tree",
+      "name": "西街夹道树",
+      "footX": 1560,
+      "footY": 4840,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 297.5,
+      "collisionTop": 262.1875,
+      "collisionRects": [
+        {
+          "x0": -109.0625,
+          "y0": 262.1875,
+          "x1": 119.0625,
+          "y1": 297.5,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 297.5,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -91.4062,
+        "x1": 101.4062,
+        "y": 279.8438,
+        "radius": 17.6562
+      }
+    },
+    {
+      "id": "plot-herbal-garden",
+      "kind": "building",
+      "name": "梯田药圃",
+      "footX": 5250,
+      "footY": 4860,
+      "width": 389.8857,
+      "height": 377,
+      "art": "Art/Props/residence",
+      "radius": 0,
+      "collisionDepth": 373.3184,
+      "collisionTop": 323.248,
+      "buildingClass": "courtyard",
+      "collisionRects": [
+        {
+          "x0": -129.0415,
+          "y0": 323.248,
+          "x1": 163.6489,
+          "y1": 373.3184,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 373.3184,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "e3e967fe38e6d7c7e11c747855f39be8bc331d198d5c713e7e126df6965745d3",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          878,
+          1014
+        ]
+      }
+    },
+    {
+      "id": "plot-street-east-gate",
+      "kind": "building",
+      "name": "东口铺面",
+      "footX": 6274.584,
+      "footY": 4950,
+      "width": 448.3984,
+      "height": 520,
+      "art": "Art/Props/shop-front-v2",
+      "radius": 0,
+      "collisionDepth": 514.9219,
+      "collisionTop": 445.8594,
+      "buildingClass": "single-storey",
+      "collisionRects": [
+        {
+          "x0": -135.332,
+          "y0": 445.8594,
+          "x1": 142.9492,
+          "y1": 514.9219,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 514.9219,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "0169fdaf3a24f08a03eb1c268729359f9f5a545070c291cbdf7da7d95ba0c0e9",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          878,
+          1014
+        ]
+      }
+    },
+    {
+      "id": "plot-street-locust-tea",
+      "kind": "building",
+      "name": "古槐荫下茶摊",
+      "footX": 2844.683,
+      "footY": 4477.1698,
+      "width": 480.7547,
+      "height": 772.8302,
+      "art": "Art/Props/teahouse-v2",
+      "radius": 0,
+      "collisionDepth": 765.283,
+      "collisionTop": 662.6415,
+      "buildingClass": "two-storey",
+      "collisionRects": [
+        {
+          "x0": -187.5472,
+          "y0": 662.6415,
+          "x1": 196.6038,
+          "y1": 765.283,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 765.283,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "cdfc8d24dde39e97ff0aac8ced7ee5eadb14fd30e083de70b2ac18ab056c1b74",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          878,
+          1014
+        ]
+      }
+    },
+    {
+      "id": "clutter-rubble-notice",
+      "kind": "prop",
+      "name": "广场西沿乱石",
+      "footX": 3040,
+      "footY": 5150,
+      "width": 90,
+      "height": 90,
+      "art": "Art/Props/rubble",
+      "radius": 0,
+      "collisionDepth": 89.0625,
+      "collisionTop": 83.9062,
+      "collisionRects": [
+        {
+          "x0": -42.0,
+          "y0": 83.9062,
+          "x1": 40.3125,
+          "y1": 89.0625,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 89.0625,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "beeb4f286da9697153fd8c488096dd488cf25bd5ca2aaddfbaa43b8e9e53b51b",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          895,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -39.4218,
+        "x1": 37.7343,
+        "y": 86.4844,
+        "radius": 2.5782
+      }
+    },
+    {
+      "id": "plot-lantern-street-03",
+      "kind": "prop",
+      "name": "街巷灯笼",
+      "footX": 5250,
+      "footY": 7291.4648,
+      "width": 60,
+      "height": 150,
+      "art": "Art/Props/lantern-pole",
+      "radius": 0,
+      "collisionDepth": 148.5352,
+      "collisionTop": 122.6074,
+      "collisionRects": [
+        {
+          "x0": -9.6585,
+          "y0": 122.6074,
+          "x1": 7.6098,
+          "y1": 148.5352,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 148.5352,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "c3cf481edbf3c94fc46ef8d8c3fd7c7da10b777df757f1dde3bd0a3d88ebfca1",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          837,
+          1014
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -1.0244,
+        "x1": -1.0244,
+        "y": 135.5713,
+        "radius": 8.6341
+      },
+      "hostPlotId": "plot-cloth-shop",
+      "vignetteGroup": "cloth-front"
+    },
+    {
+      "id": "plot-notice-board",
+      "kind": "prop",
+      "name": "告示木牌",
+      "footX": 3730,
+      "footY": 5020,
+      "width": 130,
+      "height": 130,
+      "art": "Art/Props/notice-board",
+      "radius": 0,
+      "collisionDepth": 128.6458,
+      "collisionTop": 108.0625,
+      "collisionRects": [
+        {
+          "x0": -43.6042,
+          "y0": 108.0625,
+          "x1": 42.7917,
+          "y1": 128.6458,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 128.6458,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "8243d461e6d8ab02cc1849588a14888244ce4d38092fd7c00e283c42a24496d0",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          798,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -33.3125,
+        "x1": 32.5,
+        "y": 118.3542,
+        "radius": 10.2917
+      }
+    },
+    {
+      "id": "clutter-rubble-gate",
+      "kind": "prop",
+      "name": "东口乱石",
+      "footX": 5610,
+      "footY": 5130,
+      "width": 95,
+      "height": 95,
+      "art": "Art/Props/rubble",
+      "radius": 0,
+      "collisionDepth": 94.0104,
+      "collisionTop": 88.5677,
+      "collisionRects": [
+        {
+          "x0": -44.3333,
+          "y0": 88.5677,
+          "x1": 42.5521,
+          "y1": 94.0104,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 94.0104,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "beeb4f286da9697153fd8c488096dd488cf25bd5ca2aaddfbaa43b8e9e53b51b",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          895,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -41.612,
+        "x1": 39.8308,
+        "y": 91.2891,
+        "radius": 2.7214
+      }
+    },
+    {
+      "id": "plot-pine-east-03",
+      "kind": "tree",
+      "name": "东街夹道树",
+      "footX": 6660,
+      "footY": 5176,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 297.5,
+      "collisionTop": 262.1875,
+      "collisionRects": [
+        {
+          "x0": -109.0625,
+          "y0": 262.1875,
+          "x1": 119.0625,
+          "y1": 297.5,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 297.5,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -91.4062,
+        "x1": 101.4062,
+        "y": 279.8438,
+        "radius": 17.6562
+      }
+    },
+    {
+      "id": "plot-millstone",
+      "kind": "prop",
+      "name": "青石磨盘",
+      "footX": 1780,
+      "footY": 7101.0312,
+      "width": 110,
+      "height": 110,
+      "art": "Art/Props/millstone",
+      "radius": 0,
+      "collisionDepth": 108.9688,
+      "collisionTop": 89.6042,
+      "collisionRects": [
+        {
+          "x0": -46.1771,
+          "y0": 89.6042,
+          "x1": 46.5208,
+          "y1": 108.9688,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 108.9688,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "2481a089f77100883c0c3d6c667d3acbf924bcd7e634d48430f2d9ddf0a3a8d4",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          782,
+          951
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -36.4948,
+        "x1": 36.8385,
+        "y": 99.2865,
+        "radius": 9.6823
+      },
+      "hostPlotId": "plot-grain-shop",
+      "vignetteGroup": "grain-yard"
+    },
+    {
+      "id": "plot-pine-west-04",
+      "kind": "tree",
+      "name": "西街夹道树",
+      "footX": 2080,
+      "footY": 5300,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/mountain-pine",
+      "radius": 0,
+      "collisionDepth": 297.5,
+      "collisionTop": 262.5,
+      "collisionRects": [
+        {
+          "x0": -131.5625,
+          "y0": 262.5,
+          "x1": 98.125,
+          "y1": 297.5,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 297.5,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "dd25a60b01db41c840e65a515817494416b773b0dbd9646f7742012f4e3764c6",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          840,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -114.0625,
+        "x1": 80.625,
+        "y": 280.0,
+        "radius": 17.5
+      }
+    },
+    {
+      "id": "market-stall-south-01",
+      "kind": "stall",
+      "name": "市集干货摊",
+      "footX": 1880,
+      "footY": 7287.9352,
+      "width": 140,
+      "height": 152.6621,
+      "art": "Art/Props/Nov7/market-dry-goods-stall",
+      "radius": 0,
+      "collisionDepth": 152.1843,
+      "collisionTop": 124.5904,
+      "collisionRects": [
+        {
+          "x0": -56.6212,
+          "y0": 124.5904,
+          "x1": 57.3379,
+          "y1": 152.1843,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 152.0648,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "c93fab59192bcecd98c06c95fe9fefb32de951f0e4df346ddd3d4d50792755c1",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          1043,
+          1273
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -42.8242,
+        "x1": 43.541,
+        "y": 138.3874,
+        "radius": 13.7969
+      },
+      "hostPlotId": "plot-grain-shop",
+      "vignetteGroup": "grain-front"
+    },
+    {
+      "id": "plot-street-east-wine",
+      "kind": "building",
+      "name": "东沿临街酒楼",
+      "footX": 6284.218,
+      "footY": 6297.1698,
+      "width": 480.7547,
+      "height": 772.8302,
+      "art": "Art/Props/teahouse-v2",
+      "radius": 0,
+      "collisionDepth": 765.283,
+      "collisionTop": 662.6415,
+      "buildingClass": "two-storey",
+      "collisionRects": [
+        {
+          "x0": -187.5472,
+          "y0": 662.6415,
+          "x1": 196.6038,
+          "y1": 765.283,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 765.283,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "cdfc8d24dde39e97ff0aac8ced7ee5eadb14fd30e083de70b2ac18ab056c1b74",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          878,
+          1014
+        ]
+      }
+    },
+    {
+      "id": "plot-opera-stage",
+      "kind": "building",
+      "name": "万年台（戏台）",
+      "footX": 1700,
+      "footY": 5982.1833,
+      "width": 600,
+      "height": 403.0997,
+      "art": "Art/Props/Nov7/opera-stage-complete",
+      "radius": 0,
+      "collisionDepth": 400.2695,
+      "collisionTop": 364.2695,
+      "buildingClass": "wooden-stage",
+      "collisionRects": [
+        {
+          "x0": -246.0,
+          "y0": 348.2695,
+          "x1": 246.0,
+          "y1": 388.2695,
+          "role": "stage-plinth"
+        }
+      ],
+      "groundFootOffset": 400.2695,
+      "footprint": {
+        "version": 2,
+        "shape": "rectangles",
+        "sourceSha256": "7512c00885c949e6e62b306f037c99a0e97aa85e49b6fc610b8f0de8c6b668cf",
+        "alphaThreshold": 128,
+        "sourceGroundPixel": 990,
+        "groundPreserved": 6382.4528,
+        "reason": "Nov7 complete artwork; separately placed guardian lions retain established ground2380; courtyard opening excluded from walls"
+      }
+    },
+    {
+      "id": "plot-street-opera-west",
+      "kind": "building",
+      "name": "戏台西邻民居",
+      "footX": 2951.676,
+      "footY": 7329.7305,
+      "width": 600,
+      "height": 403.0997,
+      "art": "Art/Props/Nov7/opera-stage-complete",
+      "radius": 0,
+      "collisionDepth": 400.2695,
+      "collisionTop": 364.2695,
+      "buildingClass": "wooden-stage",
+      "collisionRects": [
+        {
+          "x0": -246.0,
+          "y0": 348.2695,
+          "x1": 246.0,
+          "y1": 388.2695,
+          "role": "stage-plinth"
+        }
+      ],
+      "groundFootOffset": 400.2695,
+      "footprint": {
+        "version": 2,
+        "shape": "rectangles",
+        "sourceSha256": "7512c00885c949e6e62b306f037c99a0e97aa85e49b6fc610b8f0de8c6b668cf",
+        "alphaThreshold": 128,
+        "sourceGroundPixel": 990,
+        "groundPreserved": 8162.4528,
+        "reason": "Nov7 complete artwork; separately placed guardian lions retain established ground2380; courtyard opening excluded from walls"
+      }
+    },
+    {
+      "id": "clutter-firewood-tea",
+      "kind": "prop",
+      "name": "茶棚柴堆",
+      "footX": 4930,
+      "footY": 4950.9896,
+      "width": 95,
+      "height": 95,
+      "art": "Art/Props/firewood-pile",
+      "radius": 0,
+      "collisionDepth": 94.0104,
+      "collisionTop": 80.849,
+      "collisionRects": [
+        {
+          "x0": -44.3333,
+          "y0": 80.849,
+          "x1": 44.3333,
+          "y1": 94.0104,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 94.0104,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "32ead71d55edf92a9c7f151d56f98de5c9e972550899eb23bc588e3fec5d1419",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          817,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -37.7526,
+        "x1": 37.7526,
+        "y": 87.4297,
+        "radius": 6.5807
+      },
+      "hostPlotId": "plot-teahouse",
+      "vignetteGroup": "teahouse-kitchen"
+    },
+    {
+      "id": "clutter-washing-south",
+      "kind": "prop",
+      "name": "戏台西浣衣石",
+      "footX": 2690,
+      "footY": 5320,
+      "width": 90,
+      "height": 90,
+      "art": "Art/Props/washing-stone",
+      "radius": 0,
+      "collisionDepth": 89.0625,
+      "collisionTop": 85.7812,
+      "collisionRects": [
+        {
+          "x0": -41.0625,
+          "y0": 85.7812,
+          "x1": 36.8438,
+          "y1": 89.0625,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 89.0625,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "537d94428393ee7b4216a929e61033f44d5c8c12b1f2ca6a64e90101dc17c827",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          915,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -39.4218,
+        "x1": 35.2032,
+        "y": 87.4219,
+        "radius": 1.6407
+      }
+    },
+    {
+      "id": "plot-street-east-home",
+      "kind": "building",
+      "name": "东街石屋",
+      "footX": 6387.066,
+      "footY": 5497.1698,
+      "width": 650.566,
+      "height": 772.8302,
+      "art": "Art/Props/stone-house-v2",
+      "radius": 0,
+      "collisionDepth": 765.283,
+      "collisionTop": 662.6415,
+      "buildingClass": "two-storey",
+      "collisionRects": [
+        {
+          "x0": -193.9623,
+          "y0": 662.6415,
+          "x1": 196.2264,
+          "y1": 765.283,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 765.283,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "6785ae149166fe364f000d3256886b191693cb1129ce35691789bf28a4d751cc",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          878,
+          1014
+        ]
+      }
+    },
+    {
+      "id": "clutter-firewood-opera",
+      "kind": "prop",
+      "name": "戏台后柴堆",
+      "footX": 1400,
+      "footY": 6131.0417,
+      "width": 100,
+      "height": 100,
+      "art": "Art/Props/firewood-pile",
+      "radius": 0,
+      "collisionDepth": 98.9583,
+      "collisionTop": 85.1042,
+      "collisionRects": [
+        {
+          "x0": -46.6667,
+          "y0": 85.1042,
+          "x1": 46.6667,
+          "y1": 98.9583,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 98.9583,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "32ead71d55edf92a9c7f151d56f98de5c9e972550899eb23bc588e3fec5d1419",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          817,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -39.7397,
+        "x1": 39.7397,
+        "y": 92.0312,
+        "radius": 6.927
+      },
+      "hostPlotId": "plot-opera-stage",
+      "vignetteGroup": "opera-backyard"
+    },
+    {
+      "id": "plot-lantern-street-04",
+      "kind": "prop",
+      "name": "街巷灯笼",
+      "footX": 4350,
+      "footY": 5031.4648,
+      "width": 60,
+      "height": 150,
+      "art": "Art/Props/lantern-pole",
+      "radius": 0,
+      "collisionDepth": 148.5352,
+      "collisionTop": 122.6074,
+      "collisionRects": [
+        {
+          "x0": -9.6585,
+          "y0": 122.6074,
+          "x1": 7.6098,
+          "y1": 148.5352,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 148.5352,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "c3cf481edbf3c94fc46ef8d8c3fd7c7da10b777df757f1dde3bd0a3d88ebfca1",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          837,
+          1014
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -1.0244,
+        "x1": -1.0244,
+        "y": 135.5713,
+        "radius": 8.6341
+      },
+      "hostPlotId": "plot-teahouse",
+      "vignetteGroup": "teahouse-kitchen"
+    },
+    {
+      "id": "market-stall-south-02",
+      "kind": "stall",
+      "name": "市集菜摊",
+      "footX": 2280,
+      "footY": 7261.7578,
+      "width": 140,
+      "height": 180,
+      "art": "Art/Props/market-stall",
+      "radius": 0,
+      "collisionDepth": 178.2422,
+      "collisionTop": 147.1289,
+      "collisionRects": [
+        {
+          "x0": -57.6884,
+          "y0": 147.1289,
+          "x1": 57.5126,
+          "y1": 178.2422,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 178.2422,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "d0c58ca6e3ef371075a383a4190eeb0e5322a6b32c18f25eb0a43a987209e1de",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          837,
+          1014
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -42.1317,
+        "x1": 41.9559,
+        "y": 162.6855,
+        "radius": 15.5567
+      },
+      "hostPlotId": "plot-grain-shop",
+      "vignetteGroup": "grain-front"
+    },
+    {
+      "id": "plot-lantern-street-06",
+      "kind": "prop",
+      "name": "街巷灯笼",
+      "footX": 5540,
+      "footY": 6511.4648,
+      "width": 60,
+      "height": 150,
+      "art": "Art/Props/lantern-pole",
+      "radius": 0,
+      "collisionDepth": 148.5352,
+      "collisionTop": 122.6074,
+      "collisionRects": [
+        {
+          "x0": -9.6585,
+          "y0": 122.6074,
+          "x1": 7.6098,
+          "y1": 148.5352,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 148.5352,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "c3cf481edbf3c94fc46ef8d8c3fd7c7da10b777df757f1dde3bd0a3d88ebfca1",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          837,
+          1014
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -1.0244,
+        "x1": -1.0244,
+        "y": 135.5713,
+        "radius": 8.6341
+      },
+      "hostPlotId": "plot-street-east-store",
+      "vignetteGroup": "east-store-edge"
+    },
+    {
+      "id": "clutter-firewood-grain",
+      "kind": "prop",
+      "name": "粮行柴堆",
+      "footX": 1780,
+      "footY": 6961.1458,
+      "width": 110,
+      "height": 110,
+      "art": "Art/Props/firewood-pile",
+      "radius": 0,
+      "collisionDepth": 108.8542,
+      "collisionTop": 93.6146,
+      "collisionRects": [
+        {
+          "x0": -51.3333,
+          "y0": 93.6146,
+          "x1": 51.3333,
+          "y1": 108.8542,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 108.8542,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "32ead71d55edf92a9c7f151d56f98de5c9e972550899eb23bc588e3fec5d1419",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          817,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -43.7135,
+        "x1": 43.7135,
+        "y": 101.2344,
+        "radius": 7.6198
+      },
+      "hostPlotId": "plot-grain-shop",
+      "vignetteGroup": "grain-yard"
+    },
+    {
+      "id": "bamboo-market-01",
+      "kind": "tree",
+      "name": "竹丛",
+      "footX": 2700,
+      "footY": 6820,
+      "width": 240,
+      "height": 240,
+      "art": "Art/Props/bamboo",
+      "radius": 0,
+      "collisionDepth": 230.75,
+      "collisionTop": 203.25,
+      "collisionRects": [
+        {
+          "x0": -96.75,
+          "y0": 203.25,
+          "x1": 92.0,
+          "y1": 230.75,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 230.75,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "7d6389136f2250296670171399e75da696fe2d1fda2c6c7f112483fe5f903074",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          813,
+          923
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -83.0,
+        "x1": 78.25,
+        "y": 217.0,
+        "radius": 13.75
+      }
+    },
+    {
+      "id": "plot-street-east-store",
+      "kind": "building",
+      "name": "东沿杂货铺",
+      "footX": 5300,
+      "footY": 6240,
+      "width": 405.2832,
+      "height": 470,
+      "art": "Art/Props/shop-front-v2",
+      "radius": 0,
+      "collisionDepth": 465.4102,
+      "collisionTop": 402.9883,
+      "buildingClass": "single-storey",
+      "collisionRects": [
+        {
+          "x0": -122.3193,
+          "y0": 402.9883,
+          "x1": 129.2041,
+          "y1": 465.4102,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 465.4102,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "0169fdaf3a24f08a03eb1c268729359f9f5a545070c291cbdf7da7d95ba0c0e9",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          878,
+          1014
+        ]
+      }
+    },
+    {
+      "id": "plot-farm-willow-01",
+      "kind": "tree",
+      "name": "田埂柳",
+      "footX": 2110,
+      "footY": 6140,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 297.5,
+      "collisionTop": 262.1875,
+      "collisionRects": [
+        {
+          "x0": -109.0625,
+          "y0": 262.1875,
+          "x1": 119.0625,
+          "y1": 297.5,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 297.5,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -91.4062,
+        "x1": 101.4062,
+        "y": 279.8438,
+        "radius": 17.6562
+      }
+    },
+    {
+      "id": "clutter-bamboo-cloth",
+      "kind": "prop",
+      "name": "布庄后竹丛",
+      "footX": 5190,
+      "footY": 6070,
+      "width": 150,
+      "height": 150,
+      "art": "Art/Props/bamboo",
+      "radius": 0,
+      "collisionDepth": 144.2188,
+      "collisionTop": 118.5938,
+      "collisionRects": [
+        {
+          "x0": -60.4688,
+          "y0": 118.5938,
+          "x1": 57.5,
+          "y1": 144.2188,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 144.2188,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "7d6389136f2250296670171399e75da696fe2d1fda2c6c7f112483fe5f903074",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          759,
+          923
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -47.6563,
+        "x1": 44.6875,
+        "y": 131.4063,
+        "radius": 12.8125
+      }
+    },
+    {
+      "id": "plot-cloth-shop",
+      "kind": "building",
+      "name": "布庄",
+      "footX": 4950,
+      "footY": 6970,
+      "width": 520.0,
+      "height": 520,
+      "art": "Art/Props/shop-front",
+      "radius": 0,
+      "collisionDepth": 511.3333,
+      "collisionTop": 461.5,
+      "buildingClass": "single-storey",
+      "collisionRects": [
+        {
+          "x0": -213.4167,
+          "y0": 461.5,
+          "x1": 234.0,
+          "y1": 511.3333,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 511.3333,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "d56592ae4625991c2da99c9ca92b644ac5c28477cd1d2709effb876bee2c6b51",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          852,
+          944
+        ]
+      }
+    },
+    {
+      "id": "plot-grain-shop",
+      "kind": "building",
+      "name": "粮行",
+      "footX": 1989.708,
+      "footY": 6810,
+      "width": 455.0391,
+      "height": 440,
+      "art": "Art/Props/residence",
+      "radius": 0,
+      "collisionDepth": 435.7031,
+      "collisionTop": 377.2656,
+      "buildingClass": "courtyard",
+      "collisionRects": [
+        {
+          "x0": -150.6055,
+          "y0": 377.2656,
+          "x1": 190.9961,
+          "y1": 435.7031,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 435.7031,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "e3e967fe38e6d7c7e11c747855f39be8bc331d198d5c713e7e126df6965745d3",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          878,
+          1014
+        ]
+      }
+    },
+    {
+      "id": "plot-lantern-street-05",
+      "kind": "prop",
+      "name": "街巷灯笼",
+      "footX": 1800,
+      "footY": 7371.4648,
+      "width": 60,
+      "height": 150,
+      "art": "Art/Props/lantern-pole",
+      "radius": 0,
+      "collisionDepth": 148.5352,
+      "collisionTop": 122.6074,
+      "collisionRects": [
+        {
+          "x0": -9.6585,
+          "y0": 122.6074,
+          "x1": 7.6098,
+          "y1": 148.5352,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 148.5352,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "c3cf481edbf3c94fc46ef8d8c3fd7c7da10b777df757f1dde3bd0a3d88ebfca1",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          837,
+          1014
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -1.0244,
+        "x1": -1.0244,
+        "y": 135.5713,
+        "radius": 8.6341
+      },
+      "hostPlotId": "plot-grain-shop",
+      "vignetteGroup": "grain-front"
+    },
+    {
+      "id": "plot-town-gate-south",
+      "occlusion": {
+        "enabled": true
+      },
+      "kind": "building",
+      "name": "青石镇南门楼",
+      "footX": 3960,
+      "footY": 5329.5326,
+      "width": 2254,
+      "height": 1627.8889,
+      "art": "Art/Buildings/town-gate-south-wide",
+      "radius": 0,
+      "collisionRects": [
+        {
+          "x0": -1030.9963,
+          "y0": 1379.5315,
+          "x1": -321.4037,
+          "y1": 1381.6185,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1379.5315,
+          "x1": 1033.0833,
+          "y1": 1381.6185,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1033.0833,
+          "y0": 1381.6185,
+          "x1": -321.4037,
+          "y1": 1383.7056,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1381.6185,
+          "x1": 1033.0833,
+          "y1": 1383.7056,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1033.0833,
+          "y0": 1383.7056,
+          "x1": -321.4037,
+          "y1": 1392.0537,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1383.7056,
+          "x1": 1035.1704,
+          "y1": 1392.0537,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1035.1704,
+          "y0": 1392.0537,
+          "x1": -321.4037,
+          "y1": 1394.1408,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1392.0537,
+          "x1": 1035.1704,
+          "y1": 1394.1408,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1035.1704,
+          "y0": 1394.1408,
+          "x1": -321.4037,
+          "y1": 1402.4889,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1394.1408,
+          "x1": 1037.2574,
+          "y1": 1402.4889,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1037.2574,
+          "y0": 1402.4889,
+          "x1": -321.4037,
+          "y1": 1404.5759,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1402.4889,
+          "x1": 1037.2574,
+          "y1": 1404.5759,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1037.2574,
+          "y0": 1404.5759,
+          "x1": -319.3167,
+          "y1": 1406.663,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1404.5759,
+          "x1": 1037.2574,
+          "y1": 1406.663,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1037.2574,
+          "y0": 1406.663,
+          "x1": -315.1426,
+          "y1": 1417.0982,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1406.663,
+          "x1": 1039.3444,
+          "y1": 1417.0982,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1037.2574,
+          "y0": 1417.0982,
+          "x1": -315.1426,
+          "y1": 1419.1852,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1417.0982,
+          "x1": 1041.4315,
+          "y1": 1419.1852,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1039.3444,
+          "y0": 1419.1852,
+          "x1": -315.1426,
+          "y1": 1427.5333,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1419.1852,
+          "x1": 1041.4315,
+          "y1": 1427.5333,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1039.3444,
+          "y0": 1427.5333,
+          "x1": -315.1426,
+          "y1": 1429.6204,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1427.5333,
+          "x1": 1043.5185,
+          "y1": 1429.6204,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1041.4315,
+          "y0": 1429.6204,
+          "x1": -319.3167,
+          "y1": 1431.7074,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1429.6204,
+          "x1": 1043.5185,
+          "y1": 1431.7074,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1041.4315,
+          "y0": 1431.7074,
+          "x1": -321.4037,
+          "y1": 1440.0556,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1431.7074,
+          "x1": 1043.5185,
+          "y1": 1440.0556,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1043.5185,
+          "y0": 1440.0556,
+          "x1": -321.4037,
+          "y1": 1444.2296,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1440.0556,
+          "x1": 1043.5185,
+          "y1": 1444.2296,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1043.5185,
+          "y0": 1444.2296,
+          "x1": -319.3167,
+          "y1": 1446.3167,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1444.2296,
+          "x1": 1043.5185,
+          "y1": 1446.3167,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1043.5185,
+          "y0": 1446.3167,
+          "x1": -315.1426,
+          "y1": 1450.4908,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1446.3167,
+          "x1": 1045.6056,
+          "y1": 1450.4908,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1045.6056,
+          "y0": 1450.4908,
+          "x1": -315.1426,
+          "y1": 1465.1,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1450.4908,
+          "x1": 1047.6926,
+          "y1": 1465.1,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1047.6926,
+          "y0": 1465.1,
+          "x1": -315.1426,
+          "y1": 1473.4482,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1465.1,
+          "x1": 1049.7796,
+          "y1": 1473.4482,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1049.7796,
+          "y0": 1473.4482,
+          "x1": -315.1426,
+          "y1": 1475.5352,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1473.4482,
+          "x1": 1049.7796,
+          "y1": 1475.5352,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1049.7796,
+          "y0": 1475.5352,
+          "x1": -315.1426,
+          "y1": 1481.7963,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1475.5352,
+          "x1": 1051.8667,
+          "y1": 1481.7963,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1051.8667,
+          "y0": 1481.7963,
+          "x1": -315.1426,
+          "y1": 1483.8833,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1481.7963,
+          "x1": 1051.8667,
+          "y1": 1483.8833,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1051.8667,
+          "y0": 1483.8833,
+          "x1": -315.1426,
+          "y1": 1485.9704,
+          "role": "west-pier"
+        },
+        {
+          "x0": 317.2296,
+          "y0": 1483.8833,
+          "x1": 1051.8667,
+          "y1": 1485.9704,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1051.8667,
+          "y0": 1485.9704,
+          "x1": -315.1426,
+          "y1": 1488.0574,
+          "role": "west-pier"
+        },
+        {
+          "x0": 317.2296,
+          "y0": 1485.9704,
+          "x1": 1053.9537,
+          "y1": 1488.0574,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1051.8667,
+          "y0": 1488.0574,
+          "x1": -315.1426,
+          "y1": 1490.1445,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1488.0574,
+          "x1": 1053.9537,
+          "y1": 1490.1445,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1051.8667,
+          "y0": 1490.1445,
+          "x1": -313.0556,
+          "y1": 1494.3185,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1490.1445,
+          "x1": 1053.9537,
+          "y1": 1494.3185,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1051.8667,
+          "y0": 1494.3185,
+          "x1": -315.1426,
+          "y1": 1498.4926,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1494.3185,
+          "x1": 1053.9537,
+          "y1": 1498.4926,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1053.9537,
+          "y0": 1498.4926,
+          "x1": -315.1426,
+          "y1": 1506.8408,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1498.4926,
+          "x1": 1056.0407,
+          "y1": 1506.8408,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1056.0407,
+          "y0": 1506.8408,
+          "x1": -315.1426,
+          "y1": 1508.9278,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1506.8408,
+          "x1": 1056.0407,
+          "y1": 1508.9278,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1056.0407,
+          "y0": 1508.9278,
+          "x1": -315.1426,
+          "y1": 1521.45,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1508.9278,
+          "x1": 1058.1278,
+          "y1": 1521.45,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1058.1278,
+          "y0": 1521.45,
+          "x1": -315.1426,
+          "y1": 1527.7111,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1521.45,
+          "x1": 1060.2148,
+          "y1": 1527.7111,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1060.2148,
+          "y0": 1527.7111,
+          "x1": -315.1426,
+          "y1": 1529.7982,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1527.7111,
+          "x1": 1066.4759,
+          "y1": 1529.7982,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1068.563,
+          "y0": 1529.7982,
+          "x1": -315.1426,
+          "y1": 1531.8852,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1529.7982,
+          "x1": 1070.65,
+          "y1": 1531.8852,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1070.65,
+          "y0": 1531.8852,
+          "x1": -315.1426,
+          "y1": 1538.1463,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1531.8852,
+          "x1": 1070.65,
+          "y1": 1538.1463,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1072.737,
+          "y0": 1538.1463,
+          "x1": -315.1426,
+          "y1": 1556.9296,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1538.1463,
+          "x1": 1072.737,
+          "y1": 1556.9296,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1072.737,
+          "y0": 1556.9296,
+          "x1": -313.0556,
+          "y1": 1561.1037,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1556.9296,
+          "x1": 1072.737,
+          "y1": 1561.1037,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1072.737,
+          "y0": 1561.1037,
+          "x1": -315.1426,
+          "y1": 1563.1908,
+          "role": "west-pier"
+        },
+        {
+          "x0": 315.1426,
+          "y0": 1561.1037,
+          "x1": 1072.737,
+          "y1": 1563.1908,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1070.65,
+          "y0": 1563.1908,
+          "x1": -315.1426,
+          "y1": 1565.2778,
+          "role": "west-pier"
+        },
+        {
+          "x0": 317.2296,
+          "y0": 1563.1908,
+          "x1": 1072.737,
+          "y1": 1565.2778,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1070.65,
+          "y0": 1565.2778,
+          "x1": -319.3167,
+          "y1": 1567.3648,
+          "role": "west-pier"
+        },
+        {
+          "x0": 321.4037,
+          "y0": 1565.2778,
+          "x1": 1070.65,
+          "y1": 1567.3648,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1068.563,
+          "y0": 1567.3648,
+          "x1": -321.4037,
+          "y1": 1569.4519,
+          "role": "west-pier"
+        },
+        {
+          "x0": 323.4907,
+          "y0": 1567.3648,
+          "x1": 1068.563,
+          "y1": 1569.4519,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1070.65,
+          "y0": 1569.4519,
+          "x1": -325.5778,
+          "y1": 1571.5389,
+          "role": "west-pier"
+        },
+        {
+          "x0": 325.5778,
+          "y0": 1569.4519,
+          "x1": 1070.65,
+          "y1": 1571.5389,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1070.65,
+          "y0": 1571.5389,
+          "x1": -323.4907,
+          "y1": 1573.6259,
+          "role": "west-pier"
+        },
+        {
+          "x0": 329.7519,
+          "y0": 1571.5389,
+          "x1": 1070.65,
+          "y1": 1573.6259,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1070.65,
+          "y0": 1573.6259,
+          "x1": -329.7519,
+          "y1": 1575.713,
+          "role": "west-pier"
+        },
+        {
+          "x0": 327.6648,
+          "y0": 1573.6259,
+          "x1": 1072.737,
+          "y1": 1575.713,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1072.737,
+          "y0": 1575.713,
+          "x1": -333.9259,
+          "y1": 1577.8,
+          "role": "west-pier"
+        },
+        {
+          "x0": 336.013,
+          "y0": 1575.713,
+          "x1": 1072.737,
+          "y1": 1577.8,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1072.737,
+          "y0": 1577.8,
+          "x1": -331.8389,
+          "y1": 1579.887,
+          "role": "west-pier"
+        },
+        {
+          "x0": 336.013,
+          "y0": 1577.8,
+          "x1": 1072.737,
+          "y1": 1579.887,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1072.737,
+          "y0": 1579.887,
+          "x1": -338.1,
+          "y1": 1581.9741,
+          "role": "west-pier"
+        },
+        {
+          "x0": 336.013,
+          "y0": 1579.887,
+          "x1": 1074.8241,
+          "y1": 1581.9741,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1072.737,
+          "y0": 1581.9741,
+          "x1": -346.4481,
+          "y1": 1584.0611,
+          "role": "west-pier"
+        },
+        {
+          "x0": 348.5352,
+          "y0": 1581.9741,
+          "x1": 1074.8241,
+          "y1": 1584.0611,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1072.737,
+          "y0": 1584.0611,
+          "x1": -346.4481,
+          "y1": 1586.1482,
+          "role": "west-pier"
+        },
+        {
+          "x0": 354.7963,
+          "y0": 1584.0611,
+          "x1": 1074.8241,
+          "y1": 1586.1482,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1072.737,
+          "y0": 1586.1482,
+          "x1": -354.7963,
+          "y1": 1588.2352,
+          "role": "west-pier"
+        },
+        {
+          "x0": 350.6222,
+          "y0": 1586.1482,
+          "x1": 1074.8241,
+          "y1": 1588.2352,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1072.737,
+          "y0": 1588.2352,
+          "x1": -350.6222,
+          "y1": 1592.4093,
+          "role": "west-pier"
+        },
+        {
+          "x0": 350.6222,
+          "y0": 1588.2352,
+          "x1": 1074.8241,
+          "y1": 1592.4093,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1074.8241,
+          "y0": 1592.4093,
+          "x1": -354.7963,
+          "y1": 1598.6704,
+          "role": "west-pier"
+        },
+        {
+          "x0": 354.7963,
+          "y0": 1592.4093,
+          "x1": 1074.8241,
+          "y1": 1598.6704,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1074.8241,
+          "y0": 1598.6704,
+          "x1": -358.9704,
+          "y1": 1600.7574,
+          "role": "west-pier"
+        },
+        {
+          "x0": 358.9704,
+          "y0": 1598.6704,
+          "x1": 1076.9111,
+          "y1": 1600.7574,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1074.8241,
+          "y0": 1600.7574,
+          "x1": -361.0574,
+          "y1": 1602.8445,
+          "role": "west-pier"
+        },
+        {
+          "x0": 358.9704,
+          "y0": 1600.7574,
+          "x1": 1076.9111,
+          "y1": 1602.8445,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1074.8241,
+          "y0": 1602.8445,
+          "x1": -363.1444,
+          "y1": 1604.9315,
+          "role": "west-pier"
+        },
+        {
+          "x0": 358.9704,
+          "y0": 1602.8445,
+          "x1": 1076.9111,
+          "y1": 1604.9315,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1076.9111,
+          "y0": 1604.9315,
+          "x1": -367.3185,
+          "y1": 1607.0185,
+          "role": "west-pier"
+        },
+        {
+          "x0": 361.0574,
+          "y0": 1604.9315,
+          "x1": 1076.9111,
+          "y1": 1607.0185,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1076.9111,
+          "y0": 1607.0185,
+          "x1": -386.1019,
+          "y1": 1609.1056,
+          "role": "west-pier"
+        },
+        {
+          "x0": 386.1019,
+          "y0": 1607.0185,
+          "x1": 1076.9111,
+          "y1": 1609.1056,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1076.9111,
+          "y0": 1609.1056,
+          "x1": -369.4056,
+          "y1": 1611.1926,
+          "role": "west-pier"
+        },
+        {
+          "x0": 369.4056,
+          "y0": 1609.1056,
+          "x1": 1078.9981,
+          "y1": 1611.1926,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1076.9111,
+          "y0": 1611.1926,
+          "x1": -390.2759,
+          "y1": 1613.2796,
+          "role": "west-pier"
+        },
+        {
+          "x0": 392.363,
+          "y0": 1611.1926,
+          "x1": 1078.9981,
+          "y1": 1613.2796,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1076.9111,
+          "y0": 1613.2796,
+          "x1": -394.45,
+          "y1": 1615.3667,
+          "role": "west-pier"
+        },
+        {
+          "x0": 390.2759,
+          "y0": 1613.2796,
+          "x1": 1078.9981,
+          "y1": 1615.3667,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1078.9981,
+          "y0": 1615.3667,
+          "x1": -398.6241,
+          "y1": 1617.4537,
+          "role": "west-pier"
+        },
+        {
+          "x0": 396.537,
+          "y0": 1615.3667,
+          "x1": 1078.9981,
+          "y1": 1617.4537,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1078.9981,
+          "y0": 1617.4537,
+          "x1": -398.6241,
+          "y1": 1619.5408,
+          "role": "west-pier"
+        },
+        {
+          "x0": 400.7111,
+          "y0": 1617.4537,
+          "x1": 1078.9981,
+          "y1": 1619.5408,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1076.9111,
+          "y0": 1619.5408,
+          "x1": -398.6241,
+          "y1": 1621.6278,
+          "role": "west-pier"
+        },
+        {
+          "x0": 398.6241,
+          "y0": 1619.5408,
+          "x1": 1078.9981,
+          "y1": 1621.6278,
+          "role": "east-pier"
+        },
+        {
+          "x0": -1076.9111,
+          "y0": 1621.6278,
+          "x1": -404.8852,
+          "y1": 1623.7148,
+          "role": "west-pier"
+        },
+        {
+          "x0": 402.7981,
+          "y0": 1621.6278,
+          "x1": 1076.9111,
+          "y1": 1623.7148,
+          "role": "east-pier"
+        }
+      ],
+      "collisionTop": 1379.5315,
+      "collisionDepth": 1623.7148,
+      "buildingClass": "gate-landmark",
+      "groundFootOffset": 1623.7148,
+      "footprint": {
+        "version": 1,
+        "shape": "rectangles",
+        "bottomFraction": 0.15,
+        "sourceSha256": "36c9f9022be112410c0fb1f6cfe639fbd6d6ed48d7169b3d6dab9c645e01e407",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          661,
+          778
+        ]
+      },
+      "landmarkScale": {
+        "basis": "2026-11-06 architect decision: original-aspect city-gate landmark; ordinary two-storey bounds unchanged",
+        "requiredClearWidth": 620,
+        "pedestrianClearance": 60,
+        "groundAnchor": [
+          3960,
+          6953.2474
+        ],
+        "integerWidthMinimum": 2254,
+        "sourceOpeningPixels": 301
+      }
+    },
+    {
+      "id": "plot-farm-willow-02",
+      "kind": "tree",
+      "name": "田埂柳",
+      "footX": 2160,
+      "footY": 6460,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 297.5,
+      "collisionTop": 262.1875,
+      "collisionRects": [
+        {
+          "x0": -109.0625,
+          "y0": 262.1875,
+          "x1": 119.0625,
+          "y1": 297.5,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 297.5,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -91.4062,
+        "x1": 101.4062,
+        "y": 279.8438,
+        "radius": 17.6562
+      }
+    },
+    {
+      "id": "plot-farm-willow-03",
+      "kind": "tree",
+      "name": "田埂柳",
+      "footX": 1844,
+      "footY": 6500,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 297.5,
+      "collisionTop": 262.1875,
+      "collisionRects": [
+        {
+          "x0": -109.0625,
+          "y0": 262.1875,
+          "x1": 119.0625,
+          "y1": 297.5,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 297.5,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -91.4062,
+        "x1": 101.4062,
+        "y": 279.8438,
+        "radius": 17.6562
+      }
+    },
+    {
+      "id": "plot-pine-south-01",
+      "kind": "tree",
+      "name": "官道夹道松",
+      "footX": 3162,
+      "footY": 7170,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/mountain-pine",
+      "radius": 0,
+      "collisionDepth": 297.5,
+      "collisionTop": 262.5,
+      "collisionRects": [
+        {
+          "x0": -131.5625,
+          "y0": 262.5,
+          "x1": 98.125,
+          "y1": 297.5,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 297.5,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "dd25a60b01db41c840e65a515817494416b773b0dbd9646f7742012f4e3764c6",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          840,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -114.0625,
+        "x1": 80.625,
+        "y": 280.0,
+        "radius": 17.5
+      }
+    },
+    {
+      "id": "plot-pine-south-02",
+      "kind": "tree",
+      "name": "垂柳",
+      "footX": 4350,
+      "footY": 6980,
+      "width": 285,
+      "height": 285,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 282.625,
+      "collisionTop": 249.0781,
+      "collisionRects": [
+        {
+          "x0": -103.6094,
+          "y0": 249.0781,
+          "x1": 113.1094,
+          "y1": 282.625,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 282.625,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -86.8359,
+        "x1": 96.3359,
+        "y": 265.8515,
+        "radius": 16.7734
+      }
+    },
+    {
+      "id": "plot-farm-willow-04",
+      "kind": "tree",
+      "name": "田埂柳",
+      "footX": 2740,
+      "footY": 7080,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/bamboo",
+      "radius": 0,
+      "collisionDepth": 288.4375,
+      "collisionTop": 254.0625,
+      "collisionRects": [
+        {
+          "x0": -120.9375,
+          "y0": 254.0625,
+          "x1": 115.0,
+          "y1": 288.4375,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 288.4375,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "7d6389136f2250296670171399e75da696fe2d1fda2c6c7f112483fe5f903074",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          813,
+          923
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -103.75,
+        "x1": 97.8125,
+        "y": 271.25,
+        "radius": 17.1875
+      }
+    },
+    {
+      "id": "plot-field-haystack-01",
+      "kind": "prop",
+      "name": "田间草垛",
+      "footX": 3040,
+      "footY": 7020,
+      "width": 140,
+      "height": 140,
+      "art": "Art/Props/haystack",
+      "radius": 0,
+      "collisionDepth": 138.8333,
+      "collisionTop": 116.6667,
+      "collisionRects": [
+        {
+          "x0": -65.3333,
+          "y0": 116.6667,
+          "x1": 65.625,
+          "y1": 138.8333,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 138.8333,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "f6515baab93bed69715de56dadfcefabd3cbb240843e584906456230c2bc9bff",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          800,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -54.25,
+        "x1": 54.5417,
+        "y": 127.75,
+        "radius": 11.0833
+      }
+    },
+    {
+      "id": "plot-pine-south-03",
+      "kind": "prop",
+      "name": "农家柴堆",
+      "footX": 3440,
+      "footY": 7060,
+      "width": 125,
+      "height": 125,
+      "art": "Art/Props/firewood-pile",
+      "radius": 0,
+      "collisionDepth": 123.6979,
+      "collisionTop": 106.3802,
+      "collisionRects": [
+        {
+          "x0": -58.3333,
+          "y0": 106.3802,
+          "x1": 58.3333,
+          "y1": 123.6979,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 123.6979,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "32ead71d55edf92a9c7f151d56f98de5c9e972550899eb23bc588e3fec5d1419",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          817,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -49.6745,
+        "x1": 49.6745,
+        "y": 115.0391,
+        "radius": 8.6589
+      }
+    },
+    {
+      "id": "plot-field-haystack-02",
+      "kind": "prop",
+      "name": "田间草垛",
+      "footX": 5350,
+      "footY": 7050,
+      "width": 140,
+      "height": 140,
+      "art": "Art/Props/haystack",
+      "radius": 0,
+      "collisionDepth": 138.8333,
+      "collisionTop": 116.6667,
+      "collisionRects": [
+        {
+          "x0": -65.3333,
+          "y0": 116.6667,
+          "x1": 65.625,
+          "y1": 138.8333,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 138.8333,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "f6515baab93bed69715de56dadfcefabd3cbb240843e584906456230c2bc9bff",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          800,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -54.25,
+        "x1": 54.5417,
+        "y": 127.75,
+        "radius": 11.0833
+      }
+    },
+    {
+      "id": "plot-pine-south-04",
+      "kind": "prop",
+      "name": "农家草垛",
+      "footX": 4590,
+      "footY": 7180,
+      "width": 155,
+      "height": 155,
+      "art": "Art/Props/haystack",
+      "radius": 0,
+      "collisionDepth": 153.7083,
+      "collisionTop": 129.1667,
+      "collisionRects": [
+        {
+          "x0": -72.3333,
+          "y0": 129.1667,
+          "x1": 72.6562,
+          "y1": 153.7083,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 153.7083,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "f6515baab93bed69715de56dadfcefabd3cbb240843e584906456230c2bc9bff",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          800,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -60.0625,
+        "x1": 60.3854,
+        "y": 141.4375,
+        "radius": 12.2708
+      }
+    },
+    {
+      "id": "plot-pine-south-05",
+      "kind": "tree",
+      "name": "垂柳",
+      "footX": 3310,
+      "footY": 7490,
+      "width": 270,
+      "height": 270,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 267.75,
+      "collisionTop": 235.9688,
+      "collisionRects": [
+        {
+          "x0": -98.1562,
+          "y0": 235.9688,
+          "x1": 107.1562,
+          "y1": 267.75,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 267.75,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -82.2656,
+        "x1": 91.2656,
+        "y": 251.8594,
+        "radius": 15.8906
+      }
+    },
+    {
+      "id": "plot-pine-south-06",
+      "kind": "prop",
+      "name": "打谷石磨",
+      "footX": 4640,
+      "footY": 7510,
+      "width": 135,
+      "height": 135,
+      "art": "Art/Props/millstone",
+      "radius": 0,
+      "collisionDepth": 133.7344,
+      "collisionTop": 109.9688,
+      "collisionRects": [
+        {
+          "x0": -56.6719,
+          "y0": 109.9688,
+          "x1": 57.0938,
+          "y1": 133.7344,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 133.7344,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "2481a089f77100883c0c3d6c667d3acbf924bcd7e634d48430f2d9ddf0a3a8d4",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          782,
+          951
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -44.7891,
+        "x1": 45.211,
+        "y": 121.8516,
+        "radius": 11.8828
+      }
+    },
+    {
+      "id": "plot-field-willow-01",
+      "kind": "tree",
+      "name": "田头柳",
+      "footX": 5420,
+      "footY": 7520,
+      "width": 300,
+      "height": 300,
+      "art": "Art/Props/willow",
+      "radius": 0,
+      "collisionDepth": 297.5,
+      "collisionTop": 262.1875,
+      "collisionRects": [
+        {
+          "x0": -109.0625,
+          "y0": 262.1875,
+          "x1": 119.0625,
+          "y1": 297.5,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 297.5,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.12,
+        "sourceSha256": "085b0aa970ccf706b6f6d39f993a5590305785812b1730cb3faf850cf88dfaca",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          839,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -91.4062,
+        "x1": 101.4062,
+        "y": 279.8438,
+        "radius": 17.6562
+      }
+    },
+    {
+      "id": "plot-pine-south-07",
+      "kind": "prop",
+      "name": "农家草垛",
+      "footX": 3460,
+      "footY": 7800,
+      "width": 150,
+      "height": 150,
+      "art": "Art/Props/haystack",
+      "radius": 0,
+      "collisionDepth": 148.75,
+      "collisionTop": 125.0,
+      "collisionRects": [
+        {
+          "x0": -70.0,
+          "y0": 125.0,
+          "x1": 70.3125,
+          "y1": 148.75,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 148.75,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "f6515baab93bed69715de56dadfcefabd3cbb240843e584906456230c2bc9bff",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          800,
+          952
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -58.125,
+        "x1": 58.4375,
+        "y": 136.875,
+        "radius": 11.875
+      }
+    },
+    {
+      "id": "plot-pine-south-08",
+      "kind": "prop",
+      "name": "农家柴堆",
+      "footX": 4560,
+      "footY": 7860,
+      "width": 120,
+      "height": 120,
+      "art": "Art/Props/firewood-pile",
+      "radius": 0,
+      "collisionDepth": 118.75,
+      "collisionTop": 102.125,
+      "collisionRects": [
+        {
+          "x0": -56.0,
+          "y0": 102.125,
+          "x1": 56.0,
+          "y1": 118.75,
+          "role": "ground-footprint"
+        }
+      ],
+      "groundFootOffset": 118.75,
+      "footprint": {
+        "version": 1,
+        "shape": "capsule",
+        "bottomFraction": 0.18,
+        "sourceSha256": "32ead71d55edf92a9c7f151d56f98de5c9e972550899eb23bc588e3fec5d1419",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          817,
+          950
+        ]
+      },
+      "collisionCapsule": {
+        "x0": -47.6875,
+        "x1": 47.6875,
+        "y": 110.4375,
+        "radius": 8.3125
+      }
+    },
+    {
+      "id": "plot-paifang-drum-west",
+      "kind": "prop",
+      "name": "牌坊抱鼓石",
+      "hostPlotId": "plot-paifang",
+      "footX": 3534,
+      "footY": 4068.4918,
+      "width": 81.0656,
+      "height": 100,
+      "art": "Art/Props/Nov7/white-marble-drum",
+      "radius": 0,
+      "groundFootOffset": 99.5082,
+      "collisionTop": 85.5082,
+      "collisionDepth": 99.5082,
+      "collisionRects": [
+        {
+          "x0": -34.0475,
+          "x1": 34.0475,
+          "y0": 85.5082,
+          "y1": 99.5082,
+          "role": "drum-stone-base"
+        }
+      ],
+      "footprint": {
+        "version": 2,
+        "shape": "rectangles",
+        "sourceSha256": "3ddd2a64a869bb7f338f3a7f7f1478acee81b8bf5c5512fce606e308900c635e",
+        "alphaThreshold": 128
+      }
+    },
+    {
+      "id": "plot-paifang-drum-east",
+      "kind": "prop",
+      "name": "牌坊抱鼓石",
+      "hostPlotId": "plot-paifang",
+      "footX": 3966,
+      "footY": 4068.4918,
+      "width": 81.0656,
+      "height": 100,
+      "art": "Art/Props/Nov7/white-marble-drum",
+      "radius": 0,
+      "groundFootOffset": 99.5082,
+      "collisionTop": 85.5082,
+      "collisionDepth": 99.5082,
+      "collisionRects": [
+        {
+          "x0": -34.0475,
+          "x1": 34.0475,
+          "y0": 85.5082,
+          "y1": 99.5082,
+          "role": "drum-stone-base"
+        }
+      ],
+      "footprint": {
+        "version": 2,
+        "shape": "rectangles",
+        "sourceSha256": "3ddd2a64a869bb7f338f3a7f7f1478acee81b8bf5c5512fce606e308900c635e",
+        "alphaThreshold": 128
+      }
+    },
+    {
+      "id": "plot-paifang-welcome-pine-west",
+      "kind": "tree",
+      "name": "牌坊青石树池迎客松",
+      "footX": 3500,
+      "footY": 3787.5269,
+      "width": 230.0,
+      "height": 233.4243,
+      "art": "Art/Props/Nov7/welcome-pine-stone-planter",
+      "radius": 0,
+      "collisionDepth": 232.4731,
+      "collisionTop": 200.703,
+      "collisionRects": [
+        {
+          "x0": -45.9429,
+          "x1": 52.2208,
+          "y0": 200.703,
+          "y1": 232.4731,
+          "role": "carved-stone-tree-planter"
+        }
+      ],
+      "groundFootOffset": 232.4731,
+      "footprint": {
+        "version": 3,
+        "shape": "rectangles",
+        "sourceSha256": "b9ed5add5939942f789d5de69e44923a00d37b550f3a1e7986db75e7a1206223",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          1055,
+          1227
+        ],
+        "groundPreserved": 4020,
+        "reason": "Section4: no yellow exposed soil; both planter roots outside main road and paifang walking strip; removed obsolete collisionCapsule so runtime registers new stone-planter rectangles"
+      },
+      "hostPlotId": "plot-paifang"
+    },
+    {
+      "id": "plot-paifang-welcome-pine-east",
+      "kind": "tree",
+      "name": "牌坊青石树池迎客松",
+      "footX": 3854,
+      "footY": 3787.5269,
+      "width": 230.0,
+      "height": 233.4243,
+      "art": "Art/Props/Nov7/welcome-pine-stone-planter",
+      "radius": 0,
+      "collisionDepth": 232.4731,
+      "collisionTop": 200.703,
+      "collisionRects": [
+        {
+          "x0": -45.9429,
+          "x1": 52.2208,
+          "y0": 200.703,
+          "y1": 232.4731,
+          "role": "carved-stone-tree-planter"
+        }
+      ],
+      "groundFootOffset": 232.4731,
+      "footprint": {
+        "version": 3,
+        "shape": "rectangles",
+        "sourceSha256": "b9ed5add5939942f789d5de69e44923a00d37b550f3a1e7986db75e7a1206223",
+        "alphaThreshold": 128,
+        "sourceBand": [
+          1055,
+          1227
+        ],
+        "groundPreserved": 4020,
+        "reason": "Section4: no yellow exposed soil; both planter roots outside main road and paifang walking strip; removed obsolete collisionCapsule so runtime registers new stone-planter rectangles",
+        "v2RuntimeCorrection": "Move east planter 4 world units east: remove measured 1.943-unit overlap with the V2 approach alley; retain the exact ground Y, art dimensions and solid footprint."
+      },
+      "hostPlotId": "plot-paifang"
+    }
+  ],
+  "layoutVersion": "2026-11-11-street-setback-ground-anchor"
+}

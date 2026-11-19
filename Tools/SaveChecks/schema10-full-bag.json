@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 10,
+  "slot": 2,
+  "characterId": "farmer",
+  "characterName": "\u5939\u51772",
+  "createdUtc": "2026-10-05T14:39:38.1431588\u002B00:00",
+  "updatedUtc": "2026-10-05T14:39:38.1553319\u002B00:00",
+  "location": "CharacterPreview",
+  "facing": 0,
+  "gender": "male",
+  "faceStyle": 0,
+  "traits": [],
+  "destiny": "",
+  "coins": 300,
+  "localReputation": 0,
+  "bag": [
+    {
+      "IsEmpty": false,
+      "id": "ganliang",
+      "count": 9
+    },
+    {
+      "IsEmpty": false,
+      "id": "chuibing",
+      "count": 9
+    },
+    {
+      "IsEmpty": false,
+      "id": "larou",
+      "count": 5
+    },
+    {
+      "IsEmpty": false,
+      "id": "jinchuangyao",
+      "count": 5
+    },
+    {
+      "IsEmpty": false,
+      "id": "caoyao",
+      "count": 20
+    },
+    {
+      "IsEmpty": false,
+      "id": "qinglingcao",
+      "count": 20
+    },
+    {
+      "IsEmpty": false,
+      "id": "elixir-warm",
+      "count": 5
+    },
+    {
+      "IsEmpty": false,
+      "id": "cudao",
+      "count": 1
+    },
+    {
+      "IsEmpty": false,
+      "id": "cubupao",
+      "count": 1
+    },
+    {
+      "IsEmpty": false,
+      "id": "zhudi",
+      "count": 1
+    },
+    {
+      "IsEmpty": false,
+      "id": "dongxiao",
+      "count": 1
+    },
+    {
+      "IsEmpty": false,
+      "id": "guqin",
+      "count": 1
+    },
+    {
+      "IsEmpty": false,
+      "id": "pipa",
+      "count": 1
+    },
+    {
+      "IsEmpty": false,
+      "id": "fulu",
+      "count": 5
+    },
+    {
+      "IsEmpty": false,
+      "id": "tiejian",
+      "count": 1
+    },
+    {
+      "IsEmpty": false,
+      "id": "yupei",
+      "count": 1
+    },
+    {
+      "IsEmpty": false,
+      "id": "hetiehe",
+      "count": 1
+    },
+    {
+      "IsEmpty": false,
+      "id": "kaihetie",
+      "count": 1
+    },
+    {
+      "IsEmpty": false,
+      "id": "yinzhang",
+      "count": 1
+    },
+    {
+      "IsEmpty": false,
+      "id": "wheat-flour",
+      "count": 9
+    },
+    {
+      "IsEmpty": false,
+      "id": "rou-fu",
+      "count": 9
+    },
+    {
+      "IsEmpty": false,
+      "id": "licorice",
+      "count": 9
+    },
+    {
+      "IsEmpty": false,
+      "id": "jinchuang-san",
+      "count": 9
+    },
+    {
+      "IsEmpty": false,
+      "id": "wood-bow",
+      "count": 1
+    }
+  ],
+  "merchants": [],
+  "oneTimeFlags": [],
+  "quests": [],
+  "worldDay": 1,
+  "worldMinuteOfDay": 360,
+  "npcs": [],
+  "clues": [],
+  "dialogue": null,
+  "chapter": {
+    "reached": 0,
+    "settled": []
+  },
+  "karmaEvents": [],
+  "bagClipped": false
+}

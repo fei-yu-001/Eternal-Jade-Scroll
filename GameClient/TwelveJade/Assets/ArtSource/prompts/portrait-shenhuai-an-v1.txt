@@ -1,0 +1,9 @@
+Use case: in-game dialogue character portrait (left slot, 512x768)
+Asset type: 2D ink-wash silhouette with transparent background, game UI art
+
+a 72-year-old Chinese fortune teller, very thin, long beard, Taoist crown, long-sleeved plain robe, slightly hunched
+Chinese ink-wash (shuimo) bust silhouette. Solid flat black ink fill, no shading,
+no facial features, no internal detail, no colour.
+Pure white background, no frame, no text, no watermark, no props floating.
+Bust framing (head and shoulders), centered, filling the frame vertically.
+Clean continuous outer contour with a slightly dry brush edge.

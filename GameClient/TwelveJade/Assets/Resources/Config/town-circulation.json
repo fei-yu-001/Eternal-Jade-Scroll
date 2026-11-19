@@ -1,0 +1,196 @@
+{
+ "version": 1,
+ "id": "central-locust-circulation",
+ "comment": "Navigation/audit contract on existing crossPlaza paving. Bands reserve traversable space; the landscape rectangle is semantic only. Runtime collision remains the referenced real capsule. No additional collider or terrain/material change.",
+ "bounds": [
+  3796,
+  4440,
+  4396,
+  4960
+ ],
+ "characterClearance": 60,
+ "landscape": {
+  "plotId": "plot-ancient-locust",
+  "collision": "collisionCapsule",
+  "rect": [
+   3930.7917,
+   4638.7916,
+   4248.75,
+   4700.0
+  ]
+ },
+ "bands": [
+  {
+   "id": "north",
+   "rect": [
+    3796,
+    4440,
+    4396,
+    4638.7916
+   ]
+  },
+  {
+   "id": "east",
+   "rect": [
+    4248.75,
+    4440,
+    4396,
+    4960
+   ]
+  },
+  {
+   "id": "south",
+   "rect": [
+    3796,
+    4700.0,
+    4396,
+    4960
+   ]
+  },
+  {
+   "id": "west",
+   "rect": [
+    3796,
+    4440,
+    3930.7917,
+    4960
+   ]
+  }
+ ],
+ "entrances": {
+  "north": [
+   4096,
+   4440
+  ],
+  "east": [
+   4396,
+   4669.3958
+  ],
+  "south": [
+   4096,
+   4960
+  ],
+  "west": [
+   3796,
+   4669.3958
+  ]
+ },
+ "routes": [
+  {
+   "id": "north-south-west",
+   "points": [
+    [
+     4096,
+     4440
+    ],
+    [
+     4096,
+     4539.3958
+    ],
+    [
+     3863.3958,
+     4539.3958
+    ],
+    [
+     3863.3958,
+     4830.0
+    ],
+    [
+     4096,
+     4830.0
+    ],
+    [
+     4096,
+     4960
+    ]
+   ]
+  },
+  {
+   "id": "north-south-east",
+   "points": [
+    [
+     4096,
+     4440
+    ],
+    [
+     4096,
+     4539.3958
+    ],
+    [
+     4322.375,
+     4539.3958
+    ],
+    [
+     4322.375,
+     4830.0
+    ],
+    [
+     4096,
+     4830.0
+    ],
+    [
+     4096,
+     4960
+    ]
+   ]
+  },
+  {
+   "id": "west-east-north",
+   "points": [
+    [
+     3796,
+     4669.3958
+    ],
+    [
+     3863.3958,
+     4669.3958
+    ],
+    [
+     3863.3958,
+     4539.3958
+    ],
+    [
+     4322.375,
+     4539.3958
+    ],
+    [
+     4322.375,
+     4669.3958
+    ],
+    [
+     4396,
+     4669.3958
+    ]
+   ]
+  },
+  {
+   "id": "west-east-south",
+   "points": [
+    [
+     3796,
+     4669.3958
+    ],
+    [
+     3863.3958,
+     4669.3958
+    ],
+    [
+     3863.3958,
+     4830.0
+    ],
+    [
+     4322.375,
+     4830.0
+    ],
+    [
+     4322.375,
+     4669.3958
+    ],
+    [
+     4396,
+     4669.3958
+    ]
+   ]
+  }
+ ]
+}

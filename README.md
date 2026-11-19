@@ -1,0 +1,51 @@
+# Eternal-Jade-Scroll · 十二玉楼长生经
+
+> 以元末明初为背景的 2D 开放世界修仙 RPG。个人独立开发 + AI 辅助的长期项目，同时是横跨 C# / Unity / Java / SpringBoot / MySQL / Linux / AI 的技术成长项目。
+
+## 一句话介绍
+
+玩家不是固定英雄，而是乱世中的普通人。通过选择、行动、修炼与人际关系，逐渐改变自己的命运。NPC 拥有自己的生活，会记住玩家的行为——**世界不会围绕玩家转**。
+
+## 项目定位
+
+| 项 | 内容 |
+|---|---|
+| 类型 | 2D 开放世界修仙 RPG（区域式开放世界，类星露谷） |
+| 客户端 | Unity（2D）+ C# |
+| 服务器 | SpringBoot + MySQL（阶段四）+ Redis（后续） |
+| AI 方向 | 本地 Qwen 27B 驱动 NPC 对话（阶段六，长期特色） |
+| 开发模式 | 个人独立开发 + AI 辅助 |
+| 双重目的 | ① 长期游戏项目 ② 毕业答辩 / 考研 408 / 简历素材 |
+
+**特色定位**（简历 / 答辩用）：
+> 一个"传统游戏系统 + AI 智能 NPC 实验平台"——会记住玩家行为、因玩家选择改变命运的修仙世界。
+
+## 仓库结构
+
+```
+Eternal-Jade-Scroll/
+├── README.md               # 本文件
+├── GameClient/             # Unity 项目（阶段一创建，项目名 TwelveJade）
+├── GameServer/             # SpringBoot 项目（阶段四创建）
+├── Database/
+│   ├── ER/                 # ER 图
+│   ├── SQL/                # SQL 脚本
+│   └── 数据字典/            # 数据字典
+├── Documents/              # 文档体系（主入口：00_项目开发文档.md）
+│   └── raw/                # 原始聊天记录（look.txt，供追溯，不作为日常入口）
+├── Tools/                  # 小工具 / 脚本
+└── Assets/                 # 美术素材（图片 / 音乐 / 素材）
+```
+
+## 快速开始
+
+1. **新手 / 开发者**：先读 [`Documents/00_项目开发文档.md`](Documents/00_项目开发文档.md)（总体规划 + 当前状态 + 近期任务），再看 [`Documents/09_开发日志.md`](Documents/09_开发日志.md) 了解最新进展
+2. **设计参考**：[`Documents/01_情节大纲.md`](Documents/01_情节大纲.md)
+3. **审计与方案**：[`Documents/14_验收审计与修复方案.md`](Documents/14_验收审计与修复方案.md)
+4. **技术、路线、环境与规范**：统一收录在 [`Documents/00_项目开发文档.md`](Documents/00_项目开发文档.md)
+
+## 开发状态
+
+2026-09-27：首轮「主菜单与角色展示」已在 Unity 内验收通过。Unity 6.3 LTS 位于 D 盘，客户端工程位于 [`GameClient/TwelveJade`](GameClient/TwelveJade)。Unity Personal 许可激活后，批处理 `ProjectSetup.Prepare` 与 Play 模式自动验收（`FrontEndShot.Capture`）全部通过：七个页面渲染正确（截图见 [`Tools/screenshots`](Tools/screenshots)），存档新建/读取/删除的端到端断言零失败。农家、行旅、商家三套角色三视图已经由用户自有 grok2api 网关生成并接入工程（来源见 [`Assets/ArtSource/PROVENANCE.md`](Assets/ArtSource/PROVENANCE.md)），主菜单与角色展示首轮交付完整。详见 [`Documents/09_开发日志.md`](Documents/09_开发日志.md)。
+
+用户以玩家身份审核体验与剧情关键节点，AI 负责日常实现。每个开发周期结束时记录改动、验证和下一步；完成可玩里程碑后再提供 Windows 包。

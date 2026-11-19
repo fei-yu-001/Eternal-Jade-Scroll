@@ -1,0 +1,33 @@
+{
+  "view": "side",
+  "cell": [
+    512,
+    683
+  ],
+  "ground": 659,
+  "headTarget": 102,
+  "frames": [
+    {
+      "file": "side-f00-v1.png",
+      "headPx": 92.6,
+      "silhouettePx": 610
+    },
+    {
+      "file": "side-f01-v1.png",
+      "headPx": 92.6,
+      "silhouettePx": 614
+    },
+    {
+      "file": "side-f02-v1.png",
+      "headPx": 92.6,
+      "silhouettePx": 608
+    },
+    {
+      "file": "side-f03-v1.png",
+      "headPx": 92.6,
+      "silhouettePx": 633
+    }
+  ],
+  "sheet4": "sheet-side-4f.png",
+  "sheet8": "sheet-side-4f-x8.png"
+}

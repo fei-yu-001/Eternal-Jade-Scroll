@@ -1,0 +1,543 @@
+{
+  "version": 1,
+  "size": 1024,
+  "outputs": {
+    "proceduralDir": "GameClient/TwelveJade/Assets/ArtSource/world/materials/procedural",
+    "overlayDir": "GameClient/TwelveJade/Assets/ArtSource/world/materials/overlays",
+    "finalDir": "GameClient/TwelveJade/Assets/ArtSource/world/materials",
+    "previewDir": "GameClient/TwelveJade/Assets/ArtSource/world/materials/previews",
+    "variantDir": "GameClient/TwelveJade/Assets/ArtSource/world/materials/variants"
+  },
+  "materials": {
+    "grass.png": {
+      "size": 2048,
+      "sourceAsset": {
+        "resource": "Art/Textures/GroundQuality20261107/grass",
+        "path": "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/grass.png",
+        "sha256": "8eda0032b33ea56a9dee25b6c834fbae29da331be10b6297e1a82a205eb6e3c5",
+        "approval": "2026-11-07 23:25 producer ground quality overhaul: native high resolution source implementation; visual/runtime acceptance pending",
+        "transform": "Native2048 color calibration; periodic Gaussian sigma2.8 only within24px wrapping border;16px endpoint correction. Interior [24:-24] unchanged from candidate01. Never upsampled.",
+        "rawSource": "Tools/logs/nov7-v2-20261107/ground-overhaul/references/native-2k/grass_ground-diff-2k.jpg",
+        "rawSha256": "4272bddc71a7fa659d1deeb13a9df8c42e68a5ac8cde7523187e4a081e028258",
+        "sourceLicense": "CC0",
+        "sourceAttribution": "Poly Haven / grass_ground",
+        "nativeSourceDimensions": [
+          2048,
+          2048
+        ]
+      },
+      "baseGenerator": null,
+      "overlay": {
+        "enabled": false
+      },
+      "aiDirectRetry": {
+        "enabled": false
+      }
+    },
+    "stone-road.png": {
+      "size": 2048,
+      "sourceAsset": {
+        "resource": "Art/Textures/GroundQuality20261107/stone-road",
+        "path": "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/stone-road.png",
+        "sha256": "234d9c58b5fb7a42ec85ae800df865f23b464067ba7977ed72025c557b44a47d",
+        "approval": "2026-11-07 23:25 producer ground quality overhaul: native high resolution source implementation; visual/runtime acceptance pending",
+        "transform": "Native2048 color calibration; periodic Gaussian sigma2.8 only within24px wrapping border;16px endpoint correction. Interior [24:-24] unchanged from candidate01. Never upsampled.",
+        "rawSource": "Tools/logs/nov7-v2-20261107/ground-overhaul/references/native-2k/cobblestone_pavement-diff-2k.jpg",
+        "rawSha256": "e4c9917cd32faecd56986e029c63d8662ab99075448e5b3f0d862493577b731a",
+        "sourceLicense": "CC0",
+        "sourceAttribution": "Poly Haven / cobblestone_pavement",
+        "nativeSourceDimensions": [
+          2048,
+          2048
+        ]
+      },
+      "baseGenerator": null,
+      "overlay": {
+        "enabled": false
+      },
+      "aiDirectRetry": {
+        "enabled": false
+      }
+    },
+    "water.png": {
+      "baseGenerator": null,
+      "overlay": {
+        "enabled": false
+      },
+      "aiDirectRetry": {
+        "enabled": false
+      },
+      "useExistingFinal": true
+    },
+    "dirt-road.png": {
+      "size": 2048,
+      "sourceAsset": {
+        "resource": "Art/Textures/GroundQuality20261107/dirt-road",
+        "path": "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/dirt-road.png",
+        "sha256": "d415f4aece4a9f7425d68a4eaf0050cfa74ff1a605b099dc1533c99c1cf34284",
+        "approval": "2026-11-07 23:25 producer ground quality overhaul: native high resolution source implementation; visual/runtime acceptance pending",
+        "transform": "Native2048 color calibration; periodic Gaussian sigma2.8 only within24px wrapping border;16px endpoint correction. Interior [24:-24] unchanged from candidate01. Never upsampled.",
+        "rawSource": "Tools/logs/nov7-v2-20261107/ground-overhaul/references/native-2k/ground_grey-diff-2k.jpg",
+        "rawSha256": "1033f040d4a59882fc0c68cc848d84ae6b5cdd0a64049fa7a511b010611e080c",
+        "sourceLicense": "CC0",
+        "sourceAttribution": "Poly Haven / ground_grey",
+        "nativeSourceDimensions": [
+          2048,
+          2048
+        ]
+      },
+      "baseGenerator": null,
+      "overlay": {
+        "enabled": false
+      },
+      "aiDirectRetry": {
+        "enabled": false
+      }
+    },
+    "plaza.png": {
+      "size": 2048,
+      "sourceAsset": {
+        "resource": "Art/Textures/GroundQuality20261107/plaza",
+        "path": "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/plaza.png",
+        "sha256": "f2a200c297a2137cdd4e9ded4ada474cdede279f81322bbe4de38595da9bfee3",
+        "approval": "2026-11-07 23:25 producer ground quality overhaul: native high resolution source implementation; visual/runtime acceptance pending",
+        "transform": "Native2048 color calibration; periodic Gaussian sigma2.8 only within24px wrapping border;16px endpoint correction. Interior [24:-24] unchanged from candidate01. Never upsampled.",
+        "rawSource": "Tools/logs/nov7-v2-20261107/ground-overhaul/references/native-2k/cobblestone_pavement-diff-2k.jpg",
+        "rawSha256": "e4c9917cd32faecd56986e029c63d8662ab99075448e5b3f0d862493577b731a",
+        "sourceLicense": "CC0",
+        "sourceAttribution": "Poly Haven / cobblestone_pavement",
+        "nativeSourceDimensions": [
+          2048,
+          2048
+        ]
+      },
+      "baseGenerator": null,
+      "overlay": {
+        "enabled": false
+      },
+      "aiDirectRetry": {
+        "enabled": false
+      }
+    },
+    "bridge.png": {
+      "size": 2048,
+      "sourceAsset": {
+        "resource": "Art/Textures/GroundQuality20261107/bridge",
+        "path": "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/bridge.png",
+        "sha256": "1908fa971411562bb18d5029539f1a3001e5fa52c3556424a99871dc0ef5dc79",
+        "approval": "2026-11-07 23:25 producer ground quality overhaul: native high resolution source implementation; visual/runtime acceptance pending",
+        "transform": "Native2048 color calibration; periodic Gaussian sigma2.8 only within24px wrapping border;16px endpoint correction. Interior [24:-24] unchanged from candidate01. Never upsampled.",
+        "rawSource": "Tools/logs/nov7-v2-20261107/ground-overhaul/references/native-2k/cobblestone_floor_03-diff-2k.jpg",
+        "rawSha256": "8cf0a52addc7914b78994ff41f6317955d5b4b09d7d45bd7fc71b72e3450bee6",
+        "sourceLicense": "CC0",
+        "sourceAttribution": "Poly Haven / cobblestone_floor_03",
+        "nativeSourceDimensions": [
+          2048,
+          2048
+        ]
+      },
+      "baseGenerator": null,
+      "overlay": {
+        "enabled": false
+      },
+      "aiDirectRetry": {
+        "enabled": false
+      }
+    },
+    "mountain.png": {
+      "size": 2048,
+      "sourceAsset": {
+        "resource": "Art/Textures/GroundQuality20261107/mountain",
+        "path": "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/mountain.png",
+        "sha256": "632785f2ba899495506c1ed92bb3b72cba5e6b651f72ba71a672891c55b4c9e6",
+        "approval": "2026-11-07 23:25 producer ground quality overhaul: native high resolution source implementation; visual/runtime acceptance pending",
+        "transform": "Native2048 color calibration; periodic Gaussian sigma2.8 only within24px wrapping border;16px endpoint correction. Interior [24:-24] unchanged from candidate01. Never upsampled.",
+        "rawSource": "Tools/logs/nov7-v2-20261107/ground-overhaul/references/native-2k/mossy_rock-diff-2k.jpg",
+        "rawSha256": "98ecbd1d19953433f5909b79958992b1da2b45addbee772d1d4c27287f368499",
+        "sourceLicense": "CC0",
+        "sourceAttribution": "Poly Haven / mossy_rock",
+        "nativeSourceDimensions": [
+          2048,
+          2048
+        ]
+      },
+      "baseGenerator": null,
+      "overlay": {
+        "enabled": false
+      },
+      "aiDirectRetry": {
+        "enabled": false
+      }
+    },
+    "mountain-path.png": {
+      "size": 2048,
+      "sourceAsset": {
+        "resource": "Art/Textures/GroundQuality20261107/mountain-path",
+        "path": "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/mountain-path.png",
+        "sha256": "a134444270732c5ca3e7c31fd71f312d5833beb7ee1c0d8e4f17f978b99de061",
+        "approval": "2026-11-07 23:25 producer ground quality overhaul: native high resolution source implementation; visual/runtime acceptance pending",
+        "transform": "Native2048 color calibration; periodic Gaussian sigma2.8 only within24px wrapping border;16px endpoint correction. Interior [24:-24] unchanged from candidate01. Never upsampled.",
+        "rawSource": "Tools/logs/nov7-v2-20261107/ground-overhaul/references/native-2k/gravelly_sand-diff-2k.jpg",
+        "rawSha256": "cdab7130a67bc70f8c241b9ab2cd41b731d2baf1ec533939a333573b80070dd6",
+        "sourceLicense": "CC0",
+        "sourceAttribution": "Poly Haven / gravelly_sand",
+        "nativeSourceDimensions": [
+          2048,
+          2048
+        ]
+      },
+      "baseGenerator": null,
+      "overlay": {
+        "enabled": false
+      },
+      "aiDirectRetry": {
+        "enabled": false
+      }
+    },
+    "farmland.png": {
+      "size": 2048,
+      "sourceAsset": {
+        "resource": "Art/Textures/GroundQuality20261107/farmland",
+        "path": "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/farmland.png",
+        "sha256": "522d61b6eaa1e835eb83d60a149bc858b7380ed2ae3c603f3bca686df7ba904a",
+        "approval": "2026-11-07 23:25 producer ground quality overhaul: native high resolution source implementation; visual/runtime acceptance pending",
+        "transform": "Native2048 color calibration; periodic Gaussian sigma2.8 only within24px wrapping border;16px endpoint correction. Interior [24:-24] unchanged from candidate01. Never upsampled.",
+        "rawSource": "Tools/logs/nov7-v2-20261107/ground-overhaul/references/native-2k/brown_mud-diff-2k.jpg",
+        "rawSha256": "726a0f5222fdf8b2bcdbec56fee8ea55150c217eab35a893ad5831f28cee3a5f",
+        "sourceLicense": "CC0",
+        "sourceAttribution": "Poly Haven / brown_mud",
+        "nativeSourceDimensions": [
+          2048,
+          2048
+        ]
+      },
+      "baseGenerator": null,
+      "overlay": {
+        "enabled": false
+      },
+      "aiDirectRetry": {
+        "enabled": false
+      }
+    },
+    "riverbank.png": {
+      "size": 2048,
+      "sourceAsset": {
+        "resource": "Art/Textures/GroundQuality20261107/riverbank",
+        "path": "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/riverbank.png",
+        "sha256": "bf96803889776a0099c5c272c0a3950a612f48cee729c3d3b95c561606b4bab2",
+        "approval": "2026-11-07 23:25 producer ground quality overhaul: native high resolution source implementation; visual/runtime acceptance pending",
+        "transform": "Native2048 color calibration; periodic Gaussian sigma2.8 only within24px wrapping border;16px endpoint correction. Interior [24:-24] unchanged from candidate01. Never upsampled.",
+        "rawSource": "Tools/logs/nov7-v2-20261107/ground-overhaul/references/native-2k/ground_grey-diff-2k.jpg",
+        "rawSha256": "1033f040d4a59882fc0c68cc848d84ae6b5cdd0a64049fa7a511b010611e080c",
+        "sourceLicense": "CC0",
+        "sourceAttribution": "Poly Haven / ground_grey",
+        "nativeSourceDimensions": [
+          2048,
+          2048
+        ]
+      },
+      "baseGenerator": null,
+      "overlay": {
+        "enabled": false
+      },
+      "aiDirectRetry": {
+        "enabled": false
+      }
+    },
+    "road-edge.png": {
+      "size": 2048,
+      "sourceAsset": {
+        "resource": "Art/Textures/GroundQuality20261107/road-edge",
+        "path": "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/road-edge.png",
+        "sha256": "0ebc2bc8a57418b4f568ae8792345f9bc63fc1b4fa42e19b2a054bdb966a9945",
+        "approval": "2026-11-07 23:25 producer ground quality overhaul: native high resolution source implementation; visual/runtime acceptance pending",
+        "transform": "Native2048 color calibration; periodic Gaussian sigma2.8 only within24px wrapping border;16px endpoint correction. Interior [24:-24] unchanged from candidate01. Never upsampled.",
+        "rawSource": "Tools/logs/nov7-v2-20261107/ground-overhaul/references/native-2k/forest_ground_04-diff-2k.jpg",
+        "rawSha256": "24b8aaf4c8547305d80b0e029ec365219ab1b90748d4ca5651bdc9e75bfde5e6",
+        "sourceLicense": "CC0",
+        "sourceAttribution": "Poly Haven / forest_ground_04",
+        "nativeSourceDimensions": [
+          2048,
+          2048
+        ]
+      },
+      "baseGenerator": null,
+      "overlay": {
+        "enabled": false
+      },
+      "aiDirectRetry": {
+        "enabled": false
+      }
+    },
+    "mountain-foot.png": {
+      "size": 2048,
+      "sourceAsset": {
+        "resource": "Art/Textures/GroundQuality20261107/mountain-foot",
+        "path": "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/mountain-foot.png",
+        "sha256": "299d9d018321f3461bad27e030118fce403016724af58977467c37e1c7ef454b",
+        "approval": "2026-11-07 23:25 producer ground quality overhaul: native high resolution source implementation; visual/runtime acceptance pending",
+        "transform": "Native2048 color calibration; periodic Gaussian sigma2.8 only within24px wrapping border;16px endpoint correction. Interior [24:-24] unchanged from candidate01. Never upsampled.",
+        "rawSource": "Tools/logs/nov7-v2-20261107/ground-overhaul/references/native-2k/grass_ground-diff-2k.jpg",
+        "rawSha256": "4272bddc71a7fa659d1deeb13a9df8c42e68a5ac8cde7523187e4a081e028258",
+        "sourceLicense": "CC0",
+        "sourceAttribution": "Poly Haven / grass_ground",
+        "nativeSourceDimensions": [
+          2048,
+          2048
+        ]
+      },
+      "baseGenerator": null,
+      "overlay": {
+        "enabled": false
+      },
+      "aiDirectRetry": {
+        "enabled": false
+      }
+    }
+  },
+  "generators": {
+    "turf-dirt": {
+      "palette": {
+        "celadon": "#7F9A72",
+        "dryOchre": "#A98D5F",
+        "grayBrown": "#8A806F",
+        "moss": "#6F855F",
+        "paper": "#D8D2C0"
+      },
+      "noiseScale": 64,
+      "speckleScale": 7,
+      "speckleDensity": 0.048,
+      "contrast": 0.22,
+      "grainStrength": 0.07,
+      "macroScale": 128,
+      "macroAmount": 0.06,
+      "macroChromaAmount": 0.03,
+      "_variantSource": "grass-richer-turf+macro-06"
+    },
+    "torus-voronoi-flagstone": {
+      "palette": {
+        "slate": "#7E878A",
+        "warmGray": "#918A7E",
+        "blueGray": "#74818B",
+        "mortar": "#6B716C",
+        "highlight": "#B7B2A5"
+      },
+      "cellMin": 72,
+      "cellMax": 132,
+      "jitter": 0.34,
+      "mortarWidth": 3,
+      "mortarSoftness": 3.2,
+      "colorVariance": 0.15,
+      "surfaceNoise": 0.12,
+      "_variantSource": "stone-worn"
+    },
+    "packed-earth": {
+      "palette": {
+        "warmOchre": "#B79A6B",
+        "dustyBrown": "#8A7B6B",
+        "paleGray": "#A09888",
+        "fadedEarthYellow": "#C4B08A"
+      },
+      "lowFreqScale": 128,
+      "midFreqScale": 32,
+      "lowFreqWeight": 0.62,
+      "midFreqWeight": 0.38,
+      "speckleScale": 8,
+      "speckleDensity": 0.025,
+      "speckleDarkAmount": 16,
+      "speckleLightAmount": 10,
+      "contrast": 0.16
+    },
+    "open-plaza": {
+      "palette": {
+        "paleBeige": "#C8BFA8",
+        "lightGray": "#B0AAA0",
+        "softOchre": "#BBA882",
+        "mutedStoneWhite": "#D5D0C5",
+        "faintCrack": "#9E968C"
+      },
+      "largeScale": 128,
+      "midScale": 32,
+      "fineScale": 8,
+      "largeWeight": 0.55,
+      "midWeight": 0.3,
+      "fineWeight": 0.15,
+      "crackDensity": 0.008,
+      "crackAmount": 8,
+      "speckleScale": 8,
+      "speckleDensity": 0.012,
+      "speckleDarkAmount": 8,
+      "speckleLightAmount": 12,
+      "contrast": 0.11,
+      "minColumnMeanStd": 2.0,
+      "minRowMeanStd": 2.0
+    },
+    "bridge-deck": {
+      "palette": {
+        "warmGray": "#9E9688",
+        "brownGrayStone": "#8A7E70",
+        "fadedSlate": "#7E8488",
+        "earthyHighlight": "#B5AA98",
+        "mortar": "#6E6258"
+      },
+      "cellMin": 80,
+      "cellMax": 140,
+      "jitter": 0.34,
+      "mortarWidth": 3,
+      "mortarSoftness": 1.4,
+      "colorVariance": 0.12,
+      "surfaceNoise": 0.08,
+      "speckleScale": 8,
+      "speckleDensity": 0.025,
+      "speckleDarkAmount": 12,
+      "speckleLightAmount": 10,
+      "contrast": 0.18
+    },
+    "rock-face": {
+      "palette": {
+        "darkCyanGray": "#4A5550",
+        "mossGreen": "#5A6B55",
+        "inkBlack": "#2A2E2C",
+        "coldGrayBrown": "#6B6560",
+        "mineralHighlight": "#8C948E"
+      },
+      "largeScale": 64,
+      "midScale": 16,
+      "fineScale": 8,
+      "largeWeight": 0.58,
+      "midWeight": 0.3,
+      "fineWeight": 0.12,
+      "creviceThreshold": 0.62,
+      "creviceAmount": 18,
+      "mineralDensity": 0.018,
+      "mineralAmount": 12,
+      "contrast": 0.22
+    },
+    "trail-stone-dirt": {
+      "palette": {
+        "earthyBrown": "#8A7560",
+        "grayStone": "#7A7E78",
+        "dryOlive": "#6B7055",
+        "fadedOchre": "#A09070",
+        "gravelLight": "#9A9488"
+      },
+      "lowFreqScale": 64,
+      "midFreqScale": 32,
+      "lowFreqWeight": 0.55,
+      "midFreqWeight": 0.45,
+      "gravelScale": 8,
+      "gravelDensity": 0.05,
+      "gravelMaxSizePx": 2,
+      "stonePatchThreshold": 0.66,
+      "stonePatchAmount": 18,
+      "speckleDarkAmount": 18,
+      "speckleLightAmount": 14,
+      "contrast": 0.19
+    },
+    "furrow-field": {
+      "palette": {
+        "yellowGreen": "#A0A868",
+        "lightBrown": "#9A8B70",
+        "fadedOlive": "#8A9060",
+        "paleWheat": "#C8C0A0",
+        "mutedEarth": "#887860"
+      },
+      "stripeScaleX": 1024,
+      "stripeScaleY": 64,
+      "stripeWeight": 0.55,
+      "patchScaleX": 128,
+      "patchScaleY": 128,
+      "patchWeight": 0.3,
+      "fineScale": 8,
+      "fineWeight": 0.15,
+      "cropSpeckleScale": 8,
+      "cropSpeckleDensity": 0.01,
+      "cropSpeckleAmount": 8,
+      "contrast": 0.15,
+      "minColumnMeanStd": 1.0
+    },
+    "wet-shore": {
+      "palette": {
+        "oliveGreen": "#7A8A60",
+        "wetBrown": "#8A7A65",
+        "paleSand": "#B0A890",
+        "mutedMoss": "#6A7A5A",
+        "softGrayGreen": "#8A9878"
+      },
+      "lowFreqScale": 128,
+      "midFreqScale": 32,
+      "lowFreqWeight": 0.58,
+      "midFreqWeight": 0.42,
+      "pebbleScale": 8,
+      "pebbleDensity": 0.022,
+      "grassSpeckleScale": 8,
+      "grassSpeckleDensity": 0.025,
+      "speckleDarkAmount": 14,
+      "speckleLightAmount": 12,
+      "contrast": 0.17
+    },
+    "shoulder-transition": {
+      "palette": {
+        "ochre": "#A89068",
+        "grayBrown": "#8A8070",
+        "mutedGreen": "#7A8A68",
+        "dustyYellow": "#B0A080"
+      },
+      "soilScale": 64,
+      "grassScale": 32,
+      "gravelScale": 8,
+      "soilWeight": 0.6,
+      "grassWeight": 0.25,
+      "gravelWeight": 0.15,
+      "grassDensity": 0.018,
+      "gravelDensity": 0.02,
+      "speckleDarkAmount": 12,
+      "speckleLightAmount": 10,
+      "contrast": 0.15
+    },
+    "slope-transition": {
+      "palette": {
+        "grayBrown": "#7A7568",
+        "mossGreen": "#6A7A5A",
+        "dryOchre": "#9A8A68",
+        "inkGray": "#5A5E58",
+        "gravelHighlight": "#8E8A80"
+      },
+      "rockScale": 32,
+      "soilScale": 64,
+      "grassScale": 32,
+      "rockWeight": 0.45,
+      "soilWeight": 0.35,
+      "grassWeight": 0.2,
+      "gravelScale": 8,
+      "gravelDensity": 0.035,
+      "grassDensity": 0.018,
+      "speckleDarkAmount": 16,
+      "speckleLightAmount": 12,
+      "contrast": 0.19
+    },
+    "_generatorNotes": {
+      "packed-earth": "Gate C1-A §5.1 踩踏土路",
+      "open-plaza": "Gate C1-A §5.2 广场——中心 2×2 失败缝的根因修复对象，必须各向同性 2D 起伏",
+      "bridge-deck": "Gate C1-A §5.3 桥面，复用环面 Voronoi 逻辑但不改原函数",
+      "rock-face": "Gate C1-A §5.4 山体岩面",
+      "trail-stone-dirt": "Gate C1-A §5.5 山径，比 dirt-road 更石更干",
+      "furrow-field": "Gate C1-A §5.6 农田水平垄线，用 value_noise_fast 的独立 x/y scale",
+      "wet-shore": "Gate C1-A §5.7 河岸湿土",
+      "shoulder-transition": "Gate C1-A §5.8 路肩，dirt 与 grass 中间态",
+      "slope-transition": "Gate C1-A §5.9 山脚碎石土"
+    }
+  },
+  "seamThresholds": {
+    "finalPass": {
+      "meanMax": 12.0,
+      "p95Max": 35.0,
+      "maxMax": 90.0
+    },
+    "finalWarn": {
+      "meanMax": 18.0,
+      "p95Max": 50.0,
+      "maxMax": 120.0
+    }
+  }
+}

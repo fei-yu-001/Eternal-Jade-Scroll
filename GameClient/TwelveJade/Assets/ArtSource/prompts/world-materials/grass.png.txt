@@ -1,0 +1,26 @@
+Generate one square 1024x1024 seamless tileable top-down terrain material texture for a 2D Chinese ink-wash xianxia open-world RPG.
+Asset type: terrain material tile.
+Use case: stylized-concept ground texture, not a scene.
+Visual target: hand-painted rice-paper terrain, subtle gothic survival-game linework, HD-2D miniature diorama lighting, muted natural palette, elegant brush strokes, soft top-left light, high gameplay readability.
+View: strict orthographic top-down, no perspective, no isometric, no 3D camera.
+The texture must tile seamlessly in X and Y, with no visible grid, no border, no frame, no vignette, no repeated obvious pattern.
+It must be opaque, clean, low saturation, and contain only ground surface material.
+
+Subject:
+flat ground surface of short turf, worn pasture soil, mossy dirt and tiny grass speckles, seen from directly above. This is a ground material tile, not a grass field scene.
+
+Color palette:
+muted celadon green, dry ochre, soft gray-brown, moss green, rice-paper off-white, low saturation.
+
+Texture details:
+very short turf integrated into soil, tiny grass speckles, soft dirt patches, delicate ink lines, gentle paper grain, low contrast, no prominent objects, no large stones, no flowers, no bushes, no tree canopy, no leaves, no plant silhouettes, edge details must be sparse and tile-friendly.
+
+Critical content constraint:
+This must NOT be an overhead forest canopy.
+This must NOT contain trees, shrubs, bushes, flower clusters, leaf shapes, plant silhouettes, or grass tufts as separate objects.
+It must look like a walkable ground surface made of short turf, dirt, moss and tiny grass speckles.
+reduce detail scale. all green marks must be tiny surface speckles, not individual plants. no circular canopy shapes. no leaf outlines. no bright white specks. low overall contrast. edge continuity is critical, patterns must wrap perfectly, avoid high-contrast features near borders, keep edge details sparse and low frequency, no distinct large clumps that would repeat visibly.
+Important: no objects, no props, no landmarks, no horizon, no sky, no shadows cast by external objects. Only flat ground material viewed from above. If any detail approaches an edge, it must continue naturally on the opposite edge. The final image must be usable as a tileable terrain material in a top-down open-world map.
+
+Avoid:
+buildings, houses, walls, roofs, doors, windows, NPCs, people, characters, animals, monsters, trees, saplings, bushes, flowers, large grass blades, rocks as objects, boulders, decorative stones, stalls, lanterns, signs, banners, fences, railings, bridges as whole structures, boats, fish, clouds, snow, desert, modern asphalt, regular bricks, text, letters, numbers, watermark, logo, UI, icons, markers, arrows, black borders, white borders, frame, vignette, perspective, isometric, 3D render, photorealistic, blurry, lowres, jpeg artifacts, visible seams, repeated pattern grid, cartoon sticker style, oversaturated, high contrast, harsh shadow, cast shadow.

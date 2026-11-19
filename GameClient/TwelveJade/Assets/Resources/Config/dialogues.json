@@ -1,0 +1,404 @@
+{
+  "nodes": [
+    {
+      "id": "yaoshi-intro",
+      "npc": "yaoshi",
+      "text": "抓药按方子抓，问事另算。问事之前，先让我看看你手上的茧——不是庄稼人的茧。",
+      "options": [
+        {
+          "text": "我刚从外面回来，山上的事想问个明白。",
+          "next": "yaoshi-herb",
+          "socialEvent": "Traded",
+          "socialWeight": 1
+        },
+        {
+          "text": "我只是来抓药的。",
+          "next": "yaoshi-goodbye",
+          "socialEvent": "Traded"
+        }
+      ]
+    },
+    {
+      "id": "yaoshi-herb",
+      "npc": "yaoshi",
+      "text": "青灵草？山上的草一年比一年少。我这本账记了七年，去年要跑两趟山才够数。",
+      "options": [
+        {
+          "text": "少了多少？",
+          "next": "yaoshi-count",
+          "grantClue": "herb-thinning",
+          "socialEvent": "Traded"
+        },
+        {
+          "text": "少了就是有人采。",
+          "next": "yaoshi-doubt",
+          "socialEvent": "RefusedHelp"
+        },
+        {
+          "text": "药里会不会有问题？",
+          "next": "yaoshi-trace",
+          "curiousOnly": true,
+          "requiredFlags": ["herb-thinning"],
+          "grantFlag": "told-the-truth",
+          "grantClue": "poison-trace",
+          "socialEvent": "Confessed",
+          "socialWeight": 2
+        }
+      ]
+    },
+    {
+      "id": "yaoshi-count",
+      "npc": "yaoshi",
+      "text": "三成。不是天时——虫病会让根烂，这批草的根是齐整整断的。",
+      "options": [
+        {
+          "text": "齐整整断的？那就不是病。",
+          "next": "yaoshi-trace",
+          "curiousOnly": true,
+          "grantClue": "poison-trace",
+          "socialEvent": "Confessed",
+          "socialWeight": 2
+        },
+        { "text": "我记下了。", "next": "yaoshi-goodbye" }
+      ]
+    },
+    {
+      "id": "yaoshi-doubt",
+      "npc": "yaoshi",
+      "text": "采的人多了，我不至于连这个都看不出。话我只说这一遍。",
+      "options": [{ "text": "打扰了。", "next": "yaoshi-goodbye", "socialEvent": "RefusedHelp" }]
+    },
+    {
+      "id": "yaoshi-trace",
+      "npc": "yaoshi",
+      "text": "我验过剩下的草根。撒过东西，撒的人懂药性。镇上懂药性的，一只手数得过来。",
+      "options": [
+        {
+          "text": "这话我只当你没说过。",
+          "next": "yaoshi-goodbye",
+          "socialEvent": "Confessed",
+          "socialWeight": 2
+        }
+      ]
+    },
+    {
+      "id": "yaoshi-goodbye",
+      "npc": "yaoshi",
+      "text": "抓药就按方子。别的事，我什么也没说过。",
+      "next": ""
+    },
+    {
+      "id": "huolang-intro",
+      "npc": "huolang",
+      "text": "客官又来了。要买东西，还是有话要问？我这儿的话，可是要拿东西换的。",
+      "options": [
+        {
+          "text": "北边山上，晚上是什么动静？",
+          "next": "huolang-night",
+          "socialEvent": "Traded"
+        },
+        { "text": "买药。", "next": "huolang-goodbye", "socialEvent": "Traded" },
+        { "text": "（他把担子往你这边挪了挪）低声问你一句……", "next": "huolang-rumor", "condition": "karma>=3" }
+      ]
+    },
+    {
+      "id": "huolang-rumor",
+      "npc": "huolang",
+      "text": "北边双桥底下，前儿有人摸出一只锈死的铁盒。人家肯出高价收，我替你把话搁这儿——你要真想出手，夜里来寻我。",
+      "options": [
+        { "text": "知道了，多谢。", "next": "huolang-goodbye", "socialEvent": "Traded" }
+      ]
+    },
+    {
+      "id": "huolang-night",
+      "npc": "huolang",
+      "text": "兽吼？后山入夜是有点动静。我劝你别往那边去——我这条命是跑出来的，不是捡出来的。",
+      "options": [
+        {
+          "text": "你走过北岭？",
+          "next": "huolang-road",
+          "grantClue": "night-horn",
+          "socialEvent": "RefusedHelp"
+        },
+        { "text": "（压低声音）你夜里在桥头还做一手的吧？", "next": "huolang-black", "socialEvent": "Traded", "socialWeight": 2 },
+        { "text": "那我知道了。", "next": "huolang-goodbye" }
+      ]
+    },
+    {
+      "id": "huolang-road",
+      "npc": "huolang",
+      "text": "走过。半年前就断了——那之后我一趟都没往北去。客官若执意要去，至少买张我的平安符。",
+      "options": [
+        {
+          "text": "符我收下了。",
+          "next": "huolang-goodbye",
+          "grantClue": "north-road-closed",
+          "socialEvent": "Traded",
+          "socialWeight": 2
+        },
+        {
+          "text": "我自己有办法。",
+          "next": "huolang-goodbye",
+          "socialEvent": "Traded"
+        }
+      ]
+    },
+    {
+      "id": "huolang-goodbye",
+      "npc": "huolang",
+      "text": "爽快。下回来，我给你留好货。",
+      "next": ""
+    },
+    {
+      "id": "shen-intro",
+      "npc": "npc-shenhuai-an",
+      "text": "这……老夫这么说吧：你这一脸的风尘，是打外头来的吧？坐，把手搁这儿——老夫只看看手，不收钱。",
+      "options": [
+        { "text": "【请先生摸骨看相】（5 文）", "next": "shen-fate", "action": "triggerFateCheck" },
+        { "text": "打听：镇里最苦的孩子是谁？", "next": "shen-ask-poor", "grantFlag": "heard-of-shitou", "socialEvent": "Traded" },
+        { "text": "（故交）先生当年游历，见过什么？", "next": "shen-past", "minMemoryTier": 2 },
+        { "text": "（患难）先生，您到底算出了什么？", "next": "shen-secret", "minMemoryTier": 3 },
+        { "text": "做买卖", "next": "shen-shop", "action": "openShop" },
+        { "text": "（他忽然又抬眼）先生还有话？", "next": "shen-fate-extra", "condition": "karma>=3" },
+        { "text": "告辞", "next": "shen-bye" }
+      ]
+    },
+    {
+      "id": "shen-fate-extra",
+      "npc": "npc-shenhuai-an",
+      "text": "老夫今日多送你一卦。……你走过的地方，草木比别处肯活。这不是你算得准，是你顺手扶起来的东西多。记住这句——往后你运气好的时候，别把它当成运气。",
+      "options": [
+        { "text": "（收下这句话）", "next": "shen-bye", "socialEvent": "Traded" }
+      ]
+    },
+    {
+      "id": "shen-fate",
+      "npc": "npc-shenhuai-an",
+      "text": "（老夫的手在你骨节上停了停。）……嘻嘻嘻。命这东西，说透了就不值钱了。你且听着——知喜也知厄，老夫只说一半，留一半给你自己走。",
+      "options": [
+        { "text": "先生但说无妨。", "next": "shen-bye" }
+      ]
+    },
+    {
+      "id": "shen-ask-poor",
+      "npc": "npc-shenhuai-an",
+      "text": "苦？镇上苦的人多了。你要问最苦的——西巷那个拾遗的石头。爹娘都没了，一个人守着柴扉。",
+      "options": [
+        { "text": "他怎么过活？", "next": "shen-poor-more", "grantFlag": "knows-shitou", "socialEvent": "Confessed", "socialWeight": 2 },
+        { "text": "记下了。", "next": "shen-bye" }
+      ]
+    },
+    {
+      "id": "shen-poor-more",
+      "npc": "npc-shenhuai-an",
+      "text": "拾遗队专收别人不要的。别的孩子往前抢，他往后收——这镇上唯一肯低头看东西的人，偏偏捡不到一样值钱的。",
+      "options": [
+        { "text": "我去看看他。", "next": "shen-bye", "grantFlag": "knows-shitou" }
+      ]
+    },
+    {
+      "id": "shen-past",
+      "npc": "npc-shenhuai-an",
+      "text": "老夫年轻时走过北岭。见过一队人进山，出来四个。……嗐，不说了。你若要去北边，千万别一个人去。",
+      "options": [
+        { "text": "先生保重。", "next": "shen-bye" }
+      ]
+    },
+    {
+      "id": "shen-secret",
+      "npc": "npc-shenhuai-an",
+      "text": "怪哉……这骨相老夫竟摸不透。……嘻嘻嘻，后生，揣好你的命，别让人夺了去。",
+      "options": [
+        { "text": "……我记着了。", "next": "shen-bye" }
+      ]
+    },
+    {
+      "id": "shen-shop",
+      "npc": "npc-shenhuai-an",
+      "text": "（他把摊上的黄纸、朱砂与几道符往前推了推。）不值几个钱，要就自己挑。",
+      "options": [
+        { "text": "我自己挑。", "next": "shen-bye" }
+      ]
+    },
+    {
+      "id": "shen-bye",
+      "npc": "npc-shenhuai-an",
+      "text": "去吧。命是自己的，别让旁人替你算。",
+      "next": ""
+    },
+    {
+      "id": "shitou-intro",
+      "npc": "npc-shitou",
+      "text": "……你来啦。坐门槛上吧，屋里乱。（他从怀里摸出一小包炒豆，塞到你手里。）",
+      "options": [
+        { "text": "（接过来）你自己不饿吗？", "next": "shitou-dou", "grantFlag": "got-chao-dou", "socialEvent": "Gave", "socialWeight": 2 },
+        { "text": "看他身旁的破旧黑匣子", "next": "shitou-box", "socialEvent": "Traded" },
+        { "text": "做买卖", "next": "shitou-shop", "action": "openShop" },
+        { "text": "告辞", "next": "shitou-bye" }
+      ]
+    },
+    {
+      "id": "shitou-dou",
+      "npc": "npc-shitou",
+      "text": "我不饿，我真不饿。你拿着。……活着比什么都强。",
+      "options": [
+        { "text": "那我收着了。", "next": "shitou-bye" }
+      ]
+    },
+    {
+      "id": "shitou-box",
+      "npc": "npc-shitou",
+      "text": "（他一把按住匣子，指节都白了。）……捡来的破烂。里头就两张废符纸和一块死硬石头，不值钱，留个念想。",
+      "options": [
+        { "text": "能让我看看吗？", "next": "shitou-box-open", "minMemoryTier": 2 },
+        { "text": "不值钱你还留着？", "next": "shitou-box-why", "socialEvent": "Traded" },
+        { "text": "不问了。", "next": "shitou-bye" }
+      ]
+    },
+    {
+      "id": "shitou-box-why",
+      "npc": "npc-shitou",
+      "text": "……别人不要的，我捡。别的都松了，就那个没松。（他没抬头，声音很低。）",
+      "options": [
+        { "text": "（他不肯再说了。）", "next": "shitou-bye" }
+      ]
+    },
+    {
+      "id": "shitou-box-open",
+      "npc": "npc-shitou",
+      "text": "……给你看一眼，就一眼。（匣里是两张虫蛀的符纸，和一块裹着旧布、黑不溜秋的石头。）",
+      "options": [
+        { "text": "这就是那块石头？", "next": "shitou-stone", "grantFlag": "saw-the-stone", "socialEvent": "Confessed", "socialWeight": 3 }
+      ]
+    },
+    {
+      "id": "shitou-stone",
+      "npc": "npc-shitou",
+      "text": "嗯。裹着旧布捡来的，当时谁都不要它。……我不知道它是什么。你要喜欢——别，你还是别拿。拿着要出事。",
+      "options": [
+        { "text": "我不拿。你留着。", "next": "shitou-bye" }
+      ]
+    },
+    {
+      "id": "shitou-shop",
+      "npc": "npc-shitou",
+      "text": "……我这没什么好东西。粗布、干粮，你要就匀你点，别给钱。",
+      "options": [
+        { "text": "那我拿一块炊饼。", "next": "shitou-bye" }
+      ]
+    },
+    {
+      "id": "shitou-bye",
+      "npc": "npc-shitou",
+      "text": "……慢走。",
+      "next": ""
+    },
+    {
+      "id": "zhaoda-intro",
+      "npc": "npc-zhao-da",
+      "text": "看什么看！要打刀就候着，不打别挡着风箱！",
+      "options": [
+        { "text": "打听：镇上谁最恨官府？", "next": "zhaoda-ask", "socialEvent": "Traded" },
+        { "text": "（故交）赵大哥当年在哪儿当的差？", "next": "zhaoda-past", "minMemoryTier": 2 },
+        { "text": "做买卖", "next": "zhaoda-shop", "action": "openShop" },
+        { "text": "告辞", "next": "zhaoda-bye" }
+      ]
+    },
+    {
+      "id": "zhaoda-ask",
+      "npc": "npc-zhao-da",
+      "text": "恨官府？哈！你问错人了——我姓赵，祖上三代没出过一个当差的。……罢了，你去打听石头他爹那档子事。",
+      "options": [
+        { "text": "石头他爹怎么了？", "next": "zhaoda-tax", "grantFlag": "heard-of-shitou", "socialEvent": "Confessed", "socialWeight": 2 }
+      ]
+    },
+    {
+      "id": "zhaoda-tax",
+      "npc": "npc-zhao-da",
+      "text": "修河堤摊派，出工不给粮。人累死在堤上，账还挂在门上。石头那孩子，从那年起就一个人了。",
+      "options": [
+        { "text": "……我知道了。", "next": "zhaoda-bye" }
+      ]
+    },
+    {
+      "id": "zhaoda-past",
+      "npc": "npc-zhao-da",
+      "text": "（他把锤子搁下，抹了把脸。）当年守渡，我那队三十七个人，回来四个。我这条命是捡的——所以我看不得谁手里没家伙。",
+      "options": [
+        { "text": "赵大哥……", "next": "zhaoda-bye" }
+      ]
+    },
+    {
+      "id": "zhaoda-shop",
+      "npc": "npc-zhao-da",
+      "text": "柴刀、铁剑，就这两样。要就自己挑，别磨蹭，我炉子还烧着。",
+      "options": [
+        { "text": "我挑一把。", "next": "zhaoda-bye" }
+      ]
+    },
+    {
+      "id": "zhaoda-bye",
+      "npc": "npc-zhao-da",
+      "text": "刀拿好，别弄丢了。",
+      "next": ""
+    },
+    {
+      "id": "yaolao-intro",
+      "npc": "npc-yao-lao",
+      "text": "抓药还是问事？山里的草药通人性，你待它善，它便救你的命。",
+      "options": [
+        { "text": "（药圃解围）后山是不是出事了？", "next": "yaolao-rescue", "condition": "questAvailable:quest-herbal-rescue" },
+        { "text": "（交付）采药童子回来了。", "next": "yaolao-thanks", "condition": "questCompletable:quest-herbal-rescue", "action": "turnInQuest", "turnInQuest": "quest-herbal-rescue" },
+        { "text": "做买卖", "next": "yaolao-shop", "action": "openShop" },
+        { "text": "告辞", "next": "yaolao-bye" }
+      ]
+    },
+    {
+      "id": "yaolao-rescue",
+      "npc": "npc-yao-lao",
+      "text": "今早去采药的童子还没回来。东郊后山——那头野猪妖把人堵在林子里了。我这把老骨头走不动，你……",
+      "options": [
+        { "text": "我去看看。", "next": "yaolao-accept", "condition": "questAvailable:quest-herbal-rescue", "action": "acceptQuest", "acceptQuest": "quest-herbal-rescue", "grantFlag": "herb-rescue-accepted", "socialEvent": "Helped", "socialWeight": 2 },
+        { "text": "这我管不了。", "next": "yaolao-bye", "socialEvent": "RefusedHelp" }
+      ]
+    },
+    {
+      "id": "yaolao-accept",
+      "npc": "npc-yao-lao",
+      "text": "去吧。带把刀，别硬拼——它那副胆囊和身上带的草药，你要能取回来，我留着救人。",
+      "options": [
+        { "text": "我这就去。", "next": "yaolao-bye" }
+      ]
+    },
+    {
+      "id": "yaolao-thanks",
+      "npc": "npc-yao-lao",
+      "text": "童子回来了，一条腿擦破皮，命在。你带回来的那副胆，我配成三帖金疮药——三帖都交给你，路上留着防身。",
+      "options": [
+        { "text": "药老客气。", "next": "yaolao-bye", "socialEvent": "Helped", "socialWeight": 3 }
+      ]
+    },
+    {
+      "id": "yaolao-shop",
+      "npc": "npc-yao-lao",
+      "text": "金疮药、药草、青灵草，都在竹席上晾着。自己挑，价钱好商量。",
+      "options": [
+        { "text": "好。", "next": "yaolao-bye" }
+      ]
+    },
+    {
+      "id": "yaolao-bye",
+      "npc": "npc-yao-lao",
+      "text": "去吧。山里的路，慢些走。",
+      "next": ""
+    },
+    {
+      "id": "huolang-black",
+      "npc": "huolang",
+      "text": "（他压低声音。）入夜我才挪到双桥底下，独门货只在那里出。……这话我只说一遍，你也只当没听见。",
+      "options": [
+        { "text": "今晚桥头见。", "next": "huolang-goodbye", "grantFlag": "knows-black-market", "socialEvent": "Traded", "socialWeight": 2 }
+      ]
+    }
+  ]
+}

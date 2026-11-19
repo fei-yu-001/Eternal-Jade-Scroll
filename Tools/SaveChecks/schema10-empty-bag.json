@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 10,
+  "slot": 1,
+  "characterId": "farmer",
+  "characterName": "\u5939\u51771",
+  "createdUtc": "2026-10-05T14:39:38.1180864\u002B00:00",
+  "updatedUtc": "2026-10-05T14:39:38.1280675\u002B00:00",
+  "location": "CharacterPreview",
+  "facing": 0,
+  "gender": "male",
+  "faceStyle": 0,
+  "traits": [],
+  "destiny": "",
+  "coins": 300,
+  "localReputation": 0,
+  "bag": [
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    },
+    {
+      "IsEmpty": true,
+      "id": "",
+      "count": 0
+    }
+  ],
+  "merchants": [],
+  "oneTimeFlags": [],
+  "quests": [],
+  "worldDay": 1,
+  "worldMinuteOfDay": 360,
+  "npcs": [],
+  "clues": [],
+  "dialogue": null,
+  "chapter": {
+    "reached": 0,
+    "settled": []
+  },
+  "karmaEvents": [],
+  "bagClipped": false
+}

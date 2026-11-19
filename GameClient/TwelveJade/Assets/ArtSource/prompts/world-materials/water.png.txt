@@ -1,0 +1,20 @@
+Generate one square 1024x1024 seamless tileable top-down terrain material texture for a 2D Chinese ink-wash xianxia open-world RPG.
+Asset type: terrain material tile.
+Use case: stylized-concept ground texture, not a scene.
+Visual target: hand-painted rice-paper terrain, subtle gothic survival-game linework, HD-2D miniature diorama lighting, muted natural palette, elegant brush strokes, soft top-left light, high gameplay readability.
+View: strict orthographic top-down, no perspective, no isometric, no 3D camera.
+The texture must tile seamlessly in X and Y, with no visible grid, no border, no frame, no vignette, no repeated obvious pattern.
+It must be opaque, clean, low saturation, and contain only ground surface material.
+
+Subject:
+shallow river water surface ground tile for a Chinese ink-wash RPG, calm flowing river, seen from directly above. This is a flat water material tile, not a river scene.
+
+Color palette:
+blue-gray, teal, ink green, soft cyan-gray, muted river tone, low saturation.
+
+Texture details:
+gentle flow lines, soft ripples, subtle ink-wash gradients, translucent feeling but opaque image. Keep ripple scale medium-small and edge-safe. No banks, no boats, no fish, no splashes, no waterfall, no ocean waves, no ice, no swamp bubbles, no rocks, no reeds.
+Important: no objects, no props, no landmarks, no horizon, no sky, no shadows cast by external objects. Only flat ground material viewed from above. If any detail approaches an edge, it must continue naturally on the opposite edge. The final image must be usable as a tileable terrain material in a top-down open-world map.
+
+Avoid:
+buildings, houses, walls, roofs, doors, windows, NPCs, people, characters, animals, monsters, trees, saplings, bushes, flowers, large grass blades, rocks as objects, boulders, decorative stones, stalls, lanterns, signs, banners, fences, railings, bridges as whole structures, boats, fish, clouds, snow, desert, modern asphalt, regular bricks, text, letters, numbers, watermark, logo, UI, icons, markers, arrows, black borders, white borders, frame, vignette, perspective, isometric, 3D render, photorealistic, blurry, lowres, jpeg artifacts, visible seams, repeated pattern grid, cartoon sticker style, oversaturated, high contrast, harsh shadow, cast shadow.

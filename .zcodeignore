@@ -1,0 +1,115 @@
+# ============ Unity（GameClient/ 下） ============
+GameClient/*/Library/
+GameClient/*/Temp/
+GameClient/*/Obj/
+GameClient/*/Build/
+GameClient/*/Builds/
+GameClient/*/Logs/
+GameClient/*/UserSettings/
+GameClient/*/MemoryCaptures/
+GameClient/*/Recorded/
+GameClient/*/*.csproj
+GameClient/*/*.sln
+GameClient/*/*.unityproj
+GameClient/*/*.suo
+GameClient/*/*.tmp
+GameClient/*/*.userprefs
+GameClient/*/*.pidb
+GameClient/*/*.booproj
+GameClient/*/*.svd
+GameClient/*/*.pdb
+GameClient/*/*.mdb
+GameClient/*/*.opendb
+GameClient/*/*.apk
+GameClient/*/*.aab
+GameClient/*/*.unitypackage
+GameClient/*/*.app
+GameClient/*/*.unitypackage.meta
+
+# ============ Java / Maven（GameServer/ 下） ============
+GameServer/*/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# ============ 数据库导出（大文件不入库） ============
+*.sql.bak
+*.dump
+
+# ============ IDE ============
+.idea/
+*.iml
+.vs/
+.vscode/
+*.swp
+*.swo
+
+# ============ 操作系统 ============
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============ 日志 ============
+*.log
+
+# 开发截图（不入库）
+Tools/screenshots/*
+!Tools/screenshots/.gitkeep
+
+# Local secrets, generated caches and verification output
+.env
+.env.*
+!.env.example
+**/bin/
+**/obj/
+Tools/TestResults/
+output/
+tmp/
+*.user
+*.bak
+
+# Unity 批处理临时日志
+GameClient/TwelveJade/*-log.txt
+
+# Unity 崩溃恢复场景（编辑器自动写入，不入库）
+GameClient/TwelveJade/Assets/_Recovery/
+GameClient/TwelveJade/Assets/_Recovery.meta
+
+# Python 缓存与抠图脚本的临时预览、运行日志
+__pycache__/
+*.pyc
+
+Tools/art-cleanup-preview/
+Tools/art-cleanup-run.log
+
+# ===== ↑ 以上同步自 .gitignore（「从 .gitignore 同步」只重写以上部分）=====
+.git/
+.hg/
+.svn/
+node_modules/
+bower_components/
+jspm_packages/
+site-packages/
+venv/
+coverage/
+htmlcov/
+lcov-report/
+cmakefiles/
+cmake-build-*/
+bazel-*/
+pods/
+deriveddata/
+storybook-static/
+playwright-report/
+test-results/
+allure-results/
+allure-report/
+cdk.out/
+*.egg-info/
+*.dist-info/
+eggs/
+pip-wheel-metadata/
+wheels/
+# ----- ↑ 以上为 ZCode 默认排除规则（自定义规则请写在本行下方，不会被同步/恢复改动）-----
+# 自定义规则写在下方（本行提示可删除）

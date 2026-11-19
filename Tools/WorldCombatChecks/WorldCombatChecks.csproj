@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+    <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
+    <CodePage>65001</CodePage>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="FreeCastBoundaryChecks.cs" />
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Core/*.cs" Link="Core/%(Filename)%(Extension)" />
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Combat/*.cs" Link="Combat/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

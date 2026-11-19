@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <!-- 与 SaveChecks / PuppetRigChecks 同一处置：源文件是 UTF-8 无 BOM，不钉代码页会把中文注解读成乱码 -->
+    <CodePage>65001</CodePage>
+    <AssemblyName>AudioChecks</AssemblyName>
+    <RootNamespace>TwelveJade.AudioChecks</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 只纳**纯 C#（不引 UnityEngine）**的音频 DSP 层，这样 `dotnet run` 就能在没有 Unity 的机器上断言。
+         和 PuppetRigChecks 纳 PuppetRig.cs / PuppetGait.cs 是同一个做法，两边互不干扰。 -->
+    <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Presentation/FootstepSynth.cs" Link="Presentation/FootstepSynth.cs" />
+  </ItemGroup>
+</Project>

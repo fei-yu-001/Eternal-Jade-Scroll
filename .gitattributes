@@ -1,0 +1,19 @@
+* text=auto
+*.cs text eol=lf
+*.asmdef text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+# 取证脚本必须是 LF：core.autocrlf=true + `* text=auto` 会在检出时把 .sh 换成 CRLF，
+# 那会让 bash 把每条命令的参数带上 \r（Unity 的 -logFile 路径首当其冲）。
+*.sh text eol=lf
+*.meta text eol=lf whitespace=-blank-at-eol
+*.asset text eol=lf whitespace=-blank-at-eol
+*.unity text eol=lf whitespace=-blank-at-eol
+*.shader text eol=lf whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab
+*.hlsl text eol=lf
+*.cginc text eol=lf whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.otf binary
+*.ttf binary

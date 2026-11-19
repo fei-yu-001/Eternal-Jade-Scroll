@@ -1,0 +1,80 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "real map has bridge/ferry exclusions",
+      "pass": true,
+      "detail": "exclusions=8"
+    },
+    {
+      "name": "leaf budget capped at 24",
+      "pass": true,
+      "detail": "count=24"
+    },
+    {
+      "name": "all leaves spawn inside the water band",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "flow direction follows the definition",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "90s at 60fps: every leaf stays inside the water band",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "90s at 60fps: no leaf visibly crosses a bridge or deck",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "90s at 60fps: no NaN/Infinity positions",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "visible leaves stay within the cap",
+      "pass": true,
+      "detail": "maxVisible=24"
+    },
+    {
+      "name": "single 8s frame cannot tunnel through a bridge",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reverse flow drifts toward -X",
+      "pass": true,
+      "detail": "1805.1896 -\u003E 1761.0685"
+    },
+    {
+      "name": "reduceMotion freezes position and visibility",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reduceMotion freezes the phase clock",
+      "pass": true,
+      "detail": "2 -\u003E 2"
+    },
+    {
+      "name": "same seed reproduces the same drift",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reconfigure honours the new count and restarts the clock",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "requested count above the cap is clamped",
+      "pass": true,
+      "detail": "count=24"
+    }
+  ]
+}

@@ -1,0 +1,508 @@
+{
+  "artworks": [
+    {
+      "id": "nov8/meridian-inner-vision-doll",
+      "resource": "Art/UI/Nov8/meridian-inner-vision-doll"
+    },
+    {
+      "id": "memo/button-gold",
+      "resource": "Art/UI/Nov6/button-gold"
+    },
+    {
+      "id": "memo/icon-coins",
+      "resource": "Art/UI/Nov6/icon-coins"
+    },
+    {
+      "id": "memo/icon-compass",
+      "resource": "Art/UI/Nov6/icon-compass"
+    },
+    {
+      "id": "memo/icon-document",
+      "resource": "Art/UI/Nov6/icon-document"
+    },
+    {
+      "id": "memo/icon-spirit",
+      "resource": "Art/UI/Nov6/icon-spirit"
+    },
+    {
+      "id": "memo/icon-sword",
+      "resource": "Art/UI/Nov6/icon-sword"
+    },
+    {
+      "id": "memo/jade-pendant",
+      "resource": "Art/UI/Nov6/jade-pendant"
+    },
+    {
+      "id": "memo/paper-panel-translucent",
+      "resource": "Art/UI/Nov6/paper-panel-translucent"
+    },
+    {
+      "id": "memo/paper-panel",
+      "resource": "Art/UI/Nov6/paper-panel"
+    },
+    {
+      "id": "memo/scroll-body",
+      "resource": "Art/UI/Nov6/scroll-body"
+    },
+    {
+      "id": "memo/scroll-footer",
+      "resource": "Art/UI/Nov6/scroll-footer"
+    },
+    {
+      "id": "memo/scroll-header",
+      "resource": "Art/UI/Nov6/scroll-header"
+    },
+    {
+      "id": "memo/scroll-whole",
+      "resource": "Art/UI/Nov6/scroll-whole"
+    },
+    {
+      "id": "memo/seal-cinnabar",
+      "resource": "Art/UI/Nov6/seal-cinnabar"
+    },
+    {
+      "id": "memo/Posters/farmer-female",
+      "resource": "Art/UI/Nov6/Posters/farmer-female"
+    },
+    {
+      "id": "memo/Posters/farmer-male",
+      "resource": "Art/UI/Nov6/Posters/farmer-male"
+    },
+    {
+      "id": "memo/Posters/merchant-female",
+      "resource": "Art/UI/Nov6/Posters/merchant-female"
+    },
+    {
+      "id": "memo/Posters/merchant-male",
+      "resource": "Art/UI/Nov6/Posters/merchant-male"
+    },
+    {
+      "id": "memo/Posters/traveller-female",
+      "resource": "Art/UI/Nov6/Posters/traveller-female"
+    },
+    {
+      "id": "memo/Posters/traveller-male",
+      "resource": "Art/UI/Nov6/Posters/traveller-male"
+    },
+    {
+      "id": "nov7/cinnabar-immortal-seal",
+      "resource": "Art/UI/Nov7/cinnabar-immortal-seal"
+    },
+    {
+      "id": "nov7/hud-avatar",
+      "resource": "Art/UI/Nov7/hud-avatar"
+    },
+    {
+      "id": "nov7/hud-map",
+      "resource": "Art/UI/Nov7/hud-map"
+    },
+    {
+      "id": "nov7/hud-silk",
+      "resource": "Art/UI/Nov7/hud-silk"
+    },
+    {
+      "id": "nov7/white-jade-command",
+      "resource": "Art/UI/Nov7/white-jade-command"
+    },
+    {
+      "id": "nov7-v2/wheel/base",
+      "resource": "Art/UI/Nov7V2/Wheel/base"
+    },
+    {
+      "id": "nov7-v2/wheel/icon-daoshen",
+      "resource": "Art/UI/Nov7V2/Wheel/icon-daoshen"
+    },
+    {
+      "id": "nov7-v2/wheel/icon-guijuan",
+      "resource": "Art/UI/Nov7V2/Wheel/icon-guijuan"
+    },
+    {
+      "id": "nov7-v2/wheel/icon-jingmai",
+      "resource": "Art/UI/Nov7V2/Wheel/icon-jingmai"
+    },
+    {
+      "id": "nov7-v2/wheel/icon-najie",
+      "resource": "Art/UI/Nov7V2/Wheel/icon-najie"
+    },
+    {
+      "id": "nov7-v2/wheel/icon-qiankun",
+      "resource": "Art/UI/Nov7V2/Wheel/icon-qiankun"
+    },
+    {
+      "id": "nov7-v2/wheel/icon-wanfa",
+      "resource": "Art/UI/Nov7V2/Wheel/icon-wanfa"
+    },
+    {
+      "id": "nov7-v2/wheel/icon-xundao",
+      "resource": "Art/UI/Nov7V2/Wheel/icon-xundao"
+    },
+    {
+      "id": "nov7-v2/wheel/icon-yutu",
+      "resource": "Art/UI/Nov7V2/Wheel/icon-yutu"
+    },
+    {
+      "id": "nov7-v2/wheel/rotor",
+      "resource": "Art/UI/Nov7V2/Wheel/rotor"
+    },
+    {
+      "id": "nov8/meridian-bg",
+      "resource": "Art/UI/Nov8/meridian-bg"
+    },
+    {
+      "id": "nov8/inventory-bg",
+      "resource": "Art/UI/Nov8/inventory-bg"
+    },
+    {
+      "id": "nov8/meridian-live-overlay",
+      "resource": "Art/UI/Nov8/meridian-live-overlay"
+    },
+    {
+      "id": "nov8/inventory-live-overlay",
+      "resource": "Art/UI/Nov8/inventory-live-overlay"
+    },
+    {
+      "id": "nov8/ledger-tab",
+      "resource": "Art/UI/Nov8/ledger-tab"
+    },
+    {
+      "id": "nov8/ledger-slot",
+      "resource": "Art/UI/Nov8/ledger-slot"
+    },
+    {
+      "id": "nov8/arts-bg",
+      "resource": "Art/UI/Nov8/arts-bg"
+    },
+    {
+      "id": "nov8/chibi-study",
+      "resource": "Art/UI/Nov8/chibi-study"
+    },
+    {
+      "id": "nov8/arts-live-overlay",
+      "resource": "Art/UI/Nov8/arts-live-overlay"
+    },
+    {
+      "id": "nov8/arts-library-vr",
+      "resource": "Art/UI/Nov8/arts-library-vr"
+    },
+    {
+      "id": "nov8/arts-mandala-vr",
+      "resource": "Art/UI/Nov8/arts-mandala-vr"
+    },
+    {
+      "id": "nov8/arts-sigil-light-vr",
+      "resource": "Art/UI/Nov8/arts-sigil-light-vr"
+    },
+    {
+      "id": "nov8/arts-sigil-heavy-vr",
+      "resource": "Art/UI/Nov8/arts-sigil-heavy-vr"
+    },
+    {
+      "id": "nov8/arts-sigil-dodge-vr",
+      "resource": "Art/UI/Nov8/arts-sigil-dodge-vr"
+    },
+    {
+      "id": "nov8/arts-sigil-sword-vr",
+      "resource": "Art/UI/Nov8/arts-sigil-sword-vr"
+    },
+    {
+      "id": "nov8/arts-sigil-thunder-vr",
+      "resource": "Art/UI/Nov8/arts-sigil-thunder-vr"
+    },
+    {
+      "id": "nov8/arts-sigil-clarity-vr",
+      "resource": "Art/UI/Nov8/arts-sigil-clarity-vr"
+    },
+    {
+      "id": "nov8/arts-dossier-vr",
+      "resource": "Art/UI/Nov8/arts-dossier-vr"
+    },
+    {
+      "id": "nov8/arts-tab-vr",
+      "resource": "Art/UI/Nov8/arts-tab-vr"
+    },
+    {
+      "id": "nov8/arts-choice-vr",
+      "resource": "Art/UI/Nov8/arts-choice-vr"
+    },
+    {
+      "id": "nov8/meridian-daoist-masterpiece",
+      "resource": "Art/UI/Nov8/meridian-daoist-masterpiece"
+    },
+    {
+      "id": "nov8/qingshi-shanhe-scroll",
+      "resource": "Art/UI/Nov8/qingshi-shanhe-scroll"
+    },
+    {
+      "id": "nov8/wuxing-lingpan-compass",
+      "resource": "Art/UI/Nov8/wuxing-lingpan-compass"
+    },
+    {
+      "id": "nov8/tianji-scroll-fairyland",
+      "resource": "Art/UI/Nov8/tianji-scroll-fairyland"
+    },
+    {
+      "id": "nov8/shenshi-doll-pondering",
+      "resource": "Art/UI/Nov8/shenshi-doll-pondering"
+    },
+    {
+      "id": "nov8/shenshi-doll-enlightened",
+      "resource": "Art/UI/Nov8/shenshi-doll-enlightened"
+    },
+    {
+      "id": "nov8/xuan-ink-silk",
+      "resource": "Art/UI/Nov8/xuan-ink-silk"
+    },
+    {
+      "id": "nov8/moon-xuan-paper",
+      "resource": "Art/UI/Nov8/moon-xuan-paper"
+    },
+    {
+      "id": "nov8/white-jade-roller",
+      "resource": "Art/UI/Nov8/white-jade-roller"
+    },
+    {
+      "id": "nov8/moon-jade-command",
+      "resource": "Art/UI/Nov8/moon-jade-command"
+    },
+    {
+      "id": "nov8/moon-xuan-paper-translucent",
+      "resource": "Art/UI/Nov8/moon-xuan-paper-translucent"
+    },
+    {
+      "id": "nov8/qingshi-town-atlas",
+      "resource": "Art/UI/Nov8/qingshi-town-atlas"
+    },
+    {
+      "id": "nov9/immortal-command",
+      "resource": "Art/UI/Nov9/immortal-command"
+    },
+    {
+      "id": "nov9/immortal-command-glow",
+      "resource": "Art/UI/Nov9/immortal-command-glow"
+    },
+    {
+      "id": "nov9/inventory-live-overlay-restored",
+      "resource": "Art/UI/Nov9/inventory-live-overlay-restored"
+    },
+    {
+      "id": "nov9/memo-scroll-body",
+      "resource": "Art/UI/Nov9/memo-scroll-body"
+    },
+    {
+      "id": "nov9/memo-scroll-header",
+      "resource": "Art/UI/Nov9/memo-scroll-header"
+    },
+    {
+      "id": "nov9/memo-scroll-footer",
+      "resource": "Art/UI/Nov9/memo-scroll-footer"
+    },
+    {
+      "id": "nov9/atlas-surround",
+      "resource": "Art/UI/Nov9/atlas-surround"
+    },
+    {
+      "id": "nov10/dialogue-scroll-mount",
+      "resource": "Art/UI/Nov10/dialogue-scroll-mount"
+    },
+    {
+      "id": "nov10/dialogue-choice-silk",
+      "resource": "Art/UI/Nov10/dialogue-choice-silk"
+    },
+    {
+      "id": "nov10/dialogue-control-jade",
+      "resource": "Art/UI/Nov10/dialogue-control-jade"
+    },
+    {
+      "id": "nov10/dialogue-control-active",
+      "resource": "Art/UI/Nov10/dialogue-control-active"
+    },
+    {
+      "id": "nov10/dialogue-jade-tassel",
+      "resource": "Art/UI/Nov10/dialogue-jade-tassel"
+    },
+    {
+      "id": "nov10/study-spirit-reading",
+      "resource": "Art/UI/Nov10/study-spirit-reading"
+    },
+    {
+      "id": "nov10/world-unopened-clouds",
+      "resource": "Art/UI/Nov10/world-unopened-clouds"
+    },
+    {
+      "id": "nov10/memo-painted-selection",
+      "resource": "Art/UI/Nov10/memo-painted-selection"
+    },
+    {
+      "id": "nov10/memo-silk-premium",
+      "resource": "Art/UI/Nov10/memo-silk-premium"
+    },
+    {
+      "id": "nov10/memo-jade-roller-premium",
+      "resource": "Art/UI/Nov10/memo-jade-roller-premium"
+    },
+    {
+      "id": "nov10/memo-pendant-premium",
+      "resource": "Art/UI/Nov10/memo-pendant-premium"
+    },
+    {
+      "id": "nov10/memo-cord-premium",
+      "resource": "Art/UI/Nov10/memo-cord-premium"
+    },
+    {
+      "id": "nov10/combat-hero-male-strikes",
+      "resource": "Art/UI/Nov10/combat-hero-male-strikes"
+    },
+    {
+      "id": "nov10/combat-hero-female-strikes",
+      "resource": "Art/UI/Nov10/combat-hero-female-strikes"
+    },
+    {
+      "id": "nov11/alchemy-workshop",
+      "resource": "Art/UI/Nov11/alchemy-workshop"
+    },
+    {
+      "id": "nov11/credits-silk-landscape",
+      "resource": "Art/UI/Nov11/credits-silk-landscape"
+    },
+    {
+      "id": "nov11/forge-workshop",
+      "resource": "Art/UI/Nov11/forge-workshop"
+    },
+    {
+      "id": "nov11/skill-clarity-icon",
+      "resource": "Art/UI/Nov11/skill-clarity-icon"
+    },
+    {
+      "id": "nov11/skill-sword-icon",
+      "resource": "Art/UI/Nov11/skill-sword-icon"
+    },
+    {
+      "id": "nov11/skill-thunder-icon",
+      "resource": "Art/UI/Nov11/skill-thunder-icon"
+    },
+    {
+      "id": "nov11/skill-clarity",
+      "resource": "Art/Fx/Nov11/skill-clarity"
+    },
+    {
+      "id": "nov11/skill-sword",
+      "resource": "Art/Fx/Nov11/skill-sword"
+    },
+    {
+      "id": "nov11/skill-thunder",
+      "resource": "Art/Fx/Nov11/skill-thunder"
+    },
+    {
+      "id": "nov11-resource/cloud-silk-robe",
+      "resource": "Art/Items/Nov11/cloud-silk-robe"
+    },
+    {
+      "id": "nov11-resource/golden-return-pill",
+      "resource": "Art/Items/Nov11/golden-return-pill"
+    },
+    {
+      "id": "nov11-resource/jade-lamellar",
+      "resource": "Art/Items/Nov11/jade-lamellar"
+    },
+    {
+      "id": "nov11-resource/jade-renew-pill",
+      "resource": "Art/Items/Nov11/jade-renew-pill"
+    },
+    {
+      "id": "nov11-resource/jade-vein-core",
+      "resource": "Art/Items/Nov11/jade-vein-core"
+    },
+    {
+      "id": "nov11-resource/qinggang-sword",
+      "resource": "Art/Items/Nov11/qinggang-sword"
+    },
+    {
+      "id": "nov11-resource/red-dew-pill",
+      "resource": "Art/Items/Nov11/red-dew-pill"
+    },
+    {
+      "id": "nov11-resource/swift-boots",
+      "resource": "Art/Items/Nov11/swift-boots"
+    },
+    {
+      "id": "nov11-resource/boar-demon-walk",
+      "resource": "Art/Characters/Nov11/boar-demon-walk"
+    },
+    {
+      "id": "nov11-resource/nether-wolf-walk",
+      "resource": "Art/Characters/Nov11/nether-wolf-walk"
+    },
+    {
+      "id": "nov11-resource/qingshi-mountain-lord-strikes",
+      "resource": "Art/Characters/Nov11/qingshi-mountain-lord-strikes"
+    },
+    {
+      "id": "nov11-resource/qingshi-mountain-lord-walk",
+      "resource": "Art/Characters/Nov11/qingshi-mountain-lord-walk"
+    },
+    {
+      "id": "nov11-resource/stone-mandrill-walk",
+      "resource": "Art/Characters/Nov11/stone-mandrill-walk"
+    },
+    {
+      "id": "nov11-resource/qingshi-boss-domain",
+      "resource": "Art/World/Wilderness/qingshi-boss-domain"
+    },
+    {
+      "id": "nov11-resource/iron-ore-node",
+      "resource": "Art/Props/Wilderness/iron-ore-node"
+    },
+    {
+      "id": "nov11-resource/jade-boulders",
+      "resource": "Art/Props/Wilderness/jade-boulders"
+    },
+    {
+      "id": "nov11-resource/ore-spent",
+      "resource": "Art/Props/Wilderness/ore-spent"
+    },
+    {
+      "id": "nov11-resource/slate-rubble",
+      "resource": "Art/Props/Wilderness/slate-rubble"
+    },
+    {
+      "id": "nov11-resource/trail-stone",
+      "resource": "Art/Props/Wilderness/trail-stone"
+    },
+    {
+      "id": "nov11-resource/memo-terrace",
+      "resource": "Art/Background/memo-terrace"
+    },
+    {
+      "id": "nov11-resource/menu-painting",
+      "resource": "Art/Background/menu-painting"
+    },
+    {
+      "id": "nov11-resource/qingshi-boss-domain",
+      "resource": "Art/Background/qingshi-boss-domain"
+    },
+    {
+      "id": "nov11/artisan-silk-page",
+      "resource": "Art/UI/Nov11/artisan-silk-page"
+    },
+    {
+      "id": "nov11/skill-jade-inset",
+      "resource": "Art/UI/Nov11/skill-jade-inset"
+    },
+    {
+      "id": "nov19/creature-boar-demon-stand",
+      "resource": "Art/Characters/Nov19/boar-demon-stand"
+    },
+    {
+      "id": "nov19/creature-nether-wolf-stand",
+      "resource": "Art/Characters/Nov19/nether-wolf-stand"
+    },
+    {
+      "id": "nov19/creature-qingshi-mountain-lord-stand",
+      "resource": "Art/Characters/Nov19/qingshi-mountain-lord-stand"
+    },
+    {
+      "id": "nov19/creature-stone-mandrill-stand",
+      "resource": "Art/Characters/Nov19/stone-mandrill-stand"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "TwelveJade.Economy",
+  "rootNamespace": "TwelveJade",
+  "references": ["TwelveJade.Core"],
+  "noEngineReferences": true
+}

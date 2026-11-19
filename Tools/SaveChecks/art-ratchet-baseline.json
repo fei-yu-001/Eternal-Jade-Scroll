@@ -1,0 +1,475 @@
+{
+  "_说明": "H-4 素材棘轮基线（Gate H-4，实现权由 D-48.1 从 1号 转给 3号）。两条断言的判据都从这里取：正向＝表里声明了资源就必须解析得到；反向＝已纳入目录里的孤儿数只准降不准升。D-49 之后**基线按目录分档**：一个目录一条数，不做全局一个数——`Art/World/Chunks` 是程序化产物、数量会随地形重合成波动，全局一个棘轮会把\"重新生成地形\"误判成违规。",
+  "_字样独占": "D-45：三类真判据字样只由真门禁在真判定后打印（grep 它们时应当只命中夹具与门禁本体）。本文件与门禁的演练输出一律走 SELFTEST: 前缀；这份基线里也刻意不写那三类字样，免得 grep 审计时被误命中。",
+  "_文件名说明": "架构师 D-49 原文把它叫 `art-baseline.json`，实物叫 `art-ratchet-baseline.json`——同一个东西，不改名：`Tools/logs/h4-ratchet-report.md` 与 09 开发日志已经按旧名登记过，改名等于让历史证据指向一个不存在的文件。要统一名字请在下一包点名。",
+  "declaredResourceFields": {
+    "_说明": "哪些配置字段是『声明资源』。items 用 icon；encounters 用 town-map.json 的 `encounters[].art`（1号 Q1.6 §2 交来的语义：非空＝必须加载得出来，空＝图还没灌装，画彩色标记、计入 conventionGaps、不许当红）。其余表实测无资源字段，走 exemptions。",
+    "items": "icon",
+    "encounters": "art",
+    "npcs": null,
+    "enemies": null,
+    "quests": null,
+    "clues": null
+  },
+  "exemptions": [
+    {
+      "table": "npcs",
+      "reason": "立绘按 id 约定加载（FrontEndTrade.PortraitPaths 同时试 Art/Portraits/<id> 与 portrait-<id>），表里没有 art 字段。豁免不是永久席：npcs.json 加了 art 字段，本条必须同笔删除。"
+    },
+    {
+      "table": "enemies",
+      "reason": "敌人图按 id 约定加载（FrontEndCombat:314 Resources.Load(\"Art/NPC/\" + foeDef.Id)，2号 写域）。1号 在 q1-6-artwire-report §3 里**有意**不给 enemies.json 加 art 字段（加了没人读＝能力存在≠功能存在，且声明路径与拼名路径并存会让同一只妖在两页长成两个样子而两边都绿）。这条豁免因此是**有主的现状**而不是懒账：拼名那一侧由 Art/NPC 的 id-equality 档守着。加了 art 字段就删本条。"
+    },
+    {
+      "table": "quests",
+      "reason": "任务页是文字面板，全仓无 Art/Quests 引用、表内无资源字段。要出图必须先有消费点，见 h3-icons-report §2。"
+    },
+    {
+      "table": "clues",
+      "reason": "线索页同上：无字段、无消费点。"
+    },
+    {
+      "table": "karma",
+      "reason": "气运簿按大纲 1.3『不当场弹窗告知』，是账本不是图标位。"
+    }
+  ],
+  "directories": {
+    "_说明": "D-49 要求的按目录分组：Resources/Art 下**每个自己直接带 png 的目录**一条，key 就是它相对 Resources 的路径（允许嵌套，`Art/World/Chunks` 单独一档，因为它才是程序化产物）。status 只有两种：measured＝解析规则已定、`baseline` 是**当天实测数**；awaiting-convention＝规则还没拿到，**`baseline` 必须留空**——架构师原话『写预计值等于没写』，所以基线里出现未实测目录的数字，门禁直接红。pngTop＝这个目录自己带的 png 数；pngRecursive＝含子层（只在下面还有目录的档里有意义）。",
+    "_规则口径": "四种规则，全部有主：id-equality＝文件名必须等于某个 npc/enemy id；declared-or-literal＝文件名必须是某表声明的资源值或代码里的 Resources.Load 字面量；config-field＝文件名必须等于某配置字段里写的完整 Resources 路径的最后一段（按父目录过滤，跨目录的值不算这一档）；template＝按路径模板 × 网格展开。规则不确定的目录宁可不纳入，也不要用『前缀命中就算引用』糊过去——那会把死文件判成活的（本轮实测：那样 Art/World 65 张全判成活的，等于没有门禁）。",
+    "_覆盖断言第一次跑就抓到的事": "旧的平行表只登记了我当时想到的四个目录。合并成一张 directories 之后『盘上有图却没档』当场判红一次，抓出两条没人管的档：`Art` 根本身（37 张 farmer/merchant/traveller 纸偶切片 + menu-painting）与 `Art/World/Chunks`（64 张程序化 chunk）。这就是 D-49 分档覆盖的实际收益，不是形式。",
+    "_约定来源": "config-field 与 template 这两族的规则不是我猜的，是 1号 按 D-52① 交的原文（`Tools/logs/q1-6-artwire-report.md` §1）：Art/World 按 `chunkArtTemplate` 拼名、Art/Props 的 sprite 名就是 `building-plots.json` 的 `plots[].art` 字段本身。他 04:39 交，我在同一小时里实测钉数（D-49：当天实测当天钉）。",
+    "Art/Items": {
+      "status": "measured",
+      "rule": "declared-or-literal",
+      "pngTop": 39,
+      "pngRecursive": 47,
+      "baseline": 2,
+      "orphans": [
+        "porridge-bowl",
+        "seal-stamp"
+      ],
+      "measuredAt": "2026-11-08T14:28:00.152485+08:00"
+    },
+    "Art/Portraits": {
+      "status": "measured",
+      "rule": "id-equality",
+      "pngTop": 5,
+      "pngRecursive": 5,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-10-06 04:5x（同上）"
+    },
+    "Art/NPC": {
+      "status": "measured",
+      "rule": "id-equality",
+      "pngTop": 6,
+      "pngRecursive": 6,
+      "baseline": 2,
+      "orphans": [
+        "bandit-chief",
+        "local-thug"
+      ],
+      "measuredAt": "2026-11-11T00:16:42.034768+08:00",
+      "_三条的来历": "bandit-chief / local-thug 是早期遭遇美术，enemies.json 现在只有 boar-demon / nether-wolf / stone-mandrill 三只；shanxiao 是『山魈』的拼音旧名，而表里 id 是 stone-mandrill ⇒ 加载器按 id 找 Art/NPC/stone-mandrill.png 找不到，这只妖现在走回退绘制。**这是跨线事实，不在我写域**（enemies.json 的 art 字段归 1号 K-4，加载器 FrontEndCombat.cs 归 2号），本轮只把它钉成可见基线：孤儿数只准降，降了要同步改这里。",
+      "_D-51 改名后（2026-10-06 04:2x，员工 M Q1.6）": "上面那段是 3号 实现当天的原文，一字未改，留着是因为它记的是『当时为什么长这样』。此刻的增量：`shanxiao.png` 已按 ADR-031 的 id 改名为 `stone-mandrill.png`（`.meta` 同笔带走，guid 18cb9a98… 未变、png md5 7f62b540… 未变），所以 Art/NPC 孤儿从 3 降到 2（剩 bandit-chief / local-thug，都是早期遭遇美术、id 不在今天任何一张表里），约定缺口也从 3 降到 2（剩 enemies/nether-wolf 与 npcs/yaoshi，真要出图，归夜4）。**改名不是把孤儿删掉**：这张图的引用方从『找不到文件的回退绘制』变成『按 id 命中真图』，所以它是降级不是堆垃圾，基线才允许跟着改小。",
+      "_3号 复核（2026-10-06 04:5x）": "上面两条都在。我这一趟是拿真数据核对它们：盘上 Art/NPC 现在四个文件 bandit-chief / boar-demon / local-thug / stone-mandrill，按 id-equality 判出的孤儿恰好是 bandit-chief 与 local-thug 两条，与 1号 04:2x 登记的降级**逐条一致**；stone-mandrill 已不再是孤儿（改名生效），boar-demon 一直是 id。所以这一档我按实测钉 2，不改动他写的那两句原文。",
+      "note": "Nov11 action combat followup: generated nether-wolf transparent sprite installed and declared by encounter-wolf-01. Existing enemy mechanics and all other encounter properties unchanged."
+    },
+    "Art/Fx": {
+      "status": "measured",
+      "rule": "declared-or-literal",
+      "pngTop": 1,
+      "pngRecursive": 4,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-10-06 04:5x（同上）"
+    },
+    "Art/Props": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "building-plots.json",
+        "field": "plots[].art"
+      },
+      "pngTop": 24,
+      "pngRecursive": 32,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-10T00:21:32.028603+08:00",
+      "_实测": "Unused legacy stone-lion is archived byte-for-byte with meta under nov7-town-rebuild/retired-assets; both live lions consume the new complete plinth image; zero-orphan requirement unchanged.",
+      "note": "Nov10 D/E: exactly two placements using Art/Props/drying-rack removed; image and original meta archived under assistant/archive/retired-drying-rack. Current disk/config sets independently enumerated; zero-orphan predicate and baseline unchanged. Prior png counters were stale."
+    },
+    "Art/Buildings": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "building-plots.json",
+        "field": "plots[].art"
+      },
+      "pngTop": 1,
+      "pngRecursive": 1,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-05T23:03:58.199806+08:00",
+      "_实测": "用户新增 G01：1 PNG / 1 plots[].art 引用 / 0 孤儿；既有目录数值不变。"
+    },
+    "Art/World": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "town-map.json",
+        "field": "overviewArt"
+      },
+      "pngTop": 1,
+      "pngRecursive": 66,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-10-06 04:5x（约定到手当天实测）",
+      "_实测": "这一档只管目录自己那一张（`world-overview.png`，来自顶层 `overviewArt`）；子层 `Art/World/Chunks` 单独一档，这正是 D-49 要分档的理由。"
+    },
+    "Art/World/Chunks": {
+      "status": "measured",
+      "rule": "template",
+      "resolver": {
+        "file": "town-map.json",
+        "templateField": "chunkArtTemplate",
+        "gridField": "chunks",
+        "xField": "col",
+        "yField": "row"
+      },
+      "pngTop": 64,
+      "pngRecursive": 64,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-10-06 04:5x（约定到手当天实测）",
+      "_实测": "模板 `Art/World/Chunks/chunk_{x}_{y}` 按 1号 原文 `{x}`=列、`{y}`=行，用 `chunks[]` 的 col/row 展开 64 条，与盘上 64 张一一对应。两条要记下来：**（一）** chunks[] 里的 x/y 是世界坐标（0/1024/2048…），拿它们展开得到的是 chunk_1024_0 一族、盘上一张都对不上——所以展开必须用 col/row，用错字段会当场红 64 条，这是一记真判据不是形式。（二）** 今天的网格是 8×8，`{x}`=列 与 `{x}`=行 展开出来的**集合相同**，所以这一档抓得住『少一块/多一块』，抓不住『行列写反』；等出现非方形网格时它才具备抓转置的能力。这条局限写在这里，不让下一个人以为它什么都管。"
+    },
+    "Art/Characters/Walk": {
+      "status": "measured",
+      "rule": "declared-or-literal",
+      "pngTop": 9,
+      "pngRecursive": 9,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-04 人物纸底清理后实测：9 张运行时走帧，FrontEndWorld.LoadWalkSheet 九条字面量全部命中，孤儿 0；C1-C6 独立门禁 9/9 通过，详见 Tools/logs/walksheet-cleanup-20261104/report.md。",
+      "_说明": "文件名、6528×1088 画布、8 帧布局及 .meta GUID 保持；农户正背面采用已有同批生成版本，全部逐格去底与轮廓净化。此档仍只证明引用与孤儿数；图像质量由 check-walksheet-cutout.py 主跑独立判定，不用棘轮通过代替抠图通过。"
+    },
+    "Art/Characters/Stand": {
+      "status": "awaiting-convention",
+      "rule": null,
+      "baseline": null,
+      "pngTop": 36,
+      "pngRecursive": 36,
+      "reason": "36 张主角三向立绘现在**没有任何机器可验的引用**：CharacterPreset.Facing() 走拼接路径 `Art/Characters/Stand/{id}-{gender}-{style}-{view}`，D-49 的 literalNames 只收 Resources.Load 字面量，拼接识别不到；唯一被 GUID 引用的是 Resources/Characters/*.asset 里的 3 张 male-0（front/side/back），门禁也不读 .asset。套 declared-or-literal 会把 36 张全判成孤儿，那是把\"识别不到\"写成\"没人用\"，比不判更糟。",
+      "awaiting": "S-2 批准的 preset-grid 规则：id × gender × style × view 网格展开。InventoryEconomySuite.cs 的 PresetGridNames 目前只有调用没有方法体（六条编译错，本文件 §22 已记录降级），解析器落地当天把这一档转 measured 并补实测数。",
+      "measuredAt": "2026-11-03 主架构师七七整合素材目录后清点 36 张（3 id × 2 性别 × 2 面容 × 3 朝向），未实测引用面。"
+    },
+    "Art/Background": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 3,
+      "pngRecursive": 3,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-11T01:14:44.209630+08:00",
+      "note": "Exact registered assets. Runtime consumer paths and provenance recorded in nov11-wilderness-boss-expansion; no new orphan allowance."
+    },
+    "Art/Variants": {
+      "status": "awaiting-convention",
+      "rule": null,
+      "baseline": null,
+      "pngTop": 15,
+      "pngRecursive": 15,
+      "reason": "原 Art/豆包/ 15 张（夜4/5 素材线产物：apose/back-v2/side-v2/run-side*/walk-sidecontact 等），全仓 .cs 对「豆包/apose/run-side」零命中，无运行期消费点（T124）。2026-11-03 目录改英文名 Variants，文件内容与 GUID 未变。",
+      "awaiting": "T124：定消费点（B-10 侧档 Frames 适配接入）或确认废弃后走素材许可台账记账移除。定之前保持 awaiting，门禁只打印不判红。",
+      "measuredAt": "2026-11-03 主架构师七七整合素材目录后清点 15 张，未实测引用面。"
+    },
+    "Art/Portraits/Nov7": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "dialogue-portraits.json",
+        "field": "portraits[].resource"
+      },
+      "pngTop": 13,
+      "pngRecursive": 13,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-07T03:41:19.904879+08:00",
+      "_说明": "Nov7 registration: runtime consumes this exact catalogue/configuration; declaration and disk sets measured equal. Image quality and Unity validation are separate."
+    },
+    "Art/Props/Nov7": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "building-plots.json",
+        "field": "plots[].art"
+      },
+      "pngTop": 8,
+      "pngRecursive": 8,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-07T21:14:29.662045+08:00",
+      "_说明": "Nov7 registration: runtime consumes this exact catalogue/configuration; declaration and disk sets measured equal. Image quality and Unity validation are separate.",
+      "note": "V2 road decal moved intact with GUID to ArtSource/world/v2-retired-decal after semantic road replacement; actual remaining resource and config sets still match, zero orphan threshold retained."
+    },
+    "Art/UI/Nov6": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 14,
+      "pngRecursive": 20,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-07T03:41:19.904879+08:00",
+      "_说明": "Nov7 registration: runtime consumes this exact catalogue/configuration; declaration and disk sets measured equal. Image quality and Unity validation are separate."
+    },
+    "Art/UI/Nov6/Posters": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 6,
+      "pngRecursive": 6,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-07T03:41:19.904879+08:00",
+      "_说明": "Nov7 registration: runtime consumes this exact catalogue/configuration; declaration and disk sets measured equal. Image quality and Unity validation are separate."
+    },
+    "Art/UI/Nov7": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 5,
+      "pngRecursive": 5,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-07T21:56:24.502163+08:00",
+      "_说明": "Nov7 registration: runtime consumes this exact catalogue/configuration; declaration and disk sets measured equal. Image quality and Unity validation are separate.",
+      "note": "Original hud-lotus retired after live code removal and replaced by final two complete lotus platforms; PNG+GUID preserved in V2 archive. Remaining catalogue/files match, baseline zero orphan unchanged."
+    },
+    "Art/Characters/Nov7/Stand": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "town-character-art.json",
+        "field": "entries[].stand"
+      },
+      "pngTop": 17,
+      "pngRecursive": 17,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-07T09:21:07.292062+08:00",
+      "_说明": "Runtime TownCharacterArt consumes these exact per-ID resources. Pose/cycle quality validated separately."
+    },
+    "Art/Characters/Nov7/Walk": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "town-character-art.json",
+        "field": "entries[].walk"
+      },
+      "pngTop": 17,
+      "pngRecursive": 17,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-07T09:21:07.292062+08:00",
+      "_说明": "Runtime TownCharacterArt consumes these exact per-ID resources. Pose/cycle quality validated separately."
+    },
+    "Art/UI/Nov7V2/Wheel": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 10,
+      "pngRecursive": 10,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-07T21:54:37.563120+08:00",
+      "note": "Final exact official 2 complete lotus-platform PNGs + 8 icon reliefs; independent taiji retired, integral taiji rotates with upper platform. Zero missing/meta/orphan, source image defects separately audited."
+    },
+    "Art/Textures/GroundQuality20261107": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "world-material-gen.json",
+        "field": "materials[*].sourceAsset.resource"
+      },
+      "baseline": 0,
+      "orphans": [],
+      "pngTop": 11,
+      "pngRecursive": 11,
+      "measuredAt": "2026-11-07T23:41:28.266517+08:00",
+      "note": "Producer ground overhaul: native2K photos registered, old512-derived resources retired intact with GUID. Actual sourceAsset references, zero orphan threshold retained."
+    },
+    "Art/UI/Nov9": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 7,
+      "pngRecursive": 7,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-09T00:45:31.980460+08:00",
+      "note": "Nov9 visual corrections: real generated jade command and alpha glow, three offline-derived scroll parts, restored inventory overlay, opaque atlas surround. Disk/config sets measured equal; Unity appearance remains separate."
+    },
+    "Art/UI/Nov8": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 9,
+      "pngRecursive": 9,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-08T14:28:00.151470+08:00",
+      "note": "Phase2: exact runtime catalogue, nine real texture inputs including new arts live-text overlay; original authored masters unchanged."
+    },
+    "Art/UI/Nov10": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 14,
+      "pngRecursive": 14,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-10T23:49:13.107084+08:00",
+      "note": "Nov10 critical followup: one original-reference painted selection layer and four actual GPT Image 2 scroll slices added. Native source, transparent extraction, provenance retained. Exact catalogue coverage; baseline unchanged. Superseded low-resolution silk and meta archived under me; registry entry retired. Two actual reference-edited attack sheets (male/female) added; stable foot anchor, original pixel scale."
+    },
+    "Art/UI/Nov11": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 8,
+      "pngRecursive": 8,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-11T01:14:44.209630+08:00",
+      "note": "Exact registered assets. Runtime consumer paths and provenance recorded in nov11-wilderness-boss-expansion; no new orphan allowance."
+    },
+    "Art/Fx/Nov11": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 3,
+      "pngRecursive": 3,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-11T01:14:44.209630+08:00",
+      "note": "Exact registered assets. Runtime consumer paths and provenance recorded in nov11-wilderness-boss-expansion; no new orphan allowance."
+    },
+    "Art/Items/Nov11": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 8,
+      "pngRecursive": 8,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-11T01:14:44.209630+08:00",
+      "note": "Exact registered assets. Runtime consumer paths and provenance recorded in nov11-wilderness-boss-expansion; no new orphan allowance."
+    },
+    "Art/Characters/Nov11": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 5,
+      "pngRecursive": 5,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-11T01:14:44.209630+08:00",
+      "note": "Exact registered assets. Runtime consumer paths and provenance recorded in nov11-wilderness-boss-expansion; no new orphan allowance."
+    },
+    "Art/World/Wilderness": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 1,
+      "pngRecursive": 1,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-11T01:14:44.209630+08:00",
+      "note": "Exact registered assets. Runtime consumer paths and provenance recorded in nov11-wilderness-boss-expansion; no new orphan allowance."
+    },
+    "Art/Props/Wilderness": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 5,
+      "pngRecursive": 5,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-11T01:14:44.209630+08:00",
+      "note": "Exact registered assets. Runtime consumer paths and provenance recorded in nov11-wilderness-boss-expansion; no new orphan allowance."
+    },
+    "Art/Characters/Nov19": {
+      "status": "measured",
+      "rule": "config-field",
+      "resolver": {
+        "file": "ui-art-catalogue.json",
+        "field": "artworks[].resource"
+      },
+      "pngTop": 4,
+      "pngRecursive": 4,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-19T22:24:31.358372+08:00",
+      "note": "Four exact runtime stand resources in WildCreatureArt. Each exists with a meta; WorldCreatureRig supplies distance-driven gait and combat poses. Visual checks are recorded separately in nov19-combat-feedback."
+    }
+  },
+  "conventionGaps": {
+    "_说明": "约定加载族里『表有 id、盘上没图』的缺口。不当红判据（红了也修不到我手里），但每次跑门禁都打印，防止它悄悄变多。",
+    "enemies": [],
+    "npcs": [
+      "yaoshi"
+    ]
+  },
+  "conventionGapBaselineCount": 1,
+  "encounterArtGaps": {
+    "_说明": "1号 Q1.6 §2 交来的 encounters 语义：`encounters[].art` **非空**＝正向断言，加载不出来就红；**空**＝『图还没灌装』，运行期画 tint+shape 的彩色标记，计入这一档打印，不许当红、也不许悄悄变多。这是与 conventionGaps 不同的另一族（那边按 id 拼名，这边按声明路径），所以单独一档，不去动他 04:2x 写下的 2。",
+    "count": 0,
+    "_当前这一条是谁": "2026-11-11 已补齐nether-wolf，encounter-wolf-01与约定加载同时命中真实美术；遭遇美术缺口为0。",
+    "detail": []
+  },
+  "_素材目录整合": "2026-11-03 主架构师七七按用户要求把 Resources/Art 根目录 41 张散图归位：36 张三向立绘 → Art/Characters/Stand/、9 张运行时走帧 → Art/Characters/Walk/、5 张背景 → Art/Background/、原「豆包」15 张 → Art/Variants/（改英文名）。根目录从此 0 张散图。全部 git mv 带同名 .meta，GUID 未变，Resources/Characters/*.asset 的 3 条引用实测 0 断链。代码同步改 6 处：CharacterPreset.cs 两处拼接、FrontEndWorld.cs 九条字面量、FrontEndController.cs 两条、FrontEndCharacters.cs 一条、Editor/WalkFixShot.cs 一条。"
+}
