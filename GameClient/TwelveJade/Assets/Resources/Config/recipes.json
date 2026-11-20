@@ -1,5 +1,22 @@
 [
   {
+    "id": "recipe-chuibing",
+    "name": "家常炊饼",
+    "craftType": "cooking",
+    "station": "kitchen-stove",
+    "ingredients": [
+      {
+        "itemId": "wheat-flour",
+        "count": 1
+      }
+    ],
+    "result": {
+      "itemId": "chuibing",
+      "count": 2
+    },
+    "doubleChance": 0
+  },
+  {
     "id": "recipe-rou-fu",
     "name": "秘制肉脯",
     "craftType": "cooking",

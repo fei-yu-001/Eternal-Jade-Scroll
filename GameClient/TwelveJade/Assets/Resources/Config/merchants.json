@@ -4,29 +4,13 @@
       "id": "huolang",
       "name": "货郎老栓",
       "title": "走街串巷的独脚货郎",
-      "greeting": "客官眼生——头一回来青石镇？山里的路子我熟，缺什么张嘴就是。",
+      "greeting": "干粮、布衣、路上用的零碎，都在担子里。兵荒马乱，先把日子过下去。",
       "buys": [
         "chishi",
         "cailiao",
         "qiyong"
       ],
       "stock": [
-        {
-          "itemId": "wheat-flour",
-          "count": 6
-        },
-        {
-          "itemId": "licorice",
-          "count": 6
-        },
-        {
-          "itemId": "pipa",
-          "count": 1
-        },
-        {
-          "itemId": "guqin",
-          "count": 1
-        },
         {
           "itemId": "ganliang",
           "count": 12
@@ -40,72 +24,19 @@
           "count": 8
         },
         {
-          "itemId": "jinchuangyao",
+          "itemId": "wheat-flour",
           "count": 6
         },
         {
-          "itemId": "caoyao",
-          "count": 20
-        },
-        {
-          "itemId": "cudao",
+          "itemId": "cubupao",
           "count": 2
         },
         {
           "itemId": "zhudi",
-          "count": 1
-        },
-        {
-          "itemId": "manual-sword-fragment",
-          "count": 4
-        },
-        {
-          "itemId": "manual-thunder-fragment",
-          "count": 4
-        },
-        {
-          "itemId": "manual-clarity-fragment",
-          "count": 4
-        },
-        {
-          "itemId": "iron-ore",
-          "count": 12
-        },
-        {
-          "itemId": "qinglingcao",
-          "count": 10
-        },
-        {
-          "itemId": "red-dew-pill",
-          "count": 4
-        },
-        {
-          "itemId": "jade-renew-pill",
           "count": 2
-        },
-        {
-          "itemId": "wolf-fur",
-          "count": 4
-        },
-        {
-          "itemId": "wolf-fang",
-          "count": 4
         }
       ],
-      "hidden": [
-        {
-          "itemId": "elixir-warm",
-          "count": 3
-        },
-        {
-          "itemId": "tiejian",
-          "count": 1
-        },
-        {
-          "itemId": "hetiehe",
-          "count": 1
-        }
-      ],
+      "hidden": [],
       "memory": [
         {
           "at": 0,
@@ -133,35 +64,21 @@
       "id": "npc-shenhuai-an",
       "name": "沈怀安",
       "title": "市集古槐下的摸骨相士",
-      "greeting": "这……老夫这么说吧：你这脸，是打外头来的。坐，把手搁这儿。",
+      "greeting": "坐，歇歇脚。求个平安罢了，纸上的字挡不了刀枪，出门还得自己当心。",
       "buys": [
-        "cailiao",
         "qiyong"
       ],
       "stock": [
         {
-          "itemId": "fulu",
-          "count": 3
-        },
-        {
-          "itemId": "caoyao",
+          "itemId": "paper-charm",
           "count": 6
-        },
-        {
-          "itemId": "qinglingcao",
-          "count": 2
         }
       ],
-      "hidden": [
-        {
-          "itemId": "dongxiao",
-          "count": 1
-        }
-      ],
+      "hidden": [],
       "memory": [
         {
           "at": 0,
-          "line": "老夫只看看手，不收钱——命这东西，看一眼是缘，看两眼就是生意了。"
+          "line": "坐，歇歇脚。求个平安罢了，纸上的字挡不了刀枪，出门还得自己当心。"
         },
         {
           "at": 2,
@@ -224,47 +141,39 @@
       "id": "npc-zhao-da",
       "name": "赵大",
       "title": "守渡铁匠铺的打铁汉子",
-      "greeting": "看什么看！要打刀就候着，不打别挡着风箱！",
+      "greeting": "锄头、镰刀、柴刀，要哪样？素铁剑也有两把，守门防身用。别挡着风箱。",
       "buys": [
         "cailiao",
-        "bingqi"
+        "bingqi",
+        "qiyong"
       ],
       "stock": [
         {
-          "itemId": "iron-ore",
-          "count": 8
+          "itemId": "farm-hoe",
+          "count": 4
         },
         {
-          "itemId": "leather-bracer",
-          "count": 2
-        },
-        {
-          "itemId": "wood-bow",
-          "count": 1
-        },
-        {
-          "itemId": "dark-iron-armor",
-          "count": 1
+          "itemId": "farm-sickle",
+          "count": 4
         },
         {
           "itemId": "cudao",
-          "count": 2
+          "count": 4
         },
         {
           "itemId": "tiejian",
-          "count": 1
-        }
-      ],
-      "hidden": [
+          "count": 2
+        },
         {
-          "itemId": "hetiehe",
-          "count": 1
+          "itemId": "iron-ore",
+          "count": 8
         }
       ],
+      "hidden": [],
       "memory": [
         {
           "at": 0,
-          "line": "看什么看！要打刀就候着，不打别挡着风箱！"
+          "line": "锄头、镰刀、柴刀，要哪样？素铁剑也有两把，守门防身用。别挡着风箱。"
         },
         {
           "at": 2,
@@ -284,7 +193,7 @@
       "id": "npc-yao-lao",
       "name": "药老",
       "title": "北山药圃的悬壶郎中",
-      "greeting": "抓药还是问事？山里的草药通人性，你待它善，它便救你的命。",
+      "greeting": "外伤用的金疮药，普通药草和甘草，都在这里。小地方的郎中，只管尽力救人。",
       "buys": [
         "cailiao",
         "yaodan"
@@ -292,31 +201,26 @@
       "stock": [
         {
           "itemId": "jinchuangyao",
-          "count": 3
+          "count": 12
         },
         {
           "itemId": "caoyao",
           "count": 20
         },
         {
-          "itemId": "qinglingcao",
-          "count": 5
+          "itemId": "licorice",
+          "count": 8
         }
       ],
-      "hidden": [
-        {
-          "itemId": "elixir-warm",
-          "count": 1
-        }
-      ],
+      "hidden": [],
       "memory": [
         {
           "at": 0,
-          "line": "山里的草药通人性，你待它善，它便救你的命。"
+          "line": "能止血的药，能裹伤的布，都是救命的东西。"
         },
         {
           "at": 2,
-          "line": "上回那味青灵草，你用得可还成？少了就再来，我这园子里还有。"
+          "line": "上回那帖金疮药用得可还成？别沾脏水，伤口得养。"
         },
         {
           "at": 5,

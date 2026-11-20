@@ -29,7 +29,7 @@
   "categories": [
     {
       "id": "yaodan",
-      "name": "丹药"
+      "name": "药品"
     },
     {
       "id": "chishi",
@@ -100,7 +100,7 @@
       "stack": 5,
       "price": 14,
       "combatHeal": 25,
-      "description": "止血生肌的土方药，走江湖的第一件家当。"
+      "description": "郎中配的普通外伤药，止血包扎用。战斗中使用回复25点气血。"
     },
     {
       "id": "caoyao",
@@ -206,12 +206,12 @@
     {
       "id": "tiejian",
       "name": "铁剑",
-      "tier": "huangjie",
+      "tier": "fanpin",
       "category": "bingqi",
       "icon": "sword",
       "stack": 1,
-      "price": 380,
-      "description": "铁匠铺打的素剑，不值钱，但趁手。"
+      "price": 90,
+      "description": "赵大打的素铁剑，没有奇异之处。乱世出门，用来守门防身。"
     },
     {
       "id": "yupei",
@@ -506,6 +506,36 @@
       "stack": 5,
       "price": 95,
       "description": "玄岩山君守护的矿核。用于锻造青罡剑与调制金霞回生丹。"
+    },
+    {
+      "id": "farm-hoe",
+      "name": "铁锄",
+      "tier": "fanpin",
+      "category": "qiyong",
+      "icon": "farm-hoe",
+      "stack": 1,
+      "price": 16,
+      "description": "木柄铁头，翻土除草的寻常农具。靠它讨生活，比逞凶斗狠要紧。"
+    },
+    {
+      "id": "farm-sickle",
+      "name": "镰刀",
+      "tier": "fanpin",
+      "category": "qiyong",
+      "icon": "farm-sickle",
+      "stack": 1,
+      "price": 12,
+      "description": "收麦割草用的弯刃铁镰，握柄磨得发亮。"
+    },
+    {
+      "id": "paper-charm",
+      "name": "平安纸符",
+      "tier": "fanpin",
+      "category": "qiyong",
+      "icon": "paper-charm",
+      "stack": 9,
+      "price": 3,
+      "description": "相士写的普通纸符，求个心安。没有灵力，也不能治伤或替人挡刀。"
     }
   ]
 }

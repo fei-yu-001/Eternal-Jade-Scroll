@@ -7,7 +7,9 @@ namespace TwelveJade.Core
     public static class ManualStudyChecks
     {
         static void Check(string name,bool okay){if(!okay)throw new Exception("FAIL: 道藏 "+name);Console.WriteLine("PASS: 道藏 "+name);}
-        static SaveData Fresh()=>new SaveData{bag=InventoryRules.NewBag(),manualStudies=null};
+        // 后期研读能力夹具：明确已离镇且正式入门，不替青石镇新档授予资格。
+        static SaveData Fresh()=>new SaveData{bag=InventoryRules.NewBag(),manualStudies=null,
+            oneTimeFlags=new[]{"chapter-1-left-qingshi","cultivation-initiation"}};
         static void Give(SaveData save,string id,int count=3){save.bag[0]=new ItemStack(id,count);}
         public static void Run(ItemTable items,string configDir)
         {
@@ -65,9 +67,13 @@ namespace TwelveJade.Core
             Check("无变更温习不写档",writes==0);
             ManualStudyRules.StudyAndCommit(rollback,items,"sword",0,_=>writes++);
             Check("成功研读只提交一次",writes==1&&ManualStudyRules.Learned(rollback,"sword"));
-            var merchant=MerchantTable.Parse(File.ReadAllText(Path.Combine(configDir,"merchants.json"))).Find("huolang");
+            // 残卷交易能力使用独立后期商人，青石镇正式货郎不再出售功法。
+            var fixture=MerchantTable.Parse("{\"merchants\":[{\"id\":\"study-fixture\",\"name\":\"研读夹具\",\"title\":\"后期货架\",\"greeting\":\"试卷\","+
+                "\"buys\":[\"chishi\",\"miji\"],\"stock\":[{\"itemId\":\"ganliang\",\"count\":12},{\"itemId\":\"manual-sword-fragment\",\"count\":4}],"+
+                "\"hidden\":[],\"memory\":[{\"at\":0,\"line\":\"试卷\"}]}]}");
+            fixture.CrossCheck(items);var merchant=fixture.Find("study-fixture");
             var traded=Fresh();traded.coins=1000;
-            traded.merchants=new[]{new MerchantState{id="huolang",stock=new[]{new StockLine{itemId="ganliang",count=0}},hidden=Array.Empty<StockLine>()}};
+            traded.merchants=new[]{new MerchantState{id="study-fixture",stock=new[]{new StockLine{itemId="ganliang",count=0}},hidden=Array.Empty<StockLine>()}};
             var state=MerchantLedger.Of(traded,merchant);
             Check("旧档货架补新增残卷但不补已售空干粮",MerchantLedger.Left(state,state.stock,"manual-sword-fragment")==4&&MerchantLedger.Left(state,state.stock,"ganliang")==0);
             int paid=Trade.BuyPrice(items.Find("manual-sword-fragment"),0);
@@ -82,6 +88,7 @@ namespace TwelveJade.Core
             {
                 var repo=new SaveRepository(path,new Codec()){Items=items};var disk=repo.Create(1,"farmer","悟道客");
                 Check("缺新字段旧档正常读",repo.Read(1).CanLoad&&repo.Read(1).Data.manualStudies==null);
+                disk.MarkFlag("chapter-1-left-qingshi");disk.MarkFlag("cultivation-initiation");
                 Give(disk,"manual-sword-fragment",2);repo.Write(disk);
                 ManualStudyRules.StudyAndCommit(disk,items,"sword",.7,repo.Write);
                 var read=repo.Read(1).Data;Check("偶得与消耗真实读写往返",ManualStudyRules.Entry(read,"sword").insights==1&&InventoryRules.Count(read.bag,"manual-sword-fragment")==1);

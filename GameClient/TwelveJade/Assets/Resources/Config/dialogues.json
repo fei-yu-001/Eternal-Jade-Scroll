@@ -97,14 +97,14 @@
           "next": "huolang-night",
           "socialEvent": "Traded"
         },
-        { "text": "买药。", "next": "huolang-goodbye", "socialEvent": "Traded" },
+        { "text": "买些干粮。", "next": "huolang-goodbye", "action": "openShop" },
         { "text": "（他把担子往你这边挪了挪）低声问你一句……", "next": "huolang-rumor", "condition": "karma>=3" }
       ]
     },
     {
       "id": "huolang-rumor",
       "npc": "huolang",
-      "text": "北边双桥底下，前儿有人摸出一只锈死的铁盒。人家肯出高价收，我替你把话搁这儿——你要真想出手，夜里来寻我。",
+      "text": "北边双桥底下，前儿有人摸出一只锈死的铁盒。问他从哪儿来的，他连夜就走了。乱世里的东西，有些来路还是少打听。",
       "options": [
         { "text": "知道了，多谢。", "next": "huolang-goodbye", "socialEvent": "Traded" }
       ]
@@ -120,17 +120,17 @@
           "grantClue": "night-horn",
           "socialEvent": "RefusedHelp"
         },
-        { "text": "（压低声音）你夜里在桥头还做一手的吧？", "next": "huolang-black", "socialEvent": "Traded", "socialWeight": 2 },
+        { "text": "（压低声音）夜里桥头卖符的事，你知道多少？", "next": "huolang-black", "socialEvent": "Traded", "socialWeight": 2 },
         { "text": "那我知道了。", "next": "huolang-goodbye" }
       ]
     },
     {
       "id": "huolang-road",
       "npc": "huolang",
-      "text": "走过。半年前就断了——那之后我一趟都没往北去。客官若执意要去，至少买张我的平安符。",
+      "text": "走过。半年前就断了——那之后我一趟都没往北去。客官若执意要去，干粮和防身的家伙可得备齐。桥头有人卖纸符说能挡刀，别真信了。",
       "options": [
         {
-          "text": "符我收下了。",
+          "text": "我记下了，先备些干粮。",
           "next": "huolang-goodbye",
           "grantClue": "north-road-closed",
           "socialEvent": "Traded",
@@ -215,7 +215,7 @@
     {
       "id": "shen-shop",
       "npc": "npc-shenhuai-an",
-      "text": "（他把摊上的黄纸、朱砂与几道符往前推了推。）不值几个钱，要就自己挑。",
+      "text": "（他把几张平安纸符摊开。）三文一张，求个心安。纸就是纸，挡不了刀枪，受了伤还得找郎中。",
       "options": [
         { "text": "我自己挑。", "next": "shen-bye" }
       ]
@@ -296,7 +296,7 @@
     {
       "id": "zhaoda-intro",
       "npc": "npc-zhao-da",
-      "text": "看什么看！要打刀就候着，不打别挡着风箱！",
+      "text": "锄头、镰刀、柴刀，要哪样？素铁剑也有两把，守门防身用。别挡着风箱。",
       "options": [
         { "text": "打听：镇上谁最恨官府？", "next": "zhaoda-ask", "socialEvent": "Traded" },
         { "text": "（故交）赵大哥当年在哪儿当的差？", "next": "zhaoda-past", "minMemoryTier": 2 },
@@ -331,7 +331,7 @@
     {
       "id": "zhaoda-shop",
       "npc": "npc-zhao-da",
-      "text": "柴刀、铁剑，就这两样。要就自己挑，别磨蹭，我炉子还烧着。",
+      "text": "锄头、镰刀是庄户人家的营生，柴刀、素铁剑留着防身。都是寻常铁器，自己挑。",
       "options": [
         { "text": "我挑一把。", "next": "zhaoda-bye" }
       ]
@@ -345,7 +345,7 @@
     {
       "id": "yaolao-intro",
       "npc": "npc-yao-lao",
-      "text": "抓药还是问事？山里的草药通人性，你待它善，它便救你的命。",
+      "text": "外伤用的金疮药，普通药草和甘草，都在这里。小地方的郎中，只管尽力救人。",
       "options": [
         { "text": "（药圃解围）后山是不是出事了？", "next": "yaolao-rescue", "condition": "questAvailable:quest-herbal-rescue" },
         { "text": "（交付）采药童子回来了。", "next": "yaolao-thanks", "condition": "questCompletable:quest-herbal-rescue", "action": "turnInQuest", "turnInQuest": "quest-herbal-rescue" },
@@ -381,7 +381,7 @@
     {
       "id": "yaolao-shop",
       "npc": "npc-yao-lao",
-      "text": "金疮药、药草、青灵草，都在竹席上晾着。自己挑，价钱好商量。",
+      "text": "成药只有普通金疮药，药草和甘草在竹席上。伤重了来找我，别自己硬撑。",
       "options": [
         { "text": "好。", "next": "yaolao-bye" }
       ]
@@ -395,9 +395,9 @@
     {
       "id": "huolang-black",
       "npc": "huolang",
-      "text": "（他压低声音。）入夜我才挪到双桥底下，独门货只在那里出。……这话我只说一遍，你也只当没听见。",
+      "text": "（他压低声音。）夜里双桥下有逃难的人歇脚，有人拿纸符骗他们盘缠。你先去沈先生摊上认一认寻常纸符，再到桥头看看——穷人的活命钱，经不起这么骗。",
       "options": [
-        { "text": "今晚桥头见。", "next": "huolang-goodbye", "grantFlag": "knows-black-market", "socialEvent": "Traded", "socialWeight": 2 }
+        { "text": "我先去认认纸符，今晚到桥头看看。", "next": "huolang-goodbye", "grantFlag": "knows-black-market", "socialEvent": "Traded", "socialWeight": 2 }
       ]
     }
   ]

@@ -5,7 +5,7 @@
       "name": "货郎老栓",
       "title": "走街串巷的独脚货郎",
       "temper": "Greedy",
-      "greeting": "客官眼生——头一回来青石镇？缺什么张嘴就是。价钱好商量，钱不够那就……再说吧。",
+      "greeting": "干粮、布衣、路上用的零碎，都在担子里。兵荒马乱，先把日子过下去。",
       "goals": [
         {
           "id": "fill-the-box",
@@ -41,7 +41,7 @@
       "name": "沈怀安",
       "title": "青石镇摸骨测字的老先生",
       "temper": "Wary",
-      "greeting": "这……老夫这么说吧，命这东西，说透了就不值钱了。",
+      "greeting": "坐，歇歇脚。求个平安罢了，纸上的字挡不了刀枪，出门还得自己当心。",
       "goals": [
         {
           "id": "read-the-bone",
@@ -71,7 +71,7 @@
       "name": "赵大",
       "title": "守渡退伍的铁匠",
       "temper": "Bold",
-      "greeting": "要打刀就候着，不打别挡着风箱！",
+      "greeting": "锄头、镰刀、柴刀，要哪样？素铁剑也有两把，守门防身用。别挡着风箱。",
       "goals": [
         {
           "id": "forge-a-blade",
@@ -86,7 +86,7 @@
       "name": "药老",
       "title": "北山药圃的悬壶郎中",
       "temper": "Kind",
-      "greeting": "抓药还是问事？问事另算。",
+      "greeting": "外伤用的金疮药，普通药草和甘草，都在这里。小地方的郎中，只管尽力救人。",
       "goals": [
         {
           "id": "rescue-the-herb-boy",

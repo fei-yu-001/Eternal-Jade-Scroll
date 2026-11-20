@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TwelveJade.Core;
+using TwelveJade.Combat;
 
 namespace TwelveJade.Core
 {
@@ -22,9 +23,11 @@ namespace TwelveJade.Core
         {
             var merchants = MerchantTable.Parse(File.ReadAllText(Path.Combine(configDir, "merchants.json")));
             merchants.CrossCheck(items);
-            var peddler = merchants.Find("huolang");
-            Check("merchant table parses", merchants.Merchants.Count >= 1, merchants.Merchants.Count + " 个商人");
-            Check("merchant has both shelves", peddler.Stock.Count >= 5 && peddler.Hidden.Count >= 2);
+            // 正式职业货架与交易能力分开验：镇上不卖黑市货，不代表黑市规则可以失去覆盖。
+            var fixture = MerchantTable.Parse(LongShelfTable);
+            fixture.CrossCheck(items);
+            var peddler = fixture.Find("fixture-trader");
+            Check("independent trade fixture has both shelves", peddler.Stock.Count == 10 && peddler.Hidden.Count == 2);
             Check("merchant buys by category", peddler.Buys.Contains("chishi") && peddler.Buys.Contains("cailiao"));
             Check("merchant remembers", peddler.Memory.Count >= 3);
             Check("black shelf is not on the open shelf",
@@ -67,7 +70,7 @@ namespace TwelveJade.Core
             // M3-02：长货架（十行）也要能读能对表——T013 的"最多 8 行"解除后，加货只改表。
             var longShelf = MerchantTable.Parse(LongShelfTable);
             longShelf.CrossCheck(items);
-            Check("a ten-row shelf parses and cross-checks", longShelf.Find("huolang").Stock.Count == 10);
+            Check("a ten-row shelf parses and cross-checks", longShelf.Find("fixture-trader").Stock.Count == 10);
             // 只有黑市独门货的商人合法：白日铺会走空状态，不该被解析拒绝。
             var hiddenOnly = MerchantTable.Parse(
                 "{\"merchants\":[{\"id\":\"a\",\"name\":\"甲\",\"title\":\"乙\",\"greeting\":\"丙\"," +
@@ -264,7 +267,165 @@ namespace TwelveJade.Core
             Check("a slot limit of 1 is honoured", InventoryRules.StackLimitOf(items, "cudao") == 1 &&
                 InventoryRules.StackLimitOf(items, "ganliang") == 9 &&
                 InventoryRules.StackLimitOf(items, "没见过的旧物") == ItemTable.MaxStack);
+
+            CheckTownCatalogue(items, merchants);
+            CheckLegacyTownLedgers(items, merchants);
         }
+
+        // 2026-11-20 职业库存契约：仅钉商品集合，不把未约定的进货数量写成第二份配置。
+        static readonly (string id, string[] stock)[] TownShelves =
+        {
+            ("huolang", new[] { "ganliang", "chuibing", "larou", "wheat-flour", "cubupao", "zhudi" }),
+            ("npc-zhao-da", new[] { "farm-hoe", "farm-sickle", "cudao", "tiejian", "iron-ore" }),
+            ("npc-yao-lao", new[] { "jinchuangyao", "caoyao", "licorice" }),
+            ("npc-shenhuai-an", new[] { "paper-charm" }),
+            ("npc-shitou", new[] { "chuibing", "ganliang", "cubupao" }),
+        };
+
+        // 冻结改版前的货品 ID；不能从新表反推旧档，否则下架回归会变成空测。
+        static readonly (string id, string[] stock, string[] hidden)[] LegacyShelves =
+        {
+            ("huolang", new[] { "ganliang", "wheat-flour", "licorice", "pipa", "guqin",
+                "chuibing", "larou", "jinchuangyao", "caoyao", "cudao", "zhudi",
+                "manual-sword-fragment", "manual-thunder-fragment", "manual-clarity-fragment",
+                "iron-ore", "qinglingcao", "red-dew-pill", "jade-renew-pill", "wolf-fur", "wolf-fang" },
+                new[] { "elixir-warm", "tiejian", "hetiehe" }),
+            ("npc-zhao-da", new[] { "iron-ore", "leather-bracer", "wood-bow", "dark-iron-armor", "cudao", "tiejian" },
+                new[] { "hetiehe" }),
+            ("npc-yao-lao", new[] { "jinchuangyao", "caoyao", "qinglingcao" }, new[] { "elixir-warm" }),
+            ("npc-shenhuai-an", new[] { "fulu", "caoyao", "qinglingcao" }, new[] { "dongxiao" }),
+            ("npc-shitou", new[] { "chuibing", "ganliang", "cubupao" }, Array.Empty<string>()),
+        };
+
+        static void CheckTownCatalogue(ItemTable items, MerchantTable merchants)
+        {
+            Check("town retains exactly the five merchant identities",
+                merchants.Merchants.Select(m => m.Id).OrderBy(id => id, StringComparer.Ordinal)
+                    .SequenceEqual(TownShelves.Select(s => s.id).OrderBy(id => id, StringComparer.Ordinal)));
+            foreach (var expected in TownShelves)
+            {
+                var merchant = merchants.Find(expected.id);
+                Check("profession shelf matches: " + expected.id,
+                    merchant.Stock.Select(s => s.itemId).OrderBy(id => id, StringComparer.Ordinal)
+                        .SequenceEqual(expected.stock.OrderBy(id => id, StringComparer.Ordinal)),
+                    string.Join(",", merchant.Stock.Select(s => s.itemId)));
+                Check("town hidden shelf is empty: " + expected.id, merchant.Hidden.Count == 0);
+                Check("town stock is ordinary: " + expected.id,
+                    merchant.Stock.All(s => items.Find(s.itemId)?.Tier == "fanpin"));
+                Check("merchant retains greetings, buying categories and memory: " + expected.id,
+                    !string.IsNullOrWhiteSpace(merchant.Greeting) && merchant.Buys.Count > 0 && merchant.Memory.Count >= 4);
+
+                var save = NewSave("shaxing");
+                save.coins = 100000;
+                var state = MerchantLedger.Of(save, merchant);
+                Check("new save has the configured stock: " + expected.id,
+                    merchant.Stock.All(s => MerchantLedger.Left(state, state.stock, s.itemId) == s.count) &&
+                    state.hidden.Length == 0);
+                foreach (var line in merchant.Stock)
+                {
+                    var before = save.coins;
+                    Check("profession stock can be bought: " + expected.id + "/" + line.itemId,
+                        MerchantLedger.Buy(save, state, items, line.itemId, 1, false) == 1 &&
+                        save.coins == before - Trade.BuyPrice(items.Find(line.itemId), save.localReputation) &&
+                        InventoryRules.Count(save.bag, line.itemId) == 1 &&
+                        MerchantLedger.Left(state, state.stock, line.itemId) == line.count - 1);
+                }
+            }
+            var doctor = merchants.Find("npc-yao-lao");
+            Check("doctor sells only basic wound medicine as a finished drug",
+                doctor.Stock.Where(s => items.Find(s.itemId).Category == "yaodan")
+                    .Select(s => s.itemId).SequenceEqual(new[] { "jinchuangyao" }));
+            var child = merchants.Find("npc-shitou");
+            Check("Shitou retains the three original quantities",
+                child.StockOf("chuibing") == 3 && child.StockOf("ganliang") == 2 && child.StockOf("cubupao") == 1);
+            var sword = items.Find("tiejian");
+            var gear = GearCatalog.ForTown(items);
+            var weapon = gear.Find("tiejian");
+            Check("ordinary iron sword costs 90 and keeps its combat values",
+                sword?.Tier == "fanpin" && sword.Price == 90 && weapon != null &&
+                weapon.AttackBonus == 15 && weapon.DefenseBonus == 0 && weapon.CritBonus == 0 &&
+                weapon.RegenBonus == 0 && weapon.MaxDurability == 120);
+            var charm = items.Find("paper-charm");
+            Check("peace paper charm has no healing or equipment bonus",
+                charm != null && charm.CombatHeal == 0 && gear.Find(charm.Id) == null);
+        }
+
+        static void CheckLegacyTownLedgers(ItemTable items, MerchantTable merchants)
+        {
+            var repository = new SaveRepository(Path.Combine(tempRoot, "profession-migration"), new PlainCodec()) { Items = items };
+            var original = repository.Create(1, "farmer", "旧客");
+            original.coins = 100000;
+            original.bag = InventoryRules.NewBag();
+            var owned = LegacyShelves.SelectMany(s => s.stock.Concat(s.hidden))
+                .Except(TownShelves.SelectMany(s => s.stock), StringComparer.Ordinal)
+                .Concat(new[] { "tiejian", "dark-iron-armor" }).Distinct(StringComparer.Ordinal).ToArray();
+            Check("retired merchandise keeps its item definitions", owned.All(id => items.Find(id) != null));
+            foreach (var id in owned)
+                Check("legacy bag fixture fits: " + id, InventoryRules.Add(original.bag, items, id, 1) == 0);
+            original.gear = new[] { new GearLine { slot = GearSlots.Armor, itemId = "dark-iron-armor", durability = 83 } };
+            original.npcs = LegacyShelves.Select(s => new NpcState
+            {
+                id = s.id,
+                relation = new NpcRelation { goodwill = 12, trust = 7 },
+                memory = new[] { new NpcMemoryEntry { eventId = "trade", day = 1, minuteOfDay = 600, strength = 2, spoken = true } },
+            }).ToArray();
+            original.merchants = LegacyShelves.Select((s, index) => new MerchantState
+            {
+                id = s.id, trades = 12 + index, goodwill = 70 + index,
+                // 各店第一件旧货售罄，其余部分售出；新货要补、旧货不得借改版补满。
+                stock = s.stock.Select((id, row) => new StockLine { itemId = id, count = row == 0 ? 0 : 1 }).ToArray(),
+                hidden = s.hidden.Select(id => new StockLine { itemId = id, count = 1 }).ToArray(),
+            }).ToArray();
+            var possessions = Snapshot(original.bag) + Snapshot(original.gear) + Snapshot(original.npcs);
+            repository.Write(original);
+            var loaded = repository.Read(1);
+            Check("pre-change merchant ledger still loads", loaded.State == SlotState.Ready && loaded.Data != null);
+            var save = loaded.Data;
+            foreach (var before in original.merchants)
+            {
+                var merchant = merchants.Find(before.id);
+                var memoryLine = merchant.MemoryLine(before.trades);
+                var state = MerchantLedger.Of(save, merchant);
+                Check("catalogue migration preserves trade memory: " + before.id,
+                    state.trades == before.trades && state.goodwill == before.goodwill &&
+                    merchant.MemoryLine(state.trades) == memoryLine);
+                foreach (var line in merchant.Stock)
+                {
+                    var old = before.stock.FirstOrDefault(s => s.itemId == line.itemId);
+                    Check("existing stock is not refilled; new stock is added: " + before.id + "/" + line.itemId,
+                        MerchantLedger.Left(state, state.stock, line.itemId) == (old?.count ?? line.count));
+                }
+                foreach (var black in new[] { false, true })
+                {
+                    var oldShelf = black ? before.hidden : before.stock;
+                    var currentShelf = black ? merchant.Hidden : merchant.Stock;
+                    foreach (var line in oldShelf.Where(l => currentShelf.All(s => s.itemId != l.itemId)))
+                    {
+                        var beforeBuy = Snapshot(save);
+                        Check("retired stock cannot be bought: " + before.id + "/" + line.itemId + (black ? "/hidden" : "/open"),
+                            MerchantLedger.Buy(save, state, items, line.itemId, 1, black) == 0 && Snapshot(save) == beforeBuy);
+                    }
+                }
+            }
+            Check("catalogue migration keeps money, owned items, equipped armor and NPC memories",
+                save.coins == original.coins && possessions == Snapshot(save.bag) + Snapshot(save.gear) + Snapshot(save.npcs));
+            var reconciled = Snapshot(save);
+            foreach (var merchant in merchants.Merchants)
+                MerchantLedger.Of(save, merchant);
+            Check("reopening all five merchants does not refill or duplicate stock", Snapshot(save) == reconciled);
+            repository.Write(save);
+            var reloaded = repository.Read(1);
+            Check("reconciled merchant ledger survives a real save roundtrip", reloaded.State == SlotState.Ready);
+            var afterRead = Snapshot(reloaded.Data);
+            foreach (var merchant in merchants.Merchants)
+                MerchantLedger.Of(reloaded.Data, merchant);
+            Check("reload does not restore retired stock or refill exhausted stock", Snapshot(reloaded.Data) == afterRead &&
+                Snapshot(reloaded.Data.merchants) == Snapshot(save.merchants));
+            Check("reload preserves owned items, equipment and NPC memories",
+                possessions == Snapshot(reloaded.Data.bag) + Snapshot(reloaded.Data.gear) + Snapshot(reloaded.Data.npcs));
+        }
+
+        static string Snapshot<T>(T value) => new PlainCodec().Serialize(value);
 
         static void Check(string name, bool condition, string detail = null)
         {
@@ -294,14 +455,15 @@ namespace TwelveJade.Core
             "\"buys\":[\"chishi\"],\"stock\":[{\"itemId\":\"ganliang\",\"count\":1}],\"hidden\":[]," +
             "\"memory\":[{\"at\":0,\"line\":\"今日只看货，不谈旧事。\"}]}]}";
 
-        // M3-02：十行白日货架的临时长表——七件正式常进货 + 青灵草、符箓、洞箫，全部指向真实物品。
+        // 独立能力夹具：十行长货架与两件黑市货，全部引用真实物品，不代表镇上正式货单。
         const string LongShelfTable =
-            "{\"merchants\":[{\"id\":\"huolang\",\"name\":\"货郎\",\"title\":\"走南闯北的散商\",\"greeting\":\"客官来点啥？\"," +
+            "{\"merchants\":[{\"id\":\"fixture-trader\",\"name\":\"测试货商\",\"title\":\"走南闯北的散商\",\"greeting\":\"客官来点啥？\"," +
             "\"buys\":[\"chishi\",\"cailiao\",\"qiyong\"]," +
             "\"stock\":[{\"itemId\":\"ganliang\",\"count\":12},{\"itemId\":\"chuibing\",\"count\":12},{\"itemId\":\"larou\",\"count\":8}," +
             "{\"itemId\":\"jinchuangyao\",\"count\":6},{\"itemId\":\"caoyao\",\"count\":20},{\"itemId\":\"cudao\",\"count\":2}," +
             "{\"itemId\":\"zhudi\",\"count\":1},{\"itemId\":\"qinglingcao\",\"count\":10},{\"itemId\":\"fulu\",\"count\":4},{\"itemId\":\"dongxiao\",\"count\":1}]," +
-            "\"hidden\":[{\"itemId\":\"tiejian\",\"count\":1}],\"memory\":[{\"at\":0,\"line\":\"头回见面。\"}]}]}";
+            "\"hidden\":[{\"itemId\":\"tiejian\",\"count\":1},{\"itemId\":\"elixir-warm\",\"count\":2}]," +
+            "\"memory\":[{\"at\":0,\"line\":\"头回见面。\"},{\"at\":1,\"line\":\"又见面了。\"},{\"at\":5,\"line\":\"熟客来了。\"}]}]}";
 
         sealed class PlainCodec : IJsonCodec
         {

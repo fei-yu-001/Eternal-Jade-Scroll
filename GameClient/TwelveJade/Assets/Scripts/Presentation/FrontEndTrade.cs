@@ -108,7 +108,7 @@ namespace TwelveJade.Presentation
             activeSave.destiny = destiny;
             ShowTrade(tradeMerchantId, tradeBlack);
         }
-        public bool BlackTabVisible() => Trade.SeesBlackMarket(activeSave);
+        public bool BlackTabVisible() => Trade.SeesBlackMarket(activeSave) && (Merchants.Find(tradeMerchantId)?.Hidden.Count ?? 0) > 0;
         // 选中物品的显示名：直接从物品表取，比去切结算区的多行文本可靠。
         public string SettleTitle => Table.Find(tradePick)?.Name ?? "";
         // 黑市页签下货架可能为空（fixture 的 hidden 是空表）：越界返回空串而不是抛。
@@ -743,7 +743,7 @@ namespace TwelveJade.Presentation
             if (bagOverlay != null) CloseInventory();
             tradeMerchantId = merchantId;
             // black 由调用方决定：白日铺传 false，页签切换传当前档，否则一进来就被打回白日。
-            tradeBlack = black;
+            tradeBlack = black && merchant.Hidden.Count > 0 && Trade.SeesBlackMarket(activeSave);
             tradePick = "";
             tradeQuantity = 1;
             var state = MerchantLedger.Of(activeSave, merchant);
@@ -758,8 +758,9 @@ namespace TwelveJade.Presentation
 
             // 页签：白日铺 / 黑市（命格才看得见）。黑市加价四成，独门货只在黑市。
             ui.Button(content, "白日铺", TradePadX, TradeTabY, TradeTabW, TradeTabH, () => SwitchShelf(false), !tradeBlack);
-            var blackVisible = Trade.SeesBlackMarket(activeSave);
-            ui.Button(content, "黑 市", TradePadX + TradeTabPitch, TradeTabY, TradeTabW, TradeTabH, () => SwitchShelf(true), tradeBlack, blackVisible);
+            var blackVisible = BlackTabVisible();
+            if (blackVisible)
+                ui.Button(content, "黑 市", TradePadX + TradeTabPitch, TradeTabY, TradeTabW, TradeTabH, () => SwitchShelf(true), tradeBlack);
             if (blackVisible && tradeBlack)
                 ui.Label(content, "黑市：价钱贵四成，独门货只在夜里出。", TradeTabNoteX, TradeTabNoteY, TradeTabNoteW, TradeTabNoteH, TradeTabNoteSize,
                     UiKit.TradeBlackRed);

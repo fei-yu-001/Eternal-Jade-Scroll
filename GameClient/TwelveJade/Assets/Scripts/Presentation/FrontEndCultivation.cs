@@ -26,6 +26,7 @@ namespace TwelveJade.Presentation
         }
         void BuildMeridianMasterpiece()
         {
+            if(!PrologueRules.CanCultivate(activeSave)){Notify(PrologueRules.Refusal);return;}
             var host=BeginImmortalLedger("Meridian modal");if(host==null)return;
             host.gameObject.AddComponent<MeridianSanctumView>().Build(ui,host,activeSave,()=>settings.reduceMotion,repository.Write,()=>userBag=activeSave.bag,PlayClick,CloseModal);
             ScrollPageArtComposition.Meridian(ui,host);
@@ -33,6 +34,7 @@ namespace TwelveJade.Presentation
         ItemStack[] CopyLedgerBag()=>activeSave.bag.Select(s=>s==null?null:new ItemStack(s.id,s.count)).ToArray();
         void BuildArtsMasterpiece()
         {
+            if(!PrologueRules.CanCultivate(activeSave)){Notify(PrologueRules.Refusal);return;}
             var host=BeginImmortalLedger("Arts modal");if(host==null)return;
             var view=host.gameObject.AddComponent<ArtsCodexView>();
             view.Build(ui,host,activeSave,Table,repository.Write,()=>settings.reduceMotion,

@@ -88,6 +88,10 @@ namespace TwelveJade.Core
             }
             state.stock ??= System.Array.Empty<StockLine>();
             state.hidden ??= System.Array.Empty<StockLine>();
+            // The current catalogue is authoritative for what this merchant can sell.
+            // Keep counts on retained lines (including zero), and leave owned items/memory untouched.
+            state.stock = state.stock.Where(line => line != null && merchant.Stock.Any(def => def.itemId == line.itemId)).ToArray();
+            state.hidden = state.hidden.Where(line => line != null && merchant.Hidden.Any(def => def.itemId == line.itemId)).ToArray();
             // An additive catalogue entry must be obtainable in an existing save too.
             // Exhausted rows (count=0) are already present and are never refilled.
             foreach(var line in merchant.Stock)

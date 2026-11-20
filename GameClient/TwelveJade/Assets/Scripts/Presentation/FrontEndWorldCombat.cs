@@ -212,6 +212,7 @@ namespace TwelveJade.Presentation
             var state = new CombatSkillSlotState { Learned = true, Available = ready, Status = "" };
             if (slot >= 4 && slot <= 6)
             {
+                state.Sealed = !PrologueRules.CanCultivate(activeSave);
                 string id = CombatSkillWheel.Ids[slot]; var definition = PlayerSkillCombat.Find(id);
                 state.Learned = ManualStudyRules.Learned(activeSave, id);
                 state.Cooldown = worldBattle?.Cooldown(id) ?? 0; state.Duration = definition.Cooldown;
@@ -224,7 +225,7 @@ namespace TwelveJade.Presentation
             {
                 string pill = FirstUsablePill(); int count = string.IsNullOrEmpty(pill) ? 0 : InventoryRules.Count(activeSave.bag, pill);
                 state.Available &= count > 0 && worldPlayerState != null && worldPlayerState.Hp < worldPlayerState.MaxHp;
-                state.Status = count > 0 ? count + "枚" : "无丹药";
+                state.Status = count > 0 ? count + "份" : "无伤药";
             }
             else if (slot == 7) state.Status = "切换目标";
             else state.Available &= worldPlayerState != null && !worldPlayerState.IsDead;
@@ -236,6 +237,8 @@ namespace TwelveJade.Presentation
         {
             if (page != "town" || modal != null || bagOverlay != null || WorldDialogueInputBlocked)
                 return new CombatResult { Reason = "当前不能出手。" };
+            if(slot>=4&&slot<=6&&!PrologueRules.CanCultivate(activeSave))
+            {Notify(PrologueRules.Refusal);return new CombatResult{Reason=PrologueRules.Refusal};}
             EnsureWorldActions();
             if (slot == 7)
             {
@@ -347,7 +350,17 @@ namespace TwelveJade.Presentation
                 if (worldHealthCaption != null) worldHealthCaption.text = "气血  " + worldPlayerState.Hp + " / " + worldPlayerState.MaxHp;
                 if (worldStaminaCaption != null) worldStaminaCaption.text = "精力  " + Mathf.CeilToInt(worldPlayerState.Stamina) + " / " + worldPlayerState.MaxStamina;
             }
-            if (worldBattleHint != null) worldBattleHint.text = MobileControls.Enabled ? "摇杆走位 · 点选招式 · 闪身避开预警" : !WorldCombatActive ? "面向前方出招 · J 轻击 K 重击 · U 御剑 I 雷法 O 清心" : "WASD 走位 · J 轻击  K 重击 · 空格闪身 · 避开地面预警";
+            if (worldBattleHint != null)
+            {
+                if (MobileControls.Enabled)
+                    worldBattleHint.text = "摇杆走位 · 点选招式 · 闪身避开预警";
+                else if (WorldCombatActive)
+                    worldBattleHint.text = "WASD 走位 · J 轻击  K 重击 · 空格闪身 · 避开地面预警";
+                else
+                    worldBattleHint.text = PrologueRules.CanCultivate(activeSave)
+                        ? "面向前方出招 · J 轻击 K 重击 · U 御剑 I 雷法 O 清心"
+                        : "面向前方出招 · J 轻击 K 重击 · 空格闪身";
+            }
             if (!WorldCombatActive || worldTargetFill == null) return;
             worldTargetFill.rectTransform.sizeDelta = new Vector2(598f * worldBattle.Foe.Hp / worldBattle.Foe.MaxHp, 10);
             worldTargetHealth.text = worldBattle.Foe.Hp + " / " + worldBattle.Foe.MaxHp +

@@ -4,12 +4,25 @@ using TwelveJade.Core;
 if (args.Length > 0)
 {
     if (args.Length != 2 || args[0] != "--suite" ||
-        (args[1] != "economy" && args[1] != "chapters"))
-        throw new ArgumentException("Usage: SaveChecks [--suite economy|chapters]");
+        (args[1] != "economy" && args[1] != "chapters" && args[1] != "trade" && args[1] != "progression"))
+        throw new ArgumentException("Usage: SaveChecks [--suite economy|chapters|trade|progression]");
     var configDir = ConfigChecks.FindConfigDirectory()
         ?? throw new DirectoryNotFoundException("Game configuration directory not found.");
     if (args[1] == "economy") InventoryEconomyChecks.Run(configDir);
-    else ChapterChecks.Run(configDir);
+    else if (args[1] == "chapters") ChapterChecks.Run(configDir);
+    else
+    {
+        // 核心窄回归不进入全套地图/美术验收。
+        var items = ItemTable.Parse(File.ReadAllText(Path.Combine(configDir, "items.json")));
+        if (args[1] == "trade") TradeChecks.Run(items, configDir);
+        else
+        {
+            CultivationChecks.Run();
+            ManualStudyChecks.Run(items, configDir);
+            StudyPathChecks.Run(items, configDir, includeAtlas: false);
+            PrologueAccessChecks.Run(configDir);
+        }
+    }
     Console.WriteLine("PASS: selected suite " + args[1] + " (full suite not run)");
     return;
 }

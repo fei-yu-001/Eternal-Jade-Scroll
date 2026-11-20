@@ -38,6 +38,7 @@ namespace TwelveJade.Presentation
         RectTransform rotor, fixedBase;
         RawImage baseArt, rotorArt;
         TMP_Text warmupLabel;
+        string[] liveLabels = Labels;
         double requestClock, sampledClock, alignedClock = -1;
         JadeWheelSignalGraphic halo;
         Func<bool> reduced, available;
@@ -77,7 +78,7 @@ namespace TwelveJade.Presentation
         public int FontCharactersBeforeWarmupForCheck { get; private set; }
         public int FontCharactersAfterWarmupForCheck { get; private set; }
         public static JadeLotusRotator Create(UiKit ui, Transform parent, Func<bool> lowMotion, Func<bool> canUse,
-            Action grabInput, Action freeInput, Action consume, Action<int> onSettled, AudioSource output, Action<JadeLotusRotator> onDisposed)
+            Action grabInput, Action freeInput, Action consume, Action<int> onSettled, AudioSource output, Action<JadeLotusRotator> onDisposed, string[] slotNames = null)
         {
             var root = ui.Rect(parent,"JadeWheelHub",1552,696,BaseSize,BaseSize);
             var hit = root.gameObject.AddComponent<Image>(); hit.color = Color.clear; hit.raycastTarget = true;
@@ -85,6 +86,7 @@ namespace TwelveJade.Presentation
             var rotorNode=Center(ui,root,"SkillLotusRotor",RotorSize,RotorSize,Vector2.zero);
             var view = rotorNode.gameObject.AddComponent<JadeLotusRotator>();
             view.reduced=lowMotion;view.available=canUse;view.beginInput=grabInput;view.releaseInput=freeInput;view.consumeEscape=consume;view.activate=onSettled;view.effects=output;view.disposed=onDisposed;
+            view.liveLabels=slotNames!=null&&slotNames.Length==8?(string[])slotNames.Clone():Labels;
             view.fixedBase = baseNode;
             view.baseArt = Artwork(Center(ui,view.fixedBase,"Wheel official base artwork",BaseSize,BaseSize,Vector2.zero),ApprovedUiArt.Load(BaseArtKey));
             view.baseArt.uvRect=OfficialArtworkUv;((JadeWheelArtGraphic)view.baseArt).Configure(false);
@@ -102,7 +104,7 @@ namespace TwelveJade.Presentation
             for(int i=0;i<8;i++)
             {
                 int slot=i;var point=SlotArtworkPosition(i);
-                var rect=Center(ui,view.rotor,"Jade wheel "+Labels[i],64,64,point);
+                var rect=Center(ui,view.rotor,"Jade wheel "+view.liveLabels[i],64,64,point);
                 var graphic=rect.gameObject.AddComponent<Image>();graphic.color=Color.clear;
                 var button=rect.gameObject.AddComponent<Button>();button.targetGraphic=graphic;button.transition=Selectable.Transition.None;
                 button.onClick.AddListener(()=>view.Select(slot));view.buttons[i]=button;
@@ -112,7 +114,7 @@ namespace TwelveJade.Presentation
                 var icon=Center(ui,readable,"Wheel icon "+IconIds[i],26,26,new Vector2(0,14)).gameObject.AddComponent<RawImage>();icon.texture=view.icons[i];icon.raycastTarget=false;
                 var captionPlate=Center(ui,readable,"Wheel live name plate "+i,62,38,new Vector2(0,-18)).gameObject.AddComponent<JadeWheelSignalGraphic>();
                 captionPlate.Configure(JadeWheelSignalGraphic.Shape.Caption,1);
-                var label=V2ScrollUi.Text(ui,readable,"Wheel label "+i,Labels[i],0,0,60,38,23,false,TextAlignmentOptions.Center,UiKit.Paper);
+                var label=V2ScrollUi.Text(ui,readable,"Wheel label "+i,view.liveLabels[i],0,0,60,38,23,false,TextAlignmentOptions.Center,UiKit.Paper);
                 PlaceCentre(label.rectTransform,new Vector2(0,-18));
                 if(i==0)view.warmupLabel=label;
                 rect.gameObject.AddComponent<JadeWheelSlotInput>().Configure(view,i);
@@ -129,7 +131,7 @@ namespace TwelveJade.Presentation
         void WarmActiveSlotNames()
         {
             double start=Time.realtimeSinceStartupAsDouble;
-            WarmedBrushFontForCheck=warmupLabel.font;FontWarmupCharactersForCheck=string.Concat(Labels);
+            WarmedBrushFontForCheck=warmupLabel.font;FontWarmupCharactersForCheck=string.Concat(liveLabels);
             FontCharactersBeforeWarmupForCheck=WarmedBrushFontForCheck.characterLookupTable.Count;
             string missing="";
             foreach(char c in FontWarmupCharactersForCheck)

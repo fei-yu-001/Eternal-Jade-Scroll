@@ -5,22 +5,18 @@ using TwelveJade.Core;
 
 namespace TwelveJade.Combat
 {
-    // 任务书 K4/K5（M4/M5）：角色战力与装备耐久。
-    //
-    // 三条硬约束写在最前面，改这个文件之前先读它们：
-    // 1) 默认空载。开局行囊里就有柴刀与粗布袍（ItemTable.StartingKit），一旦"自动穿戴"，
-    //    CombatShot.cs 与 FrontEndShotProps.cs 里"野猪 60→44""起手后精力 52"这类逐字断言
-    //    的期望伤害会当场漂掉。装备必须是玩家主动穿上的，裸装就是裸装。
-    // 2) 耐久是会话态，不进存档。客户端 schemaVersion=10 与服务端 SUPPORTED_SCHEMA 手工对齐，
-    //    擅自加字段升 11 要同时动 SaveModels/SaveRepository/服务端三处（都不在战斗域写权限内）。
-    //    所以耐久跟着这一局走，读档后重新穿戴；缺口登记在 11_技术债务记录.md。
-    // 3) 归零只失效不消失。耐久 0 = 器刃钝损，加成安全回退到 0，装备不会被删掉，也不会抛异常。
+    // Equipment is worn only by explicit choice or a saved GearLedger entry.
+    // RestoreLedger binds chapter access without altering saved ownership or durability.
+    // Dulled or chapter-locked gear keeps its record; its effective bonuses are zero.
     public sealed class EquippedGear
     {
-        public EquippedGear(GearEntry entry)
+        readonly Func<bool> available;
+        public bool IsAvailable => available?.Invoke() ?? true;
+        public EquippedGear(GearEntry entry, Func<bool> available = null)
         {
             Entry = entry ?? throw new ArgumentNullException(nameof(entry));
             Durability = entry.MaxDurability;
+            this.available = available;
         }
 
         public GearEntry Entry { get; }
@@ -30,10 +26,10 @@ namespace TwelveJade.Combat
             (float)Durability / Entry.MaxDurability;
 
         // 钝损之后这些加成一律归零——"暂时失效"就是这个意思。
-        public int EffectiveAttack => IsDulled ? 0 : Entry.AttackBonus;
-        public int EffectiveDefense => IsDulled ? 0 : Entry.DefenseBonus;
-        public float EffectiveCritBonus => IsDulled ? 0f : Entry.CritBonus;
-        public int EffectiveRegenBonus => IsDulled ? 0 : Entry.RegenBonus;
+        public int EffectiveAttack => IsDulled || !IsAvailable ? 0 : Entry.AttackBonus;
+        public int EffectiveDefense => IsDulled || !IsAvailable ? 0 : Entry.DefenseBonus;
+        public float EffectiveCritBonus => IsDulled || !IsAvailable ? 0f : Entry.CritBonus;
+        public int EffectiveRegenBonus => IsDulled || !IsAvailable ? 0 : Entry.RegenBonus;
 
         public void Wear(int points, int reduction = 0)
         {
@@ -65,6 +61,8 @@ namespace TwelveJade.Combat
         public const int RepairCoinPerTenDurability = 10, RepairMinCoins = 4;
 
         readonly Dictionary<GearSlot, EquippedGear> equipped = new();
+        SaveData saveContext;
+        bool Allowed(string itemId) => saveContext == null || PrologueRules.CanCultivate(saveContext) || Catalog.IsMundane(itemId);
 
         public CombatEquipmentService(GearCatalog catalog, CombatDestinyTable destinyTable, string destinyId)
         {
@@ -108,7 +106,8 @@ namespace TwelveJade.Combat
                 LastRefusal = "它该穿在" + entry.SlotName + "。";
                 return false;
             }
-            equipped[slot] = new EquippedGear(entry);
+            if (!Allowed(itemId)) { LastRefusal = PrologueRules.Refusal; return false; }
+            equipped[slot] = new EquippedGear(entry, () => Allowed(entry.ItemId));
             return true;
         }
 
@@ -129,13 +128,16 @@ namespace TwelveJade.Combat
         // Read the persisted loadout without repairing it, inventing ownership or auto-equipping bag items.
         public void RestoreLedger(SaveData save)
         {
+            saveContext = save;
             equipped.Clear();
             foreach (var line in save?.gear ?? Array.Empty<GearLine>())
             {
                 if(line==null || InventoryRules.Count(save.bag,line.itemId)<1)continue;
                 var entry=Catalog.Find(line.itemId);
                 string slot=entry?.Slot==GearSlot.Weapon?GearSlots.Weapon:entry?.Slot==GearSlot.Armor?GearSlots.Armor:GearSlots.Accessory;
-                if(entry==null || line.slot!=slot || !Equip(entry.Slot,line.itemId))continue;
+                if(entry==null || line.slot!=slot)continue;
+                // Restore ownership and exact wear even when its effects are locked for this chapter.
+                equipped[entry.Slot] = new EquippedGear(entry, () => Allowed(entry.ItemId));
                 Get(entry.Slot).Wear(Math.Max(0,entry.MaxDurability-line.durability));
             }
         }
@@ -170,13 +172,13 @@ namespace TwelveJade.Combat
                 CombatActionType.Light => LightSwingWear,
                 _ => 0,
             };
-            if (wear > 0) Weapon?.Wear(wear, DestinyModifiers.WearReduction);
+            if (wear > 0 && Weapon?.IsAvailable == true) Weapon.Wear(wear, DestinyModifiers.WearReduction);
         }
 
         public void WearArmor(int hits = 1)
         {
             if (hits <= 0) return;
-            Armor?.Wear(WoundWear * hits, DestinyModifiers.WearReduction);
+            if (Armor?.IsAvailable == true) Armor.Wear(WoundWear * hits, DestinyModifiers.WearReduction);
         }
 
         public bool WeaponDulled => Weapon != null && Weapon.IsDulled;
@@ -203,6 +205,7 @@ namespace TwelveJade.Combat
                 result.Reason = "这一件身上没穿。";
                 return result;
             }
+            if (!gear.IsAvailable) { result.Reason = PrologueRules.Refusal; return result; }
             if (gear.Durability >= gear.Entry.MaxDurability)
             {
                 result.Reason = "兵刃还利着，不用磨。";
@@ -268,7 +271,7 @@ namespace TwelveJade.Combat
                 GearSlot.Armor => "护具：",
                 _ => "配饰：",
             };
-            return (gear.IsDulled ? "（钝损）" : "") + prefix + gear.Entry.Label +
+            return (!gear.IsAvailable ? "（尚未入门，效用暂封）" : gear.IsDulled ? "（钝损）" : "") + prefix + gear.Entry.Label +
                 " 耐久 " + gear.Durability + "/" + gear.Entry.MaxDurability;
         }
     }

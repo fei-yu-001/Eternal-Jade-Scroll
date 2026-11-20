@@ -903,6 +903,7 @@ namespace TwelveJade.Presentation
             var state = new CombatSkillSlotState { Learned = true, Available = ready, Status = "" };
             if (slot >= 4 && slot <= 6)
             {
+                state.Sealed = !PrologueRules.CanCultivate(activeSave);
                 string id = CombatSkillWheel.Ids[slot]; var definition = PlayerSkillCombat.Find(id);
                 state.Learned = combatSkills != null && combatSkills.Learned(activeSave, id);
                 state.Cooldown = combatSkills?.CooldownLeft(id, combatNow) ?? 0; state.Duration = definition.Cooldown;
@@ -916,7 +917,7 @@ namespace TwelveJade.Presentation
                 { combatWheelPill = FirstUsablePill(); combatWheelPillRefreshAt = combatNow + .2f; }
                 int count = string.IsNullOrEmpty(combatWheelPill) ? 0 : InventoryRules.Count(activeSave.bag, combatWheelPill);
                 state.Available = ready && count > 0 && combatPlayer.Hp < combatPlayer.MaxHp;
-                state.Status = count > 0 ? count + "枚" : "无丹药";
+                state.Status = count > 0 ? count + "份" : "无伤药";
             }
             else if (slot == 7) { state.Available = ready && combatFoeProfile != null; state.Status = "择隙"; }
             else state.Status = (slot == 0 ? CombatRules.LightStaminaCost : slot == 1 ? CombatRules.HeavyStaminaCost : CombatRules.DodgeStaminaCost) + "精";
@@ -948,7 +949,8 @@ namespace TwelveJade.Presentation
             var catalog = CombatGearCatalog;
             if (catalog == null) { Notify("装备档位表没对上物品表，先穿不上。"); return; }
             var candidates = catalog.ForSlot(slot)
-                .Where(e => InventoryRules.Count(activeSave?.bag ?? InventoryRules.NewBag(), e.ItemId) > 0)
+                .Where(e => InventoryRules.Count(activeSave?.bag ?? InventoryRules.NewBag(), e.ItemId) > 0 &&
+                    (PrologueRules.CanCultivate(activeSave) || Table.Find(e.ItemId)?.Tier == "fanpin"))
                 .OrderByDescending(e => Table.Find(e.ItemId)?.Price ?? 0)
                 .ThenByDescending(e => slot switch
                 {

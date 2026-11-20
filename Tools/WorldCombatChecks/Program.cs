@@ -50,6 +50,9 @@ static class Program
     static SaveData Save()
     {
         var save = new SaveData { characterId = "check", characterName = "试剑" };
+        // 后期技能能力夹具：青石镇旧学习记录不能自行解锁技能。
+        save.MarkFlag("chapter-1-left-qingshi");
+        save.MarkFlag("cultivation-initiation");
         save.manualStudies = new[]
         {
             new ManualStudyEntry { id = "sword", learned = true, attempts = 1 },

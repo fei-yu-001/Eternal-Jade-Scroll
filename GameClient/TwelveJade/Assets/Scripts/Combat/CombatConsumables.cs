@@ -155,6 +155,10 @@ namespace TwelveJade.Combat
                 result.Reason = "人已经倒了，灌不进去。";
                 return result;
             }
+            var item = items?.Find(itemId);
+            if (item != null && UsableCategories.Contains(item.Category) &&
+                !PrologueRules.CanCultivate(save) && item.Tier != "fanpin")
+            { result.Reason = PrologueRules.Refusal; return result; }
             var effect = EffectFor(items, itemsJson, itemId);
             result.Effect = effect;
             if (effect == null || effect.HealHp <= 0)
@@ -200,6 +204,7 @@ namespace TwelveJade.Combat
             foreach (var def in items.Items)
             {
                 if (!UsableCategories.Contains(def.Category)) continue;
+                if (!PrologueRules.CanCultivate(save) && def.Tier != "fanpin") continue;
                 if (InventoryRules.Count(save.bag, def.Id) <= 0) continue;
                 if ((EffectFor(items, itemsJson, def.Id)?.HealHp ?? 0) <= 0) continue;
                 found.Add(def.Id);

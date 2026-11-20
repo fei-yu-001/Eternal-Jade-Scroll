@@ -43,15 +43,7 @@ namespace TwelveJade.Core
                 Check("写入损坏探索拒绝且保留原档",rejected&&repo.Read(1).Data.atlasExploration.cells.SequenceEqual(save.atlasExploration.cells));
             }
             finally{Directory.Delete(root,true);}
-            var cultivate=new SaveData{bag=InventoryRules.NewBag()};cultivate.bag[0]=new ItemStack(CultivationRules.ProtectionPill,2);
-            try{CultivationRules.AttemptAndCommit(cultivate,0,true,.1,_=>throw new IOException("forced"));throw new Exception("expected failure");}catch(IOException){}
-            Check("冲穴写失败恢复穴位与丹药",cultivate.cultivation==null&&InventoryRules.Count(cultivate.bag,CultivationRules.ProtectionPill)==2);
-            int commits=0;var good=CultivationRules.AttemptAndCommit(cultivate,0,true,.1,_=>commits++);
-            Check("成功冲穴仅结算一次",good.Succeeded&&commits==1&&CultivationRules.Opened(cultivate)==1&&InventoryRules.Count(cultivate.bag,CultivationRules.ProtectionPill)==1);
-            var repeat=CultivationRules.AttemptAndCommit(cultivate,0,true,.1,_=>commits++);
-            Check("重复旧穴不耗丹不写档",!repeat.Attempted&&commits==1&&InventoryRules.Count(cultivate.bag,CultivationRules.ProtectionPill)==1);
-            var fail=CultivationRules.AttemptAndCommit(cultivate,1,false,.99,_=>commits++);
-            Check("失败冲穴保留真实失败与保底",fail.Attempted&&!fail.Succeeded&&CultivationRules.Opened(cultivate)==1&&cultivate.cultivation.failures==1&&commits==2);
+            CultivationChecks.Run();
         }
     }
 }

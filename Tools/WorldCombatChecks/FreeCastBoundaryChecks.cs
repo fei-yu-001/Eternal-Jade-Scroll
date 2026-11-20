@@ -39,6 +39,9 @@ public static class FreeCastBoundaryChecks
     static SaveData Save()
     {
         var save = new SaveData { characterId = "free-cast", characterName = "空放" };
+        // 后期技能能力夹具：青石镇旧学习记录不能自行解锁技能。
+        save.MarkFlag("chapter-1-left-qingshi");
+        save.MarkFlag("cultivation-initiation");
         save.manualStudies = new[]
         {
             new ManualStudyEntry { id = "sword", learned = true, attempts = 1 },

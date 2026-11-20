@@ -48,11 +48,14 @@ namespace TwelveJade.Combat
     {
         readonly List<GearEntry> entries;
         readonly HashSet<string> pendingItemIds;
+        readonly HashSet<string> mundaneItemIds;
+        public bool IsMundane(string itemId) => mundaneItemIds.Contains(itemId ?? "");
 
-        GearCatalog(List<GearEntry> entries, HashSet<string> pendingItemIds)
+        GearCatalog(List<GearEntry> entries, HashSet<string> pendingItemIds, ItemTable items)
         {
             this.entries = entries;
             this.pendingItemIds = pendingItemIds;
+            mundaneItemIds = new HashSet<string>(entries.Where(e => items.Find(e.ItemId)?.Tier == "fanpin").Select(e => e.ItemId));
         }
 
         public IReadOnlyList<GearEntry> Entries => entries;
@@ -109,7 +112,7 @@ namespace TwelveJade.Combat
                     throw new FormatException("任务物不能登记成装备：" + entry.ItemId);
                 active.Add(entry);
             }
-            return new GearCatalog(active, pending);
+            return new GearCatalog(active, pending, items);
         }
     }
 }

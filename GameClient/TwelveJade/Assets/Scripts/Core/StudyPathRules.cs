@@ -13,7 +13,7 @@ namespace TwelveJade.Core
     // Player decisions and persisted knowledge are independent of animation duration or framerate.
     public static class StudyPathRules
     {
-        public static int Comprehension(SaveData save)=>10+CultivationRules.Opened(save)*3+
+        public static int Comprehension(SaveData save)=>10+(PrologueRules.CanCultivate(save)?CultivationRules.Opened(save)*3:0)+
             ManualStudyRules.Skills.Count(s=>!s.Basic&&ManualStudyRules.Learned(save,s.Id))*2;
         public static double Risk(SaveData save,string id,StudyApproach approach)
         {
@@ -44,6 +44,8 @@ namespace TwelveJade.Core
         static StudySessionResult Act(SaveData save,ItemTable items,string id,StudyApproach approach,double roll)
         {
             var result=new StudySessionResult();var skill=ManualStudyRules.Find(id);
+            if(!PrologueRules.CanCultivate(save))
+            {result.Heading="尚未入门";result.Detail=PrologueRules.Refusal;return result;}
             if(save==null||skill==null||!ManualStudyRules.IsValid(save.manualStudies)||
                 !CultivationRules.IsValid(save.cultivation)||!Enum.IsDefined(typeof(StudyApproach),approach)||
                 double.IsNaN(roll)||roll<0||roll>=1){result.Detail="参悟条件无效，未作结算。";return result;}

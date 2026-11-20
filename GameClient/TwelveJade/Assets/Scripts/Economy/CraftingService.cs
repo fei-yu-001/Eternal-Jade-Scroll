@@ -20,6 +20,12 @@ namespace TwelveJade.Economy
 
         public const string BagFullNotice = "行囊已满，无法制作。";
 
+        // 界面可见性与真实结算共用同一条职业/修行门槛。
+        public static bool IsAvailable(SaveData save, ItemTable table, RecipeDef recipe) =>
+            save != null && table != null && recipe != null &&
+            (PrologueRules.CanCultivate(save) ||
+             recipe.CraftType == Cooking && table.Find(recipe.ResultItemId)?.Tier == "fanpin");
+
         /// <summary>熟练度（T046 / schema 11）：这道方子每做过一次，双倍率加半个百分点，
         /// 最多加满十个点（做满 20 次封顶）。ADR-029 原文批评的就是"做一百次和第一次一样"。
         /// 存的是次数不是"熟练度等级"：等级能算出来，能算出来的东西进存档就是第二真源。</summary>
@@ -72,6 +78,9 @@ namespace TwelveJade.Economy
         {
             notice = "";
             if (save == null || table == null || recipe == null) { notice = "这道方子还做不了。"; return 0; }
+            // 在初始化行囊、扣材料和记熟练度之前拒绝；旧制作记录保持原样。
+            if (!IsAvailable(save, table, recipe))
+            { notice = PrologueRules.Refusal; return 0; }
             var bag = save.bag ??= InventoryRules.NewBag();
             if (!HasIngredients(bag, recipe))
             {

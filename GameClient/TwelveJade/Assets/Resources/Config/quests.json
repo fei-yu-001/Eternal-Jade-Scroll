@@ -118,7 +118,7 @@
       "status": "Available",
       "objectives": [
         { "id": "meet-at-bridges", "type": "reach", "target": "bridges", "count": 1 },
-        { "id": "buy-the-scrap", "type": "collect", "target": "fulu", "count": 1 }
+        { "id": "buy-the-scrap", "type": "collect", "target": "paper-charm", "count": 1 }
       ],
       "prerequisites": [],
       "rewards": { "coins": 0, "items": [], "flags": ["blackmarket-tried"] },

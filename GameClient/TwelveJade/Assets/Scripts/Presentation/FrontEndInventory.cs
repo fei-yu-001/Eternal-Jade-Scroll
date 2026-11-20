@@ -50,7 +50,7 @@ namespace TwelveJade.Presentation
         // 五档页签：id 是筛选键（不是类别 id），name 是按钮上的字。
         static readonly (string id, string name)[] BagTabs =
         {
-            ("", "全部"), ("equipment", "装备"), ("consumable", "丹药"), ("material", "材料"), ("relic", "信物")
+            ("", "全部"), ("equipment", "装备"), ("consumable", "药品"), ("material", "材料"), ("relic", "信物")
         };
 
         static BagFilterKind FilterKindOf(string tab)
@@ -203,9 +203,9 @@ namespace TwelveJade.Presentation
             BagWoodCover(box,"Bag quiet header",new Rect(0,0,1920,141));
             BagWoodCover(box,"Bag inner close restoration",new Rect(1730,129,128,70));
             BagWoodCover(box,"Bag quiet footer",new Rect(34,1001,1852,79));
-            AestheticUi.Text(ui,box,"Bag page title","须 弥 · 储 物 囊",new Rect(72,34,820,68),38,TextAlignmentOptions.MidlineLeft,ImmortalUi.Pale);
+            AestheticUi.Text(ui,box,"Bag page title",PrologueRules.CanCultivate(activeSave)?"须 弥 · 储 物 囊":"行 囊 · 随 身 物",new Rect(72,34,820,68),38,TextAlignmentOptions.MidlineLeft,ImmortalUi.Pale);
             AestheticUi.Jade(ui,box,"Bag close","收起",new Rect(1658,30,204,76),CloseInventory,()=>settings.reduceMotion,PlayClick);
-            AestheticUi.Jade(ui,box,"Bag artisan codex","百工",new Rect(1396,30,226,76),ShowCrafting,()=>settings.reduceMotion,PlayClick);
+            AestheticUi.Jade(ui,box,"Bag artisan codex",PrologueRules.CanCultivate(activeSave)?"百工":"烹饪",new Rect(1396,30,226,76),ShowCrafting,()=>settings.reduceMotion,PlayClick);
             ImmortalUi.Text(ui,box,"Bag character heading","真 容",75,153,138,53,28,ImmortalUi.Gold,false,TextAlignmentOptions.Center);
             ImmortalUi.Text(ui,box,"Bag equipment heading","行 装",571,153,144,53,28,ImmortalUi.Gold,false,TextAlignmentOptions.Center);
             // Keep the approved RGBA actor, horizontal crop and size. Its visible sole differs
@@ -213,7 +213,7 @@ namespace TwelveJade.Presentation
             float footOffset = activeSave.gender == "female" ? -3f : 3f;
             ImmortalUi.Hero(ui,box,activeSave.gender,224,205 + footOffset,340,595);
             BuildBagEquipment(box);
-            ImmortalUi.Text(ui,box,"Bag storage heading","须 弥 纳 戒",1400,141,300,53,31,ImmortalUi.Gold,false,TextAlignmentOptions.Center);
+            ImmortalUi.Text(ui,box,"Bag storage heading",PrologueRules.CanCultivate(activeSave)?"须 弥 纳 戒":"随 身 行 囊",1400,141,300,53,31,ImmortalUi.Gold,false,TextAlignmentOptions.Center);
             for (int i=0;i<BagTabs.Length;i++)
             {
                 var entry=BagTabs[i];
@@ -286,7 +286,8 @@ namespace TwelveJade.Presentation
 
         void BuildBagEquipment(RectTransform parent)
         {
-            var names=new[]{"道冠","法衣","腰带","步履","兵刃","宝镜","纳戒","佩饰"};
+            var names=PrologueRules.CanCultivate(activeSave)?new[]{"道冠","法衣","腰带","步履","兵刃","宝镜","纳戒","佩饰"}:
+                new[]{"头巾","外衣","腰带","布鞋","兵刃","随身","行囊","佩饰"};
             var slots=new[]{"",GearSlots.Armor,"","",GearSlots.Weapon,"","",GearSlots.Accessory};
             var ys=new[]{231f,412.5f,651f,834f};
             for(int i=0;i<8;i++)
@@ -338,7 +339,7 @@ namespace TwelveJade.Presentation
             bagTipTitle.text="本 命 根 基";bagTipTitle.color=ImmortalUi.Ink;
             bagTipBody.text=activeSave.characterName+"\n\n气血上限  "+(stats.hp+CultivationRules.HpBonus(activeSave)+ManualStudyRules.HpBonus(activeSave))+
                 "\n精力上限  "+(stats.stamina+CultivationRules.StaminaBonus(activeSave)+ManualStudyRules.StaminaBonus(activeSave))+"\n基础力道  "+(stats.attack+ManualStudyRules.AttackBonus(activeSave))+"\n基础防御  "+stats.defense+
-                "\n\n命格\n"+(CharacterGen.FindDestiny(activeSave.destiny)?.Name??"命星待照")+"\n\n经脉已通  "+CultivationRules.Opened(activeSave)+" / 5";
+                "\n\n命格\n"+(CharacterGen.FindDestiny(activeSave.destiny)?.Name??"命星待照")+(PrologueRules.CanCultivate(activeSave)?"\n\n经脉已通  "+CultivationRules.Opened(activeSave)+" / 5":"\n\n凡人之身 · 乱世求生");
             var tier=bagTip.Find("Tip tier")?.GetComponent<TMP_Text>();if(tier!=null){tier.text="点选物品阅其来历\n滚轮可展开长文";tier.color=ImmortalUi.Ink;}
             if(bagEquipButton!=null)bagEquipButton.gameObject.SetActive(false);
             if(bagCraftButton!=null)bagCraftButton.gameObject.SetActive(false);FitBagDetails();
@@ -349,12 +350,26 @@ namespace TwelveJade.Presentation
             var stack=userBag[bagSelected];if(stack==null||stack.IsEmpty)return;
             var entry=CombatGearCatalog?.Find(stack.id);if(entry==null)return;
             string slot=entry.Slot==GearSlot.Weapon?GearSlots.Weapon:entry.Slot==GearSlot.Armor?GearSlots.Armor:GearSlots.Accessory;
-            var old=(activeSave.gear??Array.Empty<GearLine>()).Select(g=>new GearLine{slot=g.slot,itemId=g.itemId,durability=g.durability}).ToArray();
             var worn=GearLedger.Of(activeSave,slot);
+            if(worn?.itemId!=entry.ItemId&&!PrologueRules.CanCultivate(activeSave)&&Table.Find(entry.ItemId)?.Tier!="fanpin")
+            {Notify(PrologueRules.Refusal);return;}
+            bool liveWorldGear=page=="town"&&worldBattleGear!=null&&worldPlayerState!=null&&ReferenceEquals(worldPlayerOwner,activeSave);
+            // Preserve wear on the other slots before refreshing the live service from the save.
+            if(liveWorldGear)RecordWorldGear();
+            var old=(activeSave.gear??Array.Empty<GearLine>()).Select(g=>new GearLine{slot=g.slot,itemId=g.itemId,durability=g.durability}).ToArray();
+            worn=GearLedger.Of(activeSave,slot);
             if(worn!=null&&worn.itemId==entry.ItemId)GearLedger.Clear(activeSave,slot);
             else GearLedger.Record(activeSave,slot,entry.ItemId,entry.MaxDurability);
-            try{repository.Write(activeSave);PlayClick();RedrawBag();}
-            catch(Exception ex){activeSave.gear=old;Debug.LogError("Inventory gear save failed: "+ex.Message);Notify("穿戴未能落卷，已恢复原装备。");}
+            try{repository.Write(activeSave);}
+            catch(Exception ex){activeSave.gear=old;Debug.LogError("Inventory gear save failed: "+ex.Message);Notify("穿戴未能落卷，已恢复原装备。");return;}
+            if(liveWorldGear)
+            {
+                // Keep the same actor/session: a loadout change must not heal, refill or restart an action.
+                worldBattleGear.RestoreLedger(activeSave);
+                var stats=PlayerStatsFor(activeSave.characterId);
+                worldBattleGear.ApplyTo(worldPlayerState,stats.attack+ManualStudyRules.AttackBonus(activeSave),stats.defense);
+            }
+            PlayClick();RedrawBag();
         }
 
         public void ShowTip(int index)
@@ -372,6 +387,8 @@ namespace TwelveJade.Presentation
             var tierColor = ItemInspector.TierColor(Table, def);
             bagTipTitle.color = ImmortalUi.Ink;
             bagTipBody.text = ItemInspector.Body(Table, def, stack.count, reputation);
+            if(def!=null&&def.Tier!="fanpin"&&!PrologueRules.CanCultivate(activeSave))
+                bagTipBody.text+="\n\n尚未入门，此物的修行效用暂不可用。";
             var tierText = bagTip.Find("Tip tier")?.GetComponent<TMP_Text>();
             if (tierText != null)
             {
@@ -382,14 +399,17 @@ namespace TwelveJade.Presentation
             // Crafting is a real operation, so retain it contextually for relevant materials/results.
             // It no longer occupies a permanent footer button or appears on unrelated empty states.
             if(bagCraftButton!=null)bagCraftButton.gameObject.SetActive(gear==null&&def!=null&&bagSelected==index&&
-                Recipes!=null&&Recipes.Recipes.Any(r=>r.ResultItemId==def.Id||r.Ingredients.Any(i=>i.ItemId==def.Id)));
+                Recipes!=null&&Recipes.Recipes.Any(r=>Crafting.IsAvailable(activeSave,Table,r)&&(r.ResultItemId==def.Id||r.Ingredients.Any(i=>i.ItemId==def.Id))));
             if(bagEquipButton!=null)
             {
                 bagEquipButton.gameObject.SetActive(gear!=null && bagSelected==index);
                 if(gear!=null)
                 {
                     string slot=gear.Slot==GearSlot.Weapon?GearSlots.Weapon:gear.Slot==GearSlot.Armor?GearSlots.Armor:GearSlots.Accessory;
-                    bagEquipButton.GetComponentInChildren<TMP_Text>().text=GearLedger.Of(activeSave,slot)?.itemId==gear.ItemId?"卸下此物":"穿戴此物";
+                    bool worn=GearLedger.Of(activeSave,slot)?.itemId==gear.ItemId;
+                    bool allowed=worn||PrologueRules.CanCultivate(activeSave)||def.Tier=="fanpin";
+                    bagEquipButton.interactable=allowed;
+                    bagEquipButton.GetComponentInChildren<TMP_Text>().text=worn?"卸下此物":allowed?"穿戴此物":"尚未入门";
                 }
             }
             FitBagDetails();
@@ -537,7 +557,11 @@ namespace TwelveJade.Presentation
         public void ShowCrafting()
         {
             if(activeSave==null)return;
+            // Town cooking uses the existing inventory input shield, including Escape and page teardown.
+            if(page=="town"&&bagOverlay==null){ShowInventory();if(bagOverlay==null)return;}
             var recipes=Recipes;if(recipes==null){Notify("百工谱尚未备齐。 ");return;}
+            bool initiated=PrologueRules.CanCultivate(activeSave);
+            if(!initiated)craftCategory="cooking";
             userBag=activeSave.bag;
             CloseCrafting();
             craftOverlay=ui.Rect(canvas,"Crafting",0,0,1920,1080).gameObject;
@@ -545,19 +569,20 @@ namespace TwelveJade.Presentation
             var outside=craftOverlay.AddComponent<Button>();outside.targetGraphic=veil;outside.transition=Selectable.Transition.None;outside.onClick.AddListener(CloseCrafting);
             var box=ui.Rect(craftOverlay.transform,"Artisan scroll",145,110,1630,860);
             var backdrop=ui.Rect(box,"Silk scroll ground",0,0,1630,860).gameObject.AddComponent<RawImage>();backdrop.texture=ApprovedUiArt.Load("nov11/artisan-silk-page");backdrop.raycastTarget=true;
-            var picture=Resources.Load<Texture2D>(craftCategory=="forging"?"Art/UI/Nov11/forge-workshop":"Art/UI/Nov11/alchemy-workshop");
-            if(picture!=null){var image=ui.Rect(box,"Painted artisan scene",1005,120,570,570).gameObject.AddComponent<RawImage>();image.texture=picture;image.uvRect=new Rect(.47f,0,.53f,1);image.raycastTarget=false;}
-            ui.Label(box,"百工仙谱",55,34,700,60,39,UiKit.Ink,TextAlignmentOptions.Left,false);
+            var picture=craftCategory=="cooking"?Resources.Load<Texture2D>("Art/Items/"+Table.Find("chuibing")?.Icon):
+                Resources.Load<Texture2D>(craftCategory=="forging"?"Art/UI/Nov11/forge-workshop":"Art/UI/Nov11/alchemy-workshop");
+            if(picture!=null){var image=ui.Rect(box,"Painted artisan scene",1005,120,570,570).gameObject.AddComponent<RawImage>();image.texture=picture;image.uvRect=craftCategory=="cooking"?new Rect(0,0,1,1):new Rect(.47f,0,.53f,1);image.raycastTarget=false;}
+            ui.Label(box,initiated?"百工仙谱":"灶边手艺",55,34,700,60,39,UiKit.Ink,TextAlignmentOptions.Left,false);
             MenuMemoArt.Command(ui,box,"Close craft","收卷",new Rect(1374,25,200,74),CloseCrafting,()=>settings.reduceMotion,PlayClick,25,false);
-            string[] kinds={"forging","alchemy","cooking"};string[] names={"炼器","炼药","膳食"};
+            string[] kinds=initiated?new[]{"forging","alchemy","cooking"}:new[]{"cooking"};string[] names=initiated?new[]{"炼器","炼药","膳食"}:new[]{"烹饪"};
             for(int i=0;i<kinds.Length;i++)
             {var kind=kinds[i];MenuMemoArt.Command(ui,box,"Craft category "+kind,(craftCategory==kind?"· ":"")+names[i],new Rect(55+i*294,112,275,72),()=>{craftCategory=kind;ShowCrafting();},()=>settings.reduceMotion,PlayClick,26,false);}
             var viewport=ui.Rect(box,"Recipe viewport",48,210,936,548);viewport.gameObject.AddComponent<Image>().color=Color.clear;viewport.gameObject.AddComponent<RectMask2D>();
-            var list=ui.Rect(viewport,"Recipe content",0,0,936,1);var entries=recipes.OfType(craftCategory).ToList();list.sizeDelta=new Vector2(936,Mathf.Max(548,entries.Count*178));
+            var list=ui.Rect(viewport,"Recipe content",0,0,936,1);var entries=recipes.OfType(craftCategory).Where(r=>Crafting.IsAvailable(activeSave,Table,r)).ToList();list.sizeDelta=new Vector2(936,Mathf.Max(548,entries.Count*178));
             var scroll=viewport.gameObject.AddComponent<ScrollRect>();scroll.viewport=viewport;scroll.content=list;scroll.horizontal=false;scroll.vertical=true;scroll.movementType=ScrollRect.MovementType.Clamped;scroll.scrollSensitivity=46;scroll.inertia=false;
             for(int i=0;i<entries.Count;i++)DrawRecipeRow(list,entries[i],i*178);
-            craftNotice=ui.Label(box,string.IsNullOrEmpty(lastCraftNotice)?"采集矿材，温养药性。材料与产物均记入行囊。":lastCraftNotice,58,785,1500,45,24,UiKit.Ink,TextAlignmentOptions.Left,false);
-            ui.Label(box,craftCategory=="forging"?"炉火淬青锋\n玄铁 · 玉脉 · 妖兽材料":"丹砂养灵息\n草药 · 兽胆 · 青灵草",1050,698,460,76,25,UiKit.Ink,TextAlignmentOptions.Center,false);
+            craftNotice=ui.Label(box,string.IsNullOrEmpty(lastCraftNotice)?"备齐材料再开工，成品放入行囊。":lastCraftNotice,58,785,1500,45,24,UiKit.Ink,TextAlignmentOptions.Left,false);
+            ui.Label(box,craftCategory=="cooking"?"一把面粉，两张炊饼\n趁热收好，留作路上口粮":craftCategory=="forging"?"炉火淬青锋\n玄铁 · 玉脉 · 妖兽材料":"丹砂养灵息\n草药 · 兽胆 · 青灵草",1050,698,460,76,25,UiKit.Ink,TextAlignmentOptions.Center,false);
         }
         void DrawRecipeRow(RectTransform parent,RecipeDef recipe,float y)
         {
@@ -570,7 +595,7 @@ namespace TwelveJade.Presentation
             ui.Label(row,string.Join("  ·  ",materials),138,61,554,56,20,UiKit.Hex("596353"),TextAlignmentOptions.Left,false);
             ui.Label(row,StationName(recipe.Station)+" · 已制 "+CraftLedger.TimesOf(activeSave, recipe.Id)+" 次 · 双出 "+Mathf.RoundToInt(Crafting.DoubleChanceFor(recipe, activeSave)*100)+"%",138,121,480,29,19,UiKit.Hex("806D49"),TextAlignmentOptions.Left,false);
             bool can=Crafting.HasIngredients(bag,recipe)&&Crafting.HasRoomFor(bag,Table,recipe.ResultItemId,recipe.ResultCount);
-            var button=MenuMemoArt.Command(ui,row,"Craft "+recipe.Id,can?"开炉":"材料未齐",new Rect(700,46,210,77),()=>CraftOne(recipe.Id),()=>settings.reduceMotion,PlayClick,22,false);button.interactable=can;
+            var button=MenuMemoArt.Command(ui,row,"Craft "+recipe.Id,can?(recipe.CraftType==Crafting.Cooking?"下厨":"开炉"):"材料未齐",new Rect(700,46,210,77),()=>CraftOne(recipe.Id),()=>settings.reduceMotion,PlayClick,22,false);button.interactable=can;
         }
 
         void CraftOne(string recipeId)

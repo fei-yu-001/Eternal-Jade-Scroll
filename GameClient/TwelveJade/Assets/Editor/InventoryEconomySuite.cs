@@ -63,6 +63,14 @@ namespace TwelveJade.Economy
             return save;
         }
 
+        // Advanced crafting remains tested as a later-chapter capability, independent of the prologue gate.
+        static SaveData NewInitiatedSave()
+        {
+            var save = NewSave();
+            save.oneTimeFlags = new[] { PrologueRules.DepartureFlag, PrologueRules.InitiationFlag };
+            return save;
+        }
+
         // ---------------- 1：items.json 2.0 ----------------
 
         static readonly string[] AddedItems =
@@ -287,7 +295,7 @@ namespace TwelveJade.Economy
 
             var never = new FixedRandom(.999);
             var always = new FixedRandom(0d);
-            var save = NewSave();
+            var save = NewInitiatedSave();
             check("空手不具备材料", !Crafting.HasIngredients(save.bag, recipe));
             check("缺材料时开工被拦",
                 Crafting.Craft(save, items, recipe, never, out var notice) == 0 && notice.Contains("材料不够"),
@@ -302,7 +310,7 @@ namespace TwelveJade.Economy
             check("麦面已扣减", InventoryRules.Count(save.bag, "wheat-flour") == 0);
             check("肉脯已入包", InventoryRules.Count(save.bag, "rou-fu") == 1);
 
-            var lucky = NewSave();
+            var lucky = NewInitiatedSave();
             InventoryRules.Add(lucky.bag, items, "larou", 2);
             InventoryRules.Add(lucky.bag, items, "wheat-flour", 2);
             lucky.traits = new[] { Crafting.CookingTrait };
@@ -314,7 +322,7 @@ namespace TwelveJade.Economy
             check("灵心独运有话说", notice.Contains("灵心独运"), notice);
 
             // 包满必须安全拦截，而且是在扣材料之前拦。
-            var packed = NewSave();
+            var packed = NewInitiatedSave();
             InventoryRules.Add(packed.bag, items, "larou", 1);
             InventoryRules.Add(packed.bag, items, "wheat-flour", 1);
             for (var i = 2; i < InventoryRules.SlotCount; i++)
@@ -340,7 +348,7 @@ namespace TwelveJade.Economy
 
             var never = new FixedRandom(.999);
             var always = new FixedRandom(0d);
-            var save = NewSave();
+            var save = NewInitiatedSave();
             InventoryRules.Add(save.bag, items, "caoyao", 1);
             check("止血草不够 2 份时拦住",
                 Crafting.Craft(save, items, recipe, never, out var notice) == 0 && notice.Contains("材料不够"));
@@ -352,7 +360,7 @@ namespace TwelveJade.Economy
             check("甘草扣了 1 份", InventoryRules.Count(save.bag, "licorice") == 0);
             check("金疮散已入包", InventoryRules.Count(save.bag, "jinchuang-san") == 1);
 
-            var bright = NewSave();
+            var bright = NewInitiatedSave();
             InventoryRules.Add(bright.bag, items, "caoyao", 4);
             InventoryRules.Add(bright.bag, items, "licorice", 2);
             bright.traits = new[] { Crafting.AlchemyTrait };
@@ -797,11 +805,11 @@ namespace TwelveJade.Economy
         // 存次数不存等级——能算出来的东西进存档就是第二真源。
         static void CheckProficiency(string configDir, ItemTable items, RecipeTable recipes, CheckFn check)
         {
-            var recipe = recipes.Recipes.FirstOrDefault(r => r.Ingredients != null && r.Ingredients.Count > 0);
+            var recipe = recipes.Find("recipe-rou-fu");
             if (recipe == null) { check("配方表里有可做的方子（熟练度用例的前提）", false); return; }
-            var baseChance = Crafting.DoubleChanceFor(recipe, NewSave());
+            var baseChance = Crafting.DoubleChanceFor(recipe, NewInitiatedSave());
 
-            var fresh = NewSave();
+            var fresh = NewInitiatedSave();
             check("没做过时熟练度不加成（双倍率等于底数）",
                 Math.Abs(Crafting.DoubleChanceFor(recipe, fresh) - baseChance) < 1e-5, baseChance.ToString());
             for (var i = 0; i < 20; i++) CraftLedger.Record(fresh, recipe.Id);
@@ -821,12 +829,12 @@ namespace TwelveJade.Economy
                 string.Join(",", typeof(SaveData).GetFields().Select(f => f.Name)));
 
             string notice;
-            var broke = NewSave();
+            var broke = NewInitiatedSave();
             var made = Crafting.Craft(broke, items, recipe, new Random(0), out notice);
             check("材料不够被拦下：一件没做出来、熟练度也不涨",
                 made == 0 && CraftLedger.TimesOf(broke, recipe.Id) == 0, notice);
 
-            var worker = NewSave();
+            var worker = NewInitiatedSave();
             foreach (var line in recipe.Ingredients)
                 InventoryRules.Add(worker.bag, items, line.ItemId, line.Count * 6);
             made = Crafting.Craft(worker, items, recipe, new Random(1), out notice);
@@ -902,32 +910,35 @@ namespace TwelveJade.Economy
                 foreach (var quest in QuestTable.Parse(File.ReadAllText(questFile)).Quests)
                     foreach (var stack in quest.Rewards?.Items ?? Array.Empty<ItemStack>()) sources.Add(stack.id);
 
-            foreach (var recipe in recipes.Recipes) sources.Add(recipe.ResultItemId);
-
-            var sourceless = items.Items.Where(d => !sources.Contains(d.Id))
-                .Select(d => d.Id).OrderBy(x => x, StringComparer.Ordinal).ToList();
+            // A recipe is a source only after ALL of its materials have a real source. Iterate to a fixed point.
+            bool grew;
+            do
+            {
+                grew = false;
+                foreach (var recipe in recipes.Recipes)
+                    if (recipe.Ingredients.All(i => sources.Contains(i.ItemId)))
+                        grew |= sources.Add(recipe.ResultItemId);
+            } while (grew);
             check("敌人掉落只读对表跑到了", dropLines > 0, dropLines + " 条掉落行");
-            check("配方产物按「炼得出来」计为有来路",
-                sources.Contains("rou-fu") && sources.Contains("jinchuang-san"));
-            check("来路缺口台账与登记逐字相同（补一个来源就得同步缩一条）",
-                sourceless.Count == KnownSourceless.Length &&
-                !KnownSourceless.Where((id, i) => id != sourceless[i]).Any(),
-                "实测 " + string.Join(",", sourceless));
-            var nonPlot = sourceless
-                .Where(id => !PlotItemRules.IsPlotItem(items.Find(id)?.Category))
-                .ToList();
-            check("非剧情物品的来路缺口必须逐条登记（不许有未登记的空白）",
-                nonPlot.Count == PendingSources.Length &&
-                !PendingSources.Where((id, i) => id != nonPlot[i]).Any(),
-                "实测 " + string.Join(",", nonPlot));
-
-            // 两道方子的材料得买得起：首日可得 = 开局铜钱 + 卷一主链奖励 + 野猪赏钱，全由配置算出。
-            var materialCost = new[] { ("larou", 1), ("wheat-flour", 1), ("caoyao", 2), ("licorice", 1) }
-                .Sum(pair => (items.Find(pair.Item1)?.Price ?? 0) * pair.Item2);
+            var unavailable = items.Items.Where(d => !sources.Contains(d.Id)).Select(d => d.Id).OrderBy(x => x, StringComparer.Ordinal).ToArray();
+            var expected = ScriptGrantedItems.Concat(DeferredSupplyItems).Concat(DeferredRecipeOutputs).OrderBy(x => x, StringComparer.Ordinal).ToArray();
+            check("全物品递归来路审计：剧情授予与后续未开放内容逐项登记", unavailable.SequenceEqual(expected), string.Join(",", unavailable));
+            check("保留定义供旧档读取，后续货源不回填青石镇", expected.All(id => items.Find(id) != null) &&
+                merchantTable.Merchants.All(m => m.Stock.Concat(m.Hidden).All(l => !expected.Contains(l.itemId))));
+            var blocked = recipes.Recipes.Where(r => r.Ingredients.Any(i => !sources.Contains(i.ItemId))).ToArray();
+            check("后续四道配方明确缺青灵草，不能把产物当作已可得", blocked.Length == 4 &&
+                blocked.Select(r => r.ResultItemId).OrderBy(x => x, StringComparer.Ordinal).SequenceEqual(DeferredRecipeOutputs) &&
+                blocked.All(r => r.Ingredients.Where(i => !sources.Contains(i.ItemId)).All(i => i.ItemId == "qinglingcao")),
+                string.Join(",", blocked.Select(r => r.Id)));
+            var mortal = NewSave();
+            var open = recipes.Recipes.Where(r => Crafting.IsAvailable(mortal, items, r)).ToArray();
+            check("凡人序章仅开放家常炊饼", open.Length == 1 && open[0].Id == "recipe-chuibing");
+            check("当前开放配方的所有材料均有真实来路", open.All(r => r.Ingredients.All(i => sources.Contains(i.ItemId))));
+            check("断材配方未出现在当前玩家入口", blocked.All(r => !Crafting.IsAvailable(mortal, items, r)));
+            var materialCost = open.Sum(r => r.Ingredients.Sum(i => (items.Find(i.ItemId)?.Price ?? 0) * i.Count));
             var dayOne = ItemTable.StartingCoins + MainChainCoin(configDir);
-            check("两道方子的材料总价不超过玩家首日可得", materialCost <= dayOne,
-                "材料 " + materialCost + " 文 / 首日可得 " + dayOne + " 文");
-            check("首日可得由配置算出而非手写常量", dayOne > ItemTable.StartingCoins, dayOne + " 文");
+            check("序章烹饪材料首日可负担", materialCost <= dayOne, materialCost + " 文 / " + dayOne + " 文");
+            check("首日盘缠由配置计算", dayOne > ItemTable.StartingCoins);
 
             var phantom = merchantTable.Merchants.SelectMany(m => m.Stock.Concat(m.Hidden))
                 .Select(line => line.itemId).Where(id => items.Find(id) == null).Distinct().ToList();
@@ -937,15 +948,13 @@ namespace TwelveJade.Economy
             check("收货品类都在物品表里定义", phantomBuys.Count == 0, string.Join(",", phantomBuys));
         }
 
-        /// <summary>来路缺口全台账（id 升序，逐字比对）。O2 补完货单与任务奖励之后，
-        /// 这里只剩三件任务物：它们是「用到时才由代码给」的那类（开盒、认印），归剧情线授予，
-        /// 逐条说明见 Tools/logs/o-source-audit.md。
-        /// 实测已确认 beast-gall / wolf-fur / wolf-fang / mandrill-stone / iron-ore 五件已有来路
-        /// ——N 线的 enemies.json 先于本笔入库，这正是 ADR-031 冻结 id 拆掉顺序耦合的效果。</summary>
-        static readonly string[] KnownSourceless = { "kaihetie", "yinzhang", "yupei" };
-
-        /// <summary>台账里非剧情的部分：O2 收口后应当是空数组。留着一条就是一条红灯的理由。</summary>
-        static readonly string[] PendingSources = Array.Empty<string>();
+        // These definitions are intentionally retained. They are NOT a claim that the future supply is implemented.
+        // See Documents/青石镇凡人序章-2026-11-20.md for each item and the four qinglingcao dependencies.
+        static readonly string[] ScriptGrantedItems = { "kaihetie", "yinzhang", "yupei" };
+        static readonly string[] DeferredSupplyItems = {
+            "dongxiao", "fulu", "guqin", "hetiehe", "leather-bracer", "pipa", "qinglingcao", "wood-bow"
+        };
+        static readonly string[] DeferredRecipeOutputs = { "cloud-silk-robe", "elixir-warm", "golden-return-pill", "jade-renew-pill" };
 
         /// <summary>卷一主链的推进顺序（链序，不是集合）。</summary>
         static readonly string[] MainChainOrder =
@@ -1417,7 +1426,7 @@ namespace TwelveJade.Economy
             QuestLedger.RefreshAvailability(s3, quests);
             var blackmarket = quests.Find(bridge);
             QuestLedger.TryStart(s3, blackmarket);
-            InventoryRules.Add(s3.bag, items, "fulu", 1);
+            InventoryRules.Add(s3.bag, items, "paper-charm", 1);
             var s3Report = QuestSettlement.Drive(s3, quests, items, karma, QuestSignal.None());
             check("桥边之约：买到的符推得上，走没走到桥**不硬推**",
                 QuestLedger.Progress(s3, blackmarket, "buy-the-scrap") == 1 &&

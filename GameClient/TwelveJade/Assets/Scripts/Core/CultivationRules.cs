@@ -40,12 +40,12 @@ namespace TwelveJade.Core
              state.attempts >= state.opened + state.failures && state.attempts <= MaxAttempts &&
              (state.opened < points.Length || state.failures == 0));
         public static int Opened(SaveData save) => IsValid(save?.cultivation) ? save?.cultivation?.opened ?? 0 : 0;
-        public static int HpBonus(SaveData save) { int value=0;for(int i=0;i<Opened(save);i++)value+=points[i].Hp;return value; }
-        public static int StaminaBonus(SaveData save) { int value=0;for(int i=0;i<Opened(save);i++)value+=points[i].Stamina;return value; }
+        public static int HpBonus(SaveData save) { if(!PrologueRules.CanCultivate(save))return 0;int value=0;for(int i=0;i<Opened(save);i++)value+=points[i].Hp;return value; }
+        public static int StaminaBonus(SaveData save) { if(!PrologueRules.CanCultivate(save))return 0;int value=0;for(int i=0;i<Opened(save);i++)value+=points[i].Stamina;return value; }
         public static double Chance(SaveData save, bool pill)
         {
             var state=save?.cultivation;
-            if(save==null || !IsValid(state) || Opened(save)>=points.Length) return 0;
+            if(!PrologueRules.CanCultivate(save) || !IsValid(state) || Opened(save)>=points.Length) return 0;
             if((state?.failures??0)>=PityFailures)return 1;
             return Math.Min(.95, .85 - Opened(save)*.08 + (pill ? .15 : 0));
         }
@@ -61,6 +61,7 @@ namespace TwelveJade.Core
         public static BreakthroughResult Attempt(SaveData save, int point, bool pill, double roll)
         {
             var result=new BreakthroughResult();
+            if(!PrologueRules.CanCultivate(save)){result.Message=PrologueRules.Refusal;return result;}
             if(save==null || !IsValid(save.cultivation) || double.IsNaN(roll) || roll<0 || roll>=1)
             { result.Message="冲穴条件无效，未作结算。";return result; }
             int opened=Opened(save);

@@ -65,7 +65,7 @@ namespace TwelveJade.Presentation
             title.text=skill.Name+" · "+(learned?"融会贯通":recorded?"伴童参悟":"古卷初展");
             status.text="领会  "+(learned?100:entry?.progress??0)+" / 100\n心得  "+(entry?.notes??0)+" / 12\n心神负担  "+(entry?.strain??0)+" / 100";
             prompt.text=learned?skill.Effect+"\n温习不耗卷，不重复加属性":!recorded?
-                "对应残卷  "+InventoryRules.Count(save.bag,skill.ManualId)+" 册\n先拓录，后选参悟之法\n旧日偶得会带入领会与心得\n缺卷可向货郎老栓求购":
+                "对应残卷  "+InventoryRules.Count(save.bag,skill.ManualId)+" 册\n先拓录，后选参悟之法\n旧日偶得会带入领会与心得\n残卷须从游历所得中寻觅":
                 "悟性 "+StudyPathRules.Comprehension(save)+" · 心神负担满80须调息\n循章 +"+StudyPathRules.Gain(save,skill.Id,StudyApproach.Steady)+" · 负担-8 · 心得+1\n推演 +"+StudyPathRules.Gain(save,skill.Id,StudyApproach.Deduce)+" · 负担+18 · 心得+2\n强参 +"+StudyPathRules.Gain(save,skill.Id,StudyApproach.Force)+" · 负担+30 · 心得+2";
             for(int i=0;i<3;i++)
             {

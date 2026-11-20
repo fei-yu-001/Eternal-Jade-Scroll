@@ -7,7 +7,7 @@ namespace TwelveJade.Presentation
 {
     public struct CombatSkillSlotState
     {
-        public bool Learned, Available;
+        public bool Learned, Available, Sealed;
         public string Status;
         public float Cooldown, Duration;
     }
@@ -18,7 +18,7 @@ namespace TwelveJade.Presentation
     {
         public const float Size=352;
         public static readonly string[] Ids={"light","heavy","dodge","pill","sword","thunder","clarity","target"};
-        static readonly string[] Labels={"轻击","重击","闪身","丹药","剑气","五雷","清心","察隙"};
+        static readonly string[] Labels={"轻击","重击","闪身","伤药","剑气","五雷","清心","察隙"};
         static readonly string[] Keys={"J / 1","K / 2","空格 / L","Q / 3","U / 4","I / 5","O / 6","Tab"};
         static readonly string[] Names={"Combat light chain","Combat heavy strike","Combat true dodge","Combat use medicine","Combat learned sword","Combat learned thunder","Combat learned clarity","Combat cycle weak point"};
         // 走 UI 美术目录：nov7 图标与 nov11 图标都在目录里声明,路径大小写由目录给定。
@@ -108,9 +108,12 @@ namespace TwelveJade.Presentation
             for(int i=0;i<8;i++)
             {
                 var state=read==null?new CombatSkillSlotState():read(i);
-                bool on=state.Available&&state.Learned;
+                bool on=state.Available&&state.Learned&&!state.Sealed;
+                string caption=state.Sealed?"未启":Labels[i];
+                if(captions[i].text!=caption)captions[i].text=caption;
+                icons[i].enabled=!state.Sealed&&icons[i].sprite!=null;
                 buttons[i].interactable=on;
-                string footer=state.Cooldown>0?Mathf.CeilToInt(state.Cooldown)+"秒"
+                string footer=state.Sealed?"机缘未至":state.Cooldown>0?Mathf.CeilToInt(state.Cooldown)+"秒"
                     :!state.Learned?"未习得":!state.Available&&!string.IsNullOrEmpty(state.Status)?state.Status
                     :Keys[i].Replace(" ","");
                 if(footers[i].text!=footer)footers[i].text=footer;

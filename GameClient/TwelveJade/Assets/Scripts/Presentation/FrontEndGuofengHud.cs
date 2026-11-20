@@ -47,7 +47,8 @@ namespace TwelveJade.Presentation
             });
             hudDaoWheel=JadeLotusRotator.Create(ui,content,()=>settings.reduceMotion,CanUseHudDaoWheel,
                 AcquireHudWheelInput,ReleaseHudWheelInput,
-                ()=>dialogueConsumeThroughFrame=Math.Max(dialogueConsumeThroughFrame,Time.frameCount+1),ActivateHudDaoWheel,effects,gone=>{if(ReferenceEquals(hudDaoWheel,gone))hudDaoWheel=null;});
+                ()=>dialogueConsumeThroughFrame=Math.Max(dialogueConsumeThroughFrame,Time.frameCount+1),ActivateHudDaoWheel,effects,gone=>{if(ReferenceEquals(hudDaoWheel,gone))hudDaoWheel=null;},
+                PrologueRules.CanCultivate(activeSave)?null:new[]{"设置","行囊","舆图","防身","烹饪","行记","身世","落卷"});
             HudLabel(content,"Hud town name",town.Name,1580,342,280,40,24,UiKit.Ink,true,TextAlignmentOptions.Center);
         }
         TMP_Text HudLabel(Transform parent,string name,string text,float x,float y,float width,float height,float size,Color ink,bool brush=false,TextAlignmentOptions align=TextAlignmentOptions.TopLeft)
@@ -175,8 +176,8 @@ namespace TwelveJade.Presentation
                     case 1:ShowInventory();break;
                     case 2:ShowWorldOverlay();break;
                     case 3:OpenWorldCombatWheel();break;
-                    case 4:ShowMeridianLedger();break;
-                    case 5:ShowArtsLedger();break;
+                    case 4:if(PrologueRules.CanCultivate(activeSave))ShowMeridianLedger();else ShowCrafting();break;
+                    case 5:if(PrologueRules.CanCultivate(activeSave))ShowArtsLedger();else ShowTownChapterPanel();break;
                     case 6:ShowDaoIdentityLedger();break;
                     case 7:repository.Write(activeSave);Notify("行迹已落卷。");break;
                 }

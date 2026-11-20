@@ -7,9 +7,11 @@ namespace TwelveJade.Core
     public static class StudyPathChecks
     {
         static void Check(string label,bool okay){if(!okay)throw new Exception("FAIL: 参悟 "+label);Console.WriteLine("PASS: 参悟 "+label);}
-        static SaveData Fresh(string skill="sword")=>new SaveData{bag=new[]{new ItemStack("manual-"+skill+"-fragment",3)},manualStudies=null};
+        // 后期参悟夹具，保留全部原数值和写档回滚断言。
+        static SaveData Fresh(string skill="sword")=>new SaveData{bag=new[]{new ItemStack("manual-"+skill+"-fragment",3)},manualStudies=null,
+            oneTimeFlags=new[]{"chapter-1-left-qingshi","cultivation-initiation"}};
         static string Snapshot(SaveData save)=>JsonSerializer.Serialize(save,new JsonSerializerOptions{IncludeFields=true});
-        public static void Run(ItemTable items,string configDir)
+        public static void Run(ItemTable items,string configDir,bool includeAtlas=true)
         {
             var save=Fresh();int writes=0;
             var before=Snapshot(save);
@@ -63,7 +65,7 @@ namespace TwelveJade.Core
             var path=Path.Combine(Path.GetTempPath(),"study-path-"+Guid.NewGuid().ToString("N"));
             try
             {
-                var repo=new SaveRepository(path,new Codec()){Items=items};var disk=repo.Create(1,"farmer","参悟客");disk.bag=InventoryRules.NewBag();disk.bag[0]=new ItemStack("manual-thunder-fragment",2);repo.Write(disk);
+                var repo=new SaveRepository(path,new Codec()){Items=items};var disk=repo.Create(1,"farmer","参悟客");disk.MarkFlag("chapter-1-left-qingshi");disk.MarkFlag("cultivation-initiation");disk.bag=InventoryRules.NewBag();disk.bag[0]=new ItemStack("manual-thunder-fragment",2);repo.Write(disk);
                 StudyPathRules.ActAndCommit(disk,items,"thunder",StudyApproach.Record,.5,repo.Write);
                 StudyPathRules.ActAndCommit(disk,items,"thunder",StudyApproach.Deduce,.5,repo.Write);var load=repo.Read(1).Data;
                 Check("真存档续读领会心得负担",load.manualStudies[0].recorded&&load.manualStudies[0].progress>0&&load.manualStudies[0].notes==2&&load.manualStudies[0].strain==18&&InventoryRules.Count(load.bag,"manual-thunder-fragment")==1);
@@ -71,6 +73,8 @@ namespace TwelveJade.Core
                 Check("续读成功与精力加成持久化",ManualStudyRules.StaminaBonus(repo.Read(1).Data)==4);
             }
             finally{if(Directory.Exists(path))Directory.Delete(path,true);}
+            // progression 是核心窄回归；全套仍执行原有真实地图投影验收。
+            if(!includeAtlas)return;
             var map=TownMap.Parse(File.ReadAllText(Path.Combine(configDir,"town-map.json")));var fit=new TownAtlasProjection(map.WorldWidth,map.WorldHeight,770,770);
             foreach(var mark in map.Landmarks)
             {

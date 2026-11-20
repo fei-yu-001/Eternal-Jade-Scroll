@@ -47,7 +47,8 @@ namespace TwelveJade.Core
         public static IReadOnlyList<ArtsSkill> Skills=>skills;
         public static ArtsSkill Find(string id)=>skills.FirstOrDefault(s=>s.Id==id);
         public static ManualStudyEntry Entry(SaveData save,string id)=>save?.manualStudies?.FirstOrDefault(e=>e!=null&&e.id==id);
-        public static bool Learned(SaveData save,string id)=>Find(id)?.Basic==true||Entry(save,id)?.learned==true;
+        public static bool Learned(SaveData save,string id)=>Find(id)?.Basic==true||
+            PrologueRules.CanCultivate(save)&&Entry(save,id)?.learned==true;
         public static bool IsValid(ManualStudyEntry[] entries)
         {
             if(entries==null)return true;
@@ -76,7 +77,7 @@ namespace TwelveJade.Core
         }
         public static double Chance(SaveData save,string id)
         {
-            var skill=Find(id);if(save==null||skill==null||!IsValid(save.manualStudies))return 0;
+            var skill=Find(id);if(!PrologueRules.CanCultivate(save)||skill==null||!IsValid(save.manualStudies))return 0;
             if(skill.Basic||Learned(save,id))return .65;
             return Math.Min(.95,skill.BaseChance+CultivationRules.Opened(save)*.03+(Entry(save,id)?.insights??0)*.05);
         }
@@ -85,6 +86,8 @@ namespace TwelveJade.Core
         public static ManualStudyResult Study(SaveData save,ItemTable table,string id,double roll)
         {
             var result=new ManualStudyResult();var skill=Find(id);
+            if(!PrologueRules.CanCultivate(save))
+            {result.Heading="尚未入门";result.Detail=PrologueRules.Refusal;return result;}
             if(save==null||skill==null||!IsValid(save.manualStudies)||!CultivationRules.IsValid(save.cultivation)||
                 double.IsNaN(roll)||roll<0||roll>=1)
             {result.Heading="暂不能研读";result.Detail="行卷或研读条件无效。";return result;}
