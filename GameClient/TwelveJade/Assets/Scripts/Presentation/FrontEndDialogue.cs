@@ -82,7 +82,8 @@ namespace TwelveJade.Presentation
             if (npc == null) return;
             if (DialogueDistance(npcId) <= QuestRuntime.InteractionDistance) { NpcArrived?.Invoke(npcId); return; }
             var spot = ArrivalPointNear(NpcLiveFoot(npc), npc.Radius + 36f);
-            RequestTravelTo(spot, id => NpcArrived?.Invoke(id), npcId);
+            RequestTravelTo(spot, id => NpcArrived?.Invoke(id), npcId,
+                () => DialogueDistance(npcId) <= QuestRuntime.InteractionDistance);
         }
 
         bool HandleTownDialogueInput()

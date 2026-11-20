@@ -5,17 +5,17 @@ using UnityEngine.UI;
 namespace TwelveJade.Presentation
 {
     // The authored three-cell sheet follows Core phases, never an independent animation clock.
-    // Its pivot is the registered foot: (288,548) in a 576-square, including when UV-mirrored.
+    // Its pivot stays on the actor foot; opaque body/sole bounds match the standing art, also when mirrored.
     [DefaultExecutionOrder(180)]
     public sealed class ActionCombatPose : MonoBehaviour
     {
-        public const int StrikeCellPixels = 576, StrikeFrameCount = 3;
-        public const float StrikeBodyPixels = 450f, StrikeFootFromBottom = 28f;
+        public const int StrikeCellPixels = ActionPoseGeometry.StrikeCellPixels, StrikeFrameCount = ActionPoseGeometry.StrikeFrameCount;
+        public const float StrikeBodyPixels = ActionPoseGeometry.StrikeBodyPixels, StrikeFootFromBottom = ActionPoseGeometry.StrikeFootFromBottom;
         RectTransform root;
         PuppetActor actor;
         RawImage strike;
         Texture2D strikeSheet;
-        float bodyHeight;
+        float travelRectHeight;
         ActionDodgeMesh dodgeMesh;
         bool dodging;
         float dodgeProgress, dodgeWeight;
@@ -51,10 +51,10 @@ namespace TwelveJade.Presentation
         }
 
         // Must run BEFORE ActionCombatHitFlash.Configure, so it discovers this image and caches its sheet.
-        public void Configure(PuppetActor owner, Texture2D sheet, float bodyHeight)
+        public void Configure(PuppetActor owner, Texture2D sheet, float travelRectHeight)
         {
             actor = owner; root = (RectTransform)transform;
-            strikeSheet = sheet; this.bodyHeight = bodyHeight;
+            strikeSheet = sheet; this.travelRectHeight = travelRectHeight;
             if (sheet == null || sheet.width != StrikeCellPixels * StrikeFrameCount || sheet.height != StrikeCellPixels)
             {
                 Debug.LogError("[ActionCombat] Missing or invalid registered three-phase hero strike sheet (1728x576).");
@@ -70,8 +70,7 @@ namespace TwelveJade.Presentation
                 strike = go.AddComponent<RawImage>(); strike.raycastTarget = false;
                 dodgeMesh = go.AddComponent<ActionDodgeMesh>();
             }
-            float height = bodyHeight * StrikeCellPixels / StrikeBodyPixels;
-            strike.rectTransform.sizeDelta = new Vector2(height, height);
+            ApplyStrikeLayout(0);
             strike.texture = sheet; strike.enabled = false; strike.gameObject.SetActive(false); phaseFrame = -1;
         }
 
@@ -126,7 +125,7 @@ namespace TwelveJade.Presentation
             if (attacking)
             {
                 actor.SetRenderSuppressed(true);
-                travelHidden = true; root.localScale = Vector3.one;
+                travelHidden = true; root.localScale = actor.BaseScale;
                 if (dodging)
                 {
                     int count = Mathf.Max(1, actor.FrameCountForCheck);
@@ -135,21 +134,28 @@ namespace TwelveJade.Presentation
                     strike.texture = actor.WalkingSheet;
                     strike.uvRect = actor.MirrorForCheck ? new Rect((frame + 1) * width, 0, -width, 1) : new Rect(frame * width, 0, width, 1);
                     strike.rectTransform.pivot = new Vector2(.5f, 0);
-                    strike.rectTransform.sizeDelta = new Vector2(bodyHeight * strike.texture.width / (count * (float)strike.texture.height), bodyHeight);
+                    strike.rectTransform.sizeDelta = new Vector2(travelRectHeight * strike.texture.width / (count * (float)strike.texture.height), travelRectHeight);
                     dodgeMesh.SetPose(dodgeWeight, facing);
                 }
                 else
                 {
                     strike.texture = strikeSheet;
-                    strike.rectTransform.pivot = new Vector2(.5f, StrikeFootFromBottom / StrikeCellPixels);
-                    strike.rectTransform.sizeDelta = Vector2.one * (bodyHeight * StrikeCellPixels / StrikeBodyPixels);
+                    ApplyStrikeLayout(phaseFrame);
                     strike.uvRect = UvFor(phaseFrame, facing);
                     dodgeMesh.SetPose(0, facing);
                 }
                 strike.enabled = true; strike.gameObject.SetActive(true);
             }
             else RestoreTravel();
-            if (lowMotion) root.localScale = Vector3.one;
+            if (lowMotion && actor != null) root.localScale = actor.BaseScale;
+        }
+        void ApplyStrikeLayout(int frame)
+        {
+            var layout = ActionPoseGeometry.Strike(travelRectHeight,
+                actor != null && actor.View != null ? actor.View.name : null,
+                strikeSheet != null ? strikeSheet.name : null, frame);
+            strike.rectTransform.sizeDelta = Vector2.one * layout.Height;
+            strike.rectTransform.pivot = new Vector2(.5f, layout.PivotY);
         }
         void RestoreTravel()
         {

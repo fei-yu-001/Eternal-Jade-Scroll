@@ -55,6 +55,7 @@ namespace TwelveJade.Presentation
         // 新请求顶掉旧目标时，被顶掉的旧回调不触发（防串话：点了第二个 NPC，
         // 不能弹出第一个的搭话框）。
         System.Action<string> travelCallback;
+        System.Func<bool> travelArrivalCondition;
         string travelContextId;
         const float TravelArriveRadius = 48f;   // 到达阈值：NPC radius 附近，"走到跟前开口"
 
@@ -639,7 +640,11 @@ namespace TwelveJade.Presentation
                 var delta = walkTarget - worldPos;
                 // 走向 NPC/遭遇的到达阈值比点地移动宽（radius 附近即算"走到跟前"）。
                 var arriveRadius = travelRouteIndex<travelRoute.Count-1 ? 6f : travelCallback != null ? TravelArriveRadius : 8f;
-                if (delta.magnitude < arriveRadius && travelRouteIndex>=travelRoute.Count-1)
+                // Dialogue can complete as soon as its live NPC is in range, even before the
+                // route's final approach point. Ground clicks and encounters keep their waypoint rule.
+                bool arrivedAtTarget = travelArrivalCondition != null ? travelArrivalCondition()
+                    : delta.magnitude < arriveRadius && travelRouteIndex >= travelRoute.Count - 1;
+                if (arrivedAtTarget)
                 {
                     var arrived = travelCallback;
                     var context = travelContextId;
@@ -652,6 +657,7 @@ namespace TwelveJade.Presentation
                         hasTarget = false;
                         if (worldClickFeedback != null) worldClickFeedback.End();
                         travelCallback = null;
+                        travelArrivalCondition = null;
                         travelContextId = null;
                     }
                 }
@@ -785,6 +791,7 @@ namespace TwelveJade.Presentation
             travelRoute.Clear();
             travelRouteIndex = 0;
             travelCallback = null;
+            travelArrivalCondition = null;
             travelContextId = null;
         }
 
@@ -1027,7 +1034,8 @@ namespace TwelveJade.Presentation
         readonly List<Vector2> travelRoute = new List<Vector2>();
         int travelRouteIndex;
 
-        public bool RequestTravelTo(Vector2 worldTarget, System.Action<string> onArrived = null, string contextId = null)
+        public bool RequestTravelTo(Vector2 worldTarget, System.Action<string> onArrived = null, string contextId = null,
+            System.Func<bool> arrivalCondition = null)
         {
             if (WorldDialogueInputBlocked || modal != null || bagOverlay != null || worldRoot == null || town == null) return false;
             if (!CanStand(worldTarget)) return false;
@@ -1040,6 +1048,7 @@ namespace TwelveJade.Presentation
             walkTarget=travelRoute[0];
             hasTarget = true;
             travelCallback = onArrived;
+            travelArrivalCondition = arrivalCondition;
             travelContextId = contextId;
             return true;
         }

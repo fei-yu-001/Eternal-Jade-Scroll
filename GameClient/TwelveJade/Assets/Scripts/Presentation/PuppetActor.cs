@@ -174,6 +174,8 @@ namespace TwelveJade.Presentation
             foreach (var image in slices) if (image != null) image.gameObject.SetActive(!renderSuppressed);
         }
         public RectTransform Root => root;
+        // Presentation size belongs to the actor; action poses must not replace it with one.
+        public Vector3 BaseScale => baseScale;
         // T100 删掉的两条 public：`Position`（全仓零调用，读的一直是外部自己算的世界坐标）与
         // `Footfalls`（"脚步尘点"的消费者从来不存在，计数器写了没人读——写数不等于有功能）。
         // 真要落地尘，连producer带consumer一起回来，不留一个只在类内自增的数在这里装样子。

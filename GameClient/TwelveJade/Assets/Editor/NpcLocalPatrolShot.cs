@@ -35,6 +35,8 @@ namespace TwelveJade.Editor
             "Assets/Scripts/Core/NpcSchedule.cs", "Assets/Scripts/Core/TownElevation.cs", "Assets/Scripts/Core/SaveRepository.cs",
             "Assets/Scripts/Presentation/FrontEndController.cs", "Assets/Scripts/Presentation/FrontEndWorld.cs",
             "Assets/Scripts/Presentation/FrontEndNpcPatrol.cs", "Assets/Scripts/Presentation/FrontEndTrade.cs",
+            "Assets/Scripts/Presentation/NpcFrameAnimator.cs", "Assets/Scripts/Presentation/PuppetGait.cs",
+            "Assets/Scripts/Presentation/TownCharacterArt.cs", "Assets/Resources/Config/town-character-art.json",
             "Assets/Scripts/Core/Dialogue.cs", "Assets/Scripts/Core/DialogueTree.cs", "Assets/Scripts/Core/Quest.cs",
             "Assets/Scripts/Presentation/WorldPropLayer.cs", "Assets/Scripts/Presentation/NpcQuestOverhead.cs",
             "Assets/Scripts/Presentation/NpcQuestOverhead.cs.meta", "Assets/Resources/Config/town-map.json",
@@ -42,16 +44,18 @@ namespace TwelveJade.Editor
         };
         [Serializable] sealed class Row { public string name, status, detail; }
         [Serializable] sealed class Stamp { public string path, sha256; }
-        [Serializable] sealed class Report { public string status, overall = "NOT_APPROVED", scope = "NPC patrol host only; no gait/full-town acceptance", unityVersion, target; public int screenshots; public List<Row> checks; public List<Stamp> inputs; }
+        [Serializable] sealed class Report { public string status, overall = "NOT_APPROVED", scope = "NPC patrol, world-driven gait and dialogue approach; no full-town visual acceptance", unityVersion, target; public int screenshots; public List<Row> checks; public List<Stamp> inputs; }
         [Serializable] sealed class Frame {
             public string id, stage, state, markerLabel, markerState; public int frame, sibling, playerSibling; public float time, dt, baseY, expectedY, homeRadius;
             public Vector2 position, foot, centre, rectFoot, previous, home, player; public Vector3 markerLocal;
-            public int commandFrame; public string dialogueNode; public bool inputLocked, markerVisible, markerFloating; public bool reduced, traversable, inside, sync, selfExcluded, playerBlocked, othersRetained, sorted, approach, talk, markerPresent, markerParent;
+            public int commandFrame, gaitFrame; public float gaitDistance; public string dialogueNode; public bool inputLocked, markerVisible, markerFloating; public bool reduced, traversable, inside, sync, selfExcluded, playerBlocked, othersRetained, sorted, approach, talk, markerPresent, markerParent;
         }
         sealed class Watch {
             public string id; public NpcLocalPatrol patrol; public RectTransform rect; public Vector2 previous, stoppedAt; public float radius; public bool blocks;
             public int samples, moved, normalMoved, reducedMoved, resumedMoved, dwells, approachFrames, approachPlayerMoved, talkFrames, blocked, markers, visibleMarkers, reducedMarkers, oldAnchorChecks;
             public bool geometry = true, collision = true, depth = true, approachPaused = true, talkPaused = true, markerParent = true, markerStill = true, oldAnchorFree = true;
+            public NpcFrameAnimator animator; public float gaitDistance, cycleDistance; public bool gait = true; public int gaitMovingSamples, gaitIdleSamples;
+            public readonly HashSet<int> gaitFrames = new HashSet<int>();
             public bool previousReduced; public Vector3 markerLocal; public RectTransform previousMarker; public readonly HashSet<int> sides = new HashSet<int>();
         }
         static NpcLocalPatrolShot() { if (SessionState.GetBool(Key, false)) Attach(); }
@@ -130,7 +134,15 @@ namespace TwelveJade.Editor
             foreach (var npc in map.Npcs.OrderBy(n => n.Id, StringComparer.Ordinal)) {
                 var patrol = c.NpcPatrolForShot(npc.Id); var rect = c.TownNpcRectForShot(npc.Id);
                 Check(npc.Id + " real instance/Rect", patrol != null && rect != null); if (patrol == null || rect == null) continue;
-                watches.Add(new Watch { id = npc.Id, patrol = patrol, rect = rect, previous = new Vector2(patrol.X, patrol.Y), radius = npc.Radius, blocks = npc.Blocks });
+                var animator = rect.GetComponent<NpcFrameAnimator>(); var entry = TownCharacterArt.Find(npc.Id);
+                Check(npc.Id + " actual gait component/config", animator != null && animator.HasSheetForCheck && entry != null && entry.cycleDistance > 0);
+                watches.Add(new Watch { id = npc.Id, patrol = patrol, rect = rect, previous = new Vector2(patrol.X, patrol.Y), radius = npc.Radius, blocks = npc.Blocks,
+                    animator = animator, gaitDistance = animator == null ? 0 : animator.DistanceForCheck, cycleDistance = entry == null ? 0 : entry.cycleDistance });
+                if (entry != null) foreach (var resource in new[] { entry.stand, entry.walk }) {
+                    var texture = TownCharacterArt.Texture(resource); string path = texture == null ? "" : AssetDatabase.GetAssetPath(texture);
+                    Check(npc.Id + " gait source " + resource, !string.IsNullOrEmpty(path));
+                    if (!string.IsNullOrEmpty(path)) Bind(new[] { path, path + ".meta" });
+                }
                 var art = string.IsNullOrEmpty(npc.Art) ? null : Resources.Load<Texture2D>(npc.Art); string artPath = art == null ? "" : AssetDatabase.GetAssetPath(art);
                 Check(npc.Id + " actual portrait input", !string.IsNullOrEmpty(artPath)); if (!string.IsNullOrEmpty(artPath)) Bind(new[] { artPath, artPath + ".meta" });
             }
@@ -149,8 +161,12 @@ namespace TwelveJade.Editor
             deadline = Time.realtimeSinceStartup + 10;
             while (clickedNpc && !Talking(target) && Time.realtimeSinceStartup < deadline) yield return null;
             bool talk = Talking(target);
+            var arrivalFoot = c.TownNpcFootPosition(target);
+            Check("dialogue begins within live NPC interaction distance", talk && arrivalFoot.HasValue && Vector2.Distance(c.PlayerWorldPosition, arrivalFoot.Value) <= QuestRuntime.InteractionDistance,
+                "distance=" + (arrivalFoot.HasValue ? Vector2.Distance(c.PlayerWorldPosition, arrivalFoot.Value).ToString("F3") : "missing"));
             if (clickedNpc) Check("real arrival opens selected DialogueUI and acquires input lease", talk && arrived == target && c.DialogueInputLockedForShot); else Pending("real arrival/DialogueUI", "No dispatched NPC click; inspect the UI entry/raycast row.");
             if (talk) {
+                Check("dialogue arrival clears travel condition", !c.TravelBusy && Field(c, "travelArrivalCondition") == null);
                 stage = "talk"; yield return Wait(1); yield return Capture("03-dialogue-paused");
                 var close = Panel.GetComponentsInChildren<Button>(true).FirstOrDefault(b => b.name == "Dialogue close");
                 bool? closed = Click(close, "actual farewell click"); yield return null;
@@ -193,6 +209,20 @@ namespace TwelveJade.Editor
             if (sorted && Mathf.Abs(expected - playerY) > .1f) { sorted = side == Math.Sign(rect.GetSiblingIndex() - c.TravelerRectForShot.GetSiblingIndex()); w.sides.Add(side); }
             foreach (var other in watches) { var otherKey = c.TownNpcBaseYForShot(other.id); var otherRect = c.TownNpcRectForShot(other.id); if (rect != null && otherRect != null && otherKey.HasValue && Mathf.Abs(expected - otherKey.Value) > .1f) sorted &= Math.Sign(expected - otherKey.Value) == Math.Sign(rect.GetSiblingIndex() - otherRect.GetSiblingIndex()); }
             bool approach = Field(c, "hasTarget") is bool active && active && (string)Field(c, "travelContextId") == w.id, talk = Talking(w.id);
+            if (w.animator != null && w.cycleDistance > 0) {
+                float expectedDistance = (w.gaitDistance + (p - w.previous).magnitude) % w.cycleDistance;
+                float actualDistance = w.animator.DistanceForCheck;
+                float phaseError = Mathf.Abs(expectedDistance - actualDistance);
+                phaseError = Mathf.Min(phaseError, w.cycleDistance - phaseError);
+                w.gait &= phaseError < .002f;
+                int frame = w.animator.FrameForCheck;
+                // Observe after all regular LateUpdate calls, so this is the frame actually displayed.
+                // The older host statistics ignore sub-.01 steps. Gait still consumes a real
+                // short final step, so only an exactly stationary foot should display idle here.
+                if ((p - w.previous).sqrMagnitude > 0f) { w.gaitMovingSamples++; w.gaitFrames.Add(frame); w.gait &= frame >= 0 && frame < w.animator.FrameCountForCheck; }
+                else { w.gaitIdleSamples++; w.gait &= frame == -1; }
+                w.gaitDistance = actualDistance;
+            } else w.gait = false;
             if (approach && Time.frameCount > clickFrame) { w.approachFrames++; if ((c.PlayerWorldPosition - lastPlayer).sqrMagnitude > .0001f) w.approachPlayerMoved++; }
             if (talk) { w.talkFrames++; w.talkPaused &= c.DialogueInputLockedForShot && w.patrol.State == NpcLocalPatrol.PatrolState.Paused && !moved; }
             // A click dispatched after Update cannot retroactively pause movement earlier in that frame; retain the raw row.
@@ -208,7 +238,7 @@ namespace TwelveJade.Editor
             var home = new Vector2(w.patrol.HomeX, w.patrol.HomeY);
             if (w.blocks && Vector2.Distance(home, p) > w.radius + .1f && map.CanStand(home.x, home.y, w.id)) { w.oldAnchorChecks++; w.oldAnchorFree &= map.CanStand(home.x, home.y); }
             w.samples++; w.geometry &= sync && inside; w.collision &= traverse && self && (!w.blocks || blocked) && others; w.depth &= sorted;
-            frames.WriteLine(JsonUtility.ToJson(new Frame { id = w.id, stage = stage, state = w.patrol.State.ToString(), commandFrame = clickFrame, dialogueNode = Panel == null ? "" : Panel.CurrentNodeId, inputLocked = c.DialogueInputLockedForShot, markerVisible = markerVisible, markerLabel = label == null ? "" : label.text, markerState = overhead == null ? "unregistered" : overhead.State.ToString(), markerFloating = overhead != null && overhead.FloatingForShot, frame = Time.frameCount, time = Time.realtimeSinceStartup, dt = Time.unscaledDeltaTime, position = p, previous = w.previous, home = home, homeRadius = w.patrol.HomeRadius, foot = foot ?? Vector2.zero, centre = new Vector2(cx, cy), rectFoot = actual, baseY = key ?? 0f, expectedY = expected, player = c.PlayerWorldPosition, sibling = rect == null ? -1 : rect.GetSiblingIndex(), playerSibling = c.TravelerRectForShot == null ? -1 : c.TravelerRectForShot.GetSiblingIndex(), reduced = Reduced, traversable = traverse, inside = inside, sync = sync, selfExcluded = self, playerBlocked = blocked, othersRetained = others, sorted = sorted, approach = approach, talk = talk, markerPresent = marker != null, markerParent = markerParent, markerLocal = marker == null ? Vector3.zero : marker.localPosition }));
+            frames.WriteLine(JsonUtility.ToJson(new Frame { id = w.id, stage = stage, state = w.patrol.State.ToString(), commandFrame = clickFrame, gaitFrame = w.animator == null ? -2 : w.animator.FrameForCheck, gaitDistance = w.gaitDistance, dialogueNode = Panel == null ? "" : Panel.CurrentNodeId, inputLocked = c.DialogueInputLockedForShot, markerVisible = markerVisible, markerLabel = label == null ? "" : label.text, markerState = overhead == null ? "unregistered" : overhead.State.ToString(), markerFloating = overhead != null && overhead.FloatingForShot, frame = Time.frameCount, time = Time.realtimeSinceStartup, dt = Time.unscaledDeltaTime, position = p, previous = w.previous, home = home, homeRadius = w.patrol.HomeRadius, foot = foot ?? Vector2.zero, centre = new Vector2(cx, cy), rectFoot = actual, baseY = key ?? 0f, expectedY = expected, player = c.PlayerWorldPosition, sibling = rect == null ? -1 : rect.GetSiblingIndex(), playerSibling = c.TravelerRectForShot == null ? -1 : c.TravelerRectForShot.GetSiblingIndex(), reduced = Reduced, traversable = traverse, inside = inside, sync = sync, selfExcluded = self, playerBlocked = blocked, othersRetained = others, sorted = sorted, approach = approach, talk = talk, markerPresent = marker != null, markerParent = markerParent, markerLocal = marker == null ? Vector3.zero : marker.localPosition }));
             w.previous = p;
         }
         static void Summarize()
@@ -219,6 +249,8 @@ namespace TwelveJade.Editor
                 Check(w.id + " actual foot/Rect/BaseY/home", w.samples > 1 && w.geometry, detail);
                 Check(w.id + " self exclusion/other blockers/actual segments", w.samples > 1 && w.collision, detail);
                 Check(w.id + " actual sibling ordering", w.samples > 1 && w.depth);
+                Check(w.id + " gait follows accepted world movement and rests when stationary", w.gait && w.gaitMovingSamples > 1 && w.gaitIdleSamples > 1 && w.gaitFrames.Count == w.animator.FrameCountForCheck,
+                    "moving=" + w.gaitMovingSamples + " idle=" + w.gaitIdleSamples + " frames=" + w.gaitFrames.Count);
                 if (w.sides.Count < 2) Pending(w.id + " player depth reversal", "Only sampled relation covered; no forced NPC move.");
                 if (reducedWindow) Check(w.id + " reduceMotion preserves movement", w.reducedMoved > 1, detail);
                 if (w.oldAnchorChecks > 0) Check(w.id + " old home circle released", w.oldAnchorFree, "eligible samples=" + w.oldAnchorChecks); else Pending(w.id + " old home circle release", "No sampled position far enough with other obstacles absent.");
@@ -230,7 +262,7 @@ namespace TwelveJade.Editor
             else Pending("appointment pause", "Actual click or target observation missing.");
             if (chosen.talkFrames > 0) Check("dialogue pause throughout real DialogueUI", chosen.talkFrames > 1 && chosen.talkPaused, "talkFrames=" + chosen.talkFrames);
             else Pending("dialogue pause", "No actual selected DialogueUI samples.");
-            Pending("NPC gait", "Host moves existing static portraits; no gait animation acceptance.");
+            Pending("NPC gait visual quality", "Real host/frame/collision checks cover timing; subjective animation quality still needs desktop play review.");
         }
         static bool? Click(Button button, string name)
         {
@@ -278,5 +310,6 @@ namespace TwelveJade.Editor
             EditorApplication.Exit(status == "FAIL" ? 1 : 0);
         }
     }
+    [DefaultExecutionOrder(10000)]
     public sealed class NpcLocalPatrolShotPump : MonoBehaviour { void LateUpdate() { NpcLocalPatrolShot.Sample(); } }
 }

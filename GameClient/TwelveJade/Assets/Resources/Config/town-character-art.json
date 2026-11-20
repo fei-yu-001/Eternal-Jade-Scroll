@@ -5,77 +5,88 @@
       "stand": "Art/Characters/Nov7/Stand/huolang",
       "walk": "Art/Characters/Nov7/Walk/huolang",
       "frames": 4,
-      "nativeFacing": "right"
+      "nativeFacing": "right",
+      "cycleDistance": 26
     },
     {
       "id": "npc-a-he",
       "stand": "Art/Characters/Nov7/Stand/npc-a-he",
       "walk": "Art/Characters/Nov7/Walk/npc-a-he",
       "frames": 4,
-      "nativeFacing": "left"
+      "nativeFacing": "left",
+      "cycleDistance": 26
     },
     {
       "id": "npc-a-xing",
       "stand": "Art/Characters/Nov7/Stand/npc-a-xing",
       "walk": "Art/Characters/Nov7/Walk/npc-a-xing",
       "frames": 4,
-      "nativeFacing": "right"
+      "nativeFacing": "right",
+      "cycleDistance": 26
     },
     {
       "id": "npc-he-er-niang",
       "stand": "Art/Characters/Nov7/Stand/npc-he-er-niang",
       "walk": "Art/Characters/Nov7/Walk/npc-he-er-niang",
       "frames": 4,
-      "nativeFacing": "right"
+      "nativeFacing": "right",
+      "cycleDistance": 26
     },
     {
       "id": "npc-hu-san",
       "stand": "Art/Characters/Nov7/Stand/npc-hu-san",
       "walk": "Art/Characters/Nov7/Walk/npc-hu-san",
       "frames": 4,
-      "nativeFacing": "right"
+      "nativeFacing": "right",
+      "cycleDistance": 26
     },
     {
       "id": "npc-liu-sao",
       "stand": "Art/Characters/Nov7/Stand/npc-liu-sao",
       "walk": "Art/Characters/Nov7/Walk/npc-liu-sao",
       "frames": 4,
-      "nativeFacing": "right"
+      "nativeFacing": "right",
+      "cycleDistance": 26
     },
     {
       "id": "npc-shenhuai-an",
       "stand": "Art/Characters/Nov7/Stand/npc-shenhuai-an",
       "walk": "Art/Characters/Nov7/Walk/npc-shenhuai-an",
       "frames": 4,
-      "nativeFacing": "right"
+      "nativeFacing": "right",
+      "cycleDistance": 26
     },
     {
       "id": "npc-shitou",
       "stand": "Art/Characters/Nov7/Stand/npc-shitou",
       "walk": "Art/Characters/Nov7/Walk/npc-shitou",
       "frames": 4,
-      "nativeFacing": "right"
+      "nativeFacing": "right",
+      "cycleDistance": 26
     },
     {
       "id": "npc-xiao-man",
       "stand": "Art/Characters/Nov7/Stand/npc-xiao-man",
       "walk": "Art/Characters/Nov7/Walk/npc-xiao-man",
       "frames": 4,
-      "nativeFacing": "right"
+      "nativeFacing": "right",
+      "cycleDistance": 26
     },
     {
       "id": "npc-yao-lao",
       "stand": "Art/Characters/Nov7/Stand/npc-yao-lao",
       "walk": "Art/Characters/Nov7/Walk/npc-yao-lao",
       "frames": 4,
-      "nativeFacing": "right"
+      "nativeFacing": "right",
+      "cycleDistance": 26
     },
     {
       "id": "npc-zhao-da",
       "stand": "Art/Characters/Nov7/Stand/npc-zhao-da",
       "walk": "Art/Characters/Nov7/Walk/npc-zhao-da",
       "frames": 4,
-      "nativeFacing": "right"
+      "nativeFacing": "right",
+      "cycleDistance": 26
     },
     {
       "id": "hero-male-front",

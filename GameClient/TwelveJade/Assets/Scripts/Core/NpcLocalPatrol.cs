@@ -19,7 +19,7 @@ namespace TwelveJade.Core
         readonly List<(float x, float y)> route = new List<(float x, float y)>();
         readonly float speed, dwellSeconds;
         int waypoint;
-        float waitLeft;
+        float waitLeft, currentSpeed;
 
         public float HomeX { get; }
         public float HomeY { get; }
@@ -27,6 +27,7 @@ namespace TwelveJade.Core
         public float X { get; private set; }
         public float Y { get; private set; }
         public PatrolState State { get; private set; }
+        public float CurrentSpeed => currentSpeed;
 
         public NpcLocalPatrol(float homeX, float homeY, float homeRadius, float speed,
             float dwellSeconds, int seed,
@@ -50,14 +51,14 @@ namespace TwelveJade.Core
         public void SetDialogue(bool active)
         {
             if (State == PatrolState.Stopped) return;
-            if (active) { route.Clear(); State = PatrolState.Paused; }
+            if (active) { route.Clear(); currentSpeed = 0; State = PatrolState.Paused; }
             else if (State == PatrolState.Paused) Wait(PatrolState.Waiting);
         }
 
         /// <summary>Permanent for this visit. Re-entering Town creates a new instance from the schedule.</summary>
         public void Stop()
         {
-            route.Clear(); waitLeft = 0; State = PatrolState.Stopped;
+            route.Clear(); waitLeft = 0; currentSpeed = 0; State = PatrolState.Stopped;
         }
 
         /// <returns>Actual distance moved this call, for presentation to consume together with X/Y.</returns>
@@ -76,10 +77,27 @@ namespace TwelveJade.Core
             }
             var target = route[waypoint];
             float distance = Distance(X, Y, target.x, target.y);
-            float step = Math.Min(distance, speed * dt);
+            float acceleration = speed / .12f, deceleration = speed / .18f;
+            float remaining = distance;
+            for (int i = waypoint + 1; i < route.Count; i++)
+                remaining += Distance(route[i - 1].x, route[i - 1].y, route[i].x, route[i].y);
+            float desired = Math.Min(speed, (float)Math.Sqrt(2 * deceleration * remaining));
+            if (waypoint + 1 < route.Count && distance > .0001f)
+            {
+                var next = route[waypoint + 1];
+                float outgoing = Distance(target.x, target.y, next.x, next.y);
+                float dot = outgoing <= .0001f ? 1 :
+                    ((target.x - X) * (next.x - target.x) + (target.y - Y) * (next.y - target.y)) / (distance * outgoing);
+                float cornerSpeed = speed * (.35f + .65f * Math.Max(0, Math.Min(1, dot)));
+                desired = Math.Min(desired, (float)Math.Sqrt(cornerSpeed * cornerSpeed + 2 * deceleration * distance));
+            }
+            float previousSpeed = currentSpeed;
+            currentSpeed = desired > currentSpeed ? Math.Min(desired, currentSpeed + acceleration * dt)
+                : Math.Max(desired, currentSpeed - deceleration * dt);
+            float step = Math.Min(distance, (previousSpeed + currentSpeed) * .5f * dt);
             float nx = step >= distance ? target.x : X + (target.x - X) * (step / distance);
             float ny = step >= distance ? target.y : Y + (target.y - Y) * (step / distance);
-            // Recheck every real segment: a blocker may have appeared after the path was planned.
+            // Recheck the exact displayed segment; a blocker may appear after planning.
             if (!InsideHome(nx, ny) || !canTraverse(X, Y, nx, ny)) { Wait(PatrolState.Blocked); return 0; }
             float moved = Distance(X, Y, nx, ny); X = nx; Y = ny;
             if (step >= distance && ++waypoint >= route.Count) Wait(PatrolState.Waiting);
@@ -115,7 +133,7 @@ namespace TwelveJade.Core
 
         void Wait(PatrolState state)
         {
-            route.Clear(); waypoint = 0; waitLeft = dwellSeconds; State = state;
+            route.Clear(); waypoint = 0; currentSpeed = 0; waitLeft = dwellSeconds; State = state;
         }
         bool InsideHome(float x, float y)
         {

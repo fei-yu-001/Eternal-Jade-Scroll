@@ -106,6 +106,32 @@ static class Program
         Check("blocked home stays still without relocating",trapped.State==State.Blocked && trapped.X==240 && trapped.Y==320);
         var noRoute=Patrol(open,finder:(sx,sy,tx,ty)=>null);for(int i=0;i<20;i++)noRoute.Advance(.05f,true);
         Check("no route means blocked dwell, never arrival",noRoute.State==State.Blocked && noRoute.X==240 && noRoute.Y==320);
+        // Motion quality regressions: approach full speed over several frames and brake before arrival.
+        var smooth = Patrol(open, seed: 17);
+        Check("smooth-start fixture plans", StartWalking(smooth));
+        float firstMove = smooth.Advance(1f / 60f, true);
+        float firstSpeed = smooth.CurrentSpeed;
+        Check("first movement eases in instead of jumping to cruise speed",
+            firstMove > 0 && firstMove < 40f / 60f * .3f && firstSpeed > 0 && firstSpeed < 40f);
+        bool accelerated = true, reachedCruise = false, braking = false;
+        float previousSpeed = firstSpeed;
+        for (int i = 0; i < 2000 && smooth.State == State.Walking; i++)
+        {
+            smooth.Advance(1f / 60f, true);
+            float current = smooth.CurrentSpeed;
+            accelerated &= current <= 40.0001f && current - previousSpeed <= (40f / .12f) / 60f + .001f;
+            reachedCruise |= current >= 39.9f;
+            braking |= smooth.State == State.Walking && previousSpeed > current + .001f && current < 30f;
+            previousSpeed = current;
+        }
+        Check("speed stays bounded and accelerates gradually", accelerated && reachedCruise);
+        Check("NPC brakes before the last footstep instead of snapping from full speed", braking && smooth.State == State.Waiting && smooth.CurrentSpeed == 0);
+        var pausedSpeed = Patrol(open);
+        StartWalking(pausedSpeed); pausedSpeed.Advance(.05f, true); pausedSpeed.SetDialogue(true);
+        Check("dialogue clears velocity immediately", pausedSpeed.CurrentSpeed == 0 && pausedSpeed.Advance(.05f, true) == 0);
+        pausedSpeed.SetDialogue(false); StartWalking(pausedSpeed);
+        Check("resuming after dialogue starts from rest", pausedSpeed.CurrentSpeed == 0 && pausedSpeed.Advance(1f / 60f, true) < 40f / 60f * .3f);
+
         var invalid=Patrol(open);
         Throws("non-finite delta rejected",()=>invalid.Advance(float.NaN,true));
         Throws("negative delta rejected",()=>invalid.Advance(-1,true));

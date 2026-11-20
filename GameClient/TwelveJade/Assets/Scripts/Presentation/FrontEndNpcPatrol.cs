@@ -20,6 +20,7 @@ namespace TwelveJade.Presentation
 
         readonly Dictionary<string, NpcLocalPatrol> npcPatrols = new();
         readonly Dictionary<string, float> npcPatrolHeight = new();
+        readonly Dictionary<string, NpcFrameAnimator> npcPatrolAnimators = new();
         readonly Dictionary<string, Placeable> npcPatrolPlaceables = new();
         readonly Dictionary<string, RectTransform> npcHeadMarkers = new();
         readonly HashSet<string> npcDialogueLeases = new();
@@ -76,6 +77,8 @@ namespace TwelveJade.Presentation
             else npcDialogueLeases.Remove(npcId);
             var found = npcPatrols.TryGetValue(npcId, out var patrol);
             patrol?.SetDialogue(active);
+            if (active && npcPatrolAnimators.TryGetValue(npcId, out var animator) && animator != null)
+                animator.SetMovement(Vector2.zero);
             return found;
         }
 
@@ -109,6 +112,10 @@ namespace TwelveJade.Presentation
                     (sx, sy, tx, ty) => TownNavigator.FindPath(town, sx, sy, tx, ty, id),
                     (x0, y0, x1, y1) => NpcPatrolCanTraverse(id, x0, y0, x1, y1));
             }
+            npcPatrolAnimators.Clear();
+            foreach (var pair in npcRects)
+                if (pair.Value != null && pair.Value.TryGetComponent<NpcFrameAnimator>(out var animator))
+                    npcPatrolAnimators[pair.Key] = animator;
             npcPatrolsLive = npcPatrols.Count > 0;
         }
 
@@ -131,6 +138,9 @@ namespace TwelveJade.Presentation
         {
             foreach (var patrol in npcPatrols.Values) patrol.Stop();
             npcPatrols.Clear();
+            foreach (var animator in npcPatrolAnimators.Values)
+                if (animator != null) animator.SetMovement(Vector2.zero);
+            npcPatrolAnimators.Clear();
             npcPatrolHeight.Clear();
             npcPatrolPlaceables.Clear();
             npcHeadMarkers.Clear();
@@ -148,6 +158,9 @@ namespace TwelveJade.Presentation
             {
                 if (!npcPatrols.TryGetValue(npc.Id, out var patrol)) continue;
                 var id = npc.Id;
+                npcPatrolAnimators.TryGetValue(id, out var animator);
+                if (animator != null) animator.SetMovement(Vector2.zero);
+                var previous = new Vector2(patrol.X, patrol.Y);
                 var paused = npcDialogueLeases.Contains(id) ||
                     (modal != null && talkNpcId == id) ||
                     (hasTarget && travelContextId == id);
@@ -164,6 +177,7 @@ namespace TwelveJade.Presentation
                     continue;
                 }
                 SyncNpcVisual(id, patrol.X, patrol.Y);
+                if (animator != null) animator.SetMovement(new Vector2(patrol.X, patrol.Y) - previous);
             }
         }
 
