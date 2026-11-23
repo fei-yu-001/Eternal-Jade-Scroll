@@ -174,7 +174,7 @@ namespace TwelveJade.Presentation
         void BuildEmptyMemo(Transform paper, float x, float width, TMP_Text title)
         {
             MemoLabel(paper, "Dossier identity", presets[draftOrigin].displayName + " · " + CharacterPreset.GenderName(draftGender) +
-                " · 择来路，落笔入世。", x, 108, width, 38, 21);
+                " · 择经历，落笔入世。", x, 108, width, 38, 21);
             nameInput = ui.Input(paper, draftName, x, 144, width);
             nameInput.name = "Draft name";
             MenuMemoArt.StyleNameField(nameInput, () => settings.reduceMotion);
@@ -573,7 +573,7 @@ namespace TwelveJade.Presentation
         {
             currentDraftSlot = slot;
             BeginPage("character-creation");
-            PageHeading("众 生  /  初 见", "你从人间来", "每一个普通人，都有自己的来路。择一身行装，赴一程山河。");
+            PageHeading("众 生  /  初 见", "你从人间来", "同出青石农家，父瘫母弱。择一段谋生经历，赴一程山河。");
             var preset = presets[draftOrigin];
             // 出身立绘卡片：三种来路一眼看全，选中卡描金、未选中压暗；点击卡片即切换。
             // 立绘跟随当前性别/面容重取，选性别也能预览到每一张卡的样子。
@@ -595,21 +595,18 @@ namespace TwelveJade.Presentation
                     selected ? UiKit.Ink : UiKit.Paper, TextAlignmentOptions.Center, true);
                 card.gameObject.AddComponent<Button>().onClick.AddListener(() => SetCreationOrigin(index));
             }
-            ui.Label(content, "外观与命格只是出身底色，不预设数值与结局。", 122, 946, 745, 30, 17, UiKit.Ink);
+            ui.Label(content, "同一农家，不同谋生经历；命格不改变父母与家底。", 122, 946, 745, 30, 17, UiKit.Ink);
 
             ui.Panel(content, "Character details", 949, 336, 873, 594, new Color(.045f, .115f, .10f, .96f));
-            ui.Label(content, "平 民 出 身", 998, 366, 715, 36, 19, UiKit.Gold);
+            ui.Label(content, "谋 生 经 历", 998, 366, 715, 36, 19, UiKit.Gold);
             ui.Label(content, preset.displayName, 991, 408, 724, 64, 42, UiKit.Paper);
             ui.Label(content, preset.description, 998, 482, 748, 66, 23, UiKit.Paper);
 
             ui.Label(content, "性别", 998, 566, 90, 54, 24, UiKit.Muted, TextAlignmentOptions.MidlineLeft);
             ui.Button(content, "男", 1092, 566, 126, 54, () => SetCreationGender("male"), draftGender == "male");
             ui.Button(content, "女", 1230, 566, 126, 54, () => SetCreationGender("female"), draftGender == "female");
-            ui.Label(content, "面容", 1396, 566, 90, 54, 24, UiKit.Muted, TextAlignmentOptions.MidlineLeft);
-            ui.Button(content, CharacterPreset.FaceStyleName(draftGender, 0), 1490, 566, 150, 54,
-                () => SetCreationFaceStyle(0), draftFaceStyle == 0);
-            ui.Button(content, CharacterPreset.FaceStyleName(draftGender, 1), 1652, 566, 150, 54,
-                () => SetCreationFaceStyle(1), draftFaceStyle == 1);
+            ui.Label(content, "行装", 1396, 566, 90, 54, 24, UiKit.Muted, TextAlignmentOptions.MidlineLeft);
+            ui.Label(content, "粗布旧衣 · 布带束发", 1490, 566, 312, 54, 23, UiKit.Paper, TextAlignmentOptions.MidlineLeft);
 
             ui.Label(content, "命格", 998, 646, 90, 54, 22, UiKit.Gold, TextAlignmentOptions.MidlineLeft);
             ui.Label(content, TraitNames(draftTraits), 1092, 646, 420, 54, 24, UiKit.Paper, TextAlignmentOptions.MidlineLeft);

@@ -18,7 +18,7 @@ namespace TwelveJade.Presentation
         {
             upperComposition=favorUpperPortrait;
             MemoVisualAssets.KeepAlive(gameObject);
-            ResourcePath = string.IsNullOrEmpty(presetId) ? "" : MemoVisualAssets.Prefix + "Posters/" + presetId + "-" + gender;
+            ResourcePath = string.IsNullOrEmpty(presetId) ? "" : "Art/Characters/Qingshi/qingshi-" + (gender == "female" ? "female" : "male") + "-portrait";
             if (artwork == null)
             {
                 artwork = MemoVisualAssets.Rect(transform, "Poster illustration").gameObject.AddComponent<RawImage>();
@@ -27,7 +27,7 @@ namespace TwelveJade.Presentation
                 frame = MemoVisualAssets.Art(transform, "Poster gold nine-slice", "paper-panel", true);
                 frame.pixelsPerUnitMultiplier = 4;
             }
-            artwork.texture = ResourcePath.Length == 0 ? null : MemoVisualAssets.GetTexture("Posters/" + presetId + "-" + gender);
+            artwork.texture = ResourcePath.Length == 0 ? null : Resources.Load<Texture2D>(ResourcePath);
             artwork.enabled = artwork.texture != null;
             FrameArtwork();
         }

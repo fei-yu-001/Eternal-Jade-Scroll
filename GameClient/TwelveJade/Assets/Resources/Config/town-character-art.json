@@ -90,44 +90,44 @@
     },
     {
       "id": "hero-male-front",
-      "stand": "Art/Characters/Nov7/Stand/hero-male-front",
-      "walk": "Art/Characters/Nov7/Walk/hero-male-front",
-      "frames": 8,
+      "stand": "Art/Characters/Qingshi/qingshi-male-front",
+      "walk": "Art/Characters/Qingshi/qingshi-male-front-walk",
+      "frames": 4,
       "cycleDistance": 132
     },
     {
       "id": "hero-male-side",
-      "stand": "Art/Characters/Nov7/Stand/hero-male-side",
-      "walk": "Art/Characters/Nov7/Walk/hero-male-side",
-      "frames": 8,
+      "stand": "Art/Characters/Qingshi/qingshi-male-side",
+      "walk": "Art/Characters/Qingshi/qingshi-male-side-walk",
+      "frames": 4,
       "cycleDistance": 290
     },
     {
       "id": "hero-male-back",
-      "stand": "Art/Characters/Nov7/Stand/hero-male-back",
-      "walk": "Art/Characters/Nov7/Walk/hero-male-back",
-      "frames": 8,
+      "stand": "Art/Characters/Qingshi/qingshi-male-back",
+      "walk": "Art/Characters/Qingshi/qingshi-male-back-walk",
+      "frames": 4,
       "cycleDistance": 132
     },
     {
       "id": "hero-female-front",
-      "stand": "Art/Characters/Nov7/Stand/hero-female-front",
-      "walk": "Art/Characters/Nov7/Walk/hero-female-front",
-      "frames": 8,
+      "stand": "Art/Characters/Qingshi/qingshi-female-front",
+      "walk": "Art/Characters/Qingshi/qingshi-female-front-walk",
+      "frames": 4,
       "cycleDistance": 132
     },
     {
       "id": "hero-female-side",
-      "stand": "Art/Characters/Nov7/Stand/hero-female-side",
-      "walk": "Art/Characters/Nov7/Walk/hero-female-side",
-      "frames": 8,
+      "stand": "Art/Characters/Qingshi/qingshi-female-side",
+      "walk": "Art/Characters/Qingshi/qingshi-female-side-walk",
+      "frames": 4,
       "cycleDistance": 290
     },
     {
       "id": "hero-female-back",
-      "stand": "Art/Characters/Nov7/Stand/hero-female-back",
-      "walk": "Art/Characters/Nov7/Walk/hero-female-back",
-      "frames": 8,
+      "stand": "Art/Characters/Qingshi/qingshi-female-back",
+      "walk": "Art/Characters/Qingshi/qingshi-female-back-walk",
+      "frames": 4,
       "cycleDistance": 132
     }
   ]

@@ -154,7 +154,7 @@ namespace TwelveJade.Editor
             var stand = TownCharacterArt.Hero(gender, view, false);
             var walk = TownCharacterArt.Hero(gender, view, true);
             var entry = TownCharacterArt.Find("hero-" + gender + "-" + view);
-            var strikes = Resources.Load<Texture2D>("Art/UI/Nov10/combat-hero-" + gender + "-strikes");
+            var strikes = TownCharacterArt.HeroStrikes(gender);
             Check(stand != null && walk != null && entry != null && strikes != null, "approved resources exist");
             var actor = PuppetActor.Create(parent, stand, at, new Vector2(Height * stand.width / stand.height, Height));
             actor.SetFrameSheet(walk, entry.frames, entry.cycleDistance); actor.SetGaitMode(PuppetActor.GaitMode.Frames);
@@ -229,7 +229,7 @@ namespace TwelveJade.Editor
             Near(turnedAttack.x, turned.x, "changed view sole"); Near(turnedAttack.y, turned.y, "changed view height");
             pose.Sample(Foot, facing, CombatPhase.Idle, CombatActionType.Wait, 0, low);
             actor.SetView(originalView);
-            var originalEntry = TownCharacterArt.Find(originalView.name);
+            var originalEntry = TownCharacterArt.Find("hero-" + gender + "-" + (originalView.name.EndsWith("-front") ? "front" : originalView.name.EndsWith("-back") ? "back" : "side"));
             actor.SetFrameSheet(originalWalk, originalEntry.frames, originalEntry.cycleDistance);
             Rest(actor); frame = Field<RawImage>(actor, "frameImage");
             CheckRest(actor, pose, tier, baseline);

@@ -1,0 +1,38 @@
+"""Generate one Qingshi V2.5 asset using the user's installed image-studio skill.
+Credentials stay in the external skill. Run one asset at a time; inspect small previews.
+"""
+import argparse, contextlib, importlib.util, json, hashlib
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+SKILL = Path(r"C:/Users/DDyu/.agents/skills/image-studio/scripts/generate.py")
+STYLE = "Hand-painted Chinese historical rural drama, fine ink drawing, soft muted watercolor, worn material textures, grounded human proportions, restrained cinematic light. Late Yuan / early Ming inspired fictional village, no fantasy luxury, no glowing magic, no modern objects, no text, no captions, no watermark. "
+SCENES = {
+ "home": "Interior of a poor rural mud-brick cottage before dawn. A tiny shallow ceramic oil dish with a cotton wick, no glass chimney and no kerosene lantern, at a rough wooden table, a caring tired middle-aged mother in patched brown hemp jacket sewing an indigo padded jacket, a disabled father reclining on a straw bed carving a small elm wood knife handle, steamed sweet potatoes and a single boiled egg on table. Empty low stool in foreground for the protagonist, no protagonist face shown. Tender warmth, repaired walls, sparse belongings, cool dawn through paper window. Wide 16:9 narrative composition with clear expressive faces, lower fifth quiet for UI subtitles.",
+ "livelihood": "A poor village blacksmith courtyard at sunset. A sturdy teenage boy in patched clay-brown short tunic (Shitou) resting with dirty hands and a few copper coins on a stone bridge foreground, forge and medicinal herb baskets behind. In mid distance a modest traveling young physician and a young woman with a reed basket quietly share an umbrella. Everyday labor, friendship, no hero protagonist shown. Wide 16:9 composition, lower fifth quiet.",
+ "tiger": "Ordinary large striped tiger facing a village hunting party in a rugged autumn forest, a pit camouflaged with branches in foreground, villagers carrying long wooden spears and unlit torches at a safe distance, an old hunter pointing to a ridge. Tense teamwork, tiger a real animal without horns or supernatural traits, no injuries or blood. Wide 16:9 composition, clear silhouette, lower fifth quiet.",
+ "undercurrent": "Village well at dusk, dark foam on still water visible in a wooden bucket, abandoned laundry, locked granary, shuttered cottage and a distant anonymous figure half-hidden in alley. Restrained atmosphere of suspicion and endangered everyday life. No monsters or magical effects. Wide 16:9 composition, lower fifth quiet.",
+ "tomb": "Two young lovers, a modest physician in grey hemp robes and a young woman in faded clay-brown dress, embracing tenderly before an ancient weathered mountain tomb stone door. Their eyes closed and hands clasped, a broken hairpin at their feet, a narrow warm light in the stone seam. Tragedy conveyed with stillness and a falling red petal, no graphic wounds, no weapons penetrating bodies. Wide 16:9 composition, lower fifth quiet.",
+ "calamity": "Shitou, an eighteen-year-old ADULT Chinese male rural laborer, tall lean adult proportions, strong adult shoulders, angular mature youthful face, black hair tied in a messy plain topknot, wearing the same patched clay-brown short tunic and dark trousers as the blacksmith courtyard scene, kneeling in rain in a narrow village lane at night, not a child, not a little boy; one tear on his cheek, fingers reaching toward a nearby warmly lit cottage window. In an inset-like foreground a small battered black wooden box falls into mud; shadow behind him is unnaturally menacing but no visible monster. Small distant fire behind rooftops, restrained tragic mood, no dead bodies or graphic violence. Wide 16:9 composition, lower fifth quiet.",
+ "departure": "Grey dawn after a village fire. Empty ruined family cottage, broken wooden table, the mother's faded INDIGO BLUE patched padded jacket (matching the indigo coat she sewed at dawn) and father's SMALL unfinished elm wood knife handle, only a handspan long (18 centimeters), among ashes; no long staff or stick, a small battered black wooden box wrapped in coarse cloth resting on the threshold. A dirt road leads away between barren fields, no protagonist face shown. Quiet grief rather than spectacle, desaturated earth tones. Wide 16:9 composition, lower fifth quiet."
+}
+def prompt(asset):
+ if asset.endswith('-atlas'):
+  gender=asset.split('-')[0]
+  person=("18-year-old Chinese male rural laborer, lean youthful angular face, black hair in a simple short tied bun with plain cloth strip, faded warm grey-brown short hemp jacket to upper thigh, narrow sleeves rolled to forearms, two small hand-sewn patches at elbow and left knee, dark charcoal loose trousers, ragged cloth belt, worn dark cloth shoes" if gender=='male' else "18-year-old Chinese female rural laborer, young oval face with natural skin, black hair in a plain low tied bun with cloth strip, faded grey-indigo short hemp jacket to upper thigh, narrow sleeves rolled to forearms, two small hand-sewn patches at elbow and left knee, dark charcoal loose trousers, plain cloth belt, worn dark cloth shoes")
+  return STYLE+"Production sprite atlas, exact regular FOUR columns by FOUR rows of sixteen equal square cells on pure solid white background. No drawn grid, no border, no floor shadows. In all cells SAME character, same face and outfit: "+person+". No jewelry, no silk, no embroidery, no long flowing robe, no cape, no skirt, no glossy cloth. Every full-body figure stays entirely inside its cell with 12 percent empty margins, same scale, feet aligned at 90 percent of cell height. Row 1: four front-facing walking cycle poses in order left-foot-forward, passing neutral feet together, right-foot-forward, passing neutral feet together. Row 2: four right-facing pure side-profile walking cycle poses in the same phase order. Row 3: four back-facing walking cycle poses in the same phase order. Row 4: first three cells are right-facing woodcutter-knife combat poses: prepare with arm back, short grounded slash with arm extended, relaxed recovery. Fourth cell is a front-facing waist-up portrait of the same character, unchanged clothing and face. All poses modest grounded laborer movements. No overlapping cells, no cropped heads or soles."
+ return STYLE+SCENES[asset]
+
+def main():
+ parser=argparse.ArgumentParser();parser.add_argument('asset',choices=['male-atlas','female-atlas',*SCENES]);parser.add_argument('--channel',default='chuanapi');args=parser.parse_args()
+ folder=ROOT/'Tools/logs/qingshi-v25-20261123';folder.mkdir(parents=True,exist_ok=True)
+ output=folder/(args.asset+'.png');text=prompt(args.asset)
+ if output.exists(): raise SystemExit('Existing output kept: '+str(output))
+ spec=importlib.util.spec_from_file_location('user_image_studio',SKILL);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+ with (folder/(args.asset+'-generation.log')).open('w',encoding='utf-8') as log,contextlib.redirect_stdout(log),contextlib.redirect_stderr(log):
+  result=module.generate_image(text,channel_id=args.channel,output=str(output),size='1536x1536' if args.asset.endswith('atlas') else '1536x1024')
+ if not result or not output.exists(): raise SystemExit('Generation failed; local log retained, no credentials printed.')
+ metadata={'asset':args.asset,'skill':'image-studio','channel':args.channel,'prompt':text,'sha256':hashlib.sha256(output.read_bytes()).hexdigest()}
+ (folder/(args.asset+'-source.json')).write_text(json.dumps(metadata,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+ print('GENERATED',args.asset,output.stat().st_size,'bytes')
+if __name__=='__main__':main()

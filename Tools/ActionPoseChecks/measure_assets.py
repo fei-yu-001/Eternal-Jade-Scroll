@@ -35,11 +35,11 @@ def main():
         gender = entry["id"].split("-")[1]
         heroes.append(dict(id=entry["id"], standing=measure(entry["stand"], 1),
                            walking=measure(entry["walk"], entry["frames"]),
-                           strikes=measure("Art/UI/Nov10/combat-hero-" + gender + "-strikes", 3)))
+                           strikes=measure("Art/Characters/Qingshi/qingshi-" + gender + "-strikes", 3)))
     assert len(heroes) == 6, "Expected both genders and front/side/back registrations"
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(dict(alphaThreshold=32, heroes=heroes), indent=2), encoding="utf-8")
-    print("Measured 6 standing views, 48 walking frames, and both 3-frame attack sheets -> " + str(args.output))
+    print("Measured 6 standing views, 24 walking frames, and both 3-frame attack sheets -> " + str(args.output))
 
 
 if __name__ == "__main__":

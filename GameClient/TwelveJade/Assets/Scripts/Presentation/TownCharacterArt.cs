@@ -27,6 +27,9 @@ namespace TwelveJade.Presentation
             if(string.IsNullOrEmpty(path))return null;
             if(!cache.TryGetValue(path,out var texture)){texture=Resources.Load<Texture2D>(path);cache[path]=texture;}return texture;
         }
+        public static Texture2D HeroStrikes(string gender) =>
+            Texture("Art/Characters/Qingshi/qingshi-" + (gender == "female" ? "female" : "male") + "-strikes");
+
         public static Texture2D Hero(string gender,string view,bool walk)
         {
             var entry=Find("hero-"+(gender=="female"?"female":"male")+"-"+view);

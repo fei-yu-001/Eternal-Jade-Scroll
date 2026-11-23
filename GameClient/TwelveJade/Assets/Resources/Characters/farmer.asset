@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: farmer
   m_EditorClassIdentifier:
   id: farmer
-  displayName: 农家子弟
-  description: 从田垄与灶火间长大，识得四时，也识得人情。
-  detail: 布衣沾着草木气息。此造型不赋予能力加成。
+  displayName: 田间帮工
+  description: 从青石镇的田垄与灶火间长大。父亲修河伤了腿，你常替邻家做农活。
+  detail: 粗布旧衣，四时劳作；与其他经历同出一个农家，不额外授予能力。
   accent: {r: 0.259, g: 0.435, b: 0.376, a: 1}
   front: {fileID: 2800000, guid: 152e2941cba7a504587c4741e1c7cc1a, type: 3}
   side: {fileID: 2800000, guid: 7841a4191f4d2f04aac2292e11cfd61d, type: 3}

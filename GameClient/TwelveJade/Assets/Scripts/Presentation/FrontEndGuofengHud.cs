@@ -21,7 +21,7 @@ namespace TwelveJade.Presentation
             var nameMist=HudSoftMist(identity,"Hud name mist",16,0,240,54);
             var wealthMist=HudSoftMist(identity,"Hud wealth mist",16,150,480,48);
             var portrait = ui.PortraitBadge(state,DialoguePortraitCatalog.Hero(activeSave.gender),
-                new UiKit.PortraitFrame { X=.22f,Y=.60f,W=.56f,H=.373333f },20,20,164);
+                new UiKit.PortraitFrame { X=.24f,Y=.46f,W=.52f,H=.52f },20,20,164);
             var maskRoot = (RectTransform)portrait.transform.parent;
             maskRoot.gameObject.AddComponent<Mask>().showMaskGraphic=false;
             GuofengHudArt.Create(ui,state,"White jade portrait frame","hud-avatar",0,0,204,204);
@@ -93,7 +93,11 @@ namespace TwelveJade.Presentation
                 if(tracking==null||!tracking.gameObject.activeInHierarchy||activeSave==null||page!="town")return;
                 bool ready=LoadTables();var data=ready?ChapterBrief():V2ChapterBrief.Build(null,null,null,null);
                 var state=ChapterBriefNotice(activeSave,ready?chapterQuests:null,data);marker.SetNotice(state);
-                string signature=data.Title+data.Goal+data.Progress+data.Next+state;
+                int storyIndex = QingshiStory.CurrentIndex(activeSave);
+                var story = storyIndex >= 0 && storyIndex < QingshiStory.Scenes.Count ? QingshiStory.Scenes[storyIndex] : null;
+                if (story != null && QingshiStory.CanEnter(activeSave, story.Id)) state |= QuestGoldenMarker.Notice.CanAdvance;
+                marker.SetNotice(state);
+                string signature=data.Title+data.Goal+data.Progress+data.Next+state+storyIndex;
                 if(signature==last)return;last=signature;
                 foreach(var entry in entries){entry.gameObject.SetActive(false);Destroy(entry.gameObject);}entries.Clear();
                 Action<string,string,string> add=(kind,title,text)=>
@@ -101,8 +105,10 @@ namespace TwelveJade.Presentation
                     var row=ui.Rect(sheet,"Hud quest entry "+entries.Count,0,0,inner,78);var entry=row.gameObject.AddComponent<QuestEntryView>();
                     entry.Build(ui,row,kind,title,text,()=>settings.reduceMotion,PlayClick,reflow);entries.Add(entry);
                 };
-                add("主",data.Title.Replace("主线 · ",""),data.Goal+"\n"+data.Progress);
-                if(data.NextDefinition!=null)add("主","下一步 · "+data.NextDefinition.Title,data.Next);
+                add("主", story == null ? "青石故里 · 卷一已记" : "青石故里 · " + story.Title,
+                    "已记 " + Math.Max(0, storyIndex) + " / " + QingshiStory.Scenes.Count + " 段\n" +
+                    (story == null ? "旧事仍可展卷回看。" : "详阅行卷，续写故里旧事。"));
+                add("托",data.Title.Replace("主线 · ",""),data.Goal+"\n"+data.Progress);
                 if(ready)
                 {
                     var main=chapterTable.Segments.SelectMany(seg=>seg.Quests).ToArray();

@@ -102,13 +102,13 @@ namespace TwelveJade.Presentation
             chapterPanel.pivot=new Vector2(.5f,.5f);chapterPanel.anchoredPosition=Vector2.zero;
             var mounting=ScrollPageArtComposition.Fairyland(ui,chapterPanel,"Chapter fairyland jade scroll",new Rect(0,0,1840,920),true);mounting.raycastTarget=true;
             AestheticUi.Text(ui,chapterPanel,"Chapter scroll title","青 石 · 天 机 行 卷",new Rect(430,90,970,64),34,TextAlignmentOptions.Center,ImmortalUi.Pale);
-            var tabs=new[]{("眼前事",(UnityAction)ShowSegmentPanel),("镇民",(UnityAction)ShowResidentsPanel),
-                ("线索",(UnityAction)ShowCluePanel),("货郎",(UnityAction)ShowMerchantPanel)};
+            var tabs=new[]{("故里",(UnityAction)ShowQingshiStoryPanel),("托付",(UnityAction)ShowSegmentPanel),
+                ("镇民",(UnityAction)ShowResidentsPanel),("线索",(UnityAction)ShowCluePanel),("货郎",(UnityAction)ShowMerchantPanel)};
             Button first=null;
             for(int i=0;i<tabs.Length;i++)
             {
                 var entry=tabs[i];var button=AestheticUi.Jade(ui,chapterPanel,"Tab "+entry.Item1,entry.Item1,
-                    new Rect(424+i*251,190,230,70),entry.Item2,()=>settings.reduceMotion,PlayClick);if(first==null)first=button;
+                    new Rect(424+i*198,190,184,70),entry.Item2,()=>settings.reduceMotion,PlayClick);if(first==null)first=button;
             }
             chapterTitle=ImmortalUi.Text(ui,chapterPanel,"Chapter current heading","",430,284,960,62,34,ImmortalUi.Ink,false);
             var viewport=ui.Rect(chapterPanel,"Chapter detail viewport",423,362,983,268);
@@ -137,7 +137,7 @@ namespace TwelveJade.Presentation
                     }
                     if (isActiveAndEnabled) StartCoroutine(RestoreChapterFocus(ownerContent, owner, returnFocus));
                 });
-            ShowSegmentPanel();
+            ShowQingshiStoryPanel();
             if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(first.gameObject);
         }
 

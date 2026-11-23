@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: traveller
   m_EditorClassIdentifier:
   id: traveller
-  displayName: 江湖行旅
-  description: 背着一只旧包袱，从古道走到村口。来路未必能说清。
-  detail: 一双远行旧鞋。此造型不预设人物命运。
+  displayName: 山路采薪
+  description: 同是青石镇农家子弟，常与石头沿山路采薪，天黑前总要回家。
+  detail: 一双旧布鞋走熟了近山土路；父母仍在家中，不另设漂泊身世。
   accent: {r: 0.929, g: 0.890, b: 0.796, a: 1}
   front: {fileID: 2800000, guid: 6b2b39fcad95fa946830280d489cee44, type: 3}
   side: {fileID: 2800000, guid: 6c10bc7ed7a865d44ac4dfe0cb6d2939, type: 3}

@@ -99,7 +99,7 @@ namespace TwelveJade.Presentation
             {
                 worldBattlePose = travelerPuppet.gameObject.AddComponent<ActionCombatPose>();
                 worldBattlePose.Configure(travelerPuppet,
-                    ApprovedUiArt.Load("nov10/combat-hero-" + (activeSave.gender == "female" ? "female" : "male") + "-strikes"), TravelerHeight);
+                    TownCharacterArt.HeroStrikes(activeSave.gender), TravelerHeight);
             }
             if (worldBattlePose != null) worldBattlePose.enabled = true;
         }

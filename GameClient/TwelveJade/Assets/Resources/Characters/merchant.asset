@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: merchant
   m_EditorClassIdentifier:
   id: merchant
-  displayName: 市井商家
-  description: 听惯街市的吆喝，习惯在喧闹里寻找自己的路。
-  detail: 随身的布袋装着家常小物。此造型不赋予钱财优势。
+  displayName: 街市跑腿
+  description: 同是青石镇农家子弟，为家里药钱替铺子跑腿，学会察言与算账。
+  detail: 随身布袋装着代送的小物；并非富商出身，不额外授予钱财。
   accent: {r: 0.769, g: 0.643, b: 0.416, a: 1}
   front: {fileID: 2800000, guid: e0172bf4ae63c4443bcc4dc3a6d81d75, type: 3}
   side: {fileID: 2800000, guid: ee83d29a4f7612a479eea669ee9f1570, type: 3}

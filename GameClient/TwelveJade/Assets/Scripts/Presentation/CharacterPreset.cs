@@ -17,11 +17,12 @@ namespace TwelveJade.Presentation
 
         public Texture2D Facing(int direction) => Facing(direction, "male", 0);
 
-        // 面容款式 v1 = 性别 + 发型基础款。旧档与默认外观继续走 legacy 路径，
-        // 变体画稿按 Art/Characters/Stand/{id}-{gender}-{style}-{view} 命名，缺失时回退默认图。
+        // 青石镇统一使用凡俗粗布行装；旧面容字段保留，旧图仅作资源缺失时回退。
         public Texture2D Facing(int direction, string gender, int faceStyle)
         {
             var suffix = direction == 0 ? "front" : direction == 2 ? "back" : "side";
+            var rural = TownCharacterArt.Hero(gender, suffix, false);
+            if (rural != null) return rural;
             if (gender != "male" || faceStyle != 0)
             {
                 var variant = Resources.Load<Texture2D>($"Art/Characters/Stand/{id}-{gender}-{faceStyle}-{suffix}");

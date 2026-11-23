@@ -425,7 +425,7 @@ namespace TwelveJade.Presentation
             combatNativeLeft = entry != null && entry.nativeFacing == "left";
             combatPlayerActor.SetGaitConveyor(0); combatPlayerActor.SetMotion(PuppetActor.Motion.Idle);
             combatPlayerActor.SetMirror(combatNativeLeft); combatObservedPlayerX = combatPlayer.X;
-            var strikes = ApprovedUiArt.Load("nov10/combat-hero-" + (activeSave.gender == "female" ? "female" : "male") + "-strikes");
+            var strikes = TownCharacterArt.HeroStrikes(activeSave.gender);
             combatPose = combatPlayerActor.gameObject.AddComponent<ActionCombatPose>();
             combatPose.Configure(combatPlayerActor, strikes, PlayerBodyHeight);
             combatPlayerFlash = combatPlayerActor.gameObject.AddComponent<ActionCombatHitFlash>();

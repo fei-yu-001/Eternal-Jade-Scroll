@@ -28,7 +28,7 @@ namespace TwelveJade.Editor
     // Dirty scenes are refused. A nonempty untitled scene is kept open after restoration.
     // For unattended exit, start from a clean saved scene (or a truly empty untitled scene).
     [InitializeOnLoad]
-    public static class PrologueTownShot
+    public static partial class PrologueTownShot
     {
         const string Key = "PrologueTownShot.State";
         const string ScenePath = "Assets/Scenes/FrontEnd.unity";
@@ -51,6 +51,12 @@ namespace TwelveJade.Editor
         };
         static readonly string[] BoundPaths = {
             "Assets/Editor/PrologueTownShot.cs", "Assets/Editor/PrologueTownShot.cs.meta", ScenePath,
+            "Assets/Editor/QingshiStoryShot.cs", "Assets/Scripts/Core/QingshiStory.cs",
+            "Assets/Scripts/Presentation/QingshiComicView.cs", "Assets/Scripts/Presentation/FrontEndQingshiStory.cs",
+            "Assets/Scripts/Presentation/CharacterPreset.cs", "Assets/Scripts/Presentation/TownCharacterArt.cs",
+            "Assets/Scripts/Presentation/ActionPoseGeometry.cs", "Assets/Scripts/Presentation/PosterCardView.cs",
+            "Assets/Scripts/Presentation/ImmortalUi.cs", "Assets/Resources/Config/dialogue-portraits.json",
+            "Assets/Resources/Config/town-character-art.json", "Assets/Resources/Config/qingshi-story-panels.json",
             "Assets/Scripts/Presentation/FrontEndController.cs", "Assets/Scripts/Presentation/FrontEndCharacters.cs",
             "Assets/Scripts/Presentation/FrontEndChapter.cs", "Assets/Scripts/Presentation/FrontEndWorld.cs",
             "Assets/Scripts/Presentation/QuestScrollReveal.cs", "Assets/Scripts/Presentation/V2ScrollSession.cs",
@@ -73,7 +79,7 @@ namespace TwelveJade.Editor
         [Serializable] sealed class RunState
         {
             public string output, source, project, scratch, phase, oldSave, oldStartScene;
-            public bool hadOldSave, oldBackground;
+            public bool hadOldSave, oldBackground, story;
             public double started, restoreStarted;
             public bool checksStarted, editReady;
             public SceneRecord[] scenes;
@@ -107,7 +113,9 @@ namespace TwelveJade.Editor
             if (state != null) Attach();
         }
 
-        public static void Run()
+        public static void Run() => Start(false);
+        public static void RunStory() => Start(true);
+        static void Start(bool story)
         {
             if (state != null || !string.IsNullOrEmpty(SessionState.GetString(Key, "")))
                 throw new InvalidOperationException("A prologue run is already pending restoration.");
@@ -139,7 +147,7 @@ namespace TwelveJade.Editor
                 output = output, source = source, project = project, scratch = Path.Combine(output, "scratch-saves"),
                 oldSave = oldSave ?? "", hadOldSave = oldSave != null, oldBackground = Application.runInBackground,
                 oldStartScene = AssetDatabase.GetAssetPath(EditorSceneManager.playModeStartScene) ?? "", scenes = scenes,
-                phase = "play", started = EditorApplication.timeSinceStartup
+                phase = "play", started = EditorApplication.timeSinceStartup, story = story
             };
             foreach (string path in protectedPaths)
                 next.saves.Add(new ProtectedDirectory { path = path, existed = Directory.Exists(path), entries = DirectoryEntries(path) });
@@ -262,6 +270,7 @@ namespace TwelveJade.Editor
 
         static IEnumerator Checks()
         {
+            if (state.story) { yield return StoryChecks(); yield break; }
             CheckLedgerSerialization();
             Require("scratch repository", SamePath(Field(host.Repository, "root") as string, state.scratch) &&
                 SamePath(Environment.GetEnvironmentVariable("TWELVEJADE_SAVEDIR"), state.scratch));
@@ -657,6 +666,7 @@ namespace TwelveJade.Editor
             string status = complete ? (failed == 0 ? "PASS" : "FAIL") : "RUNNING";
             File.WriteAllText(Path.Combine(state.output, "report.json"), JsonUtility.ToJson(new Report {
                 status = status, unityVersion = Application.unityVersion, sourceProject = state.source, copyProject = state.project,
+                scope = state.story ? "V2.5 sequential comic, choices, replay, failure retry and rural costumes" : "Qingshi mortal prologue",
                 passed = passed, failed = failed, pending = pending, checks = state.checks, screenshots = state.shots, inputs = state.inputs
             }, true));
             File.WriteAllLines(Path.Combine(state.output, "report.txt"), new[] {

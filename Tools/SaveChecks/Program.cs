@@ -4,12 +4,13 @@ using TwelveJade.Core;
 if (args.Length > 0)
 {
     if (args.Length != 2 || args[0] != "--suite" ||
-        (args[1] != "economy" && args[1] != "chapters" && args[1] != "trade" && args[1] != "progression"))
-        throw new ArgumentException("Usage: SaveChecks [--suite economy|chapters|trade|progression]");
+        (args[1] != "economy" && args[1] != "chapters" && args[1] != "trade" && args[1] != "progression" && args[1] != "story"))
+        throw new ArgumentException("Usage: SaveChecks [--suite economy|chapters|trade|progression|story]");
     var configDir = ConfigChecks.FindConfigDirectory()
         ?? throw new DirectoryNotFoundException("Game configuration directory not found.");
     if (args[1] == "economy") InventoryEconomyChecks.Run(configDir);
     else if (args[1] == "chapters") ChapterChecks.Run(configDir);
+    else if (args[1] == "story") QingshiStoryChecks.Run(configDir);
     else
     {
         // 核心窄回归不进入全套地图/美术验收。

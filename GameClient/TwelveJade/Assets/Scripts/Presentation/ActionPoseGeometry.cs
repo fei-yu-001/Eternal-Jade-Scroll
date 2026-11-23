@@ -1,6 +1,6 @@
 namespace TwelveJade.Presentation
 {
-    // Alpha >= 32 bounds in the approved Nov7 standing / Nov10 strike PNGs (top-origin,
+    // Alpha >= 32 bounds in the approved Qingshi and legacy PNGs (top-origin,
     // bottom exclusive). Tools/ActionPoseChecks remeasures the source assets, so replacing
     // art cannot silently leave this registration stale. No CPU-readable textures needed.
     public static class ActionPoseGeometry
@@ -27,6 +27,12 @@ namespace TwelveJade.Presentation
         {
             switch (textureName)
             {
+                case "qingshi-male-front":
+                case "qingshi-male-side":
+                case "qingshi-male-back":
+                case "qingshi-female-front":
+                case "qingshi-female-side":
+                case "qingshi-female-back": return new Bounds(512, 34, 500);
                 case "hero-male-front": return new Bounds(512, 26, 508);
                 case "hero-male-side": return new Bounds(512, 28, 512);
                 case "hero-male-back": return new Bounds(512, 35, 512);
@@ -40,6 +46,8 @@ namespace TwelveJade.Presentation
 
         public static Bounds StrikeBounds(string textureName, int frame)
         {
+            if ((textureName == "qingshi-male-strikes" || textureName == "qingshi-female-strikes") && frame >= 0 && frame < 3)
+                return new Bounds(576, 98, 548);
             if (textureName == "combat-hero-male-strikes")
             {
                 if (frame == 0) return new Bounds(576, 96, 549);

@@ -88,8 +88,8 @@ namespace TwelveJade.Presentation
             var texture=TownCharacterArt.Hero(gender,"front",false);
             var image=ui.Rect(parent,"Current saved hero",x,y,w,h).gameObject.AddComponent<RawImage>();
             image.texture=texture;image.raycastTarget=false;
-            // Both approved 384x512 front images have transparent side gutters (male x83..299,
-            // female x93..289). Crop only x0..76 and x308..383; keep the real bottom foot row.
+            // Qingshi 384x512 fronts occupy x111..272 (male), x114..270 (female).
+            // Keep shoulders and the twelve-pixel foot padding inside the crop.
             // Bottom alignment seats the feet on the authored taiji pedestal, without stretching the actor.
             image.uvRect=new Rect(.2f,0,.6f,1);
             if(texture!=null)

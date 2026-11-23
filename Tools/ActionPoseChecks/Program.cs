@@ -55,7 +55,8 @@ foreach (var hero in document.RootElement.GetProperty("heroes").EnumerateArray()
         float height = (Number(frame, "bottom") - Number(frame, "top")) / Number(walking, "height") * 170f;
         float sole = (Number(walking, "height") - Number(frame, "bottom")) / Number(walking, "height") * 170f;
         checks++;
-        if (height < 150f || height > 164f || sole > 1f)
+        if (MathF.Abs(height - (standBottom - standTop) / standHeight * 170f) > .7f ||
+            MathF.Abs(sole - (standHeight - standBottom) / standHeight * 170f) > .7f)
             throw new Exception(hero.GetProperty("id").GetString() + ": unregistered walk size/sole drift");
     }
 }
@@ -65,6 +66,6 @@ Near(fallback.PivotY, 28f / 576f, "legacy unregistered foot");
 var zero = ActionPoseGeometry.Strike(0, "hero-male-front", "combat-hero-male-strikes", 0);
 Near(zero.Height, 0, "zero height");
 Near(zero.PivotY, 27f / 576f, "zero-height finite pivot");
-Console.WriteLine($"PASS: {checks} assertions; {layouts} asset-derived layouts; 6 stands / 48 walks / 6 strikes.");
+Console.WriteLine($"PASS: {checks} assertions; {layouts} asset-derived layouts; 6 stands / 24 walks / 6 strikes.");
 Console.WriteLine($"Old default-tier visible-height growth: {oldMinGrowth:P2} to {oldMaxGrowth:P2}; corrected height/sole error < 0.0002 units.");
 Console.WriteLine("Unity transform scale, mirror, reduced motion, lifecycle and rendering are covered separately by TwelveJade.Editor.ActionPoseSizeChecks.Run.");

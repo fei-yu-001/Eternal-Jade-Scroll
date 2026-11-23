@@ -2,11 +2,11 @@
   "portraits": [
     {
       "id": "hero-male",
-      "resource": "Art/Portraits/Nov7/hero-male-bust"
+      "resource": "Art/Characters/Qingshi/qingshi-male-portrait"
     },
     {
       "id": "hero-female",
-      "resource": "Art/Portraits/Nov7/hero-female-bust"
+      "resource": "Art/Characters/Qingshi/qingshi-female-portrait"
     },
     {
       "id": "npc-shenhuai-an",
