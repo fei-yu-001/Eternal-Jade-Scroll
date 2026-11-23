@@ -101,7 +101,7 @@ namespace TwelveJade.Presentation
 
         void Update()
         {
-            if (music != null) music.mute = menuVideo != null && menuVideo.SoundtrackPlaying;
+            TickMusic();
             UiKit.Cover(menuStill);
             RefreshSlotLayout();
             if (contentFade != null)
@@ -158,7 +158,7 @@ namespace TwelveJade.Presentation
                 () => settings == null || settings.reduceMotion);
             menuVideo.Configure(videoImage, Resources.Load<VideoClip>(MenuVideoBackdrop.ResourcePath),
                 () => settings != null && page == "menu" && memoBackdrop.WantsMenuVideo,
-                () => settings == null || settings.reduceMotion, () => settings?.musicVolume ?? .7f);
+                () => settings == null || settings.reduceMotion, () => settings?.musicVolume ?? .7f, false);
         }
 
         void BeginPage(string name)
@@ -297,7 +297,7 @@ namespace TwelveJade.Presentation
             if (brushFont != null) Destroy(brushFont);
             if (clickTone != null) Destroy(clickTone);
             if (jadeChime != null) Destroy(jadeChime);
-            if (music != null && music.clip != null) Destroy(music.clip);
+            ReleaseMusic();
         }
     }
 }

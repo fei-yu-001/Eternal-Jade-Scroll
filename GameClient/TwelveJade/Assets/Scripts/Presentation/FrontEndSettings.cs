@@ -51,7 +51,7 @@ namespace TwelveJade.Presentation
             SettingsSanctumArt.Text(ui,paper,"Settings display subheading","一窗天地 · 动静由心",new Rect(884,181,650,40),22,TextAlignmentOptions.Center,true);
             var master = SettingsSanctumArt.Slider(ui, paper, "Master volume", "总音量", draft.masterVolume, 236,
                 v => draft.masterVolume = v);
-            SettingsSanctumArt.Slider(ui, paper, "Music volume", "环境音乐", draft.musicVolume, 346,
+            SettingsSanctumArt.Slider(ui, paper, "Music volume", "背景音乐", draft.musicVolume, 346,
                 v => draft.musicVolume = v);
             SettingsSanctumArt.Slider(ui, paper, "Effects volume", "交互音效", draft.effectsVolume, 456,
                 v => draft.effectsVolume = v);
@@ -94,7 +94,7 @@ namespace TwelveJade.Presentation
                 motion.GetComponentInChildren<TMP_Text>().text = draft.reduceMotion ? "即时切换" : "柔和渐入";
                 PlaceSettingsKnob(motionKnob, draft.reduceMotion);
             });
-            SettingsSanctumArt.Text(ui, paper, "Settings draft notice", MobileControls.Enabled ? "保存后生效 · 轻触右上角收起。\n环境音乐包含琴音与山间风声。" : "保存后生效 · Esc 收起设置。\n环境音乐包含琴音与山间风声。", new Rect(92,568,660,86), 23);
+            SettingsSanctumArt.Text(ui, paper, "Settings draft notice", MobileControls.Enabled ? "保存后生效 · 轻触右上角收起。\n标题、青石镇与山野配乐随场景切换。" : "保存后生效 · Esc 收起设置。\n标题、青石镇与山野配乐随场景切换。", new Rect(92,568,660,86), 23);
             SettingsSanctumArt.Text(ui, paper, "Settings display notice", MobileControls.Enabled ? "手机采用横屏全屏，画面尺寸随设备调整。" : "全屏使用显示器原生分辨率；窗口尺寸循环切换。", new Rect(866,568,666,76), 22);
             SettingsSanctumArt.Button(ui, paper, "Settings defaults", "恢复默认并保存", 874, 656, 320, 64,
                 () => Confirm("恢复默认设置？", "音量和画面设置将恢复初始值。角色档位不受影响。", "恢复并保存", () =>
@@ -152,7 +152,7 @@ namespace TwelveJade.Presentation
         void ApplySettings(UserSettings value, bool applyDisplay)
         {
             AudioListener.volume = value.masterVolume;
-            if (music != null) music.volume = value.musicVolume * .3f;
+            ApplyMusicVolume(value.musicVolume);
             if (effects != null) effects.volume = value.effectsVolume * .4f;
             // C-13：底噪随"环境音乐"滑杆（与琴音同源），`ambienceLevel` 是两者的配比。
             if (ambience != null) ambience.volume = value.musicVolume * ambienceLevel * .6f;
@@ -175,7 +175,7 @@ namespace TwelveJade.Presentation
             ui.Label(content,"一卷未尽的山河，一个慢慢生长的世界。",205,356,1000,50,27,muted,TextAlignmentOptions.Left,false);
             ui.Label(content,"十二玉楼长生经",205,461,940,60,36,ink,TextAlignmentOptions.Left,false);
             ui.Label(content,"创作与方向  ·  fei-yu-001\n开发协作  ·  AI 辅助实现与迭代",208,548,960,95,26,muted,TextAlignmentOptions.Left,false);
-            ui.Label(content,"字体  ·  Noto Serif CJK、志莽行书\n           SIL Open Font License 1.1\n美术  ·  本项目素材来源详见仓库素材记录\n声音  ·  原创程序合成的环境琴音与交互音效",208,678,1030,154,23,muted,TextAlignmentOptions.Left,false);
+            ui.Label(content,"字体  ·  Noto Serif CJK、志莽行书\n           SIL Open Font License 1.1\n美术  ·  本项目素材来源详见仓库素材记录\n配乐  ·  斐哥提供的三首原创曲目\n音效  ·  程序合成的脚步与交互音效",208,678,1030,154,23,muted,TextAlignmentOptions.Left,false);
             ui.Label(content,"感谢你愿意走进这个尚在生长的世界。",208,863,1060,46,25,gold,TextAlignmentOptions.Left,false);
             MenuMemoArt.Command(ui,content,"Credits return","归卷",new Rect(1530,888,250,78),ShowMenu,()=>settings.reduceMotion,PlayClick,26,false);
             FocusFirst();
@@ -183,27 +183,11 @@ namespace TwelveJade.Presentation
 
         void SetupAudio()
         {
-            music = gameObject.AddComponent<AudioSource>(); music.loop = true; music.playOnAwake = false;
+            SetupMusic();
             effects = gameObject.AddComponent<AudioSource>(); effects.playOnAwake = false;
-            SetupUiTones();   // C-17/C-27：四类交互音（点击/翻页/获得/失败），**每条 <=120ms**
-            var rate = 22050;
-            var samples = new float[rate * 24];
-            float[] notes = { 130.8128f, 195.9977f, 261.6256f, 293.6648f, 195.9977f, 174.6141f, 146.8324f, 195.9977f };
-            for (var note = 0; note < notes.Length; note++)
-            {
-                var start = note * 3 * rate;
-                for (var i = 0; i < rate * 6; i++)
-                {
-                    var t = i / (float)rate;
-                    var envelope = Mathf.Min(t * 12, 1) * Mathf.Exp(-t * 1.1f);
-                    var signal = Mathf.Sin(2 * Mathf.PI * notes[note] * t) + .24f * Mathf.Sin(4 * Mathf.PI * notes[note] * t);
-                    samples[(start + i) % samples.Length] += .13f * envelope * signal;
-                }
-            }
-            music.clip = AudioClip.Create("Mountain interval · original synthesis", samples.Length, 1, rate, false);
-            music.clip.SetData(samples, 0); music.Play();
-            SetupFootsteps();   // W-C：脚步也是程序化合成，与上同一套做法（零素材文件）
-            SetupAmbience();    // C-13：环境底噪，同一套做法（零素材文件）
+            SetupUiTones();
+            SetupFootsteps();
+            // The supplied recordings provide the environment bed; do not start synthetic birds.
         }
 
         // ---- C-13 / C-14 / C-23 环境底噪 ------------------------------------------------

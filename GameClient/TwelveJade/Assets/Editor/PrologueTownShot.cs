@@ -79,7 +79,7 @@ namespace TwelveJade.Editor
         [Serializable] sealed class RunState
         {
             public string output, source, project, scratch, phase, oldSave, oldStartScene;
-            public bool hadOldSave, oldBackground, story;
+            public bool hadOldSave, oldBackground, story, music;
             public double started, restoreStarted;
             public bool checksStarted, editReady;
             public SceneRecord[] scenes;
@@ -115,7 +115,8 @@ namespace TwelveJade.Editor
 
         public static void Run() => Start(false);
         public static void RunStory() => Start(true);
-        static void Start(bool story)
+        public static void RunMusic() => Start(false, true);
+        static void Start(bool story, bool music = false)
         {
             if (state != null || !string.IsNullOrEmpty(SessionState.GetString(Key, "")))
                 throw new InvalidOperationException("A prologue run is already pending restoration.");
@@ -147,7 +148,7 @@ namespace TwelveJade.Editor
                 output = output, source = source, project = project, scratch = Path.Combine(output, "scratch-saves"),
                 oldSave = oldSave ?? "", hadOldSave = oldSave != null, oldBackground = Application.runInBackground,
                 oldStartScene = AssetDatabase.GetAssetPath(EditorSceneManager.playModeStartScene) ?? "", scenes = scenes,
-                phase = "play", started = EditorApplication.timeSinceStartup, story = story
+                phase = "play", started = EditorApplication.timeSinceStartup, story = story, music = music
             };
             foreach (string path in protectedPaths)
                 next.saves.Add(new ProtectedDirectory { path = path, existed = Directory.Exists(path), entries = DirectoryEntries(path) });
@@ -270,6 +271,7 @@ namespace TwelveJade.Editor
 
         static IEnumerator Checks()
         {
+            if (state.music) { yield return MusicChecks(); yield break; }
             if (state.story) { yield return StoryChecks(); yield break; }
             CheckLedgerSerialization();
             Require("scratch repository", SamePath(Field(host.Repository, "root") as string, state.scratch) &&
@@ -666,7 +668,7 @@ namespace TwelveJade.Editor
             string status = complete ? (failed == 0 ? "PASS" : "FAIL") : "RUNNING";
             File.WriteAllText(Path.Combine(state.output, "report.json"), JsonUtility.ToJson(new Report {
                 status = status, unityVersion = Application.unityVersion, sourceProject = state.source, copyProject = state.project,
-                scope = state.story ? "V2.5 sequential comic, choices, replay, failure retry and rural costumes" : "Qingshi mortal prologue",
+                scope = state.music ? "Supplied scene music, audio output, settings, quiet ambience and current costumes" : state.story ? "V2.5 sequential comic, choices, replay, failure retry and rural costumes" : "Qingshi mortal prologue",
                 passed = passed, failed = failed, pending = pending, checks = state.checks, screenshots = state.shots, inputs = state.inputs
             }, true));
             File.WriteAllLines(Path.Combine(state.output, "report.txt"), new[] {

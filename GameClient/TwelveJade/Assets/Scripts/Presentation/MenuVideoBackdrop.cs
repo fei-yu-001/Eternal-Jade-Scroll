@@ -22,6 +22,7 @@ namespace TwelveJade.Presentation
         Func<float> soundtrackVolume;
         Func<bool> onMenu, reduceMotion;
         bool configured, requested, released, framePending, waitingForLoopFrame;
+        bool soundtrackEnabled = true;
         int frameReceivedAt;
         double prepareDeadline, lastFrameAt;
         float revealStarted;
@@ -32,10 +33,10 @@ namespace TwelveJade.Presentation
         public int DecodedFrames { get; private set; }
         public int CompletedLoops { get; private set; }
         public bool IsVisible => image != null && image.enabled && image.color.a > 0;
-        public bool SoundtrackPlaying => player != null && player.isPlaying && HasDecodedFrame && player.audioTrackCount > 0;
+        public bool SoundtrackPlaying => soundtrackEnabled && player != null && player.isPlaying && HasDecodedFrame && player.audioTrackCount > 0;
         public bool SuppressProceduralMotion => requested && State != PlaybackState.StaticFallback;
 
-        public void Configure(RawImage target, VideoClip source, Func<bool> isOnMenu, Func<bool> motionReduced, Func<float> volume = null)
+        public void Configure(RawImage target, VideoClip source, Func<bool> isOnMenu, Func<bool> motionReduced, Func<float> volume = null, bool playSoundtrack = true)
         {
             if (configured || released) throw new InvalidOperationException("Menu backdrop may only be configured once.");
             image = target != null ? target : throw new ArgumentNullException(nameof(target));
@@ -43,6 +44,7 @@ namespace TwelveJade.Presentation
             onMenu = isOnMenu;
             reduceMotion = motionReduced;
             soundtrackVolume = volume;
+            soundtrackEnabled = playSoundtrack;
             image.raycastTarget = false;
             configured = true;
             Hide();
@@ -79,17 +81,20 @@ namespace TwelveJade.Presentation
                 player.source = VideoSource.VideoClip;
                 player.clip = clip;
                 player.renderMode = VideoRenderMode.APIOnly;
-                if (soundtrack == null)
+                player.audioOutputMode = soundtrackEnabled ? VideoAudioOutputMode.AudioSource : VideoAudioOutputMode.None;
+                if (soundtrackEnabled)
                 {
-                    soundtrack = gameObject.AddComponent<AudioSource>();
-                    soundtrack.playOnAwake = false;
-                    soundtrack.spatialBlend = 0;
+                    if (soundtrack == null)
+                    {
+                        soundtrack = gameObject.AddComponent<AudioSource>();
+                        soundtrack.playOnAwake = false;
+                        soundtrack.spatialBlend = 0;
+                    }
+                    player.controlledAudioTrackCount = 1;
+                    player.EnableAudioTrack(0, true);
+                    player.SetTargetAudioSource(0, soundtrack);
+                    soundtrack.volume = 0;
                 }
-                player.audioOutputMode = VideoAudioOutputMode.AudioSource;
-                player.controlledAudioTrackCount = 1;
-                player.EnableAudioTrack(0, true);
-                player.SetTargetAudioSource(0, soundtrack);
-                soundtrack.volume = 0;
                 player.isLooping = true;
                 player.waitForFirstFrame = true;
                 player.skipOnDrop = true;
