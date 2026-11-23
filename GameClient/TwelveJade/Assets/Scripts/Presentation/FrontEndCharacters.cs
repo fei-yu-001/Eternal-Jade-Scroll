@@ -112,17 +112,16 @@ namespace TwelveJade.Presentation
             paper.anchorMin = new Vector2(.24f, .08f); paper.anchorMax = new Vector2(.98f, .85f);
             paper.offsetMin = paper.offsetMax = Vector2.zero; paper.pivot = new Vector2(.5f, .5f);
             float width = Mathf.Max(1920, memoViewport.x) * .74f;
-            float bodyX = 674, bodyW = width - bodyX - 44;
+            float bodyX = 580, bodyW = width - bodyX - 44;
             var data = chosen.CanLoad ? chosen.Data : null;
             var preset = data != null ? presets.FirstOrDefault(p => p.id == data.characterId) : empty ? presets[draftOrigin] : null;
-            var poster = ui.Rect(paper, "Dossier portrait", 38, 88, 600, 650).gameObject.AddComponent<PosterCardView>();
-            poster.Configure(preset?.id, data?.gender ?? (empty ? draftGender : "male"),true);
-            MenuMemoArt.FramePortrait(poster);
+            var poster = ui.Rect(paper, "Dossier portrait", 34, 16, 510, 724).gameObject.AddComponent<PosterCardView>();
+            poster.Configure(preset?.id, data?.gender ?? (empty ? draftGender : "male"), useFigure: true);
             if (!poster.HasArtwork)
                 MemoLabel(poster.transform, "Portrait awaiting record", empty || data != null ? "身世待访" : "旧影待复",
-                    22, 270, 556, 64, 28, TextAlignmentOptions.Center, true);
+                    22, 270, 466, 64, 28, TextAlignmentOptions.Center, true);
             MemoLabel(paper, "Dossier timestamp", "归来时刻\n" + (data == null ? empty ? "行卷初启" : "旧时难考" :
-                MemoTimestamp(data.updatedUtc, "yyyy.MM.dd  HH:mm")), 38, 742, 600, 80, 20, TextAlignmentOptions.Center);
+                MemoTimestamp(data.updatedUtc, "yyyy.MM.dd  HH:mm")), 34, 742, 510, 80, 20, TextAlignmentOptions.Center);
             string title = data != null ? (string.IsNullOrWhiteSpace(data.characterName) ? "未定名" : data.characterName) : empty ?
                 (string.IsNullOrWhiteSpace(draftName) ? "未定名" : draftName) : chosen.State == SlotState.FutureVersion ? "异世来卷" : "旧卷待修";
             var titleLabel = MemoLabel(paper, "Dossier name", title, bodyX, 20, bodyW, 84, 48, TextAlignmentOptions.MidlineLeft, true);

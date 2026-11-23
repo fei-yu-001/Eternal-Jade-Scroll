@@ -644,19 +644,37 @@ namespace TwelveJade.Editor
             Require(label + " texture exists", texture != null);
             Rect shown = ScreenRect(art.rectTransform), frame = ScreenRect((RectTransform)poster.transform), uv = art.uvRect;
             float sourceAspect = (float)texture.width / texture.height;
-            float shownAspect = sourceAspect * uv.width / uv.height;
-            var local = art.rectTransform;
-            bool fillsCard = local.anchorMin == Vector2.zero && local.anchorMax == Vector2.one &&
-                Vector2.Distance(local.offsetMin, new Vector2(6, 6)) < .01f &&
-                Vector2.Distance(local.offsetMax, new Vector2(-6, -6)) < .01f &&
-                shown.xMin >= frame.xMin && shown.xMax <= frame.xMax && shown.yMin >= frame.yMin && shown.yMax <= frame.yMax;
-            bool centered = Vector2.Distance(shown.center, frame.center) <= 1f &&
-                Vector2.Distance(uv.center, new Vector2(.5f, .5f)) < .005f;
-            bool undistorted = uv.width > 0 && uv.height > 0 && uv.xMin >= -.001f && uv.yMin >= -.001f &&
-                uv.xMax <= 1.001f && uv.yMax <= 1.001f && Mathf.Abs(shown.width / shown.height / shownAspect - 1) < .01f &&
-                (Mathf.Abs(uv.width - 1) < .001f || Mathf.Abs(uv.height - 1) < .001f);
-            Check(label, OnScreen(frame) && fillsCard && centered && undistorted,
-                "card=" + frame + " art=" + shown + " uv=" + uv);
+            if (poster.IsCutout)
+            {
+                // Full-body cutouts fit inside the card; cropping or stretching would lose the figure.
+                Check(label + " cutout full UV", Mathf.Abs(uv.x) < .001f && Mathf.Abs(uv.y) < .001f &&
+                    Mathf.Abs(uv.width - 1) < .001f && Mathf.Abs(uv.height - 1) < .001f, "uv=" + uv);
+                Check(label + " cutout preserves aspect", shown.width > 0 && shown.height > 0 &&
+                    Mathf.Abs(shown.width / shown.height / sourceAspect - 1) < .01f,
+                    "art=" + shown + " sourceAspect=" + sourceAspect);
+                Check(label + " cutout fully contained", art.isActiveAndEnabled && OnScreen(frame) && OnScreen(shown) &&
+                    shown.xMin >= frame.xMin - 1 && shown.xMax <= frame.xMax + 1 &&
+                    shown.yMin >= frame.yMin - 1 && shown.yMax <= frame.yMax + 1,
+                    "card=" + frame + " art=" + shown);
+                Check(label + " cutout has no frame", poster.Frame == null &&
+                    poster.transform.Find("Memo fine mounting") == null);
+            }
+            else
+            {
+                float shownAspect = sourceAspect * uv.width / uv.height;
+                var local = art.rectTransform;
+                bool fillsCard = local.anchorMin == Vector2.zero && local.anchorMax == Vector2.one &&
+                    Vector2.Distance(local.offsetMin, new Vector2(6, 6)) < .01f &&
+                    Vector2.Distance(local.offsetMax, new Vector2(-6, -6)) < .01f &&
+                    shown.xMin >= frame.xMin && shown.xMax <= frame.xMax && shown.yMin >= frame.yMin && shown.yMax <= frame.yMax;
+                bool centered = Vector2.Distance(shown.center, frame.center) <= 1f &&
+                    Vector2.Distance(uv.center, new Vector2(.5f, .5f)) < .005f;
+                bool undistorted = uv.width > 0 && uv.height > 0 && uv.xMin >= -.001f && uv.yMin >= -.001f &&
+                    uv.xMax <= 1.001f && uv.yMax <= 1.001f && Mathf.Abs(shown.width / shown.height / shownAspect - 1) < .01f &&
+                    (Mathf.Abs(uv.width - 1) < .001f || Mathf.Abs(uv.height - 1) < .001f);
+                Check(label, OnScreen(frame) && fillsCard && centered && undistorted,
+                    "card=" + frame + " art=" + shown + " uv=" + uv);
+            }
             File.AppendAllText(Path.Combine(output, "memo-geometry.jsonl"), JsonUtility.ToJson(new MemoGeometry {
                 label = label, width = Screen.width, height = Screen.height, screenRect = shown, uv = uv, sourceAspect = sourceAspect }) + "\n");
         }
@@ -815,9 +833,13 @@ namespace TwelveJade.Editor
             var paper = NamedRect("Slot dossier").GetComponent<MemoScrollOrnament>();
             var poster = NamedRect("Dossier portrait").GetComponent<PosterCardView>();
             Check("memo poster artwork and complete frame " + slot, poster != null && poster.HasArtwork &&
-                poster.ResourcePath.StartsWith(MemoVisualAssets.Prefix + "Posters/", StringComparison.Ordinal) &&
-                poster.Frame.type == Image.Type.Sliced && !poster.Frame.fillCenter &&
-                poster.GetComponentsInChildren<PuppetActor>().Length == 0);
+                (poster.IsCutout
+                    ? (poster.ResourcePath == "Art/Characters/Qingshi/qingshi-male-figure" ||
+                        poster.ResourcePath == "Art/Characters/Qingshi/qingshi-female-figure") && poster.Frame == null
+                    : poster.ResourcePath.StartsWith(MemoVisualAssets.Prefix + "Posters/", StringComparison.Ordinal) &&
+                        poster.Frame != null && poster.Frame.type == Image.Type.Sliced && !poster.Frame.fillCenter) &&
+                poster.GetComponentsInChildren<PuppetActor>().Length == 0,
+                poster != null && poster.IsCutout ? "full-body cutout without frame" : "framed portrait");
             if (poster != null && poster.HasArtwork) CheckPosterCover(poster, "memo poster aspect cover " + slot);
             var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false, true);
             float sourceAlpha = -1;

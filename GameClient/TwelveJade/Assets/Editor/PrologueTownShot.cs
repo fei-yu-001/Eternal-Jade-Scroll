@@ -78,8 +78,8 @@ namespace TwelveJade.Editor
         [Serializable] sealed class Shot { public string file, page, fixture, sha256; public int width, height, colors, frame; }
         [Serializable] sealed class RunState
         {
-            public string output, source, project, scratch, phase, oldSave, oldStartScene;
-            public bool hadOldSave, oldBackground, story, music;
+            public string output, source, project, scratch, phase, oldSave, oldStartScene, credentialFingerprint;
+            public bool hadOldSave, oldBackground, story, music, dossier;
             public double started, restoreStarted;
             public bool checksStarted, editReady;
             public SceneRecord[] scenes;
@@ -116,7 +116,8 @@ namespace TwelveJade.Editor
         public static void Run() => Start(false);
         public static void RunStory() => Start(true);
         public static void RunMusic() => Start(false, true);
-        static void Start(bool story, bool music = false)
+        public static void RunDossier() => Start(false, false, true);
+        static void Start(bool story, bool music = false, bool dossier = false)
         {
             if (state != null || !string.IsNullOrEmpty(SessionState.GetString(Key, "")))
                 throw new InvalidOperationException("A prologue run is already pending restoration.");
@@ -148,7 +149,8 @@ namespace TwelveJade.Editor
                 output = output, source = source, project = project, scratch = Path.Combine(output, "scratch-saves"),
                 oldSave = oldSave ?? "", hadOldSave = oldSave != null, oldBackground = Application.runInBackground,
                 oldStartScene = AssetDatabase.GetAssetPath(EditorSceneManager.playModeStartScene) ?? "", scenes = scenes,
-                phase = "play", started = EditorApplication.timeSinceStartup, story = story, music = music
+                phase = "play", started = EditorApplication.timeSinceStartup, story = story, music = music, dossier = dossier,
+                credentialFingerprint = dossier ? DossierCredentialsFingerprint() : null
             };
             foreach (string path in protectedPaths)
                 next.saves.Add(new ProtectedDirectory { path = path, existed = Directory.Exists(path), entries = DirectoryEntries(path) });
@@ -244,6 +246,7 @@ namespace TwelveJade.Editor
                 Environment.SetEnvironmentVariable("TWELVEJADE_SAVEDIR", state.hadOldSave ? state.oldSave : null);
                 Application.runInBackground = state.oldBackground;
                 restored = true;
+                if (state.dossier) Check("real credential preferences preserved", state.credentialFingerprint == DossierCredentialsFingerprint());
                 Check("save environment restored", Environment.GetEnvironmentVariable("TWELVEJADE_SAVEDIR") == (state.hadOldSave ? state.oldSave : null));
                 foreach (var saved in state.saves)
                     Check("real save directory preserved " + saved.path, saved.existed == Directory.Exists(saved.path) &&
@@ -271,6 +274,7 @@ namespace TwelveJade.Editor
 
         static IEnumerator Checks()
         {
+            if (state.dossier) { yield return DossierChecks(); yield break; }
             if (state.music) { yield return MusicChecks(); yield break; }
             if (state.story) { yield return StoryChecks(); yield break; }
             CheckLedgerSerialization();
@@ -668,7 +672,7 @@ namespace TwelveJade.Editor
             string status = complete ? (failed == 0 ? "PASS" : "FAIL") : "RUNNING";
             File.WriteAllText(Path.Combine(state.output, "report.json"), JsonUtility.ToJson(new Report {
                 status = status, unityVersion = Application.unityVersion, sourceProject = state.source, copyProject = state.project,
-                scope = state.music ? "Supplied scene music, audio output, settings, quiet ambience and current costumes" : state.story ? "V2.5 sequential comic, choices, replay, failure retry and rural costumes" : "Qingshi mortal prologue",
+                scope = state.dossier ? "Save-slot account/cloud entry, transparent rural figures, redraw and real button raycasts" : state.music ? "Supplied scene music, audio output, settings, quiet ambience and current costumes" : state.story ? "V2.5 sequential comic, choices, replay, failure retry and rural costumes" : "Qingshi mortal prologue",
                 passed = passed, failed = failed, pending = pending, checks = state.checks, screenshots = state.shots, inputs = state.inputs
             }, true));
             File.WriteAllLines(Path.Combine(state.output, "report.txt"), new[] {

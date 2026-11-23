@@ -33,6 +33,13 @@ namespace TwelveJade.Presentation
         const string ProductVersion = "0.0.1 · 初见青石";
 
         public string CurrentPage => page;
+        // The separate network UI assembly reads the live page and input state through these guards.
+        public RectTransform NetworkDialogEntryRoot => page == "slots" ? content : null;
+        public bool CanOpenNetworkDialog => isActiveAndEnabled && screenCanvas != null &&
+            content != null && content.gameObject.activeInHierarchy &&
+            (page == "slots" || page == "town") && modal == null && bagOverlay == null && craftOverlay == null &&
+            !WorldDialogueInputBlocked && !WorldCombatActive && !WorldCombatWheelOpen &&
+            (contentFade == null || contentFade.interactable && contentFade.blocksRaycasts);
         // 验收与章系统都需要读当前档；写入口仍是各 Core 账本。
         public SaveData ActiveSave => activeSave;
         public SaveRepository Repository => repository;
