@@ -27,12 +27,12 @@ namespace TwelveJade.Presentation
         {
             switch (textureName)
             {
-                case "qingshi-male-front":
-                case "qingshi-male-side":
-                case "qingshi-male-back":
-                case "qingshi-female-front":
-                case "qingshi-female-side":
-                case "qingshi-female-back": return new Bounds(512, 34, 500);
+                case "qingshi-male-front": return new Bounds(512, 42, 500);
+                case "qingshi-male-side": return new Bounds(512, 40, 500);
+                case "qingshi-male-back": return new Bounds(512, 49, 500);
+                case "qingshi-female-front": return new Bounds(512, 43, 500);
+                case "qingshi-female-side": return new Bounds(512, 45, 500);
+                case "qingshi-female-back": return new Bounds(512, 43, 500);
                 case "hero-male-front": return new Bounds(512, 26, 508);
                 case "hero-male-side": return new Bounds(512, 28, 512);
                 case "hero-male-back": return new Bounds(512, 35, 512);

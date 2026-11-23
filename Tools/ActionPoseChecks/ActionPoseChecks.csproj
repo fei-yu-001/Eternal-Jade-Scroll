@@ -5,6 +5,7 @@
     <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData><NuGetAudit>false</NuGetAudit>
   </PropertyGroup>
   <ItemGroup>
+    <None Update="approved-walk-bounds.json" CopyToOutputDirectory="PreserveNewest" />
     <Compile Include="../../GameClient/TwelveJade/Assets/Scripts/Presentation/ActionPoseGeometry.cs" Link="ActionPoseGeometry.cs" />
   </ItemGroup>
 </Project>

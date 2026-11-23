@@ -65,43 +65,36 @@ namespace TwelveJade.Editor
             yield return Frames(30);
             var entry = UnityEngine.Object.FindAnyObjectByType<NetworkDialogEntry>();
             Require("entry bootstrap exists", entry != null);
-            Check("title has no account or cloud entry", !Live("Slots network tools") && !Live("Menu account") && !Live("Menu cloud saves"));
-            Invoke(entry, "OpenDialog", false, false);
-            Check("title network shortcut ignored", !AuthDialog.IsOpen);
-            yield return Capture("dossier-01-menu", "menu-no-network-entry");
-            ClickDossier("Menu primary");
-            yield return Until(() => host.CurrentPage == "slots" && Live("Slots network tools") && host.CanOpenNetworkDialog,
-                "menu primary reaches save slots");
-            CheckDossierLayout("male", "wide");
-            yield return Capture("dossier-02-male", "wide-male-cutout");
-            ClickDossier("Slots account");
+            CheckMenuAccountLayout("wide");
+            yield return Capture("dossier-01-menu", "menu-account-icon");
+            ClickDossier("Menu account");
             yield return Frames(3);
-            Check("real account click opens dialog", AuthDialog.IsOpen && !Live("Slots network tools"));
-            Invoke(entry, "OpenDialog", true, false);
-            Check("existing dialog blocks other shortcut", !CloudSaveDialog.IsOpen);
-            yield return Capture("dossier-03-account", "account-open");
+            Check("real account click opens dialog", AuthDialog.IsOpen && !Find("Menu account").GetComponent<Button>().interactable);
+            var dialog = Find("AuthDialog");
+            Invoke(entry, "OpenAccount");
+            Check("existing dialog blocks repeated opening", AuthDialog.IsOpen && Find("AuthDialog") == dialog);
+            yield return Capture("dossier-03-account", "title-account-open");
             ClickDossierLabel("告 辞");
-            yield return Until(() => !AuthDialog.IsOpen && Live("Slots network tools"), "account close restores slot entry");
-            ClickDossier("Slots cloud saves");
-            yield return Frames(8);
-            Check("real cloud click opens dialog", CloudSaveDialog.IsOpen && !Live("Slots network tools"));
-            Check("cloud list uses isolated read-only request", dossierTransport.ListReads > 0 && dossierTransport.Writes == 0);
-            yield return Capture("dossier-04-cloud", "cloud-open-fake-read-only-service");
-            ClickDossierLabel("告 辞");
-            yield return Until(() => !CloudSaveDialog.IsOpen && Live("Slots network tools"), "cloud close restores slot entry");
+            yield return Until(() => !AuthDialog.IsOpen && Find("Menu account").GetComponent<Button>().interactable, "account close restores entry");
+            ClickDossier("Menu settings"); yield return Frames(3);
+            Invoke(entry, "OpenAccount");
+            Check("title settings blocks account", !AuthDialog.IsOpen);
+            Invoke(host, "CloseSettings"); yield return Frames(3);
+            ClickDossier("Menu primary");
+            yield return Until(() => host.CurrentPage == "slots" && host.CanOpenNetworkDialog,
+                "menu primary reaches save slots");
+            // GraphicRaycaster needs the new page to finish its first render.
+            yield return Frames(3);
+            CheckDossierLayout("male", "wide");
+            yield return Capture("dossier-02-male", "wide-local-slots");
             ClickDossier("Slot 2");
             yield return Frames(5);
             CheckDossierLayout("female", "wide");
             yield return Capture("dossier-05-female", "wide-female-cutout");
             yield return ResizeDossierView(1280, 960);
-            yield return Until(() => Live("Slots network tools") && host.CanOpenNetworkDialog, "resized slot page ready");
+            yield return Until(() => host.CanOpenNetworkDialog, "resized slot page ready");
             CheckDossierLayout("female", "narrow");
             yield return Capture("dossier-06-narrow", "narrow-female-cutout");
-            ClickDossier("Slots account");
-            yield return Frames(3);
-            Check("resized account button remains clickable", AuthDialog.IsOpen);
-            ClickDossierLabel("告 辞");
-            yield return Frames(4);
             ClickDossier("Slot 3");
             yield return Frames(5);
             Check("empty slot remains empty during preview", host.Repository.Read(3).State == SlotState.Empty);
@@ -114,30 +107,33 @@ namespace TwelveJade.Editor
             yield return Until(() => host.CurrentPage == "town" && host.TravelerPuppetForShot != null, "draft entry creates and enters town", 20);
             Check("created female save readable", host.Repository.Read(3).CanLoad && host.Repository.Read(3).Data.gender == "female");
             Check("town has no slot buttons", !Live("Slots network tools"));
-            Invoke(entry, "OpenDialog", false, false);
+            Invoke(entry, "OpenAccount");
             yield return Frames(3);
             Check("town account shortcut remains supported", AuthDialog.IsOpen);
             ClickDossierLabel("告 辞");
             yield return Frames(3);
             host.ShowSettings();
-            Invoke(entry, "OpenDialog", false, false);
+            Invoke(entry, "OpenAccount");
             Check("settings modal blocks network shortcut", !AuthDialog.IsOpen);
             Invoke(host, "CloseSettings");
             host.ShowSlots(false);
-            yield return Until(() => Live("Slots network tools") && host.CanOpenNetworkDialog, "return to slots restores entry");
+            yield return Until(() => host.CanOpenNetworkDialog, "return to slots restores entry");
             ClickDossier("Slot 1");
             yield return Frames(4);
             ClickDossier("Slot enter");
             yield return Until(() => host.CurrentPage == "town" && host.ActiveSave?.slot == 1, "existing save still enters town", 20);
             host.ShowSlots(false);
-            yield return Until(() => Live("Slots network tools") && host.CanOpenNetworkDialog, "slot redraw ready");
-            Check("redraw has one entry pair", canvasRoot.GetComponentsInChildren<Button>(true).Count(b => b.name == "Slots account") == 1 &&
-                canvasRoot.GetComponentsInChildren<Button>(true).Count(b => b.name == "Slots cloud saves") == 1);
+            yield return Until(() => host.CanOpenNetworkDialog, "slot redraw ready");
+            yield return Frames(3);
+            Check("slot redraw has no extra network buttons", !Live("Slots network tools") && !Live("Menu account"));
             ClickDossier("Slots back");
             yield return Until(() => host.CurrentPage == "menu", "back button returns to menu");
             yield return Frames(4);
-            Check("leaving slots removes entry", !Live("Slots network tools"));
-            Check("UI test issued no remote writes", dossierTransport.Writes == 0);
+            Check("returning to title has one account entry", canvasRoot.GetComponentsInChildren<Button>(true).Count(b => b.name == "Menu account") == 1);
+            CheckMenuAccountLayout("narrow");
+            yield return Capture("dossier-08-narrow-menu", "narrow-account-icon");
+            Check("UI test issued no cloud requests or writes", dossierTransport.Writes == 0 && dossierTransport.ListReads == 0);
+            yield return LocomotionChecks();
         }
 
         static IEnumerator ResizeDossierView(int width, int height)
@@ -168,13 +164,22 @@ namespace TwelveJade.Editor
             Check(layout + " illustration does not intercept clicks", !poster.Artwork.raycastTarget);
             var importer = (TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(poster.Artwork.texture));
             Check(layout + " transparency imported", importer.alphaIsTransparency && importer.DoesSourceTextureHaveAlpha());
-            var tools = (RectTransform)Find("Slots network tools").transform;
-            Rect toolsRect = DossierScreenRect(tools);
-            Check(layout + " entry inside viewport", toolsRect.xMin >= 0 && toolsRect.yMin >= 0 && toolsRect.xMax <= Screen.width + 1 && toolsRect.yMax <= Screen.height + 1);
-            Check(layout + " entry above paper", toolsRect.yMin > DossierScreenRect((RectTransform)poster.transform.parent).yMax);
-            Check(layout + " entry clear of back", !toolsRect.Overlaps(DossierScreenRect((RectTransform)Find("Slots back").transform)));
-            Check(layout + " entry clear of enter", !toolsRect.Overlaps(DossierScreenRect((RectTransform)Find("Slot enter").transform)));
-            foreach (string name in new[] { "Slots account", "Slots cloud saves", "Slot enter", "Slots back" }) DossierButton(name, false);
+            Check(layout + " local slots have no duplicate network entry", !Live("Slots network tools") && !Live("Slots account") && !Live("Slots cloud saves"));
+            foreach (string name in new[] { "Slot enter", "Slots back" }) DossierButton(name, false);
+        }
+
+        static void CheckMenuAccountLayout(string layout)
+        {
+            Canvas.ForceUpdateCanvases();
+            var account = Find("Menu account")?.GetComponent<Button>();
+            Require(layout + " title account exists", account != null);
+            var rect = DossierScreenRect((RectTransform)account.transform);
+            var settingsRect = DossierScreenRect((RectTransform)Find("Menu settings").transform);
+            Check(layout + " account grouped left of settings", rect.xMax < settingsRect.xMin && Mathf.Abs(rect.yMax - settingsRect.yMax) < 1);
+            Check(layout + " account stays within viewport", rect.xMin >= 0 && rect.yMin >= 0 && rect.xMax <= Screen.width && rect.yMax <= Screen.height + 1);
+            Check(layout + " clear account silhouette", account.GetComponentsInChildren<MenuOrnament>().Any(m => m.Shape == MenuOrnament.Motif.Account));
+            Check(layout + " no cloud menu button", !Live("Menu cloud saves") && !Live("Slots cloud saves"));
+            foreach (string name in new[] { "Menu account", "Menu settings", "Menu credits" }) DossierButton(name, false);
         }
 
         static Rect DossierScreenRect(RectTransform rect)
@@ -205,7 +210,8 @@ namespace TwelveJade.Editor
                 button = PointerEventData.InputButton.Left };
             var hits = new List<RaycastResult>(); EventSystem.current.RaycastAll(pointer, hits);
             Require("real raycast reaches " + button.name, hits.Count > 0 && hits[0].gameObject.GetComponentInParent<Button>() == button,
-                "top=" + (hits.Count == 0 ? "none" : hits[0].gameObject.name));
+                "top=" + (hits.Count == 0 ? "none" : hits[0].gameObject.name) + "; position=" + pointer.position +
+                "; graphicDepth=" + (button.targetGraphic == null ? -99 : button.targetGraphic.depth));
             if (click) ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerClickHandler);
         }
 

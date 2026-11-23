@@ -39,7 +39,8 @@ def main():
     assert len(heroes) == 6, "Expected both genders and front/side/back registrations"
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(dict(alphaThreshold=32, heroes=heroes), indent=2), encoding="utf-8")
-    print("Measured 6 standing views, 24 walking frames, and both 3-frame attack sheets -> " + str(args.output))
+    walking_frames = sum(len(hero["walking"]["frames"]) for hero in heroes)
+    print(f"Measured {len(heroes)} standing views, {walking_frames} walking frames, and both 3-frame attack sheets -> {args.output}")
 
 
 if __name__ == "__main__":

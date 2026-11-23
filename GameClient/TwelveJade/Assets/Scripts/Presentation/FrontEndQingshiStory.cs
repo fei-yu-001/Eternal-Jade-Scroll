@@ -10,7 +10,7 @@ namespace TwelveJade.Presentation
 {
     public sealed partial class FrontEndController
     {
-        public QingshiComicView QingshiComicForCheck => modal != null ? modal.GetComponent<QingshiComicView>() : null;
+        public QingshiComicView QingshiComicForCheck => modal != null ? modal.GetComponentInChildren<QingshiComicView>() : null;
         public void ShowQingshiStoryPanel()
         {
             if (!ChapterModalAlive) return;
@@ -38,13 +38,17 @@ namespace TwelveJade.Presentation
             QingshiComicScene script;
             try { script = QingshiComicView.Load(id); }
             catch (Exception ex) { Notify(ex.Message); return false; }
-            if (Resources.Load<Texture2D>("Art/Story/Qingshi/" + id) == null) { Notify("这一卷的画稿尚未备齐。"); return false; }
             var owner = activeSave;
             CloseInventory(); CloseChapterPanel(); CloseModal(); CloseWorldCombatWheel(); StopDialogueMovement();
             var group = content.GetComponent<CanvasGroup>(); group.interactable = false; group.blocksRaycasts = false;
-            modal = ui.Rect(canvas, "Qingshi story comic", 0, 0, 1920, 1080);
-            var host = modal; var view = host.gameObject.AddComponent<QingshiComicView>();
-            view.Configure(ui, host, scene, script, replay, () => settings.reduceMotion, () =>
+            modal = ui.Stretch(screenCanvas, "Qingshi story comic");
+            var veil = modal.gameObject.AddComponent<Image>(); veil.color = UiKit.Hex("171A18"); veil.raycastTarget = true;
+            var host = modal;
+            var design = ui.Rect(host, "Story design", 0, 0, 1920, 1080);
+            design.anchorMin = design.anchorMax = new Vector2(.5f, .5f);
+            design.pivot = new Vector2(.5f, .5f); design.anchoredPosition = Vector2.zero;
+            var view = design.gameObject.AddComponent<QingshiComicView>();
+            view.Configure(ui, design, scene, script, replay, () => settings.reduceMotion, () =>
             {
                 if (modal != host || page != "town" || !ReferenceEquals(owner, activeSave)) return;
                 if (!replay && !QingshiStory.Complete(owner, id, repository.Write, out string reason))

@@ -3,11 +3,11 @@ using UnityEngine.UI;
 
 namespace TwelveJade.Presentation
 {
-    // API retained for dialogs and other JadeFrame callers. All decoration is approved art.
+    // Shared menu motifs: approved artwork plus a vector account silhouette.
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class MenuOrnament : Image
     {
-        public enum Motif { Frame, Scroll, Compass, Book, Sword, Return }
+        public enum Motif { Frame, Scroll, Compass, Book, Sword, Return, Account }
         Motif shape;
         Color fill = Color.clear;
         Image border;
@@ -35,7 +35,11 @@ namespace TwelveJade.Presentation
         {
             MemoVisualAssets.KeepAlive(gameObject);
             bool icon = shape != Motif.Frame && shape != Motif.Scroll;
-            if (icon)
+            if (shape == Motif.Account)
+            {
+                sprite = null; type = Type.Simple; preserveAspect = true; color = UiKit.Hex("343C30");
+            }
+            else if (icon)
             {
                 string resource = shape == Motif.Compass ? "icon-compass" : shape == Motif.Book || shape == Motif.Return
                     ? "icon-document" : "icon-sword";
@@ -56,6 +60,31 @@ namespace TwelveJade.Presentation
             }
             if (border != null) border.enabled = !icon && !IsGoldButton;
             SetAllDirty();
+        }
+
+        protected override void OnPopulateMesh(VertexHelper mesh)
+        {
+            if (shape != Motif.Account) { base.OnPopulateMesh(mesh); return; }
+            mesh.Clear();
+            var rect = GetPixelAdjustedRect();
+            float size = Mathf.Min(rect.width, rect.height);
+            if (size <= 0) return;
+            var origin = rect.center - Vector2.one * (size * .5f);
+            // A round head and broad shoulders stay recognizable at the same 43px size as the other utilities.
+            AccountFan(mesh, origin + new Vector2(.5f, .73f) * size, Vector2.one * (.15f * size), Mathf.PI * 2, 32);
+            AccountFan(mesh, origin + new Vector2(.5f, .14f) * size, new Vector2(.36f, .35f) * size, Mathf.PI, 24);
+        }
+
+        void AccountFan(VertexHelper mesh, Vector2 center, Vector2 radius, float sweep, int segments)
+        {
+            int first = mesh.currentVertCount;
+            mesh.AddVert(center, color, Vector2.zero);
+            for (int i = 0; i <= segments; i++)
+            {
+                float angle = sweep * i / segments;
+                mesh.AddVert(center + new Vector2(Mathf.Cos(angle) * radius.x, Mathf.Sin(angle) * radius.y), color, Vector2.zero);
+                if (i > 0) mesh.AddTriangle(first, first + i, first + i + 1);
+            }
         }
     }
 }

@@ -672,7 +672,7 @@ namespace TwelveJade.Editor
             string status = complete ? (failed == 0 ? "PASS" : "FAIL") : "RUNNING";
             File.WriteAllText(Path.Combine(state.output, "report.json"), JsonUtility.ToJson(new Report {
                 status = status, unityVersion = Application.unityVersion, sourceProject = state.source, copyProject = state.project,
-                scope = state.dossier ? "Save-slot account/cloud entry, transparent rural figures, redraw and real button raycasts" : state.music ? "Supplied scene music, audio output, settings, quiet ambience and current costumes" : state.story ? "V2.5 sequential comic, choices, replay, failure retry and rural costumes" : "Qingshi mortal prologue",
+                scope = state.dossier ? "Title account icon, local save slots, transparent figures and four-way locomotion" : state.music ? "Supplied scene music, audio output, settings, quiet ambience and current costumes" : state.story ? "V2.5 sequential comic, choices, replay, failure retry and rural costumes" : "Qingshi mortal prologue",
                 passed = passed, failed = failed, pending = pending, checks = state.checks, screenshots = state.shots, inputs = state.inputs
             }, true));
             File.WriteAllLines(Path.Combine(state.output, "report.txt"), new[] {

@@ -127,9 +127,18 @@ namespace TwelveJade.Presentation
         {
             if (sheet == null || frames < 1 || sheet.width % frames != 0 || cycleDistance <= 0) return;
             if (sheet == frameSheet && frameCount == frames && Mathf.Approximately(frameCycleDistance, cycleDistance)) return;
+            float phase = FramePhaseForCheck;
             frameCount = frames; frameCycleDistance = cycleDistance;
             frameSheet = sheet;
-            BuildRenderers();
+            framePhaseOffset = phase - strideDistance / EffectiveFrameCycleDistance;
+            if (gaitMode == GaitMode.Frames && frameImage != null)
+            {
+                // A direction change reuses the existing drawables and keeps the same foot in its stride.
+                frameIndex = FrameAtCurrentPhase(); framePrevIndex = -1; frameFadeLeft = 0;
+                if (frameFadeImage != null) frameFadeImage.color = new Color(1, 1, 1, 0);
+                ApplyFrame(); ApplyRendererVisibility();
+            }
+            else BuildRenderers();
         }
         [SerializeField] PuppetRigDefinition rigDefinition = PuppetRigDefinition.Default;
         [SerializeField] PuppetGaitParams walkFrontGait = PuppetGaitParams.Walk(true);
@@ -221,6 +230,11 @@ namespace TwelveJade.Presentation
         // ---- W-A：网格形变的对外口径（夹具按这两条钉住"接上了且站着不动"）----
         public GaitMode GaitModeForCheck => gaitMode;
         // B-03 夹具用：当前帧索引（-1 = 还没算出过；见 PuppetGait.FrameIndexAt 的非法参数约定）
+        float framePhaseOffset;
+        float EffectiveFrameCycleDistance => Mathf.Max(1f, frameCycleDistance * (motion == Motion.Run ? 1.35f : 1f));
+        public float FramePhaseForCheck => Mathf.Repeat(strideDistance / EffectiveFrameCycleDistance + framePhaseOffset, 1f);
+        int FrameAtCurrentPhase() => frameCount > 0 && frameCycleDistance > 0
+            ? Mathf.Min(frameCount - 1, Mathf.FloorToInt(FramePhaseForCheck * frameCount)) : -1;
         public int FrameIndexForCheck => frameIndex;
         public int FrameCountForCheck => frameCount;
         public bool FramesActiveForCheck => frameImage != null;
@@ -417,7 +431,7 @@ namespace TwelveJade.Presentation
                 frameAtRest = false; restFadeLeft = 0; framePrevIndex = -1; frameFadeLeft = 0;
                 if (frameFadeImage != null) frameFadeImage.color = new Color(1, 1, 1, 0);
             }
-            var idx = PuppetGait.FrameIndexAt(strideDistance, frameCycleDistance, frameCount);
+            var idx = FrameAtCurrentPhase();
             if (idx < 0)
             {
                 if (!frameWarned)
@@ -572,6 +586,7 @@ namespace TwelveJade.Presentation
         {
             if (next == null || next == view) return;
             view = next;
+            if (frameImage != null && frameAtRest) ApplyFrame();
             if (meshGraphic != null) meshGraphic.SetSource(next);
             foreach (var i in new[] { LegL, LegR, Torso, Head })
                 if (slices[i] != null) slices[i].texture = next;
@@ -582,7 +597,9 @@ namespace TwelveJade.Presentation
         public void SetMotion(Motion value)
         {
             if (motion == value) return;
+            float phase = FramePhaseForCheck;
             motion = value;
+            framePhaseOffset = phase - strideDistance / EffectiveFrameCycleDistance;
             // 不再重置 `time`：相位已改由位移驱动，换档时把时钟清零等于把 ramp 清零，
             // 腿会在切换那一帧弹回 0°（走→停最显眼）。ramp 现在只在创建后走一次。
         }
@@ -632,7 +649,8 @@ namespace TwelveJade.Presentation
             if (conveyorSpeed > 0f) strideDistance += conveyorSpeed * Time.unscaledDeltaTime;
             var w = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(time / Mathf.Max(.01f, rampSeconds)));
             var turn = Mathf.Clamp01(turnTime / Mathf.Max(.01f, turnSeconds));
-            var squash = Mathf.Sin(turn * Mathf.PI) * turnSquash;
+            // Authored frame silhouettes already turn; squashing them makes a rigid paper-puppet snap.
+            var squash = gaitMode == GaitMode.Frames ? 0f : Mathf.Sin(turn * Mathf.PI) * turnSquash;
             root.localScale = Vector3.Scale(baseScale, new Vector3(1f + squash, 1f - squash, 1f));
             float legL = 0f, legR = 0f, body = 0f, neck = 0f, bob = 0f, sway = 0f, gaitPhase = 0f;
             var deform = DeformActive;
@@ -759,8 +777,10 @@ namespace TwelveJade.Presentation
                         break;
                 }
             }
+            // Authored flipbook frames already include knee flexion and weight transfer.
+            // Keep their supporting sole on the world anchor instead of adding a second procedural bounce.
             root.anchoredPosition = position +
-                (deform ? Vector2.zero : new Vector2(sway, -bob) * baseScale.y) + actionOffset;
+                ((deform || gaitMode == GaitMode.Frames) ? Vector2.zero : new Vector2(sway, -bob) * baseScale.y) + actionOffset;
             // 收招后必须把倾斜写回 0：旧代码用 `else if (!mirror)` 短路，于是**朝左**的人物
             // 闪避完之后会永远歪着最后一个 lean 角度（城镇页开始用镜像后就会露出来）。
             root.localRotation = actionLean != 0f ? Quaternion.Euler(0f, 0f, actionLean) : Quaternion.identity;

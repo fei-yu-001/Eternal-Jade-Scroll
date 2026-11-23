@@ -17,6 +17,7 @@ namespace TwelveJade.Presentation
         UiKit ui;
         RectTransform canvas, screenCanvas, content, modal, toast;
         RawImage menuStill;
+        Button menuAccountButton;
         GameObject canvasObject;
         CanvasGroup contentFade;
         MenuVideoBackdrop menuVideo;
@@ -33,13 +34,18 @@ namespace TwelveJade.Presentation
         const string ProductVersion = "0.0.1 · 初见青石";
 
         public string CurrentPage => page;
-        // The separate network UI assembly reads the live page and input state through these guards.
-        public RectTransform NetworkDialogEntryRoot => page == "slots" ? content : null;
+        // Presentation owns the control; the separate network UI assembly handles account requests.
+        public event Action AccountDialogRequested;
         public bool CanOpenNetworkDialog => isActiveAndEnabled && screenCanvas != null &&
             content != null && content.gameObject.activeInHierarchy &&
-            (page == "slots" || page == "town") && modal == null && bagOverlay == null && craftOverlay == null &&
+            (page == "menu" || page == "slots" || page == "town") && modal == null && bagOverlay == null && craftOverlay == null &&
             !WorldDialogueInputBlocked && !WorldCombatActive && !WorldCombatWheelOpen &&
             (contentFade == null || contentFade.interactable && contentFade.blocksRaycasts);
+        public void SetAccountEntryInteractable(bool available)
+        {
+            if (menuAccountButton != null)
+                menuAccountButton.interactable = available && CanOpenNetworkDialog;
+        }
         // 验收与章系统都需要读当前档；写入口仍是各 Core 账本。
         public SaveData ActiveSave => activeSave;
         public SaveRepository Repository => repository;
@@ -199,11 +205,14 @@ namespace TwelveJade.Presentation
             var mainRect = (RectTransform)enter.transform;
             mainRect.anchorMin = mainRect.anchorMax = new Vector2(.5f, .22f);
             mainRect.pivot = new Vector2(.5f, .5f); mainRect.anchoredPosition = Vector2.zero;
-            var tools = ui.Rect(content, "Menu utilities", 0, 0, 220, 92);
+            var tools = ui.Rect(content, "Menu utilities", 0, 0, 336, 92);
             tools.anchorMin = tools.anchorMax = Vector2.one;
             tools.pivot = Vector2.one; tools.anchoredPosition = new Vector2(-40, -28);
-            MenuMemoArt.Utility(ui, tools, "Menu settings", "乾坤", 0, MenuOrnament.Motif.Compass, ShowSettings, () => settings.reduceMotion, PlayClick);
-            MenuMemoArt.Utility(ui, tools, "Menu credits", "玉牒", 116, MenuOrnament.Motif.Book, ShowCredits, () => settings.reduceMotion, PlayClick);
+            menuAccountButton = MenuMemoArt.Utility(ui, tools, "Menu account", "账号", 0, MenuOrnament.Motif.Account,
+                () => { if (CanOpenNetworkDialog) AccountDialogRequested?.Invoke(); }, () => settings.reduceMotion, PlayClick);
+            menuAccountButton.interactable = false; // The network UI enables it after binding and checking dialog state.
+            MenuMemoArt.Utility(ui, tools, "Menu settings", "乾坤", 116, MenuOrnament.Motif.Compass, ShowSettings, () => settings.reduceMotion, PlayClick);
+            MenuMemoArt.Utility(ui, tools, "Menu credits", "玉牒", 232, MenuOrnament.Motif.Book, ShowCredits, () => settings.reduceMotion, PlayClick);
             FocusFirst();
         }
 

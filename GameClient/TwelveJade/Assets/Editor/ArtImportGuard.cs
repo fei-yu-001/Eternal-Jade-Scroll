@@ -37,7 +37,10 @@ namespace TwelveJade.Editor
             importer.filterMode = FilterMode.Bilinear;
             importer.sRGBTexture = true;
             importer.isReadable = false;
-            importer.maxTextureSize = 2048;
+            // Eight 384px hero cells need their original 3072px width for clean frame sampling.
+            bool heroWalk = assetPath.StartsWith(ArtRoot + "Characters/Qingshi/qingshi-", System.StringComparison.Ordinal) &&
+                assetPath.EndsWith("-walk.png", System.StringComparison.OrdinalIgnoreCase);
+            importer.maxTextureSize = heroWalk ? 4096 : 2048;
 
             if (IsWorldChunk(assetPath))
             {

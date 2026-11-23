@@ -897,8 +897,10 @@ namespace TwelveJade.Presentation
         void UpdateTravelerFacing(Vector2 move)
         {
             if (move == Vector2.zero || travelerPuppet == null) return;
-            var view = Mathf.Abs(move.x) > Mathf.Abs(move.y) ? 1
-                : move.y > 0f ? 0 : 2;   // 世界 y 越大越靠南（屏幕越下）= 正面朝观察者
+            // Keep the current axis in a small diagonal band, so steering near 45 degrees cannot flicker views.
+            float horizontal = Mathf.Abs(move.x), vertical = Mathf.Abs(move.y);
+            bool sideways = travelerView == 1 ? horizontal >= vertical * .82f : horizontal > vertical * 1.18f;
+            var view = sideways ? 1 : move.y > 0f ? 0 : 2;   // 世界 y 越大越靠南（屏幕越下）= 正面朝观察者
             if (activeSave != null) activeSave.facing = view == 1 ? (move.x < 0 ? 3 : 1) : view == 2 ? 2 : 0;
             if (view != travelerView)
             {

@@ -92,43 +92,43 @@
       "id": "hero-male-front",
       "stand": "Art/Characters/Qingshi/qingshi-male-front",
       "walk": "Art/Characters/Qingshi/qingshi-male-front-walk",
-      "frames": 4,
-      "cycleDistance": 132
+      "frames": 8,
+      "cycleDistance": 140
     },
     {
       "id": "hero-male-side",
       "stand": "Art/Characters/Qingshi/qingshi-male-side",
       "walk": "Art/Characters/Qingshi/qingshi-male-side-walk",
-      "frames": 4,
-      "cycleDistance": 290
+      "frames": 8,
+      "cycleDistance": 140
     },
     {
       "id": "hero-male-back",
       "stand": "Art/Characters/Qingshi/qingshi-male-back",
       "walk": "Art/Characters/Qingshi/qingshi-male-back-walk",
-      "frames": 4,
-      "cycleDistance": 132
+      "frames": 8,
+      "cycleDistance": 140
     },
     {
       "id": "hero-female-front",
       "stand": "Art/Characters/Qingshi/qingshi-female-front",
       "walk": "Art/Characters/Qingshi/qingshi-female-front-walk",
-      "frames": 4,
-      "cycleDistance": 132
+      "frames": 8,
+      "cycleDistance": 140
     },
     {
       "id": "hero-female-side",
       "stand": "Art/Characters/Qingshi/qingshi-female-side",
       "walk": "Art/Characters/Qingshi/qingshi-female-side-walk",
-      "frames": 4,
-      "cycleDistance": 290
+      "frames": 8,
+      "cycleDistance": 140
     },
     {
       "id": "hero-female-back",
       "stand": "Art/Characters/Qingshi/qingshi-female-back",
       "walk": "Art/Characters/Qingshi/qingshi-female-back-walk",
-      "frames": 4,
-      "cycleDistance": 132
+      "frames": 8,
+      "cycleDistance": 140
     }
   ]
 }

@@ -1,5 +1,7 @@
 # Action pose size regression checks
 
+2026-11-23 update: Qingshi's six new standing views have individually remeasured alpha registrations. The eight-frame walk cycles deliberately include knee bend and body rise/fall. `approved-walk-bounds.json` pins every reviewed frame's exact alpha top/sole; replacing a pose requires explicit review and registration. An additional 3% standing-height envelope limits body rise/fall, while the existing 0.7-unit sole check remains. Attack height/sole calculations keep their 0.0002-unit limit. Final offline result: **508 assertions / 108 layouts / 6 stands / 48 walk frames / 6 strike frames PASS**. Current Unity action regression: **48 cases / 16,491 assertions / 48 rendered boards / 0 failures**. Evidence and player-facing changes: `Documents/账号菜单与行走改进-2026-11-23.md`. The November 20 results below remain historical.
+
 2026-11-20: skill size correction, using existing artwork only.
 
 ## Root causes and correction

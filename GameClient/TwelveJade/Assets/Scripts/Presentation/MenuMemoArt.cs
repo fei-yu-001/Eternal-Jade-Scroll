@@ -70,15 +70,24 @@ namespace TwelveJade.Presentation
             var rect = ui.Rect(parent, name, x, 0, 104, 92);
             var surface = rect.gameObject.AddComponent<MenuMemoSurfaceGraphic>();
             surface.Configure(MenuMemoSurfaceGraphic.Surface.Utility, true);
-            string artwork = motif == MenuOrnament.Motif.Compass ? "icon-compass" :
-                motif == MenuOrnament.Motif.Book ? "icon-document" : "icon-sword";
-            var texture = Resources.Load<Texture2D>("Art/UI/Nov6/" + artwork);
-            if (texture != null)
+            if (motif == MenuOrnament.Motif.Account)
             {
-                float scale = 43f / Mathf.Max(texture.width, texture.height);
-                float width = texture.width * scale, height = texture.height * scale;
-                var icon = ui.Art(rect, texture, (104 - width) * .5f, 5 + (43 - height) * .5f, width, height);
-                icon.name = name + " transparent icon"; icon.raycastTarget = false;
+                var icon = ui.Rect(rect, name + " account icon", 30.5f, 5, 43, 43).gameObject.AddComponent<MenuOrnament>();
+                icon.Shape = MenuOrnament.Motif.Account;
+                icon.color = Ink; icon.raycastTarget = false;
+            }
+            else
+            {
+                string artwork = motif == MenuOrnament.Motif.Compass ? "icon-compass" :
+                    motif == MenuOrnament.Motif.Book ? "icon-document" : "icon-sword";
+                var texture = Resources.Load<Texture2D>("Art/UI/Nov6/" + artwork);
+                if (texture != null)
+                {
+                    float scale = 43f / Mathf.Max(texture.width, texture.height);
+                    float width = texture.width * scale, height = texture.height * scale;
+                    var icon = ui.Art(rect, texture, (104 - width) * .5f, 5 + (43 - height) * .5f, width, height);
+                    icon.name = name + " transparent icon"; icon.raycastTarget = false;
+                }
             }
             var mount = Mount(rect, MemoMountGraphic.Form.Utility);
             var label = ui.Label(rect, text, 12, 54, 80, 34, 24, Ink, TextAlignmentOptions.Center, true);
