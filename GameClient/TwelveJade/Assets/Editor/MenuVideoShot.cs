@@ -26,7 +26,7 @@ namespace TwelveJade.Editor
         const string Key = "MenuVideoShot.Active";
         const string Asset = "Assets/Resources/Art/Background/menu-loop.mp4";
         const string ClipGuid = "240ec81ead1541c59f852f433c9e960e";
-        const string ExpectedSha = "f971fd3400368a8561ea14b9dfc754f698ec27060a01ab01f4ebf5d0d130bd16";
+        const string ExpectedSha = "b15cbd0268e210ead6f6aee10f96d519cb47b983a339496c28fff0aec5c141c4";
         const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
         static readonly List<Row> rows = new List<Row>();
         static string output, sourceProject;
@@ -421,8 +421,8 @@ namespace TwelveJade.Editor
             {
                 capturedFirstDecoded = true;
                 string first = SaveDecodedFrame("00-first-decoded-texture");
-                Check("real first frame and 720p dimensions", player.isPrepared && player.isPlaying && video.DecodedFrames > 0 &&
-                    image.texture.width == 1280 && image.texture.height == 720,
+                Check("real first frame and 4K dimensions", player.isPrepared && player.isPlaying && video.DecodedFrames > 0 &&
+                    image.texture.width == 3840 && image.texture.height == 2160,
                     "First observed decoded texture: frame=" + player.frame + " time=" + player.time + " pixelSHA=" + first);
                 Capture("00-first-frame-reveal");
                 return;
@@ -1320,7 +1320,7 @@ namespace TwelveJade.Editor
             if (finishing) return;
             finishing = true;
             // Missing media/early exits cannot pass a reduced subset of the required acceptance.
-            foreach (var gate in new[] { "acceptance native input isolated", "real first frame and 720p dimensions", "actual decoded pixels and frame index change",
+            foreach (var gate in new[] { "acceptance native input isolated", "real first frame and 4K dimensions", "actual decoded pixels and frame index change",
                 "real natural loop and continued decoded playback", "soundtrack looping player", "loop end fades through still",
                 "loop start fades from still", "reduceMotion stops releases and hides video", "motion setting restores actual decoded video",
                 "menu return restores real playback", "missing resource fallback is nonblocking", "interrupted preparation watchdog falls back",
