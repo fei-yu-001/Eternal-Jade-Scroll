@@ -37,7 +37,10 @@ namespace TwelveJade.Editor
             "Assets/Editor/InnateFateChecks.cs", "Assets/Editor/InnateFateChecks.cs.meta", ScenePath,
             "Assets/Scripts/Presentation/InnateFateView.cs", "Assets/Scripts/Presentation/InnateFateView.cs.meta",
             "Assets/Scripts/Presentation/FrontEndInnateFate.cs", "Assets/Scripts/Presentation/FrontEndInnateFate.cs.meta",
-            "Assets/Scripts/Presentation/InnateFateRingGraphic.cs", "Assets/Scripts/Presentation/InnateFateRingGraphic.cs.meta",
+            "Assets/Scripts/Presentation/ApprovedUiArt.cs", "Assets/Scripts/Presentation/ApprovedUiArt.cs.meta",
+            "Assets/Resources/Config/ui-art-catalogue.json", "Assets/Resources/Config/ui-art-catalogue.json.meta",
+            "Assets/Resources/Art/UI/Nov27/innate-scroll-stage.png", "Assets/Resources/Art/UI/Nov27/innate-scroll-stage.png.meta",
+            "Assets/Resources/Art/UI/Nov27/innate-fate-card.png", "Assets/Resources/Art/UI/Nov27/innate-fate-card.png.meta",
             "Assets/Scripts/Presentation/QingshiComicPaperGraphic.cs",
             "Assets/Scripts/Presentation/FrontEndController.cs", "Assets/Scripts/Presentation/FrontEndCharacters.cs",
             "Assets/Scripts/Presentation/FrontEndGuofengHud.cs", "Assets/Scripts/Presentation/FrontEndSettings.cs",
@@ -444,6 +447,7 @@ namespace TwelveJade.Editor
                 Require("draft opens immediately settled in low motion", View.IsSettled);
                 var expected = new SaveData { gender = "female", traits = ids, oneTimeFlags = Array.Empty<string>() };
                 CheckDisplay(View, expected, "draft female"); CheckFigure(View, "female");
+                CheckLayout(View, null, Screen.width, Screen.height, "actual draft female");
                 yield return Capture("03-draft-female-static.jpg");
                 yield return CloseView();
             } finally { Settings.reduceMotion = prior; }
@@ -638,13 +642,84 @@ namespace TwelveJade.Editor
                 for (int j = i + 1; j < buttons.Length; j++) Require(label + " controls do not overlap " + buttons[i].name + "/" + buttons[j].name,
                     !a.Overlaps(ScreenRect((RectTransform)buttons[j].transform, camera)));
             }
-            var rings = view.GetComponentsInChildren<InnateFateRingGraphic>(false);
-            Require(label + " authored reveal geometry exists", rings.Length >= 6);
-            foreach (var ring in rings) {
-                var mesh = ring.canvasRenderer.GetMesh();
-                Require(label + " nonempty ring/node mesh " + ring.name, mesh != null && mesh.vertexCount >= 3 && mesh.triangles.Length >= 3 && mesh.colors32.Any(c => c.a > 0));
+            CheckAuthoredArt(view, design, camera, label);
+            CheckRearrangedLayout(view, design, camera, width, height, label);
+        }
+        static void CheckRearrangedLayout(InnateFateView view, RectTransform design, Camera camera, int width, int height, string label)
+        {
+            var stage = ScreenRect(design, camera);
+            var poster = view.GetComponentInChildren<PosterCardView>(true);
+            Require(label + " full figure is actually visible", poster != null && poster.Artwork != null && VisibleGraphic(poster.Artwork));
+            var figure = ScreenRect(poster.Artwork.rectTransform, camera);
+            CheckBounds(poster.Artwork.rectTransform, camera, width, height, label + " complete figure on screen");
+            Require(label + " large figure occupies the left of the design", figure.center.x < stage.center.x &&
+                figure.xMax <= stage.center.x + 2 && figure.height >= stage.height * .60f && poster.Crop == new Rect(0, 0, 1, 1),
+                "figure=" + figure + "; design=" + stage);
+            var content = new List<RectTransform>();
+            foreach (string element in Elements) {
+                var node = Find(view.transform, "Root node " + element) as RectTransform;
+                Require(label + " root node has visible submitted geometry " + element,
+                    node != null && node.GetComponentsInChildren<Graphic>(false).Any(VisibleGraphic));
+                content.Add(node);
+            }
+            content.AddRange(view.GetComponentsInChildren<RectTransform>(false).Where(t => Regex.IsMatch(t.name, @"\AInnate trait \d+\z")));
+            var destiny = Find(view.transform, "Innate destiny title") as RectTransform;
+            Require(label + " destiny title participates in right-side layout", destiny != null);
+            content.Add(destiny);
+            var contentBoxes = content.Select(rect => ScreenRect(rect, camera)).ToArray();
+            Require(label + " destiny roots and traits occupy the right of the design",
+                (contentBoxes.Min(box => box.xMin) + contentBoxes.Max(box => box.xMax)) * .5f > stage.center.x);
+            for (int i = 0; i < content.Count; i++) {
+                var rect = content[i]; var box = ScreenRect(rect, camera);
+                CheckBounds(rect, camera, width, height, label + " content on screen " + rect.name);
+                Require(label + " content stays right of figure " + rect.name, box.xMin >= figure.xMax - 2 && !box.Overlaps(figure),
+                    "content=" + box + "; figure=" + figure);
+                for (int j = i + 1; j < content.Count; j++)
+                    Require(label + " right content does not overlap " + rect.name + "/" + content[j].name,
+                        !box.Overlaps(ScreenRect(content[j], camera)));
+                foreach (var button in view.GetComponentsInChildren<Button>(false))
+                    Require(label + " content leaves click areas clear " + rect.name + "/" + button.name,
+                        !box.Overlaps(ScreenRect((RectTransform)button.transform, camera)));
             }
         }
+        static bool VisibleGraphic(Graphic graphic)
+        {
+            if (graphic == null || !graphic.isActiveAndEnabled || graphic.color.a <= .01f || graphic.canvasRenderer.cull) return false;
+            if (graphic.GetComponentsInParent<CanvasGroup>(true).Any(g => g.alpha <= .01f)) return false;
+            var mesh = graphic.canvasRenderer.GetMesh();
+            return mesh != null && mesh.vertexCount >= 3 && mesh.triangles.Length >= 3 && mesh.colors32.Any(c => c.a > 0);
+        }
+        static void CheckAuthoredArt(InnateFateView view, RectTransform design, Camera camera, string label)
+        {
+            var landscape = Find(view.transform, "Innate fate authored landscape")?.GetComponent<RawImage>();
+            CheckRequiredArt(landscape, "nov27/innate-scroll-stage", "Art/UI/Nov27/innate-scroll-stage", label + " landscape");
+            var stage = ScreenRect(design, camera); var background = ScreenRect(landscape.rectTransform, camera);
+            Require(label + " authored landscape covers the design", Mathf.Abs(stage.xMin - background.xMin) <= 2 &&
+                Mathf.Abs(stage.yMin - background.yMin) <= 2 && Mathf.Abs(stage.xMax - background.xMax) <= 2 &&
+                Mathf.Abs(stage.yMax - background.yMax) <= 2, "landscape=" + background + "; design=" + stage);
+            for (int i = 0; i < view.TraitIds.Count; i++) {
+                var card = Find(view.transform, "Innate trait " + i)?.GetComponent<RawImage>();
+                CheckRequiredArt(card, "nov27/innate-fate-card", "Art/UI/Nov27/innate-fate-card", label + " trait " + i);
+                var bounds = card.rectTransform.rect;
+                Require(label + " authored card keeps full UV and original proportion " + i,
+                    card.uvRect == new Rect(0, 0, 1, 1) && bounds.height > 0 &&
+                    Mathf.Abs(bounds.width / bounds.height - card.texture.width / (float)card.texture.height) < .002f,
+                    "rect=" + bounds.size + "; texture=" + card.texture.width + "x" + card.texture.height);
+            }
+        }
+        static void CheckRequiredArt(RawImage image, string catalogueId, string resource, string label)
+        {
+            string path = "Assets/Resources/" + resource + ".png";
+            Require(label + " required PNG and meta exist", File.Exists(Path.Combine(state.project, path)) &&
+                File.Exists(Path.Combine(state.project, path + ".meta")), path);
+            Bind(path); Bind(path + ".meta");
+            var texture = Resources.Load<Texture2D>(resource);
+            Require(label + " required PNG really loads", texture != null && AssetDatabase.GetAssetPath(texture) == path, resource);
+            Require(label + " approved catalogue resolves the same PNG", ApprovedUiArt.Has(catalogueId) && ApprovedUiArt.Load(catalogueId) == texture, catalogueId);
+            Require(label + " named RawImage uses the real PNG with visible submitted geometry",
+                image != null && image.texture == texture && VisibleGraphic(image), resource);
+        }
+
         static Rect ScreenRect(RectTransform rect, Camera camera)
         {
             var points = new Vector3[4]; rect.GetWorldCorners(points);
@@ -659,7 +734,14 @@ namespace TwelveJade.Editor
         static void PreviewLayouts()
         {
             // Real entry/click tests above remain on FrontEnd. Preview scenes only exercise deterministic viewport geometry.
-            foreach (var size in new[] { new Vector2Int(1280, 720), new Vector2Int(1920, 1080), new Vector2Int(2560, 1440) }) {
+            const string longCharacterName = "一二三四五六七八九十甲乙丙丁戊己";
+            foreach (var preview in new[] {
+                (size: new Vector2Int(1280, 720), longName: false),
+                (size: new Vector2Int(1920, 1080), longName: false),
+                (size: new Vector2Int(2560, 1440), longName: false),
+                (size: new Vector2Int(1920, 1080), longName: true)
+            }) {
+                var size = preview.size; string label = size + (preview.longName ? " 16-character name preview" : " preview");
                 Scene scene = default; RenderTexture target = null;
                 try {
                     scene = EditorSceneManager.NewPreviewScene();
@@ -675,17 +757,55 @@ namespace TwelveJade.Editor
                     var holder = new GameObject("Innate preview holder", typeof(RectTransform), typeof(InnateFateView)); holder.transform.SetParent(parent, false);
                     var rect = (RectTransform)holder.transform; rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one; rect.offsetMin = rect.offsetMax = Vector2.zero;
                     var view = holder.GetComponent<InnateFateView>(); view.enabled = false;
-                    var input = Clone(size.x == 1280 ? male : female); var witness = new DataWitness(input);
+                    var input = Clone(size.x == 1280 ? male : female);
+                    if (preview.longName) input.characterName = longCharacterName;
+                    var witness = new DataWitness(input);
                     view.Configure(Field<UiKit>(host, "ui"), rect, input, () => false, () => { }, () => { });
                     view.Sample(InnateFateView.Duration, false);
-                    CheckDisplay(view, input, size + " preview"); CheckLayout(view, camera, size.x, size.y, size + " preview");
+                    CheckDisplay(view, input, label); CheckLayout(view, camera, size.x, size.y, label);
+                    if (preview.longName) {
+                        var name = Find(view.transform, "Innate fate character name")?.GetComponent<TMP_Text>();
+                        Require(label + " preserves the complete input name", name != null && name.text == longCharacterName);
+                        name.ForceMeshUpdate();
+                        Require(label + " renders all sixteen original glyphs", name.textInfo.characterCount == longCharacterName.Length &&
+                            Enumerable.Range(0, longCharacterName.Length).All(i => {
+                                var character = name.textInfo.characterInfo[i];
+                                return character.character == longCharacterName[i] && character.isVisible && character.textElement != null &&
+                                    character.textElement.unicode == longCharacterName[i];
+                            }));
+                        var bounds = name.textBounds; var nameRect = name.rectTransform.rect;
+                        Require(label + " name fits without overflow or clipping", !name.isTextOverflowing &&
+                            bounds.min.x >= nameRect.xMin - 2 && bounds.max.x <= nameRect.xMax + 2 &&
+                            bounds.min.y >= nameRect.yMin - 2 && bounds.max.y <= nameRect.yMax + 2,
+                            "text=" + bounds + "; rect=" + nameRect);
+                        var nameBox = ScreenRect(name.rectTransform, camera);
+                        var epigraph = Find(view.transform, "Innate fate epigraph")?.GetComponent<TMP_Text>();
+                        Require(label + " epigraph remains visible", epigraph != null && VisibleGraphic(epigraph));
+                        var epigraphBox = ScreenRect(epigraph.rectTransform, camera);
+                        Require(label + " name does not overlap epigraph", !nameBox.Overlaps(epigraphBox),
+                            "name=" + nameBox + "; epigraph=" + epigraphBox);
+                        var poster = view.GetComponentInChildren<PosterCardView>(true);
+                        var figureBox = ScreenRect(poster.Artwork.rectTransform, camera);
+                        Require(label + " name does not overlap the actual full figure", !nameBox.Overlaps(figureBox),
+                            "name=" + nameBox + "; figure=" + figureBox);
+                        foreach (var text in view.GetComponentsInChildren<TMP_Text>(false).Where(t => t != name && t != epigraph && !string.IsNullOrEmpty(t.text))) {
+                            var textBox = ScreenRect(text.rectTransform, camera);
+                            Require(label + " name does not overlap other text " + text.name, !nameBox.Overlaps(textBox),
+                                "name=" + nameBox + "; text=" + textBox);
+                        }
+                        foreach (var button in view.GetComponentsInChildren<Button>(false)) {
+                            var buttonBox = ScreenRect((RectTransform)button.transform, camera);
+                            Require(label + " name does not overlap button " + button.name, !nameBox.Overlaps(buttonBox),
+                                "name=" + nameBox + "; button=" + buttonBox);
+                        }
+                    }
                     camera.Render();
                     var frame = ReadTexture(target, 128, 72, false);
-                    try { Require(size + " preview renders actual pixels", frame.GetPixels32().Count(c => Math.Max(c.r, Math.Max(c.g, c.b)) > 20) > 500); }
+                    try { Require(label + " renders actual pixels", frame.GetPixels32().Count(c => Math.Max(c.r, Math.Max(c.g, c.b)) > 20) > 500); }
                     finally { UnityEngine.Object.DestroyImmediate(frame); }
-                    witness.CheckUnchanged(size + " preview");
+                    witness.CheckUnchanged(label);
                     string id = view.TraitIds[0]; input.traits[0] = CharacterGen.Traits.First(t => !input.traits.Contains(t.Id)).Id;
-                    Require(size + " view owns a trait snapshot", view.TraitIds[0] == id);
+                    Require(label + " view owns a trait snapshot", view.TraitIds[0] == id);
                     foreach (var art in view.GetComponentsInChildren<RawImage>(true)) if (art.texture != null) BindAsset(art.texture);
                 } finally {
                     if (target != null) { target.Release(); UnityEngine.Object.DestroyImmediate(target); }

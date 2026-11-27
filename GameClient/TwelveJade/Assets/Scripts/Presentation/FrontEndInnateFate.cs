@@ -22,7 +22,7 @@ namespace TwelveJade.Presentation
             CloseModal();
             var group = content.GetComponent<CanvasGroup>(); group.interactable = false; group.blocksRaycasts = false;
             modal = ui.Stretch(screenCanvas, "Innate fate modal");
-            var veil = modal.gameObject.AddComponent<Image>(); veil.color = UiKit.Hex("102320"); veil.raycastTarget = true;
+            var veil = modal.gameObject.AddComponent<Image>(); veil.color = UiKit.Hex("E9D4AC"); veil.raycastTarget = true;
             var host = modal;
             var view = host.gameObject.AddComponent<InnateFateView>();
             view.Configure(ui, host, data, () => settings.reduceMotion, () =>

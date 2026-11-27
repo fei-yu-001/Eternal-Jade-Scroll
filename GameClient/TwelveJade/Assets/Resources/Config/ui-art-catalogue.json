@@ -503,6 +503,14 @@
     {
       "id": "nov19/creature-stone-mandrill-stand",
       "resource": "Art/Characters/Nov19/stone-mandrill-stand"
+    },
+    {
+      "id": "nov27/innate-scroll-stage",
+      "resource": "Art/UI/Nov27/innate-scroll-stage"
+    },
+    {
+      "id": "nov27/innate-fate-card",
+      "resource": "Art/UI/Nov27/innate-fate-card"
     }
   ]
 }

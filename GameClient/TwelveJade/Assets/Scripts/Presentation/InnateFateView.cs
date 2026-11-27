@@ -8,21 +8,20 @@ using UnityEngine.UI;
 
 namespace TwelveJade.Presentation
 {
-    // Read-only presentation of the current character. No roll, reward, cultivation or save write.
+    // An authored, read-only character scroll. Sampling never rolls traits or writes progress.
     public sealed class InnateFateView : MonoBehaviour
     {
         public const float Duration = 3.8f;
         static readonly string[] Elements = { "metal", "wood", "earth", "water", "fire" };
         static readonly string[] Glyphs = { "金", "木", "土", "水", "火" };
-        static readonly Color Pale = UiKit.Hex("EFE6CF"), Gold = UiKit.Hex("C5AD79"), Ash = UiKit.Hex("B7C6BA");
+        static readonly Color Ink = UiKit.Hex("352B22"), Muted = UiKit.Hex("685541"), Vermilion = UiKit.Hex("883E2B"), Paper = UiKit.Hex("F6E7C9");
+        static readonly Vector2 FigureOrigin = new Vector2(300, -142);
         readonly List<CanvasGroup> nodes = new List<CanvasGroup>();
         readonly List<CanvasGroup> cards = new List<CanvasGroup>();
         readonly List<Vector2> cardOrigins = new List<Vector2>();
         IReadOnlyList<string> traits = Array.AsReadOnly(Array.Empty<string>());
-        CanvasGroup figureGroup, resultGroup;
-        RectTransform design, figureRect, compassRect;
-        InnateFateRingGraphic ring;
-        RawImage compass;
+        CanvasGroup figureGroup, resultGroup, destinyGroup;
+        RectTransform design, figureRect;
         Button skip, replay;
         Func<bool> lowMotion;
         Action closing;
@@ -46,88 +45,94 @@ namespace TwelveJade.Presentation
             design = ui.Rect(parent, "Innate fate design", 0, 0, 1920, 1080);
             design.anchorMin = design.anchorMax = design.pivot = new Vector2(.5f, .5f);
             design.anchoredPosition = Vector2.zero;
-            var ground = ui.Stretch(design, "Innate fate ink ground").gameObject.AddComponent<Image>();
-            ground.color = UiKit.Hex("142C29"); ground.raycastTarget = false;
-            var paper = AestheticUi.Paper(ui, design, "Innate fate silk grain", new Rect(0, 0, 1920, 1080));
-            paper.color = new Color(.38f, .46f, .38f, .13f); paper.raycastTarget = false;
-            ring = ui.Rect(design, "Innate fate orbit", 510, 142, 900, 740).gameObject.AddComponent<InnateFateRingGraphic>();
-            ring.raycastTarget = false;
-            Text(ui, design, "Innate fate heading", "命 禀 · 灵 根", new Rect(560, 48, 800, 70), 43, Pale);
-            Text(ui, design, "Innate fate epigraph", "一身禀赋，随行旅渐明", new Rect(610, 116, 700, 32), 21, Ash);
-            Command(ui, design, "Innate fate close", "收 卷", new Rect(1660, 62, 170, 64), RequestClose, click);
+            Artwork(ui, design, "Innate fate authored landscape", "nov27/innate-scroll-stage", new Rect(0, 0, 1920, 1080), true);
+            Command(ui, design, "Innate fate close", "收 卷", new Rect(1718, 52, 130, 64), RequestClose, click);
 
-            var destiny = CharacterGen.FindDestiny(data.destiny);
-            Text(ui, design, "Innate destiny caption", "命 格", new Rect(130, 240, 360, 38), 23, Gold);
-            Text(ui, design, "Innate destiny title", destiny?.Name ?? "命星待照", new Rect(130, 286, 360, 60), 35, Pale);
-            Text(ui, design, "Innate destiny description", destiny?.Description ?? "此卷尚未记下命中星象。", new Rect(148, 365, 324, 118), 24, Ash, TextAlignmentOptions.TopLeft);
-            Text(ui, design, "Innate roots marginal note", HasRootVision ? "坎为水 · 离为火\n两仪相照，一身双极" : "天地五行，藏于人身\n缘起未至，灵盘未应", new Rect(1390, 270, 380, 120), 27, Pale);
-            Text(ui, design, "Innate roots knowledge", HasRootVision ? "老翁几句机锋，似醉似醒。\n你只当闲话，尚不知其意。" : "眼下仍是青石镇的寻常人。\n天机藏在往后的行旅里。", new Rect(1390, 412, 380, 86), 23, Ash);
-
-            figureRect = ui.Rect(design, "Innate fate figure", 745, 312, 430, 438);
+            // A full, transparent figure stands in the painted landscape, without a portrait frame.
+            figureRect = ui.Rect(design, "Innate fate figure", FigureOrigin.x, -FigureOrigin.y, 540, 834);
             figureGroup = figureRect.gameObject.AddComponent<CanvasGroup>(); figureGroup.blocksRaycasts = false;
             var portrait = figureRect.gameObject.AddComponent<PosterCardView>();
             portrait.Configure(string.IsNullOrWhiteSpace(data.characterId) ? "qingshi" : data.characterId, data.gender, useFigure: true);
-            var centres = new[] { new Vector2(656, 510), new Vector2(746, 302), new Vector2(960, 212), new Vector2(1174, 302), new Vector2(1264, 510) };
+            string characterName = string.IsNullOrWhiteSpace(data.characterName) ? "未定名" : data.characterName;
+            bool shortName = characterName.Length <= 6;
+            Text(ui, design, "Innate fate character name", shortName ? string.Join("\n", characterName.Select(c => c.ToString())) : characterName,
+                shortName ? new Rect(825, 225, 60, 386) : new Rect(748, 240, 244, 142), shortName ? 42 : 34, Ink, TextAlignmentOptions.Top, true);
+            Text(ui, design, "Innate fate epigraph", "一\n身\n禀\n赋\n·\n随\n行\n旅\n渐\n明", new Rect(923, shortName ? 232 : 405, 30, 342), 23, Ink, TextAlignmentOptions.Top);
+            var seal = ui.Rect(design, "Innate fate hometown seal", 829, 627, 52, 52).gameObject.AddComponent<QingshiComicPaperGraphic>();
+            seal.Kind = QingshiComicPaperGraphic.Surface.Seal; seal.color = Vermilion; seal.raycastTarget = false;
+            Text(ui, seal.transform, "Innate fate hometown glyph", "青石", new Rect(4, 4, 44, 44), 20, Paper);
+
+            var destiny = CharacterGen.FindDestiny(data.destiny);
+            var header = ui.Rect(design, "Innate fate destiny reveal", 1030, 66, 720, 241);
+            destinyGroup = header.gameObject.AddComponent<CanvasGroup>(); destinyGroup.blocksRaycasts = false;
+            Text(ui, header, "Innate fate heading", "观 照 命 禀", new Rect(0, 0, 470, 40), 25, Muted, TextAlignmentOptions.Left);
+            Text(ui, header, "Innate destiny caption", "命\n格", new Rect(3, 66, 32, 78), 22, Vermilion);
+            Text(ui, header, "Innate destiny title", destiny?.Name ?? "命星待照", new Rect(60, 47, 600, 104), 70, Ink, TextAlignmentOptions.Left, true);
+            Text(ui, header, "Innate destiny description", destiny?.Description ?? "此卷尚未记下命中星象。", new Rect(2, 164, 700, 68), 25, Muted, TextAlignmentOptions.TopLeft);
+
+            var result = ui.Rect(design, "Innate fate result", 1032, 318, 730, 92);
+            resultGroup = result.gameObject.AddComponent<CanvasGroup>(); resultGroup.blocksRaycasts = false;
+            Text(ui, result, "Innate root title", RootTitle, new Rect(0, 0, 730, 48), 36, Ink, TextAlignmentOptions.Left);
+            Text(ui, result, "Innate root boundary", HasRootVision ? "水火初显，凡人之身尚未入门。" : "天地五行藏于人身，缘起未至，灵根未明。", new Rect(0, 54, 730, 32), 22, Muted, TextAlignmentOptions.Left);
             for (int i = 0; i < Elements.Length; i++)
             {
-                var node = ui.Rect(design, "Root node " + Elements[i], centres[i].x - 57, centres[i].y - 57, 114, 146);
+                var node = ui.Rect(design, "Root node " + Elements[i], 1050 + i * 136, 422, 94, 116);
                 var group = node.gameObject.AddComponent<CanvasGroup>(); group.blocksRaycasts = false; nodes.Add(group);
                 bool visibleRoot = HasRootVision && (Elements[i] == "water" || Elements[i] == "fire");
-                var coin = ui.Rect(node, "Root seal " + Elements[i], 7, 7, 100, 100).gameObject.AddComponent<InnateFateRingGraphic>();
-                coin.Node = true; coin.Accent = visibleRoot ? Elements[i] == "water" ? UiKit.Hex("95C8C9") : UiKit.Hex("D99273") : Gold;
-                coin.Revealed = visibleRoot; coin.raycastTarget = false;
-                Text(ui, node, "Root node " + Elements[i] + " glyph", Glyphs[i], new Rect(7, 18, 100, 78), 40, visibleRoot ? coin.Accent : Pale);
-                Text(ui, node, "Root node " + Elements[i] + " status", HasRootVision ? visibleRoot ? "显影" : "未显" : "未测", new Rect(0, 113, 114, 33), 21, visibleRoot ? coin.Accent : Ash);
+                Color accent = visibleRoot ? Elements[i] == "water" ? UiKit.Hex("315F5C") : Vermilion : UiKit.Hex("D5BF97");
+                var stamp = ui.Rect(node, "Root seal " + Elements[i], 11, 0, 72, 72).gameObject.AddComponent<QingshiComicPaperGraphic>();
+                stamp.Kind = QingshiComicPaperGraphic.Surface.Seal; stamp.color = accent; stamp.raycastTarget = false;
+                Text(ui, stamp.transform, "Root node " + Elements[i] + " glyph", Glyphs[i], new Rect(8, 5, 56, 61), 42, visibleRoot ? Paper : Muted, TextAlignmentOptions.Center, true);
+                Text(ui, node, "Root node " + Elements[i] + " status", HasRootVision ? visibleRoot ? "显影" : "未显" : "未测", new Rect(0, 82, 94, 32), 21, visibleRoot ? accent : Muted);
             }
-            compassRect = ui.Rect(design, "Innate fate authored compass", 780, 760, 76, 76);
-            compassRect.pivot = new Vector2(.5f, .5f); compassRect.anchoredPosition = new Vector2(818, -798);
-            compass = compassRect.gameObject.AddComponent<RawImage>();
-            compass.texture = ApprovedUiArt.Load("nov8/wuxing-lingpan-compass"); compass.raycastTarget = false;
-            Text(ui, design, "Innate fate character name", string.IsNullOrWhiteSpace(data.characterName) ? "未定名" : data.characterName, new Rect(876, 775, 280, 45), 27, Pale);
-            var result = ui.Rect(design, "Innate fate result", 480, 846, 960, 115);
-            resultGroup = result.gameObject.AddComponent<CanvasGroup>(); resultGroup.blocksRaycasts = false;
-            Text(ui, result, "Innate root title", RootTitle, new Rect(0, 0, 960, 54), 35, Pale);
-            Text(ui, result, "Innate root boundary", HasRootVision ? "双极初显 · 凡人之身，尚未入门" : "灵盘静候 · 行旅中自有机缘", new Rect(0, 67, 960, 40), 22, Ash);
+            Text(ui, design, "Innate traits caption", "先 天 禀 赋", new Rect(1032, 552, 730, 34), 22, Vermilion, TextAlignmentOptions.Left);
+            var cardTexture = ApprovedUiArt.Load("nov27/innate-fate-card");
+            if (cardTexture == null) throw new InvalidOperationException("Missing authored innate-fate card.");
             int count = traits.Count;
+            float spacing = 720f / Mathf.Max(2, count), cardHeight = Mathf.Min(440, (spacing - 24) * cardTexture.height / cardTexture.width);
+            float cardWidth = cardHeight * cardTexture.width / cardTexture.height;
             for (int i = 0; i < count; i++)
             {
                 var entry = CharacterGen.FindTrait(traits[i]);
-                bool right = (i & 1) != 0;
-                var rect = ui.Rect(design, "Innate trait " + i, right ? 1390 : 130, 555 + (i / 2) * 174, 380, 164);
+                float centre = 1032 + spacing * (i + .5f);
+                var rect = ui.Rect(design, "Innate trait " + i, centre - cardWidth * .5f, 601, cardWidth, cardHeight);
                 var group = rect.gameObject.AddComponent<CanvasGroup>(); group.blocksRaycasts = false;
                 cards.Add(group); cardOrigins.Add(rect.anchoredPosition);
-                var sheet = rect.gameObject.AddComponent<QingshiComicPaperGraphic>(); sheet.Kind = QingshiComicPaperGraphic.Surface.Note;
-                sheet.color = UiKit.Hex("E6D9B8"); sheet.raycastTarget = false;
-                var seal = ui.Rect(rect, "Innate trait seal " + i, 22, 22, 42, 42).gameObject.AddComponent<QingshiComicPaperGraphic>();
-                seal.Kind = QingshiComicPaperGraphic.Surface.Seal; seal.color = UiKit.Hex("813F31"); seal.raycastTarget = false;
-                Text(ui, seal.transform, "Innate trait seal glyph " + i, "禀", new Rect(0, 0, 42, 42), 25, Pale);
-                Text(ui, rect, "Innate trait name " + i, entry?.Name ?? traits[i], new Rect(82, 19, 270, 43), 29, UiKit.Hex("293A32"), TextAlignmentOptions.Left);
-                Text(ui, rect, "Innate trait description " + i, entry?.Description ?? "此项禀赋尚待考证。", new Rect(26, 81, 328, 64), 23, UiKit.Hex("3D4739"), TextAlignmentOptions.TopLeft);
+                var sheet = rect.gameObject.AddComponent<RawImage>(); sheet.texture = cardTexture; sheet.raycastTarget = false;
+                Text(ui, rect, "Innate trait name " + i, entry?.Name ?? traits[i], new Rect(16, 46, cardWidth - 32, 58), 37, Ink, TextAlignmentOptions.Center, true);
+                Text(ui, rect, "Innate trait description " + i, entry?.Description ?? "此项禀赋尚待考证。", new Rect(25, 127, cardWidth - 50, 154), 23, Muted, TextAlignmentOptions.TopLeft);
             }
-            if (count == 0) Text(ui, design, "Innate traits pending", "先天禀赋 · 尚未记载", new Rect(130, 573, 380, 80), 26, Ash);
-            Text(ui, design, "Innate trait left caption", "先 天 禀 赋", new Rect(130, 509, 380, 36), 22, Gold);
-            if (count > 1) Text(ui, design, "Innate trait right caption", "先 天 禀 赋", new Rect(1390, 509, 380, 36), 22, Gold);
-            skip = Command(ui, design, "Innate fate skip", "一 览", new Rect(724, 982, 216, 64), RevealAll, click);
-            replay = Command(ui, design, "Innate fate replay", "再 观", new Rect(980, 982, 216, 64), Replay, click);
+            if (count == 0) Text(ui, design, "Innate traits pending", "尚未记载", new Rect(1032, 627, 730, 80), 28, Muted, TextAlignmentOptions.Left);
+            skip = Command(ui, design, "Innate fate skip", "一 览", new Rect(378, 994, 170, 64), RevealAll, click);
+            replay = Command(ui, design, "Innate fate replay", "再 观", new Rect(584, 994, 170, 64), Replay, click);
             Fit(); Sample(0, lowMotion?.Invoke() == true);
         }
 
-        static TMP_Text Text(UiKit ui, Transform parent, string name, string value, Rect rect, float size, Color color, TextAlignmentOptions align = TextAlignmentOptions.Center)
+        static RawImage Artwork(UiKit ui, Transform parent, string name, string id, Rect bounds, bool cover)
         {
-            var text = AestheticUi.Text(ui, parent, name, value, rect, size, align, color);
-            text.raycastTarget = false; text.enableAutoSizing = true; text.fontSizeMin = size - 3; text.fontSizeMax = size;
+            var image = ui.Rect(parent, name, bounds.x, bounds.y, bounds.width, bounds.height).gameObject.AddComponent<RawImage>();
+            image.texture = ApprovedUiArt.Load(id); image.raycastTarget = false;
+            if (image.texture == null) throw new InvalidOperationException("Missing authored innate-fate artwork: " + id);
+            if (cover) UiKit.Cover(image);
+            return image;
+        }
+        static TMP_Text Text(UiKit ui, Transform parent, string name, string value, Rect rect, float size, Color color,
+            TextAlignmentOptions align = TextAlignmentOptions.Center, bool brush = false)
+        {
+            var text = ui.Label(parent, value, rect.x, rect.y, rect.width, rect.height, size, color, align, brush);
+            text.name = name; text.raycastTarget = false; text.enableAutoSizing = true; text.fontSizeMin = size - 3; text.fontSizeMax = size;
             return text;
         }
         static Button Command(UiKit ui, Transform parent, string name, string title, Rect bounds, Action action, Action sound)
         {
             var rect = ui.Rect(parent, name, bounds.x, bounds.y, bounds.width, bounds.height);
-            var paper = rect.gameObject.AddComponent<QingshiComicPaperGraphic>(); paper.color = UiKit.Hex("E7DCBE");
+            var paper = rect.gameObject.AddComponent<QingshiComicPaperGraphic>(); paper.color = UiKit.Hex("E9D6AF");
             var button = rect.gameObject.AddComponent<Button>(); button.targetGraphic = paper;
             var colors = button.colors; colors.normalColor = Color.white; colors.highlightedColor = UiKit.Hex("FFF1C8");
-            colors.pressedColor = UiKit.Hex("C8B78F"); colors.selectedColor = UiKit.Hex("F8E8B9"); colors.disabledColor = UiKit.Hex("B1B0A1"); colors.fadeDuration = .09f; button.colors = colors;
+            colors.pressedColor = UiKit.Hex("C8B78F"); colors.selectedColor = UiKit.Hex("F8E8B9"); colors.disabledColor = UiKit.Hex("C4BAA3"); colors.fadeDuration = .09f; button.colors = colors;
             button.navigation = new Navigation { mode = Navigation.Mode.None };
             button.onClick.AddListener(() => { if (button == null || !button.isActiveAndEnabled || !button.IsInteractable()) return; sound?.Invoke(); action?.Invoke(); });
-            Text(ui, rect, name + " label", title, new Rect(8, 6, bounds.width - 16, bounds.height - 12), 25, UiKit.Hex("293A32"));
+            Text(ui, rect, name + " label", title, new Rect(8, 6, bounds.width - 16, bounds.height - 12), 25, Ink);
             return button;
         }
         public void Sample(float seconds, bool reduced)
@@ -135,20 +140,18 @@ namespace TwelveJade.Presentation
             if (!configured) return;
             float t = reduced ? Duration : Mathf.Clamp(float.IsNaN(seconds) ? 0 : seconds, 0, Duration);
             sampled = t; IsSettled = t >= Duration;
-            float arrival = Ease((t - .10f) / .85f);
-            figureGroup.alpha = reduced ? 1 : arrival;
-            figureRect.anchoredPosition = new Vector2(745, -312 - (1 - arrival) * 15);
-            compass.color = new Color(.66f, .71f, .64f, .85f * Ease(t / .8f));
-            compassRect.localRotation = Quaternion.Euler(0, 0, reduced ? 0 : (1 - Ease(t / 1.7f)) * -16);
-            for (int i = 0; i < nodes.Count; i++) nodes[i].alpha = Ease((t - .45f - i * .19f) / .45f);
+            float arrival = Ease((t - .10f) / 1.05f);
+            figureGroup.alpha = arrival;
+            figureRect.anchoredPosition = FigureOrigin + Vector2.down * ((1 - arrival) * 22);
+            destinyGroup.alpha = Ease((t - .25f) / .8f);
+            resultGroup.alpha = Ease((t - .8f) / .6f);
+            for (int i = 0; i < nodes.Count; i++) nodes[i].alpha = Ease((t - 1.0f - i * .16f) / .45f);
             for (int i = 0; i < cards.Count; i++)
             {
                 float appear = Ease((t - 2.00f - i * .32f) / .60f);
                 cards[i].alpha = appear;
-                ((RectTransform)cards[i].transform).anchoredPosition = cardOrigins[i] + new Vector2((i % 2 == 0 ? 18 : -18) * (1 - appear), -8 * (1 - appear));
+                ((RectTransform)cards[i].transform).anchoredPosition = cardOrigins[i] + Vector2.up * (18 * (1 - appear));
             }
-            resultGroup.alpha = Ease((t - 2.85f) / .55f);
-            ring.Sample(t, reduced, HasRootVision);
             skip.interactable = !IsSettled; replay.interactable = IsSettled;
         }
         static float Ease(float value) => Mathf.SmoothStep(0, 1, Mathf.Clamp01(value));
