@@ -1,0 +1,12 @@
+{
+  "name": "qingshi-story-pilot", "private": true, "type": "module",
+  "scripts": {
+    "dev": "node scripts/hf.mjs preview --background --no-open --port 3091",
+    "status": "node scripts/hf.mjs preview --status --json",
+    "stop": "node scripts/hf.mjs preview --stop",
+    "lint": "node scripts/hf.mjs lint --json",
+    "check": "node scripts/hf.mjs check --json --samples 17 --at 0.4,4,8.4,12,16.2,20,24,28,31.8 --snapshots",
+    "snapshot": "node scripts/hf.mjs snapshot --review --json",
+    "render": "node scripts/hf.mjs render --quality delivery --fps 30 --workers 2 --output renders/qingshi-story-pilot.mp4"
+  }
+}

@@ -1,0 +1,22 @@
+<template>
+<style>
+#root { position:absolute; inset:0; overflow:hidden; }
+#herbs-surface { position:absolute; inset:0; background:var(--matte,#211c18); }
+#herbs-window { position:absolute; left:150px; top:0; width:1620px; height:1080px; overflow:hidden; }
+#herbs-art { position:absolute; left:60px; top:40px; width:1500px; height:1000px; object-fit:contain; transform-origin:50% 30%; }
+</style>
+<div data-hf-id="hf-8d8o" id="root" data-composition-id="herbs" data-width="1920" data-height="1080" data-duration="9">
+  <div data-hf-id="hf-c69x" id="herbs-surface" data-layout-allow-overlap>
+    <div data-hf-id="hf-8u7w" id="herbs-window"><img data-hf-id="hf-a6aq" id="herbs-art" src="assets/art/livelihood-herbs.png" data-var-src="herbsArt" alt="药铺" draggable="false"></div>
+  </div>
+</div>
+<script>
+const tl = gsap.timeline({paused:true});
+// Adapted from registry transitions-dissolve: incoming layer alone rises to opacity 1.
+// Keeping the outgoing exposure intact avoids a dip to black and preserves continuous motion.
+tl.fromTo("#herbs-surface", {opacity:0}, {opacity:1,duration:1.2,ease:"sine.inOut"}, 0);
+tl.fromTo("#herbs-art", {x:10,y:0,scale:1}, {x:-10,y:-1,scale:1.018,duration:9,ease:"none"}, 0);
+window.__timelines = window.__timelines || {};
+window.__timelines["herbs"] = tl;
+</script>
+</template>

@@ -1,0 +1,37 @@
+<template>
+<style>
+@font-face { font-family:"Qingshi Serif"; src:url("assets/fonts/NotoSerifCJKsc-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:block; }
+#root { position:absolute; inset:0; pointer-events:none; font-family:"Qingshi Serif",serif; }
+.cue { position:absolute; left:192px; top:894px; width:1536px; height:74px; text-align:center; display:flex; align-items:center; justify-content:center; }
+.cue p { display:inline-block; max-width:1480px; margin:0; padding:7px 24px 9px; font-size:40px; font-weight:400; line-height:56px; letter-spacing:1px; white-space:nowrap; color:var(--subtitleInk,#fff4df); background:rgba(29,23,18,.87); }
+</style>
+<div data-hf-id="hf-l3j5" id="root" data-composition-id="captions" data-width="1920" data-height="1080" data-duration="32.4">
+  <div data-hf-id="hf-0rx4" id="cue-age" class="clip cue" data-start="0.4" data-duration="2.6" data-track-index="0"><p data-hf-id="hf-he84" id="ink-age" data-var-text="caption-age">今日十八。</p></div>
+  <div data-hf-id="hf-7bcc" id="cue-wish" class="clip cue" data-start="3.3" data-duration="4.2" data-track-index="0"><p data-hf-id="hf-6erj" id="ink-wish" data-var-text="caption-wish">盼把病痛和灾厄都滚远些。</p></div>
+  <div data-hf-id="hf-67q9" id="cue-work" class="clip cue" data-start="8.5" data-duration="3.5" data-track-index="0"><p data-hf-id="hf-mg92" id="ink-work" data-var-text="caption-work">风箱拉得肩膀发酸，</p></div>
+  <div data-hf-id="hf-s0j7" id="cue-whetstone" class="clip cue" data-start="12.3" data-duration="3.0" data-track-index="0"><p data-hf-id="hf-izey" id="ink-whetstone" data-var-text="caption-whetstone">收工前，他把磨刀石推过来。</p></div>
+  <div data-hf-id="hf-1fyo" id="cue-grind" class="clip cue" data-start="16.3" data-duration="2.9" data-track-index="0"><p data-hf-id="hf-fh8i" id="ink-grind" data-var-text="caption-grind">踩碾槽，捣药泥。</p></div>
+  <div data-hf-id="hf-kfjq" id="cue-herbs" class="clip cue" data-start="19.5" data-duration="3.5" data-track-index="0"><p data-hf-id="hf-ufx2" id="ink-herbs" data-var-text="caption-herbs">药老又从锅底捞出一包药渣。</p></div>
+  <div data-hf-id="hf-o91o" id="cue-warm" class="clip cue" data-start="24.1" data-duration="4.1" data-track-index="0"><p data-hf-id="hf-iywe" id="ink-warm" data-var-text="caption-warm">热气慢慢透进爹的膝头。</p></div>
+  <div data-hf-id="hf-qlhx" id="cue-relief" class="clip cue" data-start="28.5" data-duration="3.5" data-track-index="0"><p data-hf-id="hf-y9sv" id="ink-relief" data-var-text="caption-relief">他攥了半天的手，终于松开一点。</p></div>
+</div><script>
+const tl = gsap.timeline({paused:true});
+tl.fromTo("#ink-age", {opacity:0}, {opacity:1,duration:.3,ease:"sine.inOut"}, 0.4);
+tl.to("#ink-age", {opacity:0,duration:.3,ease:"sine.inOut"}, 2.700);
+tl.fromTo("#ink-wish", {opacity:0}, {opacity:1,duration:.3,ease:"sine.inOut"}, 3.3);
+tl.to("#ink-wish", {opacity:0,duration:.3,ease:"sine.inOut"}, 7.200);
+tl.fromTo("#ink-work", {opacity:0}, {opacity:1,duration:.3,ease:"sine.inOut"}, 8.5);
+tl.to("#ink-work", {opacity:0,duration:.3,ease:"sine.inOut"}, 11.700);
+tl.fromTo("#ink-whetstone", {opacity:0}, {opacity:1,duration:.3,ease:"sine.inOut"}, 12.3);
+tl.to("#ink-whetstone", {opacity:0,duration:.3,ease:"sine.inOut"}, 15.000);
+tl.fromTo("#ink-grind", {opacity:0}, {opacity:1,duration:.3,ease:"sine.inOut"}, 16.3);
+tl.to("#ink-grind", {opacity:0,duration:.3,ease:"sine.inOut"}, 18.900);
+tl.fromTo("#ink-herbs", {opacity:0}, {opacity:1,duration:.3,ease:"sine.inOut"}, 19.5);
+tl.to("#ink-herbs", {opacity:0,duration:.3,ease:"sine.inOut"}, 22.700);
+tl.fromTo("#ink-warm", {opacity:0}, {opacity:1,duration:.3,ease:"sine.inOut"}, 24.1);
+tl.to("#ink-warm", {opacity:0,duration:.3,ease:"sine.inOut"}, 27.900);
+tl.fromTo("#ink-relief", {opacity:0}, {opacity:1,duration:.3,ease:"sine.inOut"}, 28.5);
+tl.to("#ink-relief", {opacity:0,duration:.3,ease:"sine.inOut"}, 31.700);
+window.__timelines = window.__timelines || {};
+window.__timelines["captions"] = tl;
+</script></template>

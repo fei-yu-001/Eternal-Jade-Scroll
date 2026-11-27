@@ -1,0 +1,31 @@
+{
+  "purpose": "Read-only integration boundary record; no production changes",
+  "boundaries": [
+    {
+      "scene": "home",
+      "pageOneBased": 2,
+      "labels": [
+        "把夹袄披回阿娘肩上",
+        "接过夹袄，替她添一把柴"
+      ]
+    },
+    {
+      "scene": "home",
+      "pageOneBased": 4,
+      "labels": [
+        "扶爹坐稳，递一碗温水",
+        "蹲下去，捡起地上的木屑"
+      ]
+    },
+    {
+      "scene": "livelihood",
+      "pageOneBased": 2,
+      "labels": [
+        "去药铺换父亲的药渣",
+        "去铁匠铺拉风箱",
+        "跟老猎户辨山路"
+      ]
+    }
+  ],
+  "rule": "Split future video at these boundaries; use existing paper choices and original completion/save contract. This cross-chapter promotional pilot grants no progress."
+}

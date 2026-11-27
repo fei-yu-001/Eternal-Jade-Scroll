@@ -1,0 +1,19 @@
+{
+  "duration": 9,
+  "assertions": [
+    {
+      "kind": "appearsBy",
+      "selector": "#forge-art",
+      "bySec": 1.3
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#forge-art"
+    },
+    {
+      "kind": "keepsMoving",
+      "withinSelector": "#forge-window",
+      "maxStaticSec": 1
+    }
+  ]
+}

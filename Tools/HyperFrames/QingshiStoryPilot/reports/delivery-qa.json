@@ -1,0 +1,163 @@
+{
+  "ok": true,
+  "source": "actual delivery MP4; full 972-frame decode, 256x144 grayscale analysis",
+  "duration": 32.4,
+  "frames": 972,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "fps": "30/1",
+  "videoCodec": "h264",
+  "pixelFormat": "yuv420p",
+  "audioTracks": 1,
+  "audioCodec": "aac",
+  "audioChannels": 2,
+  "audioSampleRate": "48000",
+  "fileBytes": 71915462,
+  "sha256": "b45e72f42c4aa1bdb43dd378905f188ca5042b5a5bb83c0e2c1889b8d6f37884",
+  "minFrameLuma": 53.4297,
+  "longestIdenticalFrameRun": 0,
+  "seams": [
+    {
+      "index": 1,
+      "start": 7.8,
+      "end": 9.0,
+      "lumaStart": 86.3449,
+      "lumaEnd": 60.913,
+      "lumaMin": 60.8662,
+      "undershoot": 0.0468,
+      "maxMidMAD": 1.70039,
+      "boundaries": [
+        {
+          "frame": 233,
+          "time": 7.76667,
+          "meanAbsDiffFromPrevious": 0.21918
+        },
+        {
+          "frame": 234,
+          "time": 7.8,
+          "meanAbsDiffFromPrevious": 0.23907
+        },
+        {
+          "frame": 235,
+          "time": 7.83333,
+          "meanAbsDiffFromPrevious": 0.24118
+        },
+        {
+          "frame": 269,
+          "time": 8.96667,
+          "meanAbsDiffFromPrevious": 0.3919
+        },
+        {
+          "frame": 270,
+          "time": 9.0,
+          "meanAbsDiffFromPrevious": 0.25949
+        },
+        {
+          "frame": 271,
+          "time": 9.03333,
+          "meanAbsDiffFromPrevious": 0.25781
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "start": 15.6,
+      "end": 16.8,
+      "lumaStart": 61.9746,
+      "lumaEnd": 63.487,
+      "lumaMin": 61.9797,
+      "undershoot": 0,
+      "maxMidMAD": 1.27176,
+      "boundaries": [
+        {
+          "frame": 467,
+          "time": 15.56667,
+          "meanAbsDiffFromPrevious": 0.22789
+        },
+        {
+          "frame": 468,
+          "time": 15.6,
+          "meanAbsDiffFromPrevious": 0.25727
+        },
+        {
+          "frame": 469,
+          "time": 15.63333,
+          "meanAbsDiffFromPrevious": 0.25214
+        },
+        {
+          "frame": 503,
+          "time": 16.76667,
+          "meanAbsDiffFromPrevious": 0.2873
+        },
+        {
+          "frame": 504,
+          "time": 16.8,
+          "meanAbsDiffFromPrevious": 0.21555
+        },
+        {
+          "frame": 505,
+          "time": 16.83333,
+          "meanAbsDiffFromPrevious": 0.21764
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "start": 23.4,
+      "end": 24.6,
+      "lumaStart": 64.6346,
+      "lumaEnd": 53.4736,
+      "lumaMin": 53.4297,
+      "undershoot": 0.0438,
+      "maxMidMAD": 1.11523,
+      "boundaries": [
+        {
+          "frame": 701,
+          "time": 23.36667,
+          "meanAbsDiffFromPrevious": 0.1929
+        },
+        {
+          "frame": 702,
+          "time": 23.4,
+          "meanAbsDiffFromPrevious": 0.2181
+        },
+        {
+          "frame": 703,
+          "time": 23.43333,
+          "meanAbsDiffFromPrevious": 0.21889
+        },
+        {
+          "frame": 737,
+          "time": 24.56667,
+          "meanAbsDiffFromPrevious": 0.26443
+        },
+        {
+          "frame": 738,
+          "time": 24.6,
+          "meanAbsDiffFromPrevious": 0.21609
+        },
+        {
+          "frame": 739,
+          "time": 24.63333,
+          "meanAbsDiffFromPrevious": 0.21018
+        }
+      ]
+    }
+  ],
+  "keyframes": [
+    {
+      "path": "review/key-01-home.jpg",
+      "time": 4.5
+    },
+    {
+      "path": "review/key-02-herbs.jpg",
+      "time": 20.8
+    },
+    {
+      "path": "review/key-03-care.jpg",
+      "time": 30
+    }
+  ]
+}

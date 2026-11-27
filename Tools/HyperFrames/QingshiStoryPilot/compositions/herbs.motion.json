@@ -1,0 +1,19 @@
+{
+  "duration": 9,
+  "assertions": [
+    {
+      "kind": "appearsBy",
+      "selector": "#herbs-art",
+      "bySec": 1.3
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#herbs-art"
+    },
+    {
+      "kind": "keepsMoving",
+      "withinSelector": "#herbs-window",
+      "maxStaticSec": 1
+    }
+  ]
+}

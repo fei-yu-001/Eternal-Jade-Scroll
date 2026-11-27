@@ -1,0 +1,184 @@
+{
+  "sourceJson": "D:\\qiqi_me\\HarmonyOS\\apps\\EternalJadeScroll\\GameClient\\TwelveJade\\Assets\\Resources\\Config\\qingshi-story-panels.json",
+  "sourceJsonSha256": "481cccf267359d3734ed5033c7b5e2b1859c73749e59c02d7e626969e09ef8e8",
+  "sourcePageCount": 65,
+  "scope": "only home/livelihood excerpt; no future scenes copied",
+  "panels": [
+    {
+      "scene": "home",
+      "index": 5,
+      "art": "home-coming-of-age",
+      "speaker": "阿娘",
+      "text": "今日十八。阿娘用热鸡蛋在你额上轻轻滚了一圈，盼把病痛和灾厄都滚远些。",
+      "focusX": 0.5,
+      "focusY": 0.58,
+      "zoom": 0.98,
+      "dialog": "滚过了，往后的路，平平安安。",
+      "balloon": "left",
+      "balloonY": 500
+    },
+    {
+      "scene": "livelihood",
+      "index": 2,
+      "art": "livelihood-forge",
+      "speaker": "铁匠",
+      "text": "风箱拉得肩膀发酸，师傅让你沉住腰再落锤。收工前，他把磨刀石推过来。",
+      "focusX": 0.5,
+      "focusY": 0.58,
+      "zoom": 0.86,
+      "dialog": "刀口留三分厚。干活的家伙，结实才顶用。",
+      "balloon": "right",
+      "balloonY": 440
+    },
+    {
+      "scene": "livelihood",
+      "index": 3,
+      "art": "livelihood-herbs",
+      "speaker": "药铺",
+      "text": "踩碾槽，捣药泥。你把当归、透骨草分好，药老又从锅底捞出一包药渣。",
+      "focusX": 0.5,
+      "focusY": 0.58,
+      "zoom": 0.98,
+      "dialog": "拿回去，加些烧酒热敷。凉了就换，别烫着你爹。",
+      "balloon": "right",
+      "balloonY": 440
+    },
+    {
+      "scene": "livelihood",
+      "index": 7,
+      "art": "livelihood-father-care",
+      "speaker": "暮色归家",
+      "text": "药渣和烧酒裹在布里，热气慢慢透进爹的膝头。他攥了半天的手，终于松开一点。",
+      "focusX": 0.5,
+      "focusY": 0.5,
+      "zoom": 0.98
+    }
+  ],
+  "captions": [
+    {
+      "id": "age",
+      "start": 0.4,
+      "duration": 2.6,
+      "text": "今日十八。",
+      "sourcePanel": "home-coming-of-age"
+    },
+    {
+      "id": "wish",
+      "start": 3.3,
+      "duration": 4.2,
+      "text": "盼把病痛和灾厄都滚远些。",
+      "sourcePanel": "home-coming-of-age"
+    },
+    {
+      "id": "work",
+      "start": 8.5,
+      "duration": 3.5,
+      "text": "风箱拉得肩膀发酸，",
+      "sourcePanel": "livelihood-forge"
+    },
+    {
+      "id": "whetstone",
+      "start": 12.3,
+      "duration": 3.0,
+      "text": "收工前，他把磨刀石推过来。",
+      "sourcePanel": "livelihood-forge"
+    },
+    {
+      "id": "grind",
+      "start": 16.3,
+      "duration": 2.9,
+      "text": "踩碾槽，捣药泥。",
+      "sourcePanel": "livelihood-herbs"
+    },
+    {
+      "id": "herbs",
+      "start": 19.5,
+      "duration": 3.5,
+      "text": "药老又从锅底捞出一包药渣。",
+      "sourcePanel": "livelihood-herbs"
+    },
+    {
+      "id": "warm",
+      "start": 24.1,
+      "duration": 4.1,
+      "text": "热气慢慢透进爹的膝头。",
+      "sourcePanel": "livelihood-father-care"
+    },
+    {
+      "id": "relief",
+      "start": 28.5,
+      "duration": 3.5,
+      "text": "他攥了半天的手，终于松开一点。",
+      "sourcePanel": "livelihood-father-care"
+    }
+  ],
+  "assets": [
+    {
+      "path": "assets/art/home-coming-of-age.png",
+      "bytes": 3389817,
+      "sha256": "2d07d85cae16d5ff86b21f9b17cee108d9c1bfa285048aa673f41773a761b722",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "assets/art/livelihood-forge.png",
+      "bytes": 3558121,
+      "sha256": "3d4846e1ba9a6720b4804ce45aafd60b9bf82f55f61ec3e89828ee40af0e2603",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "assets/art/livelihood-herbs.png",
+      "bytes": 3129825,
+      "sha256": "fc72b0c96a6746c872c1ab615f5cac5d8102532335744070f139c51305b1b036",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "assets/art/livelihood-father-care.png",
+      "bytes": 3051874,
+      "sha256": "f16f23a1bc86593dccb3ba0a4dd0fa159b2f0b887763e65fe528713c3d4dd12e",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "assets/audio/hidden-stream.mp3",
+      "bytes": 4076893,
+      "sha256": "f4a3c60c40f4646482d189c2a65f2acec57f30cb6b72e28c97a67b8d63a71e1c"
+    },
+    {
+      "path": "assets/audio/hidden-stream-pilot.wav",
+      "bytes": 6220878,
+      "sha256": "30304b9c9bd8cfe4aea7d9a0cd04ad0c43e50bf4eeda44990a9d8c4cc96e3a52"
+    },
+    {
+      "path": "assets/fonts/NotoSerifCJKsc-Regular.otf",
+      "bytes": 24543080,
+      "sha256": "2a2eae2628df83556c54018c41e20fa532c1b862c5256ae8b3f23feb918d12ca"
+    },
+    {
+      "path": "assets/vendor/gsap.min.js",
+      "bytes": 72927,
+      "sha256": "92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb"
+    }
+  ],
+  "audio": {
+    "source": "assets/audio/hidden-stream.mp3",
+    "trimStart": 18,
+    "trimDuration": 32.4,
+    "gainDb": -6.24,
+    "sampleRate": 48000,
+    "fadeIn": 1.2,
+    "fadeOut": 2.4,
+    "speech": false,
+    "sfx": false
+  }
+}

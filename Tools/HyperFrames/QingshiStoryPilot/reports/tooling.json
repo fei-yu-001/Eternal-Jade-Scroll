@@ -1,0 +1,16 @@
+{
+  "node": "v24.19.0",
+  "ffmpeg": "ffmpeg version 9.0.2-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+  "ffprobe": "ffprobe version 9.0.2-full_build-www.gyan.dev Copyright (c) 2007-2026 the FFmpeg developers",
+  "python": "Python 3.12.10",
+  "hyperframes": "0.8.202 (existing cached CLI; no tool upgrades)",
+  "gsap": "3.15.0 (existing CLI local vendor)",
+  "usage": {
+    "status": "unknown",
+    "reason": "no_subscription_login"
+  },
+  "motionDiscovery": "0.8.202 scans project-root sidecars only; final root index.motion.json used and 300 samples enabled",
+  "externalModelsUsed": false,
+  "paidServicesUsed": false,
+  "telemetry": "disabled for pilot commands"
+}

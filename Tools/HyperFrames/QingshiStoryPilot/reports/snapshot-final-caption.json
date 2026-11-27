@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "outputDir": "D:\\ruangong\\HyperFrames\\qingshi-story-pilot\\review\\final-caption",
+  "frames": [
+    {
+      "path": "D:\\ruangong\\HyperFrames\\qingshi-story-pilot\\review\\final-caption\\frame-00-at-26s.png",
+      "time": 26
+    },
+    {
+      "path": "D:\\ruangong\\HyperFrames\\qingshi-story-pilot\\review\\final-caption\\frame-01-at-30s.png",
+      "time": 30
+    }
+  ],
+  "contactSheets": [
+    "D:\\ruangong\\HyperFrames\\qingshi-story-pilot\\review\\final-caption\\contact-sheet.jpg"
+  ],
+  "_meta": {
+    "version": "0.8.202",
+    "latestVersion": "0.9.102",
+    "updateAvailable": true
+  }
+}

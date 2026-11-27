@@ -1,0 +1,19 @@
+{
+  "duration": 9,
+  "assertions": [
+    {
+      "kind": "appearsBy",
+      "selector": "#home-art",
+      "bySec": 1.3
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#home-art"
+    },
+    {
+      "kind": "keepsMoving",
+      "withinSelector": "#home-window",
+      "maxStaticSec": 1
+    }
+  ]
+}

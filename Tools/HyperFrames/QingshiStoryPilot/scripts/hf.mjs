@@ -1,0 +1,15 @@
+import { spawnSync } from 'node:child_process';
+import { existsSync, readFileSync, mkdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const cli = process.env.QINGSHI_HYPERFRAMES_CLI || 'D:/ruangong/nodejs/npm-cache/_npx/f4f607aa86af5ae9/node_modules/hyperframes/bin/hyperframes.mjs';
+if (!existsSync(cli)) throw new Error('Existing HyperFrames 0.8.202 is missing; set QINGSHI_HYPERFRAMES_CLI to its bin/hyperframes.mjs. This wrapper never downloads or upgrades tools.');
+const pkg = JSON.parse(readFileSync(path.join(path.dirname(cli), '../package.json'), 'utf8'));
+if (pkg.version !== '0.8.202') throw new Error(`Expected HyperFrames 0.8.202, got ${pkg.version}; no automatic upgrade.`);
+const temp = path.join(root, '.hyperframes', 'tmp');
+mkdirSync(temp, {recursive:true});
+const env = {...process.env, HYPERFRAMES_SKIP_SKILLS:'1', HYPERFRAMES_NO_TELEMETRY:'1', TEMP:temp, TMP:temp, HYPERFRAMES_EXTRACT_CACHE_DIR:path.join(root,'.hyperframes','frames-cache')};
+const result = spawnSync(process.execPath, [cli, ...process.argv.slice(2)], {cwd:root, env, stdio:'inherit', windowsHide:true});
+if (result.error) throw result.error;
+process.exitCode = result.status ?? 1;

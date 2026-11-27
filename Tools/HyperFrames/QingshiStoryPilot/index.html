@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN" data-resolution="landscape" data-composition-variables="[{&quot;id&quot;:&quot;matte&quot;,&quot;type&quot;:&quot;color&quot;,&quot;label&quot;:&quot;画外暗色&quot;,&quot;default&quot;:&quot;#211c18&quot;},{&quot;id&quot;:&quot;subtitleInk&quot;,&quot;type&quot;:&quot;color&quot;,&quot;label&quot;:&quot;字幕字色&quot;,&quot;default&quot;:&quot;#fff4df&quot;},{&quot;id&quot;:&quot;homeArt&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;home / 原始分镜&quot;,&quot;default&quot;:&quot;assets/art/home-coming-of-age.png&quot;},{&quot;id&quot;:&quot;forgeArt&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;forge / 原始分镜&quot;,&quot;default&quot;:&quot;assets/art/livelihood-forge.png&quot;},{&quot;id&quot;:&quot;herbsArt&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;herbs / 原始分镜&quot;,&quot;default&quot;:&quot;assets/art/livelihood-herbs.png&quot;},{&quot;id&quot;:&quot;careArt&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;care / 原始分镜&quot;,&quot;default&quot;:&quot;assets/art/livelihood-father-care.png&quot;},{&quot;id&quot;:&quot;caption-age&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;字幕 / age&quot;,&quot;default&quot;:&quot;今日十八。&quot;},{&quot;id&quot;:&quot;caption-wish&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;字幕 / wish&quot;,&quot;default&quot;:&quot;盼把病痛和灾厄都滚远些。&quot;},{&quot;id&quot;:&quot;caption-work&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;字幕 / work&quot;,&quot;default&quot;:&quot;风箱拉得肩膀发酸，&quot;},{&quot;id&quot;:&quot;caption-whetstone&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;字幕 / whetstone&quot;,&quot;default&quot;:&quot;收工前，他把磨刀石推过来。&quot;},{&quot;id&quot;:&quot;caption-grind&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;字幕 / grind&quot;,&quot;default&quot;:&quot;踩碾槽，捣药泥。&quot;},{&quot;id&quot;:&quot;caption-herbs&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;字幕 / herbs&quot;,&quot;default&quot;:&quot;药老又从锅底捞出一包药渣。&quot;},{&quot;id&quot;:&quot;caption-warm&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;字幕 / warm&quot;,&quot;default&quot;:&quot;热气慢慢透进爹的膝头。&quot;},{&quot;id&quot;:&quot;caption-relief&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;字幕 / relief&quot;,&quot;default&quot;:&quot;他攥了半天的手，终于松开一点。&quot;}]">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=1920,height=1080">
+<title>青石故里 · 一点暖意</title>
+<script src="assets/vendor/gsap.min.js"></script>
+<style>
+@font-face { font-family: "Qingshi Serif"; src: url("assets/fonts/NotoSerifCJKsc-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:block; }
+:root { --matte:#211c18; --subtitleInk:#fff4df; }
+* { box-sizing:border-box; }
+html,body { width:1920px; height:1080px; margin:0; overflow:hidden; background:var(--matte); }
+#root { position:relative; width:1920px; height:1080px; overflow:hidden; background:var(--matte); }
+.scene-host,.caption-host { position:absolute; inset:0; width:100%; height:100%; }
+</style></head>
+<body><div data-hf-id="hf-ph1b" id="root" data-composition-id="main" data-start="0" data-duration="32.4" data-width="1920" data-height="1080" data-fps="30">
+    <div data-hf-id="hf-wfy2" id="home" class="clip scene-host" data-composition-id="home" data-composition-src="compositions/home.html" data-start="0" data-duration="9" data-width="1920" data-height="1080" data-track-index="0" data-track-kind="graphics" data-layout-allow-overlap style="z-index:1"></div>
+    <div data-hf-id="hf-nfi9" id="forge" class="clip scene-host" data-composition-id="forge" data-composition-src="compositions/forge.html" data-start="7.8" data-duration="9" data-width="1920" data-height="1080" data-track-index="1" data-track-kind="graphics" data-layout-allow-overlap style="z-index:2"></div>
+    <div data-hf-id="hf-knil" id="herbs" class="clip scene-host" data-composition-id="herbs" data-composition-src="compositions/herbs.html" data-start="15.6" data-duration="9" data-width="1920" data-height="1080" data-track-index="0" data-track-kind="graphics" data-layout-allow-overlap style="z-index:3"></div>
+    <div data-hf-id="hf-qucx" id="care" class="clip scene-host" data-composition-id="care" data-composition-src="compositions/care.html" data-start="23.4" data-duration="9" data-width="1920" data-height="1080" data-track-index="1" data-track-kind="graphics" data-layout-allow-overlap style="z-index:4"></div>
+    <div data-hf-id="hf-hiuv" id="captions" class="clip caption-host" data-composition-id="captions" data-composition-src="compositions/captions.html" data-start="0" data-duration="32.4" data-width="1920" data-height="1080" data-track-index="3" data-track-kind="captions" style="z-index:10" data-layout-allow-overlap></div>
+    <audio data-hf-id="hf-m6eh" id="hidden-stream-bed" class="clip" src="assets/audio/hidden-stream-pilot.wav" data-start="0" data-duration="32.4" data-track-index="4" data-volume="1" data-fade-in="1.2" data-fade-out="2.4" preload="auto"></audio>
+</div><script>
+window.__timelines = window.__timelines || {};
+const tl = gsap.timeline({paused:true});
+tl.to({clock:0}, {clock:32.4,duration:32.4,ease:"none"}, 0);
+window.__timelines["main"] = tl;
+</script></body></html>

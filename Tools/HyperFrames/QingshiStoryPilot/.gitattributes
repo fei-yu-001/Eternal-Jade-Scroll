@@ -1,0 +1,4 @@
+# Preserve frozen source bytes, including CRLF, for SOURCE-MANIFEST.json.
+* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Keep the upstream library and license byte-identical; its banner has one space-only line.
+assets/vendor/gsap.min.js whitespace=-blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

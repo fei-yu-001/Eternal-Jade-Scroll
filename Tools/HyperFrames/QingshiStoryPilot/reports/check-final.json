@@ -1,0 +1,146 @@
+{
+  "ok": true,
+  "strict": false,
+  "browserSkipped": false,
+  "lint": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 1,
+    "infoCount": 0,
+    "findings": [
+      {
+        "code": "timeline_track_too_dense",
+        "severity": "warning",
+        "message": "Track 0 has 8 timed elements in this HTML file. Smaller sub-compositions keep timelines easier to read, iterate on, and diff.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {},
+        "sourceFile": "D:\\ruangong\\HyperFrames\\qingshi-story-pilot\\compositions\\captions.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Move coherent scene groups into smaller .html files and mount them from the parent with data-composition-src so the timeline stays easier to inspect, revise, and validate."
+      }
+    ],
+    "filesScanned": 6
+  },
+  "runtime": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": []
+  },
+  "layout": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "duration": 32.4,
+    "samples": [
+      0.8,
+      4,
+      7.767,
+      7.8,
+      8.4,
+      8.967,
+      9,
+      10,
+      14,
+      15.567,
+      15.6,
+      16.2,
+      16.767,
+      16.8,
+      17,
+      21,
+      23.367,
+      23.4,
+      24,
+      24.567,
+      24.6,
+      26,
+      30,
+      32.3
+    ],
+    "transitionSamples": [],
+    "transitionSamplesDropped": 0,
+    "tolerance": 2,
+    "totalIssueCount": 0,
+    "truncated": false
+  },
+  "motion": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": true,
+    "specPath": "D:\\ruangong\\HyperFrames\\qingshi-story-pilot\\index.motion.json",
+    "samples": 300
+  },
+  "contrast": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": true,
+    "samples": [
+      0.8,
+      8.967,
+      16.2,
+      23.4,
+      32.3
+    ],
+    "checked": 2,
+    "passed": 2
+  },
+  "craft": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": true,
+    "step": 0.125,
+    "samples": 260
+  },
+  "hdr": {
+    "autoPromotion": null,
+    "inspection": "available"
+  },
+  "snapshots": {
+    "enabled": true,
+    "files": [
+      ".hyperframes\\artifacts\\snapshots\\8599b9e2-be44-4bfa-90a6-f71f1defb3ec\\frame-00-at-0.8s.png",
+      ".hyperframes\\artifacts\\snapshots\\8599b9e2-be44-4bfa-90a6-f71f1defb3ec\\frame-01-at-9.0s.png",
+      ".hyperframes\\artifacts\\snapshots\\8599b9e2-be44-4bfa-90a6-f71f1defb3ec\\frame-02-at-16.2s.png",
+      ".hyperframes\\artifacts\\snapshots\\8599b9e2-be44-4bfa-90a6-f71f1defb3ec\\frame-03-at-23.4s.png",
+      ".hyperframes\\artifacts\\snapshots\\8599b9e2-be44-4bfa-90a6-f71f1defb3ec\\frame-04-at-32.3s.png"
+    ],
+    "times": [
+      0.8,
+      8.967,
+      16.2,
+      23.4,
+      32.3
+    ],
+    "findingFiles": []
+  },
+  "saved": {
+    "id": "5bfb54f9-1696-4761-98c2-7321d3d8c801",
+    "revision": "2309eed6-132e-4e19-b4dd-0d67a1920763",
+    "report": "D:\\ruangong\\HyperFrames\\qingshi-story-pilot\\.hyperframes\\artifacts\\checks\\5bfb54f9-1696-4761-98c2-7321d3d8c801.json",
+    "attribution": "recorded-revision"
+  },
+  "_meta": {
+    "version": "0.8.202",
+    "latestVersion": "0.9.102",
+    "updateAvailable": true
+  }
+}

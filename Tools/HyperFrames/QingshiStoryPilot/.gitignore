@@ -1,0 +1,8 @@
+.hyperframes/
+renders/
+review/
+source-package/
+assets/art/
+assets/audio/
+assets/fonts/*.otf
+__pycache__/
