@@ -58,7 +58,18 @@ namespace TwelveJade.Editor
                 }
                 var strikes = TownCharacterArt.HeroStrikes(gender); Require(gender + " rural strikes", strikes != null && strikes.width == 1728 && strikes.height == 576); BindAsset(strikes);
                 var portrait = DialoguePortraitCatalog.Hero(gender); Require(gender + " rural portrait", portrait != null && portrait.name == "qingshi-" + gender + "-portrait"); BindAsset(portrait);
+                var figure = Resources.Load<Texture2D>("Art/Characters/Qingshi/qingshi-" + gender + "-figure");
+                Require(gender + " rural figure", figure != null); BindAsset(figure);
             }
+            var shitouArt = TownCharacterArt.Find("npc-shitou");
+            Require("shitou town art entry", shitouArt != null);
+            var shitouStand = TownCharacterArt.Texture(shitouArt.stand);
+            var shitouWalk = TownCharacterArt.Texture(shitouArt.walk);
+            var shitouPortrait = DialoguePortraitCatalog.Find("npc-shitou");
+            Require("shitou empty-hand stand resource", shitouStand != null && shitouStand.width == 384 && shitouStand.height == 512);
+            Require("shitou four original leg poses", shitouWalk != null && shitouArt.frames == 4 && shitouWalk.width == 1536 && shitouWalk.height == 512);
+            Require("shitou matching portrait resource", shitouPortrait != null && shitouPortrait.width == 1024 && shitouPortrait.height == 1536);
+            BindAsset(shitouStand); BindAsset(shitouWalk); BindAsset(shitouPortrait);
             host.Repository.Create(1, preset.id, "故里行旅", "male", 0, null, "shaxing");
             host.LoadSlot(host.Repository.Read(1));
             yield return Until(() => host.CurrentPage == "town" && host.TravelerPuppetForShot != null, "story town ready", 20);
@@ -73,10 +84,11 @@ namespace TwelveJade.Editor
                 Check("world wears rural clothes", host.TravelerPuppetForShot.View.name.StartsWith("qingshi-male-"));
                 yield return Capture("story-male-town", "male");
                 host.ShowTownChapterPanel(); yield return JournalReady();
+                StoryDirectoryLayout(save, scripts);
                 Check("future scene disabled", !StoryButton("Story chapter tiger").interactable);
                 yield return Capture("story-journal", "fresh");
-                StoryButton("Story chapter home").onClick.Invoke();
-                yield return Until(() => host.QingshiComicForCheck != null, "journal opens real comic");
+                yield return StoryJourneyDirectoryEntry();
+                yield return Until(() => host.QingshiComicForCheck != null, "journal NPC bridge opens real comic");
                 var viewHost = host.QingshiComicForCheck;
                 var fullVeil = viewHost.transform.parent as RectTransform;
                 var fullCanvas = Field(host, "screenCanvas") as RectTransform;
@@ -147,6 +159,7 @@ namespace TwelveJade.Editor
                             comic.Advance(); Check(definition.Id + " skipped choice rejected", comic.PanelIndex == page);
                             yield return new WaitForEndOfFrame();
                             for (int option = 0; option < options.Length; option++) StoryButtonHit("Story choice " + option);
+                            yield return StoryChoiceFeedback(comic, "story-" + definition.Id + "-" + (page + 1).ToString("D2") + "-hover");
                             StoryButton("Story choice 0").onClick.Invoke();
                             Check(definition.Id + " chosen reply", comic.CanAdvance && comic.CurrentText == options[0].reply);
                             yield return StoryReveal(comic);
@@ -185,9 +198,14 @@ namespace TwelveJade.Editor
                     Check(definition.Id + " completion once", QingshiStory.CurrentIndex(save) == sceneIndex + 1 && QingshiStory.CurrentIndex(host.Repository.Read(1).Data) == sceneIndex + 1);
                     Check(definition.Id + " retains assets and old chapter", Ledger(save) == assets && JsonUtility.ToJson(save.chapter) == chapter);
                     Check(definition.Id + " no initiation", !save.HasFlag(PrologueRules.InitiationFlag));
-                    host.CloseChapterPanel(); yield return Frames(3);
+                    StoryDirectoryLayout(save, scripts);
+                    yield return Capture("story-journal-" + (sceneIndex + 1).ToString("D2"), "progress");
                     string disk = Sha(Path.Combine(state.scratch, "slot-1.json"));
-                    Require(definition.Id + " replay opens", host.ShowQingshiComic(definition.Id));
+                    var replayButton = StoryButton("Story chapter " + definition.Id);
+                    StoryDirectoryReveal(replayButton); StoryButtonHit(replayButton.name);
+                    var replayPointer = StoryPointer(replayButton);
+                    ExecuteEvents.Execute(replayButton.gameObject, replayPointer, ExecuteEvents.pointerClickHandler);
+                    yield return Until(() => host.QingshiComicForCheck != null, definition.Id + " directory replay opens");
                     comic = host.QingshiComicForCheck; Require(definition.Id + " readonly replay", comic.IsReplay);
                     for (int page = 0; page < script.panels.Length; page++)
                     {
@@ -205,6 +223,7 @@ namespace TwelveJade.Editor
                     }
                     yield return JournalReady();
                     Check(definition.Id + " replay did not write", disk == Sha(Path.Combine(state.scratch, "slot-1.json")) && QingshiStory.CurrentIndex(save) == sceneIndex + 1);
+                    StoryDirectoryLayout(save, scripts);
                 }
                 Check("all authored pages and choices exercised", pageCount == expectedPages && choiceCount == expectedChoices,
                     "pages=" + pageCount + "/" + expectedPages + ";choices=" + choiceCount + "/" + expectedChoices);
@@ -217,8 +236,15 @@ namespace TwelveJade.Editor
                 yield return Capture("story-female-town", "female");
                 Invoke(host, "ShowDaoIdentityLedger"); yield return Frames(3);
                 var poster = canvasRoot.GetComponentsInChildren<PosterCardView>(false).FirstOrDefault();
-                Check("female identity shares portrait", poster != null && poster.HasArtwork && poster.Artwork.texture == DialoguePortraitCatalog.Hero("female"));
+                var femaleFigure = Resources.Load<Texture2D>("Art/Characters/Qingshi/qingshi-female-figure");
+                Check("female identity shares full figure", poster != null && poster.HasArtwork && poster.IsCutout &&
+                    poster.ResourcePath == "Art/Characters/Qingshi/qingshi-female-figure" && poster.Artwork.texture == femaleFigure);
+                Check("female identity has no picture frame or crop", poster != null && poster.Frame == null && poster.Crop == new Rect(0, 0, 1, 1));
+                Check("female dialogue portrait still resolves independently", DialoguePortraitCatalog.Hero("female") != null &&
+                    DialoguePortraitCatalog.Hero("female").name == "qingshi-female-portrait");
                 yield return Capture("story-female-identity", "female"); Invoke(host, "CloseModal");
+                yield return Frames(3);
+                yield return StoryJourneyChecks(preset, scripts);
             }
             finally { reducedField.SetValue(settings, originalMotion); }
         }
@@ -284,10 +310,13 @@ namespace TwelveJade.Editor
                 string art = StoryArtId(source, source.panels[0]);
                 string narration = "灶火映着粗布衣上的针脚，巷口的脚步声慢慢远去。你停在门边，等阿娘把没说完的话说完，再伸手接过那件带着余温的衣裳。";
                 var panels = new[] {
-                    new QingshiComicPanel { art = art, speaker = "阿娘", text = narration, dialog = "路上慢些。衣裳补好了，别再冻着。", balloon = "left", balloonY = 440 },
+                    new QingshiComicPanel { art = art, speaker = "阿娘", text = narration, dialog = "慢些。", balloon = "left", balloonY = 440 },
                     new QingshiComicPanel { art = art, speaker = "你", text = narration,
                         dialog = "我记着。\n等忙过这一阵，\n就回来陪你们吃饭。\n阿爹安心养着。\n阿娘也别累着，\n路上的事回来再说。", balloon = "right", balloonY = 500,
-                        choices = new[] { new QingshiComicChoice { label = "记着回家吃饭", reply = "你把阿娘的话记在心里。" } } },
+                        choices = new[] {
+                             new QingshiComicChoice { label = "记着回家吃饭", reply = "你把阿娘的话记在心里。" },
+                             new QingshiComicChoice { label = "先把衣裳收好", reply = "你接过了补好的衣裳。" },
+                             new QingshiComicChoice { label = "替阿娘添柴", reply = "你往灶里添了一把柴。" } } },
                     new QingshiComicPanel { art = art, speaker = "旧页", text = "旧页仍作叙述。" }
                 };
                 var script = new QingshiComicScene { id = source.id, panels = panels };
@@ -301,10 +330,22 @@ namespace TwelveJade.Editor
                 yield return StoryReveal(comic);
                 yield return new WaitForSecondsRealtime(.26f);
                 StoryLayout(comic, panels[0], false);
+                var shortBalloon = comic.GetComponentsInChildren<RectTransform>().Single(t => t.name == "Story dialogue balloon");
+                float shortWidth = shortBalloon.rect.width, shortHeight = shortBalloon.rect.height;
+                Check("short reply uses a compact balloon", shortWidth < 420 && shortHeight < 210);
+                foreach (var control in comic.GetComponentsInChildren<Button>())
+                {
+                    StoryButtonHit(control.name);
+                    StoryControlFeedback(control, () => Check(control.name + " disabled navigation cannot advance or close",
+                        comic.PanelIndex == 0 && completed == 0 && !comic.CompletedForCheck));
+                }
                 yield return Capture("story-reader-left-balloon", "presentation-probe");
                 comic.Advance(); comic.Advance();
                 Check("double advance crosses only one page", comic.PanelIndex == 1 && comic.IsRevealing && completed == 0);
                 yield return null;
+                var revealingChoices = comic.GetComponentsInChildren<Button>().Where(b => b.name.StartsWith("Story choice", StringComparison.Ordinal)).ToArray();
+                Check("choices remain disabled while dialogue reveals", revealingChoices.Length == 3 && revealingChoices.All(b => !b.IsInteractable()));
+                foreach (var choice in revealingChoices) StoryContrast(choice, "typing-disabled");
                 var motion = comic.GetComponentsInChildren<Button>().Single(b => b.name == "Story motion");
                 motion.onClick.Invoke(); var held = StoryArt(comic).uvRect;
                 yield return Frames(4);
@@ -313,6 +354,8 @@ namespace TwelveJade.Editor
                 yield return Capture("story-reader-right-balloon", "presentation-probe");
                 var lowered = comic.GetComponentsInChildren<RectTransform>().Single(t => t.name == "Story dialogue balloon");
                 Check("tall low balloon is lifted above choices", -lowered.anchoredPosition.y < panels[1].balloonY && !comic.CanAdvance);
+                Check("long reply grows beyond compact balloon", lowered.rect.width > shortWidth + 32 && lowered.rect.height > shortHeight + 64);
+                yield return StoryChoiceFeedback(comic, "story-reader-choice-hover");
                 comic.Choose(0); yield return null;
                 motion.onClick.Invoke(); reduced = true;
                 comic.Back(); yield return Frames(3); held = StoryArt(comic).uvRect;
@@ -355,6 +398,7 @@ namespace TwelveJade.Editor
                 Check(prefix + " overlay submits visible triangles " + ink.name,
                     submitted != null && submitted.vertexCount >= 3 && submitted.triangles.Length >= 3 && submitted.colors32.Any(c => c.a > 0));
             }
+            foreach (var paper in comic.GetComponentsInChildren<QingshiComicPaperGraphic>(false)) StoryPaperMesh(paper, prefix);
             var labels = comic.GetComponentsInChildren<TMP_Text>(false);
             foreach (var label in labels)
             {
@@ -365,9 +409,14 @@ namespace TwelveJade.Editor
             var narration = labels.Single(t => t.name == "Story narration");
             var narrationRect = StoryRect(root, narration.rectTransform);
             var caption = labels.Single(t => t.name == "Story caption"); var captionRect = StoryRect(root, caption.rectTransform);
+            bool choicePage = (panel.choices?.Length ?? 0) > 0;
             var shade = comic.GetComponentsInChildren<QingshiComicInkGraphic>().Single(g => g.name == "Story subtitle shade");
-            Check(prefix + " narration overlays bottom gradient", StoryContains(StoryRect(root, shade.rectTransform), narrationRect) &&
+            var shadeRect = StoryRect(root, shade.rectTransform);
+            Check(prefix + " narration overlays bottom gradient", StoryContains(shadeRect, narrationRect) && StoryContains(shadeRect, captionRect) &&
                 narrationRect.yMax <= bounds.yMin + bounds.height * .3f);
+            Check(prefix + " authored caption and narration lanes", Mathf.Abs(bounds.yMax - captionRect.yMax - (choicePage ? 754 : 824)) < .5f &&
+                Mathf.Abs(captionRect.height - 32) < .5f && Mathf.Abs(bounds.yMax - narrationRect.yMax - (choicePage ? 790 : 864)) < .5f &&
+                Mathf.Abs(narrationRect.height - (choicePage ? 100 : 110)) < .5f && !captionRect.Overlaps(narrationRect));
             if (!chosen) Check(prefix + " narration preserved", comic.CurrentText == (panel.text ?? ""));
             var bubble = comic.GetComponentsInChildren<RectTransform>(true).Single(t => t.name == "Story dialogue balloon");
             bool speech = !chosen && !string.IsNullOrWhiteSpace(panel.dialog);
@@ -384,7 +433,7 @@ namespace TwelveJade.Editor
                 Check(prefix + " tail inside scene and clear of subtitles", StoryContains(artRect, tailRect) && !tailRect.Overlaps(narrationRect) && !tailRect.Overlaps(captionRect));
                 var choiceRects = buttons.Where(b => b.name.StartsWith("Story choice", StringComparison.Ordinal))
                     .Select(b => StoryRect(root, (RectTransform)b.transform)).ToArray();
-                float lowerTop = choiceRects.Length > 0 ? choiceRects.Max(r => r.yMax) : captionRect.yMax;
+                float lowerTop = Mathf.Max(captionRect.yMax, choiceRects.Length > 0 ? choiceRects.Max(r => r.yMax) : captionRect.yMax);
                 float actualY = bounds.yMax - bubbleRect.yMax;
                 Check(prefix + " balloon leaves tail and lower row clearance", bubbleRect.yMin >= lowerTop + 48 - .5f && tailRect.yMin > lowerTop);
                 Check(prefix + " balloon respects authored depth or available room", actualY >= 132 - .5f && actualY <= panel.balloonY + .5f &&
@@ -396,22 +445,272 @@ namespace TwelveJade.Editor
                 }
                 var speechLabel = bubble.GetComponentsInChildren<TMP_Text>().Single(t => t.name == "Story dialogue");
                 Check(prefix + " dialogue inside paper", StoryContains(bubbleRect, StoryRect(root, speechLabel.rectTransform)) && !speechLabel.richText);
+                var speakerLabel = bubble.GetComponentsInChildren<TMP_Text>().Single(t => t.name == "Story speaker");
+                Check(prefix + " speaker inside fitted paper", StoryContains(bubbleRect, StoryRect(root, speakerLabel.rectTransform)));
+                Check(prefix + " fitted balloon preserves outer side", panel.balloon == "right"
+                    ? Mathf.Abs(bubbleRect.xMax - (bounds.xMax - 96)) < .5f
+                    : Mathf.Abs(bubbleRect.xMin - (bounds.xMin + 96)) < .5f);
+                Check(prefix + " tail stays on fitted paper", tailRect.xMin >= bubbleRect.xMin && tailRect.xMax <= bubbleRect.xMax);
+                var note = bubble.GetComponent<QingshiComicPaperGraphic>();
+                Check(prefix + " dialogue uses thin paper geometry", note != null && note.Kind == QingshiComicPaperGraphic.Surface.Note &&
+                    bubble.GetComponent<Image>() == null && !note.raycastTarget);
             }
             foreach (var button in buttons)
             {
                 var rect = StoryRect(root, (RectTransform)button.transform);
                 Check(prefix + " button inside art " + button.name, StoryContains(artRect, rect));
+                Check(prefix + " control uses native paper " + button.name, button.targetGraphic is QingshiComicPaperGraphic &&
+                    button.GetComponent<Image>() == null && button.GetComponent<EventTrigger>() == null);
+                var buttonLabel = button.GetComponentInChildren<TMP_Text>();
+                Check(prefix + " control caption inside paper " + button.name, StoryContains(rect, StoryRect(root, buttonLabel.rectTransform)));
+                StoryContrast(button, prefix + "/" + (button.IsInteractable() ? "ready" : "disabled"));
                 if (button.name.StartsWith("Story choice", StringComparison.Ordinal))
-                    Check(prefix + " choice clear of captions " + button.name, !rect.Overlaps(narrationRect) && !rect.Overlaps(captionRect) &&
+                {
+                    Check(prefix + " choice below narration " + button.name, rect.yMax < narrationRect.yMin && !rect.Overlaps(captionRect) &&
                         (!speech || !rect.Overlaps(StoryRect(root, bubble))) && button.interactable);
+                    Check(prefix + " choice uses authored lower lane " + button.name,
+                        Mathf.Abs(bounds.yMax - rect.yMax - 912) < .5f && Mathf.Abs(rect.height - 64) < .5f &&
+                        StoryContains(shadeRect, rect) && Mathf.Abs(rect.width - (panel.choices.Length == 3 ? 516 : 600)) < .5f);
+                    var seal = button.GetComponentsInChildren<QingshiComicPaperGraphic>().Single(g => g.Kind == QingshiComicPaperGraphic.Surface.Seal);
+                    var sealRect = StoryRect(root, seal.rectTransform);
+                    int choice = Array.FindIndex(buttons.Where(b => b.name.StartsWith("Story choice", StringComparison.Ordinal)).ToArray(), b => b == button);
+                    Check(prefix + " separate vermilion ordinal " + button.name, seal.GetComponentInChildren<TMP_Text>().text == new[] { "一", "二", "三" }[choice] &&
+                        buttonLabel.text == panel.choices[choice].label && !seal.raycastTarget &&
+                        StoryContains(rect, sealRect) && sealRect.xMax <= rect.xMin + 50.5f &&
+                        StoryRect(root, buttonLabel.rectTransform).xMin >= sealRect.xMax + 24);
+                    var turn = buttons.Single(b => b.name == "Story next");
+                    Check(prefix + " choice leaves twenty pixels before turning " + button.name,
+                        rect.yMin - StoryRect(root, (RectTransform)turn.transform).yMax >= 19.5f);
+                }
                 if (button.name == "Story next" || button.name == "Story previous")
-                    Check(prefix + " navigation below subtitles " + button.name, rect.yMax < narrationRect.yMin);
+                    Check(prefix + " navigation below subtitles " + button.name, rect.yMax < narrationRect.yMin &&
+                        Mathf.Abs(bounds.yMax - rect.yMax - 996) < .5f && Mathf.Abs(rect.height - 56) < .5f);
             }
             for (int i = 0; i < buttons.Length; i++)
                 for (int j = i + 1; j < buttons.Length; j++)
                     Check(prefix + " controls do not overlap " + buttons[i].name + "/" + buttons[j].name,
                         !StoryRect(root, (RectTransform)buttons[i].transform).Overlaps(StoryRect(root, (RectTransform)buttons[j].transform)));
         }
+        // Drive real UGUI handlers and inspect renderer tint plus TMP glyph colors. A text-color-only
+        // assertion would miss the original shared hover callback and the disabled background tint.
+        static IEnumerator StoryChoiceFeedback(QingshiComicView comic, string screenshot)
+        {
+            var choices = comic.GetComponentsInChildren<Button>().Where(b => b.name.StartsWith("Story choice", StringComparison.Ordinal)).ToArray();
+            Require("contrast probe has actual choices", choices.Length > 0 && EventSystem.current != null);
+            var previousSelection = EventSystem.current.currentSelectedGameObject;
+            int page = comic.PanelIndex; string text = comic.CurrentText;
+            try
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+                foreach (var button in choices)
+                {
+                    StoryControlFeedback(button, () => Check(button.name + " disabled click leaves choice pending",
+                        comic.PanelIndex == page && comic.CurrentText == text && !comic.CanAdvance));
+                }
+                // The last option reproduces the reported pale-text hover case in a reviewable frame.
+                var hovered = choices[choices.Length - 1];
+                ExecuteEvents.Execute(hovered.gameObject, StoryPointer(hovered), ExecuteEvents.pointerEnterHandler);
+                yield return Capture(screenshot, "choice-hover");
+                StoryContrast(hovered, "captured-hover");
+                Check("feedback never advances or chooses", comic.PanelIndex == page && comic.CurrentText == text && !comic.CanAdvance);
+            }
+            finally
+            {
+                foreach (var button in choices)
+                    if (button != null)
+                    {
+                        button.interactable = true;
+                        ExecuteEvents.Execute(button.gameObject, StoryPointer(button), ExecuteEvents.pointerExitHandler);
+                    }
+                if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(previousSelection != null && previousSelection.activeInHierarchy ? previousSelection : null);
+            }
+            yield return null;
+        }
+
+        static void StoryPaperMesh(QingshiComicPaperGraphic paper, string prefix)
+        {
+            paper.Rebuild(CanvasUpdate.PreRender);
+            var mesh = paper.canvasRenderer.GetMesh();
+            Require(prefix + " paper submits triangles " + paper.name, mesh != null && mesh.vertexCount > 4 && mesh.triangles.Length >= 6);
+            var vertices = mesh.vertices; var colors = mesh.colors32; var triangles = mesh.triangles;
+            float area = 0;
+            for (int i = 0; i < triangles.Length; i += 3)
+            {
+                int a = triangles[i], b = triangles[i + 1], c = triangles[i + 2];
+                if (colors[a].a < 254 || colors[b].a < 254 || colors[c].a < 254) continue;
+                Vector2 ab = vertices[b] - vertices[a], ac = vertices[c] - vertices[a];
+                area += Mathf.Abs(ab.x * ac.y - ab.y * ac.x) * .5f;
+            }
+            var bounds = paper.rectTransform.rect;
+            Check(prefix + " paper is a filled sheet with a fine ink edge " + paper.name,
+                area >= bounds.width * bounds.height * .94f && colors.Any(c => c.a > 0 && c.a < 200));
+            Check(prefix + " paper mesh stays in its hit rectangle " + paper.name,
+                vertices.All(v => v.x >= bounds.xMin - .5f && v.x <= bounds.xMax + .5f && v.y >= bounds.yMin - .5f && v.y <= bounds.yMax + .5f));
+        }
+        static void StoryControlFeedback(Button button, Action disabledClickCheck)
+        {
+            if (!button.IsInteractable()) { StoryContrast(button, "disabled"); return; }
+            var previousSelection = EventSystem.current.currentSelectedGameObject;
+            var label = button.GetComponentInChildren<TMP_Text>(); var start = label.rectTransform.anchoredPosition;
+            var pointer = StoryPointer(button);
+            try
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+                ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerExitHandler);
+                StoryContrast(button, "normal"); var normal = StoryRenderedColor(button.targetGraphic);
+                ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerEnterHandler);
+                StoryContrast(button, "hover");
+                Check(button.name + " hover has visible feedback", StoryRenderedColor(button.targetGraphic) != normal);
+                EventSystem.current.SetSelectedGameObject(button.gameObject);
+                StoryContrast(button, "selected");
+                ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerDownHandler);
+                StoryContrast(button, "pressed");
+                ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerUpHandler);
+                button.interactable = false; StoryContrast(button, "disabled");
+                ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerEnterHandler);
+                StoryContrast(button, "disabled-hover");
+                ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerClickHandler); disabledClickCheck?.Invoke();
+                button.interactable = true; EventSystem.current.SetSelectedGameObject(null);
+                for (int repeat = 0; repeat < 3; repeat++)
+                {
+                    ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerExitHandler);
+                    ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerEnterHandler);
+                }
+                ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerExitHandler);
+                StoryContrast(button, "restored");
+                Check(button.name + " hover never drifts caption", label.rectTransform.anchoredPosition == start);
+            }
+            finally
+            {
+                button.interactable = true;
+                ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerExitHandler);
+                EventSystem.current.SetSelectedGameObject(previousSelection != null && previousSelection.activeInHierarchy ? previousSelection : null);
+            }
+        }
+
+        static PointerEventData StoryPointer(Button button)
+        {
+            var rect = (RectTransform)button.transform;
+            return new PointerEventData(EventSystem.current) {
+                position = RectTransformUtility.WorldToScreenPoint(null, rect.TransformPoint(rect.rect.center)),
+                button = PointerEventData.InputButton.Left
+            };
+        }
+        static Color StoryRenderedColor(Graphic graphic) => graphic.color * graphic.canvasRenderer.GetColor();
+        static Color StoryComposite(Color foreground, Color background) => new Color(
+            foreground.r * foreground.a + background.r * (1 - foreground.a),
+            foreground.g * foreground.a + background.g * (1 - foreground.a),
+            foreground.b * foreground.a + background.b * (1 - foreground.a), 1);
+        static float StoryLuminance(Color color)
+        {
+            float Linear(float channel) => channel <= .04045f ? channel / 12.92f : Mathf.Pow((channel + .055f) / 1.055f, 2.4f);
+            return .2126f * Linear(color.r) + .7152f * Linear(color.g) + .0722f * Linear(color.b);
+        }
+        static void StoryContrast(Button button, string status)
+        {
+            StoryTextContrast(button.GetComponentInChildren<TMP_Text>(), button.targetGraphic, button.name + "/" + status);
+            var seal = button.GetComponentsInChildren<QingshiComicPaperGraphic>().SingleOrDefault(g => g.Kind == QingshiComicPaperGraphic.Surface.Seal);
+            if (seal != null) StoryTextContrast(seal.GetComponentInChildren<TMP_Text>(), seal, button.name + "/seal/" + status);
+        }
+        static void StoryTextContrast(TMP_Text label, Graphic surfaceGraphic, string prefix)
+        {
+            label.ForceMeshUpdate();
+            var glyphs = label.textInfo.meshInfo.Where(m => m.vertexCount > 0)
+                .SelectMany(m => m.colors32.Take(m.vertexCount)).Where(c => c.a > 0).ToArray();
+            Require(prefix + " renders glyphs", glyphs.Length > 0);
+            Color glyph = glyphs[0];
+            var ink = glyph * label.canvasRenderer.GetColor(); var paper = StoryRenderedColor(surfaceGraphic);
+            foreach (var backdrop in new[] { Color.black, Color.white })
+            {
+                var surface = StoryComposite(paper, backdrop); var text = StoryComposite(ink, surface);
+                float a = StoryLuminance(text), b = StoryLuminance(surface);
+                float contrast = (Mathf.Max(a, b) + .05f) / (Mathf.Min(a, b) + .05f);
+                Check(prefix + " readable on " + (backdrop == Color.white ? "light" : "dark") + " art",
+                    contrast >= 4.5f, "contrast=" + contrast.ToString("F2") + "; ink=" + ink + "; paper=" + paper);
+            }
+        }
+
+        static void StoryDirectoryLayout(SaveData save, Dictionary<string, QingshiComicScene> scripts)
+        {
+            Canvas.ForceUpdateCanvases();
+            int current = QingshiStory.CurrentIndex(save); string prefix = "directory/" + current;
+            string before = JsonUtility.ToJson(save);
+            var content = Field(host, "chapterBodyHost") as RectTransform;
+            var scroll = Field(host, "chapterScroll") as ScrollRect;
+            Require(prefix + " has real scroll", content != null && scroll != null && scroll.viewport != null);
+            var rows = content.GetComponentsInChildren<Button>().Where(b => b.name.StartsWith("Story chapter ", StringComparison.Ordinal)).ToArray();
+            Check(prefix + " keeps chapter order and button names", rows.Select(b => b.name).SequenceEqual(QingshiStory.Scenes.Select(s => "Story chapter " + s.Id)));
+            var acts = content.GetComponentsInChildren<TMP_Text>().Where(t => t.name.StartsWith("Story act ", StringComparison.Ordinal)).ToArray();
+            Check(prefix + " groups the authored acts", acts.Select(t => t.name).SequenceEqual(QingshiStory.Scenes.Select(s => s.Act).Distinct().Select(a => "Story act " + a)));
+            foreach (var label in content.GetComponentsInChildren<TMP_Text>())
+            {
+                label.ForceMeshUpdate();
+                Check(prefix + " text fits " + label.name, !label.isTextOverflowing);
+            }
+            for (int i = 0; i < QingshiStory.Scenes.Count; i++)
+            {
+                var scene = QingshiStory.Scenes[i]; var row = rows[i];
+                bool done = i < current, ready = QingshiStory.CanEnter(save, scene.Id);
+                Check(prefix + "/" + scene.Id + " progression gates click", row.IsInteractable() == (done || ready));
+                var labels = row.GetComponentsInChildren<TMP_Text>();
+                var title = labels.Single(t => t.name.EndsWith(" title", StringComparison.Ordinal));
+                var summary = labels.Single(t => t.name.EndsWith(" summary", StringComparison.Ordinal));
+                var status = labels.Single(t => t.name.EndsWith(" status", StringComparison.Ordinal));
+                var preview = row.GetComponentsInChildren<RawImage>(true).SingleOrDefault(r => r.name == "Story preview " + scene.Id);
+                var rowRect = StoryRect(content, (RectTransform)row.transform);
+                Check(prefix + "/" + scene.Id + " summary clears title", !StoryRect(content, title.rectTransform).Overlaps(StoryRect(content, summary.rectTransform)));
+                foreach (var label in labels)
+                    Check(prefix + "/" + scene.Id + " text inside card " + label.name, StoryContains(rowRect, StoryRect(content, label.rectTransform)));
+                if (i > 0) Check(prefix + "/" + scene.Id + " cards do not overlap", !rowRect.Overlaps(StoryRect(content, (RectTransform)rows[i - 1].transform)));
+                var act = acts.Single(t => t.name == "Story act " + scene.Act);
+                Check(prefix + "/" + scene.Id + " follows its act heading", StoryRect(content, act.rectTransform).yMin >= rowRect.yMax);
+                if (done || ready)
+                {
+                    Check(prefix + "/" + scene.Id + " known title and state", title.text.Contains(scene.Title) && status.text.Contains(done ? "回看" : "续写"));
+                    var opening = scripts[scene.Id].panels[0]; string art = StoryArtId(scripts[scene.Id], opening);
+                    Check(prefix + "/" + scene.Id + " uses only opening preview", preview != null && preview.gameObject.activeSelf &&
+                        preview.texture == Resources.Load<Texture2D>("Art/Story/Qingshi/" + art) && !preview.raycastTarget);
+                    Check(prefix + "/" + scene.Id + " preview fits card", preview != null && StoryContains(rowRect, StoryRect(content, preview.rectTransform)));
+                    string knownText = done ? scene.Summary : opening.text;
+                    if (!string.IsNullOrWhiteSpace(knownText))
+                        Check(prefix + "/" + scene.Id + " summary limited to known content", knownText.Replace("\r", "").Replace("\n", " ").Trim().StartsWith(summary.text.TrimEnd('…'), StringComparison.Ordinal));
+                }
+                else
+                {
+                    Check(prefix + "/" + scene.Id + " future has no title or artwork spoiler", preview == null && !title.text.Contains(scene.Title) &&
+                        labels.All(t => !t.text.Contains(scene.Summary)) && status.text == "未启");
+                    ExecuteEvents.Execute(row.gameObject, StoryPointer(row), ExecuteEvents.pointerClickHandler);
+                    Check(prefix + "/" + scene.Id + " locked pointer click keeps directory", host.ChapterScrollOpenForCheck && host.QingshiComicForCheck == null);
+                }
+                if (ready) Check(prefix + "/" + scene.Id + " current entry visible without scrolling", StoryContains(scroll.viewport.rect, StoryRect(scroll.viewport, (RectTransform)row.transform)));
+            }
+            var action = Field(host, "chapterAction") as Button;
+            bool canContinue = current >= 0 && current < QingshiStory.Scenes.Count && QingshiStory.CanEnter(save, QingshiStory.Scenes[current].Id);
+            Check(prefix + " fixed continue matches progress", action != null && action.gameObject.activeSelf == canContinue);
+            if (canContinue)
+            {
+                var lead = QingshiStoryJourney.Current(save);
+                string expectedAction = string.IsNullOrEmpty(lead?.NpcId) ? "续读 · " + QingshiStory.Scenes[current].Title : "寻访 · " + lead.NpcName;
+                Check(prefix + " fixed action follows current NPC or continuous scene", action.GetComponentInChildren<TMP_Text>().text == expectedAction);
+                StoryButtonHit(action.name);
+            }
+            float position = scroll.verticalNormalizedPosition;
+            scroll.StopMovement(); scroll.verticalNormalizedPosition = 0; Canvas.ForceUpdateCanvases();
+            Check(prefix + " last row reachable", StoryContains(scroll.viewport.rect, StoryRect(scroll.viewport, (RectTransform)rows[rows.Length - 1].transform)));
+            if (rows[rows.Length - 1].IsInteractable()) StoryButtonHit(rows[rows.Length - 1].name);
+            scroll.verticalNormalizedPosition = position; Canvas.ForceUpdateCanvases();
+            Check(prefix + " browsing never changes save", before == JsonUtility.ToJson(save));
+        }
+        static void StoryDirectoryReveal(Button button)
+        {
+            var scroll = Field(host, "chapterScroll") as ScrollRect;
+            Canvas.ForceUpdateCanvases(); scroll.StopMovement();
+            float offset = -((RectTransform)button.transform).anchoredPosition.y;
+            float overflow = Mathf.Max(0, scroll.content.rect.height - scroll.viewport.rect.height);
+            scroll.verticalNormalizedPosition = overflow > 0 ? 1 - Mathf.Clamp(offset, 0, overflow) / overflow : 1;
+            Canvas.ForceUpdateCanvases();
+        }
+
         static Rect StoryRect(RectTransform root, RectTransform rect)
         {
             var corners = new Vector3[4]; rect.GetWorldCorners(corners);

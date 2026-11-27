@@ -236,9 +236,9 @@ namespace TwelveJade.Presentation
         {
             switch (kind)
             {
-                case AmbienceKind.Bird:   return new AmbienceSpec { Kind = kind, Rate = 22050, Seconds = 12f, Level = .55f, Seed = 20261007 };
+                case AmbienceKind.Bird:   return new AmbienceSpec { Kind = kind, Rate = 22050, Seconds = 12f, Level = 0f, Seed = 20261007 };
                 case AmbienceKind.Water:  return new AmbienceSpec { Kind = kind, Rate = 22050, Seconds = 12f, Level = .45f, Seed = 20261008 };
-                case AmbienceKind.Insect: return new AmbienceSpec { Kind = kind, Rate = 22050, Seconds = 12f, Level = .34f, Seed = 20261009 };
+                case AmbienceKind.Insect: return new AmbienceSpec { Kind = kind, Rate = 22050, Seconds = 12f, Level = 0f, Seed = 20261009 };
                 default:                  return new AmbienceSpec { Kind = kind, Rate = 22050, Seconds = 12f, Level = .30f, Seed = 20261006 }; // Wind
             }
         }
@@ -250,13 +250,15 @@ namespace TwelveJade.Presentation
             Math.Max(1, (int)(Math.Max(1, spec.Rate) * Math.Max(.1f, spec.Seconds)));
 
         /// <summary>渲染一条**可循环**的底噪。确定性：同 spec ⇒ 逐样本一致。
-        /// 循环接缝的处理：连续型（风/水）用"整数个周期的 LFO"保证首尾同值；
-        /// 事件型（鸟/虫）把每次发声**完整放在缓冲内部**，不许跨过首尾 ⇒ 接缝处是静音，天然平滑。</summary>
+        /// 鸟鸣与虫鸣已彻底停用（返回全零静音），避免与真实配乐冲突或恢复合成鸟叫。</summary>
         public static float[] Render(in AmbienceSpec spec)
         {
             var rate = Math.Max(1, spec.Rate);
             var n = SampleCount(spec);
             var buffer = new float[n];
+            if (spec.Kind == AmbienceKind.Bird || spec.Kind == AmbienceKind.Insect || spec.Level <= 0f)
+                return buffer;
+
             var state = (uint)(spec.Seed | 1);
             float Next()
             {
@@ -292,35 +294,6 @@ namespace TwelveJade.Presentation
                                 var tt = d / rate;
                                 var f = 900f - 320f * (float)(tt / .07f);       // 下滑音 ⇒ 像气泡上浮
                                 v += .5f * (float)Math.Sin(2 * Math.PI * f * tt) * (float)Math.Exp(-tt * 46f);
-                            }
-                            break;
-                        }
-                    case AmbienceKind.Bird:
-                        {
-                            for (var c = 0; c < 6; c++)                         // 6 声鸟叫，全部落在缓冲内
-                            {
-                                var at = (.05f + c * .155f) * n;
-                                var d = i - at;
-                                if (d < 0 || d > rate * .18f) continue;
-                                var tt = d / rate;
-                                var f0 = 2200f + 260f * c;                      // 每声略不同，免得机器味
-                                var f = f0 * (1f + .35f * (float)(tt / .18f));  // 上滑
-                                var env = Math.Min(tt * 260f, 1f) * (float)Math.Exp(-tt * 15f);
-                                v += .85f * env * (float)Math.Sin(2 * Math.PI * f * tt);
-                            }
-                            break;
-                        }
-                    default:                                                    // Insect
-                        {
-                            for (var c = 0; c < 4; c++)                         // 4 段虫鸣（夜里）
-                            {
-                                var at = (.06f + c * .23f) * n;
-                                var d = i - at;
-                                if (d < 0 || d > rate * .9f) continue;
-                                var tt = d / rate;
-                                var env = Math.Min(tt * 60f, 1f) * Math.Min((float)((.9f - tt) * 40f), 1f);
-                                var trill = .5f + .5f * (float)Math.Sin(2 * Math.PI * 42f * tt);  // 颤音
-                                v += .7f * env * trill * (float)Math.Sin(2 * Math.PI * 4300f * tt);
                             }
                             break;
                         }

@@ -20,6 +20,7 @@ namespace TwelveJade.Presentation
 
         void OnApplicationPause(bool paused)
         {
+            SetMusicPaused(paused);
             if (!paused || !MobileControls.Enabled) return;
             mobileMovePad?.ResetInput();
             CancelTravel();

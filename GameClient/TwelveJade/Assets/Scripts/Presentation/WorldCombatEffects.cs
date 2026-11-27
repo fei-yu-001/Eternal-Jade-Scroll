@@ -10,24 +10,41 @@ namespace TwelveJade.Presentation
     /// </summary>
     public sealed class WorldCombatEffects : MonoBehaviour
     {
-        const int CasterBudget = 6, SlashBudget = 6, HitBudget = 10, ColumnBudget = 3, MoteBudget = 5, SheetBudget = 8;
-        static readonly Color Gold = new Color(1f, .84f, .46f), Ember = new Color(1f, .60f, .32f),
-            Blood = new Color(.95f, .45f, .36f), Teal = new Color(.40f, .86f, .74f), Pale = new Color(.84f, .93f, .90f);
+        const int CasterBudget = 6, SlashBudget = 6, ColumnBudget = 3, MoteBudget = 5, SheetBudget = 8, MortalBudget = 18;
+        static readonly Color Gold = new Color(1f, .84f, .46f), Teal = new Color(.40f, .86f, .74f),
+            InkLight = new Color(.14f, .15f, .16f), InkHeavy = new Color(.11f, .12f, .13f),
+            InkDust = new Color(.56f, .52f, .44f), InkHeavyDust = new Color(.44f, .40f, .33f),
+            InkPlayerHit = new Color(.56f, .18f, .15f), InkFoeHit = new Color(.14f, .13f, .12f),
+            InkHerb = new Color(.34f, .48f, .35f), InkAsh = new Color(.38f, .37f, .34f),
+            InkWarn = new Color(.72f, .46f, .24f);
         WorldCombatFxCaster[] casters;
         WorldCombatFxSlash[] slashes;
-        WorldCombatFxHit[] hits;
         WorldCombatFxColumn[] columns;
         WorldCombatFxMote[] motes;
         WorldCombatFxSheet[] sheets;
+        WorldCombatMortalFx[] mortals;
         WorldCombatFxTelegraph telegraph;
         Texture2D swordSheet, thunderSheet, claritySheet;
         Func<Vector2, Vector2> project;
         Func<bool> reduced;
-        int casterCursor, slashCursor, hitCursor, columnCursor, moteCursor, sheetCursor;
+        int casterCursor, slashCursor, columnCursor, moteCursor, sheetCursor, mortalCursor;
         bool installed;
 
         public bool Installed => installed;
-        public int ActiveCount { get { int n = 0; n += Count(casters); n += Count(slashes); n += Count(hits); n += Count(columns); n += Count(motes); n += Count(sheets); return n; } }
+        public int ActiveCount { get { int n = 0; n += Count(casters); n += Count(slashes); n += Count(columns); n += Count(motes); n += Count(sheets); n += Count(mortals); return n; } }
+        public int MortalActiveCount => Count(mortals);
+        public int SheetActiveCount => Count(sheets);
+        public int CasterActiveCount => Count(casters);
+        public int SlashActiveCount => Count(slashes);
+        public int ColumnActiveCount => Count(columns);
+        public int MoteActiveCount => Count(motes);
+        public int MortalPoolSize => mortals?.Length ?? 0;
+        public int ActiveMortalKindCount(MortalFxKind kind)
+        {
+            int n = 0;
+            if (mortals != null) for (int i = 0; i < mortals.Length; i++) if (mortals[i] != null && mortals[i].enabled && mortals[i].Kind == kind) n++;
+            return n;
+        }
         static int Count(WorldCombatFxGraphic[] pool) { int n = 0; if (pool != null) for (int i = 0; i < pool.Length; i++) if (pool[i] != null && pool[i].enabled) n++; return n; }
 
         public static WorldCombatEffects Create(UiKit ui, RectTransform worldRoot, Func<Vector2, Vector2> project, Func<bool> reduced)
@@ -38,10 +55,10 @@ namespace TwelveJade.Presentation
             view.project = project; view.reduced = reduced;
             view.casters = view.Pool<WorldCombatFxCaster>(ui, CasterBudget, "Caster");
             view.slashes = view.Pool<WorldCombatFxSlash>(ui, SlashBudget, "Slash");
-            view.hits = view.Pool<WorldCombatFxHit>(ui, HitBudget, "Hit");
             view.columns = view.Pool<WorldCombatFxColumn>(ui, ColumnBudget, "Bolt");
             view.motes = view.Pool<WorldCombatFxMote>(ui, MoteBudget, "Mote");
             view.sheets = view.Pool<WorldCombatFxSheet>(ui, SheetBudget, "Authored frame");
+            view.mortals = view.Pool<WorldCombatMortalFx>(ui, MortalBudget, "Mortal ink");
             // 现有特效表只在这里取一次,节点循环复用,运行期不再碰 Resources。
             view.swordSheet = ApprovedUiArt.Load("nov11/skill-sword");
             view.thunderSheet = ApprovedUiArt.Load("nov11/skill-thunder");
@@ -52,6 +69,8 @@ namespace TwelveJade.Presentation
             view.installed = true;
             return view;
         }
+
+        public bool TelegraphVisible => telegraph != null && telegraph.enabled;
 
         T[] Pool<T>(UiKit ui, int count, string name) where T : WorldCombatFxGraphic
         {
@@ -75,16 +94,17 @@ namespace TwelveJade.Presentation
             var b = project(target);
             if (!Finite(a) || !Finite(b)) return;
             float span = Mathf.Clamp(Vector2.Distance(a, b), 34, 230);
+            var dir = Direction(a, b);
             switch (eventId)
             {
                 case "cast:light":
-                    Fire(casters, ref casterCursor, now, 0, .12f, a, b, 44, Gold, boss).SetStyle(0);
-                    Fire(slashes, ref slashCursor, now, .12f, .22f, a + Vector2.up * 42, b + Vector2.up * 42, span, Gold, false).SetStyle(0);
+                    MortalFire(now, 0, .20f, a, dir, 36, 4, InkDust, false, MortalFxKind.StepDust);
+                    MortalFire(now, .12f, .18f, a, dir, span, 40, InkLight, false, MortalFxKind.LightSlash);
                     break;
                 case "cast:heavy":
-                    Fire(casters, ref casterCursor, now, 0, .28f, a, b, 92, Ember, boss).SetStyle(1);
-                    Fire(slashes, ref slashCursor, now, .28f, .34f, a + Vector2.up * 45, b + Vector2.up * 45, span * 1.12f, Ember, false).SetStyle(2);
-                    SheetFire(now, .28f, a, b, 155, swordSheet, 1, 3, Ember, false, .28f);
+                    MortalFire(now, 0, .28f, a, dir, 52, 4, InkHeavyDust, boss, MortalFxKind.StepDust);
+                    MortalFire(now, .28f, .24f, a, dir, span * 1.08f, 44, InkHeavy, boss, MortalFxKind.HeavySlash);
+                    MortalFire(now, .28f, .24f, a + dir * 18f, dir, 46, 4, InkDust, boss, MortalFxKind.StepDust);
                     break;
                 // 御剑启动 .22s:蓄光先走,剑到 .22 才出。
                 case "cast:sword":
@@ -105,32 +125,25 @@ namespace TwelveJade.Presentation
                     SheetFire(now, .55f, a, a, 132, claritySheet, 0, 4, Teal, boss, .45f);
                     Fire(motes, ref moteCursor, now, .45f, .70f, a, a, 52, Teal, boss).SetStyle(1);
                     break;
-                // hit 的 target 才是受击者,表现全部落在 b。
+                // hit 的 target 才是受击者,表现全部落在 b 并沿真实攻击方向扩散。
                 case "hit:player":
-                    SheetFire(now, .30f, b, b, (boss ? 46 : 38) * 2.4f, thunderSheet, 2, 2, Blood, boss);
-                    Fire(hits, ref hitCursor, now, 0, .36f, b, b, boss ? 46 : 38, Blood, boss);
-                    Fire(casters, ref casterCursor, now, 0, .24f, b, b, 34, Blood, boss).SetStyle(0);
+                    MortalFire(now, 0, .26f, b, dir, boss ? 54 : 42, 34, InkPlayerHit, boss, MortalFxKind.ImpactGrit);
                     break;
                 case "hit:foe":
-                    SheetFire(now, .32f, b, b, (boss ? 74 : 52) * 2.3f, swordSheet, 2, 2, Gold, boss);
-                    Fire(hits, ref hitCursor, now, 0, .40f, b, b, boss ? 74 : 52, Gold, boss);
+                    MortalFire(now, 0, .28f, b, dir, boss ? 68 : 50, 36, InkFoeHit, boss, MortalFxKind.ImpactGrit);
                     break;
                 case "heal":
-                    SheetFire(now, .70f, a, a, 140, claritySheet, 0, 4, Teal, boss);
-                    Fire(motes, ref moteCursor, now, 0, .95f, a, a, 58, Teal, boss).SetStyle(0);
+                    MortalFire(now, 0, .62f, a, Vector2.up, 44, 16, InkHerb, false, MortalFxKind.HerbBreath);
                     break;
                 case "dodge":
-                    Fire(slashes, ref slashCursor, now, 0, .30f, a, b, span, Pale, boss).SetStyle(1);
+                    MortalFire(now, 0, .28f, a, dir, span, 12, InkDust, boss, MortalFxKind.StepDust);
                     break;
-                // 预警只画地面蓄势,不画受击爆炸;真正的爆点是控制器的 hit。
+                // 预警只画地面蓄势,不误作命中。
                 case "warn:boss":
-                    Fire(casters, ref casterCursor, now, 0, .46f, b, b, 70, new Color(1f, .78f, .48f), true).SetStyle(1);
-                    Fire(hits, ref hitCursor, now, 0, .52f, b, b, Mathf.Max(58, span), new Color(1f, .62f, .34f), true).SetStyle(1);
+                    MortalFire(now, 0, .48f, b, Vector2.right, Mathf.Max(56, span), 2, InkWarn, true, MortalFxKind.BossWarnRing);
                     break;
                 case "death":
-                    SheetFire(now, .60f, a, a, 124, claritySheet, 2, 2, new Color(.80f, .80f, .74f), boss);
-                    Fire(motes, ref moteCursor, now, 0, 1.2f, a, a, 66, new Color(.74f, .72f, .66f), boss).SetStyle(2);
-                    Fire(hits, ref hitCursor, now, 0, .5f, a, a, 30, new Color(.55f, .52f, .48f), boss).SetStyle(0);
+                    MortalFire(now, 0, .78f, a, dir, 52, 6, InkAsh, boss, MortalFxKind.DefeatAsh);
                     break;
             }
         }
@@ -142,6 +155,18 @@ namespace TwelveJade.Presentation
             var node = pool[cursor]; cursor = (cursor + 1) % pool.Length;
             node.Begin(now, wait, life, foot, aim, boss ? size * 1.3f : size, tint, boss);
             return node;
+        }
+
+        void MortalFire(float now, float wait, float life, Vector2 foot, Vector2 direction, float size, float lift, Color tint, bool boss, MortalFxKind kind)
+        {
+            var node = mortals[mortalCursor]; mortalCursor = (mortalCursor + 1) % mortals.Length;
+            node.BeginMortal(now, wait, life, foot, direction, boss ? size * 1.18f : size, lift, tint, boss, kind);
+        }
+
+        static Vector2 Direction(Vector2 from, Vector2 to)
+        {
+            var d = to - from;
+            return d.sqrMagnitude > .25f ? d.normalized : Vector2.right;
         }
 
         WorldCombatFxSheet SheetFire(float now, float life, Vector2 foot, Vector2 aim, float size, Texture2D texture, int first, int frames, Color tint, bool boss, float wait = 0)
@@ -172,8 +197,9 @@ namespace TwelveJade.Presentation
             var parent = transform.parent;
             if (parent != null && transform.GetSiblingIndex() != parent.childCount - 1) transform.SetAsLastSibling();
             bool low = reduced != null && reduced();
-            Step(casters, now, low); Step(slashes, now, low); Step(hits, now, low);
+            Step(casters, now, low); Step(slashes, now, low);
             Step(columns, now, low); Step(motes, now, low); Step(sheets, now, low);
+            Step(mortals, now, low);
         }
 
         static void Step(WorldCombatFxGraphic[] pool, float now, bool low)
@@ -184,7 +210,8 @@ namespace TwelveJade.Presentation
 
         public void Clear()
         {
-            Hide(casters); Hide(slashes); Hide(hits); Hide(columns); Hide(motes); Hide(sheets);
+            Hide(casters); Hide(slashes); Hide(columns); Hide(motes); Hide(sheets);
+            Hide(mortals);
             if (telegraph != null) telegraph.Hide();
         }
 
@@ -198,7 +225,8 @@ namespace TwelveJade.Presentation
         {
             Clear();
             project = null; reduced = null;
-            casters = null; slashes = null; hits = null; columns = null; motes = null; sheets = null;
+            casters = null; slashes = null; columns = null; motes = null; sheets = null;
+            mortals = null;
             swordSheet = null; thunderSheet = null; claritySheet = null;
             telegraph = null; installed = false;
         }

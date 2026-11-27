@@ -68,7 +68,7 @@ namespace TwelveJade.Presentation
             RectTransform lower=null;
             var marker=ui.Rect(tracking,"Hud quest golden seal",22,26,42,42).gameObject.AddComponent<QuestGoldenMarker>();
             marker.Configure(()=>settings==null||settings.reduceMotion);
-            HudLabel(tracking,"Hud quest scroll name","天 机 卷",78,22,180,52,29,UiKit.Ink);
+            var storyHeading = HudLabel(tracking,"Hud quest scroll name","青石故里",78,22,180,52,26,UiKit.Ink);
             var prompt=HudLabel(tracking,"Hud quest fold state","展卷",263,30,72,40,21,UiKit.Ink);
             var roll=tracking.gameObject.AddComponent<QuestBriefRoll>();
             var header=ImmortalUi.Hotspot(ui,tracking,"Hud quest toggle","",0,10,width,76,()=>{PlayClick();roll.Toggle();});
@@ -80,9 +80,13 @@ namespace TwelveJade.Presentation
             var detailGroup=sheet.gameObject.AddComponent<CanvasGroup>();
             var entries=new System.Collections.Generic.List<QuestEntryView>();
             var open=AestheticUi.Jade(ui,sheet,"Hud quest full scroll","详阅行卷",new Rect(42,0,232,68),ShowTownChapterPanel,()=>settings.reduceMotion,PlayClick,24);
+            var journeyText = HudLabel(sheet, "Hud story objective", "", 8, 4, inner-16, 90, 23, UiKit.Ink);
+            journeyText.richText = false;
+            var journeyAction = StoryJourneyButton(sheet, "Hud story follow", "寻访", new Rect(12, 98, inner-24, 60), FollowQingshiStory);
+            float journeyHeight = 170;
             Action reflow=()=>
             {
-                float y=4;foreach(var entry in entries){((RectTransform)entry.transform).anchoredPosition=new Vector2(0,-y);y+=entry.Height+10;}
+                float y=journeyHeight;foreach(var entry in entries){((RectTransform)entry.transform).anchoredPosition=new Vector2(0,-y);y+=entry.Height+10;}
                 ((RectTransform)open.transform).anchoredPosition=new Vector2(42,-y);y+=80;
                 sheet.sizeDelta=new Vector2(inner,y);roll.SetBodyHeight(y);
             };
@@ -97,18 +101,25 @@ namespace TwelveJade.Presentation
                 var story = storyIndex >= 0 && storyIndex < QingshiStory.Scenes.Count ? QingshiStory.Scenes[storyIndex] : null;
                 if (story != null && QingshiStory.CanEnter(activeSave, story.Id)) state |= QuestGoldenMarker.Notice.CanAdvance;
                 marker.SetNotice(state);
+                var lead = QingshiStoryJourney.Current(activeSave);
+                storyHeading.text = lead == null ? "故里回望" : string.IsNullOrEmpty(lead.NpcId) ? "续 · 这一夜" : "寻 · " + lead.NpcName;
                 string signature=data.Title+data.Goal+data.Progress+data.Next+state+storyIndex;
                 if(signature==last)return;last=signature;
+                journeyText.text = lead?.Objective ?? "你已离开青石镇。此处为故里回望，旧事可展卷重读。";
+                float objectiveHeight = Mathf.Max(64, journeyText.GetPreferredValues(journeyText.text, inner-20, float.PositiveInfinity).y+10);
+                journeyText.rectTransform.sizeDelta = new Vector2(inner-16, objectiveHeight);
+                ((RectTransform)journeyAction.transform).anchoredPosition = new Vector2(12, -(objectiveHeight+14));
+                journeyAction.GetComponentInChildren<TMP_Text>().text = lead == null ? "展卷回看" : string.IsNullOrEmpty(lead.NpcId) ? "接着读下去" : "去见" + lead.NpcName;
+                journeyAction.interactable = lead == null || QingshiStory.CanEnter(activeSave, lead.SceneId);
+                journeyHeight = objectiveHeight+90;
                 foreach(var entry in entries){entry.gameObject.SetActive(false);Destroy(entry.gameObject);}entries.Clear();
                 Action<string,string,string> add=(kind,title,text)=>
                 {
                     var row=ui.Rect(sheet,"Hud quest entry "+entries.Count,0,0,inner,78);var entry=row.gameObject.AddComponent<QuestEntryView>();
                     entry.Build(ui,row,kind,title,text,()=>settings.reduceMotion,PlayClick,reflow);entries.Add(entry);
                 };
-                add("主", story == null ? "青石故里 · 卷一已记" : "青石故里 · " + story.Title,
-                    "已记 " + Math.Max(0, storyIndex) + " / " + QingshiStory.Scenes.Count + " 段\n" +
-                    (story == null ? "旧事仍可展卷回看。" : "详阅行卷，续写故里旧事。"));
-                add("托",data.Title.Replace("主线 · ",""),data.Goal+"\n"+data.Progress);
+                // The current goal and follow button above already carry the main story.
+                // Keep the remaining rows for side quests instead of duplicating a narrow title card.
                 if(ready)
                 {
                     var main=chapterTable.Segments.SelectMany(seg=>seg.Quests).ToArray();

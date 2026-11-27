@@ -22,6 +22,7 @@ namespace TwelveJade.Presentation
         public TMP_Text Label => label; // Compatibility: semantic text only, deliberately not rendered as an icon.
         public RectTransform Rect => rect;
         public QuestOverheadState State => state;
+        public bool IsStory { get; private set; }
         public QuestMarkerGraphic GraphicForShot => graphic;
         public float BreathAlphaForShot => group == null ? 0 : group.alpha;
         public bool FloatingForShot => rect != null && Mathf.Abs(rect.anchoredPosition.y - resting.y) > .01f;
@@ -41,13 +42,13 @@ namespace TwelveJade.Presentation
             marker.label.enabled = false; // Old !/? screenshots need a new visual assertion; no hidden fake PASS glyph.
             root.gameObject.SetActive(false); return marker;
         }
-        public void Refresh(QuestOverheadState next)
+        public void Refresh(QuestOverheadState next, bool mainStory = false)
         {
             bool visible = NpcIdentityRules.TaskVisible(next);
-            if (state == next && gameObject.activeSelf == visible) return;
-            state = next;
+            if (state == next && IsStory == mainStory && gameObject.activeSelf == visible) return;
+            state = next; IsStory = mainStory;
             if (label != null) label.text = NpcIdentityRules.TaskDescription(next);
-            if (graphic != null) graphic.SetState(next);
+            if (graphic != null) graphic.SetState(next, mainStory);
             gameObject.SetActive(visible);
             if (visible) ApplyMotion(); else ResetMotion();
         }

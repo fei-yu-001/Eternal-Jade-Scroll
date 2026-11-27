@@ -10,13 +10,16 @@ namespace TwelveJade.Presentation
     public sealed class QuestMarkerGraphic : MaskableGraphic
     {
         QuestOverheadState state;
+        bool mainStory;
+        public bool IsStory => mainStory;
         public QuestOverheadState State => state;
         protected override void Awake() { base.Awake(); raycastTarget = false; }
-        public void SetState(QuestOverheadState value) { if (state == value) return; state = value; SetVerticesDirty(); }
+        public void SetState(QuestOverheadState value, bool story = false) { if (state == value && mainStory == story) return; state = value; mainStory = story; SetVerticesDirty(); }
         protected override void OnPopulateMesh(VertexHelper mesh)
         {
             mesh.Clear(); if (!NpcIdentityRules.TaskVisible(state)) return;
-            if (state == QuestOverheadState.Completable) Pendant(mesh); else Talisman(mesh, state == QuestOverheadState.InProgress);
+            if (mainStory) StorySign(mesh);
+            else if (state == QuestOverheadState.Completable) Pendant(mesh); else Talisman(mesh, state == QuestOverheadState.InProgress);
         }
         Vector2 Point(float x, float y)
         {
@@ -46,6 +49,25 @@ namespace TwelveJade.Presentation
                 float a = Mathf.Lerp(from, to, i / (float)segments), x = cx + Mathf.Cos(a) * rx, y = cy + Mathf.Sin(a) * ry;
                 Line(mesh, lastX, lastY, x, y, width, color); lastX = x; lastY = y;
             }
+        }
+        // A paper hanging sign with an unmistakable painted ! / ? silhouette. Main-story
+        // punctuation is real geometry, not a hidden TMP string used only by screenshots.
+        void StorySign(VertexHelper mesh)
+        {
+            var paper = new Color(.98f, .89f, .66f, 1); var ink = new Color(.48f, .12f, .075f, 1);
+            Quad(mesh, .18f, .10f, .67f, .83f, new Color(.08f, .06f, .04f, .55f));
+            Quad(mesh, .14f, .14f, .67f, .83f, paper);
+            Line(mesh, .17f, .94f, .78f, .94f, 1.4f, ink);
+            Line(mesh, .17f, .17f, .78f, .17f, 1.4f, ink);
+            Line(mesh, .17f, .17f, .17f, .94f, 1.4f, ink);
+            Line(mesh, .78f, .17f, .78f, .94f, 1.4f, ink);
+            if (state == QuestOverheadState.Completable)
+            {
+                Arc(mesh, .48f, .69f, .17f, .15f, Mathf.PI, -Mathf.PI * .50f, 4.6f, ink);
+                Line(mesh, .48f, .54f, .48f, .43f, 4.6f, ink);
+            }
+            else Line(mesh, .48f, .82f, .48f, .44f, 5.5f, ink);
+            Quad(mesh, .43f, .28f, .10f, .09f, ink);
         }
         void Talisman(VertexHelper mesh, bool inProgress)
         {

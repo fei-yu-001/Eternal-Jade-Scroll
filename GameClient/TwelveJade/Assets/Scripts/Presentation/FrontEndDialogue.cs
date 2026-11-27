@@ -77,7 +77,7 @@ namespace TwelveJade.Presentation
 
         void RequestNpcDialogue(string npcId)
         {
-            if (WorldDialogueInputBlocked || modal != null || bagOverlay != null || activeSave == null || page != "town") return;
+            if (WorldDialogueInputBlocked || WorldCombatActive || modal != null || bagOverlay != null || activeSave == null || page != "town") return;
             var npc = town?.Npcs.FirstOrDefault(n => n.Id == npcId);
             if (npc == null) return;
             if (DialogueDistance(npcId) <= QuestRuntime.InteractionDistance) { NpcArrived?.Invoke(npcId); return; }
@@ -125,7 +125,7 @@ namespace TwelveJade.Presentation
         }
 
         List<DialogueOption> VisibleDialogueOptions() =>
-            Dialogues.BranchOptions(activeSave, talkView, talkTrades, Quests);
+            storyLeadDialogue ? talkView.Options.ToList() : Dialogues.BranchOptions(activeSave, talkView, talkTrades, Quests);
 
         DialogueUIFrame DialogueFrame()
         {
@@ -141,9 +141,10 @@ namespace TwelveJade.Presentation
                 new DialogueUIPortrait(npc.Name, portrait), linear, linear);
         }
 
-        void OpenTownDialogue(string npcId)
+        void OpenTownDialogue(string npcId, bool ordinary = false)
         {
-            if (WorldDialogueInputBlocked || activeSave == null || page != "town" || DialogueDistance(npcId) > QuestRuntime.InteractionDistance) return;
+            if (WorldDialogueInputBlocked || WorldCombatActive || activeSave == null || page != "town" || DialogueDistance(npcId) > QuestRuntime.InteractionDistance) return;
+            if (!ordinary && TryOpenStoryLead(npcId)) return;
             if (!LoadTables()) return;
             if (string.IsNullOrEmpty(Dialogues.EntryNodeFor(npcId)))
             {
@@ -313,7 +314,12 @@ namespace TwelveJade.Presentation
             if (page != "town" || activeSave == null) return;
             var quests = Quests;
             foreach (var pair in questOverheads)
-                if (pair.Value != null) pair.Value.Refresh(QuestRuntime.OverheadState(activeSave, quests, pair.Key));
+            {
+                if (pair.Value == null) continue;
+                var main = QingshiStoryJourney.Overhead(activeSave, pair.Key);
+                pair.Value.Refresh(main != QuestOverheadState.None ? main : QuestRuntime.OverheadState(activeSave, quests, pair.Key),
+                    main != QuestOverheadState.None);
+            }
         }
     }
 }

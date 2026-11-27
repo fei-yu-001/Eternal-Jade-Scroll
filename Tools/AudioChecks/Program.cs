@@ -1,12 +1,12 @@
 // 员工C（手感与听觉）的**离线取证 / 验证工程**。
 //
 // 为什么要有它：任务书 Y-3 的"总禁止"里写明 **一切手感改动都要有可复算的数字**
-// （时长/曲线/触点数），而且本仓**一律运行期程序合成**、盘上零音频文件 ——
-// 于是"听感"这种主观量必须换成可打印、可复算、可回归的数字，否则无从判对错。
+// （时长/曲线/触点数）；背景音乐现已由 Assets/Resources/Audio/Music/*.mp3 三首真实录音承担，
+// 而脚步与 4 类 UI 交互音仍采用运行期程序合成 —— "听感"必须换成可打印、可复算、可回归的数字，否则无从判对错。
 //
 // 做法照抄既有 `PuppetRigChecks`：**DSP 层（`FootstepSynth.cs`）不引 UnityEngine**，
-// 所以用 `<Compile Include>` 把它链进来，`dotnet run` 就能在**没有 Unity 的机器**上跑。
-// 本机确实没有 Unity，因此这是 C 线唯一能自证的通道。
+// 所以用 `<Compile Include>` 把它链进来，`dotnet run` 就能在不启动 Unity 的情况下完成纯 DSP 回归；
+// 真实 `AudioSource` 播放与混音校验则由 Unity 侧 `MusicPlaybackChecks` 负责。
 //
 // 输出纪律：**机器读的那半必须 ASCII**（键名 + 数字），中文只作叙述；
 // 这是 D-57 / T6 那一族的口径 —— 读不出的判据行等于没有判据行。
@@ -139,7 +139,7 @@ namespace TwelveJade.AudioChecks
         }
 
         /// <summary>导出 16bit PCM wav（给**人耳朵**用；默认不导出，跑不带 --wav 就零文件产生）。
-        /// 为什么默认不导出：本仓"盘上零音频文件"是硬口径，产物必须能被指向仓外目录。</summary>
+        /// 为什么默认不导出：测试产物不得污染正式工程目录，必须指向仓外临时目录。</summary>
         static void WriteWav(string path, float[] buf, int rate)
         {
             var dir = System.IO.Path.GetDirectoryName(path);
@@ -188,7 +188,7 @@ namespace TwelveJade.AudioChecks
         public static int Main(string[] args)
         {
             // --wav <目录>：把四种地面 × 左右导出成 16bit PCM wav，**目录由调用方给**
-            // （本仓"盘上零音频文件"是硬口径，所以默认一个字节都不产）。
+            // （测试期间不应往工程目录写入额外音频，所以默认一个字节都不产）。
             var wavDir = (string)null;
             for (var i = 0; i < args.Length; i++)
                 if (args[i] == "--wav" && i + 1 < args.Length) { wavDir = args[i + 1]; i++; }
@@ -343,11 +343,11 @@ namespace TwelveJade.AudioChecks
             }
             Check(monoVol, "C-12：响度随步幅单调上升", "0.72 → 1.00");
 
-            // ---- C-13 / C-23：环境底噪（风/鸟/水/虫，程序合成、可循环）--------------------
+            // ---- C-13 / C-23：环境底噪（风/水保留，鸟/虫合成彻底静音禁用）--------------------
             Console.WriteLine("");
-            Console.WriteLine("== C-13/C-23 环境底噪：风/鸟/水/虫（零素材、可循环）==");
+            Console.WriteLine("== C-13/C-23 环境底噪：风/水可循环，鸟/虫禁用为全零静音 ==");
             var kinds = new[] { AmbienceKind.Wind, AmbienceKind.Bird, AmbienceKind.Water, AmbienceKind.Insect };
-            var centroids = new System.Collections.Generic.List<float>();
+            var activeCentroids = new System.Collections.Generic.List<float>();
             foreach (var k in kinds)
             {
                 var spec = AmbienceSpec.For(k);
@@ -355,10 +355,7 @@ namespace TwelveJade.AudioChecks
                 var peak = FootstepSynth.PeakOf(buf);
                 var rms = FootstepSynth.Rms(buf, 0, buf.Length);
                 var centroid = Centroid(buf, spec.Rate);
-                centroids.Add(centroid);
 
-                // 循环接缝：把"首样本与末样本的落差"和"普通相邻样本的落差"比 ——
-                // 比值小 ⇒ 首尾接得上；事件型（鸟/虫）接缝处是静音，比值应该接近 0。
                 var seam = Math.Abs(buf[0] - buf[buf.Length - 1]);
                 var step = 0.0;
                 for (var i = 1; i < buf.Length; i++) step += Math.Abs(buf[i] - buf[i - 1]);
@@ -377,8 +374,6 @@ namespace TwelveJade.AudioChecks
                     " seam_ratio=" + Num(seamRatio, 2));
                 rows++;
 
-                Check(Math.Abs(peak - spec.Level) < .01f, k + "：峰值恰好等于目标",
-                      Num(peak, 3) + " / 目标 " + Num(spec.Level, 2));
                 var ok = true; var over = 0;
                 foreach (var v in buf)
                 {
@@ -390,20 +385,33 @@ namespace TwelveJade.AudioChecks
                 var sameA = true;
                 for (var i = 0; i < buf.Length; i++) if (buf[i] != twice[i]) { sameA = false; break; }
                 Check(sameA, k + "：确定性（同 spec ⇒ 逐样本一致）", "重算一致=" + sameA);
-                Check(rms > 1e-4f, k + "：不是一条静音（真有内容）", "RMS " + Num(rms, 4));
-                Check(seamRatio < 10f, k + "：循环接缝平滑（落差不超过普通相邻跳变的 10 倍）",
-                      "比值 " + Num(seamRatio, 2));
+
+                if (k == AmbienceKind.Bird || k == AmbienceKind.Insect)
+                {
+                    Check(spec.Level == 0f && peak == 0f && rms == 0f,
+                          k + "：合成鸟/虫鸣已禁用（全零静音）",
+                          "level=" + Num(spec.Level, 2) + " peak=" + Num(peak, 4) + " rms=" + Num(rms, 4));
+                }
+                else
+                {
+                    activeCentroids.Add(centroid);
+                    Check(Math.Abs(peak - spec.Level) < .01f, k + "：峰值恰好等于目标",
+                          Num(peak, 3) + " / 目标 " + Num(spec.Level, 2));
+                    Check(rms > 1e-4f, k + "：不是一条静音（真有内容）", "RMS " + Num(rms, 4));
+                    Check(seamRatio < 10f, k + "：循环接缝平滑（落差不超过普通相邻跳变的 10 倍）",
+                          "比值 " + Num(seamRatio, 2));
+                }
             }
 
-            var distinct = true;
-            for (var i = 0; i < centroids.Count; i++)
-                for (var j = i + 1; j < centroids.Count; j++)
+            var distinct = activeCentroids.Count == 2;
+            for (var i = 0; i < activeCentroids.Count; i++)
+                for (var j = i + 1; j < activeCentroids.Count; j++)
                 {
-                    var bigger = Math.Max(centroids[i], centroids[j]);
-                    if (bigger <= 1e-6f || Math.Abs(centroids[i] - centroids[j]) / bigger < .1f) distinct = false;
+                    var bigger = Math.Max(activeCentroids[i], activeCentroids[j]);
+                    if (bigger <= 1e-6f || Math.Abs(activeCentroids[i] - activeCentroids[j]) / bigger < .1f) distinct = false;
                 }
-            Check(distinct, "四种底噪互不相同（频谱质心两两相差 >10%）",
-                  string.Join(" / ", centroids.ConvertAll(c => Num(c, 0) + "Hz")));
+            Check(distinct, "风/水两档底噪互不相同（频谱质心相差 >10%）",
+                  string.Join(" / ", activeCentroids.ConvertAll(c => Num(c, 0) + "Hz")));
 
             // ---- C-17 / C-27 / TC-31~TC-33：交互音四类（点击 / 翻页 / 获得 / 失败）------
             Console.WriteLine("");

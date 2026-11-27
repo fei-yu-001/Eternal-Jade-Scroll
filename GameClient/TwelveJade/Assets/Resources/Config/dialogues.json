@@ -232,7 +232,6 @@
       "text": "……你来啦。坐门槛上吧，屋里乱。（他从怀里摸出一小包炒豆，塞到你手里。）",
       "options": [
         { "text": "（接过来）你自己不饿吗？", "next": "shitou-dou", "grantFlag": "got-chao-dou", "socialEvent": "Gave", "socialWeight": 2 },
-        { "text": "看他身旁的破旧黑匣子", "next": "shitou-box", "socialEvent": "Traded" },
         { "text": "做买卖", "next": "shitou-shop", "action": "openShop" },
         { "text": "告辞", "next": "shitou-bye" }
       ]

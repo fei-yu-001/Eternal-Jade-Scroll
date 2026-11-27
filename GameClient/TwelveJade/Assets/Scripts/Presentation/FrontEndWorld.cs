@@ -686,8 +686,7 @@ namespace TwelveJade.Presentation
                     : PuppetActor.Motion.Idle);
                 // W-C：脚步由**同一条真实位移**驱动的相位触发 ⇒ 站着不动一声都不响。
                 TickFootsteps();
-                // C-13/C-14：环境底噪随昼夜（白天鸟鸣 / 夜里虫鸣）切换。
-                // **C 线只在这里加一行调用**（AA-4：`FrontEndWorld.cs` 归 C 的是"相机阻尼/音频调用"段）。
+                // Legacy ambience guard cannot restart synthesized birds or insects.
                 TickAmbience();
                 // 朝向按**意图**吸附（move），不按位移（moved）：面墙硬走时人该还是朝着那个方向，
                 // 而不是因为没挪动就退回上一朝向。

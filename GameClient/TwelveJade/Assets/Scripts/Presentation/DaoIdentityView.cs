@@ -23,7 +23,7 @@ namespace TwelveJade.Presentation
             ScholarScrollArt.Horizontal(ui,page,"Dao identity woven mount",0,0,1760,940);
             AestheticUi.Paper(ui,page,"Dao identity writing silk",new Rect(42,42,1676,856));
             var portrait=ui.Rect(page,"Dao identity large portrait",62,94,686,728).gameObject.AddComponent<PosterCardView>();
-            portrait.Configure(presetId,data.gender,true);
+            portrait.Configure(presetId,data.gender,useFigure:true);
             AestheticUi.Text(ui,page,"Dao identity portrait caption",initiated?"道 身 · 本 命 行 牒":"身 世 · 乱 世 行 牒",new Rect(68,836,674,54),28,TextAlignmentOptions.Center);
             AestheticUi.Text(ui,page,"Dao identity name",data.characterName,new Rect(824,76,814,70),36);
             AestheticUi.Text(ui,page,"Dao identity origin",origin+" · "+CharacterPreset.GenderName(data.gender),new Rect(824,157,814,46),26);
@@ -31,7 +31,7 @@ namespace TwelveJade.Presentation
             AestheticUi.Text(ui,page,"Dao identity combat","基础力道  "+attack+"     基础防御  "+defense,new Rect(824,281,814,46),26);
             AestheticUi.Text(ui,page,"Dao identity roots title",initiated?"五 行 灵 根 · 天机未明":"凡 人 之 身 · 前 路 未 知",new Rect(824,352,814,46),25);
             if(initiated)Roots(ui,page,"Dao roots",new Rect(814,416,334,334));
-            else AestheticUi.Text(ui,page,"Mortal journey","一身布衣\n几文盘缠\n\n且在乱世里\n寻一条活路",new Rect(824,440,300,280),28,TextAlignmentOptions.Center);
+            else AestheticUi.Text(ui,page,"Mortal journey","十八加冠\n青石农家\n\n父亲修河伤了腿\n阿娘体弱仍持家",new Rect(824,440,300,280),28,TextAlignmentOptions.Center);
             string traits=string.Join(" · ",(data.traits??Array.Empty<string>()).Select(id=>CharacterGen.FindTrait(id)?.Name??id));
             AestheticUi.Text(ui,page,"Dao identity destiny","命格  "+(CharacterGen.FindDestiny(data.destiny)?.Name??"命星待照"),new Rect(1172,420,466,56),28);
             AestheticUi.Text(ui,page,"Dao identity traits","先天词条  "+(traits.Length>0?traits:"尚未记载"),new Rect(1172,496,466,104),25);

@@ -26,7 +26,7 @@ namespace TwelveJade.Presentation
         const string ArtDirectory = "Art/Story/Qingshi/";
         const float RevealRate = 36f, EntranceSeconds = .25f;
         UiKit ui; RectTransform root, bubble; QingshiComicScene script; QingshiStoryScene scene;
-        Func<bool> reduced; Action finish; bool replay, completing, still;
+        Func<bool> reduced; Action finish, click; bool replay, completing, still;
         RawImage artwork; TMP_Text heading, speaker, body, dialogue, caption, counter, hint;
         QingshiComicInkGraphic tail;
         Button next, previous, motion;
@@ -83,7 +83,7 @@ namespace TwelveJade.Presentation
         }
         static bool Finite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
         static string ArtId(string sceneId, QingshiComicPanel panel) => string.IsNullOrEmpty(panel.art) ? sceneId : panel.art;
-        static bool SafeArtId(string value)
+        internal static bool SafeArtId(string value)
         {
             if (string.IsNullOrEmpty(value) || value.Length > 96 || value[0] == '-' || value[value.Length - 1] == '-') return false;
             bool dash = false;
@@ -96,17 +96,18 @@ namespace TwelveJade.Presentation
         }
 
         public void Configure(UiKit kit, RectTransform host, QingshiStoryScene definition,
-            QingshiComicScene content, bool isReplay, Func<bool> lowMotion, Action completed, Action closed)
+            QingshiComicScene content, bool isReplay, Func<bool> lowMotion, Action completed, Action closed, Action clicked = null)
         {
             Validate(content);
             if (definition == null || definition.Id != content.id) throw new InvalidOperationException("行卷与篇章不相符。");
             ui = kit; root = host; scene = definition; script = content; replay = isReplay;
-            reduced = lowMotion; finish = completed;
+            reduced = lowMotion; finish = completed; click = clicked;
+            advancedFrame = Time.frameCount; // The press finishing the previous scene cannot advance this one.
             var backdrop = root.gameObject.AddComponent<Image>(); backdrop.color = UiKit.Hex("171A18"); backdrop.raycastTarget = true;
             var frame = ui.Stretch(root, "Story artwork viewport"); frame.gameObject.AddComponent<RectMask2D>();
             artwork = ui.Stretch(frame, "Story painted panel").gameObject.AddComponent<RawImage>(); artwork.raycastTarget = false;
             Ink(root, "Story top shade", 0, 0, 1920, 130, QingshiComicInkGraphic.Shape.TopShade);
-            Ink(root, "Story subtitle shade", 0, 752, 1920, 328, QingshiComicInkGraphic.Shape.BottomShade);
+            Ink(root, "Story subtitle shade", 0, 680, 1920, 400, QingshiComicInkGraphic.Shape.BottomShade);
             heading = Label(root, "Story heading", "青石故里 · " + scene.Title, 64, 26, 1010, 48, 30, UiKit.Paper);
             counter = Label(root, "Story counter", "", 1100, 34, 226, 36, 22, UiKit.Paper, TextAlignmentOptions.Right);
             motion = ReaderButton("Story motion", "静观", 1376, 24, 160, 52, () =>
@@ -118,8 +119,8 @@ namespace TwelveJade.Presentation
             });
             ReaderButton("Story close", "暂收此卷", 1560, 24, 296, 52, () => { if (!completing) closed?.Invoke(); });
 
-            bubble = ui.Panel(root, "Story dialogue balloon", 96, 166, 720, 220, UiKit.Hex("EDE3CB")).rectTransform;
-            var shadow = bubble.gameObject.AddComponent<Shadow>(); shadow.effectColor = new Color(0, 0, 0, .28f); shadow.effectDistance = new Vector2(2, -3);
+            var note = Paper(root, "Story dialogue balloon", 96, 166, 720, 220, QingshiComicPaperGraphic.Surface.Note);
+            note.color = UiKit.Paper; note.raycastTarget = false; bubble = note.rectTransform;
             tail = Ink(bubble, "Story balloon tail", 72, 219, 40, 32, QingshiComicInkGraphic.Shape.TailLeft);
             tail.color = UiKit.Hex("EDE3CB");
             speaker = Label(bubble, "Story speaker", "", 32, 20, 656, 38, 25, UiKit.Hex("784D33"));
@@ -134,11 +135,15 @@ namespace TwelveJade.Presentation
             for (int i = 0; i < 3; i++)
             {
                 int selected = i;
-                var button = ui.Button(root, "", 186, 726, 516, 72, () => Choose(selected));
-                button.name = "Story choice " + i; button.targetGraphic.color = UiKit.Hex("EDE3CB");
-                var label = button.GetComponentInChildren<TMP_Text>(); label.richText = false; label.color = UiKit.Ink;
-                label.alignment = TextAlignmentOptions.Center; label.enableAutoSizing = true; label.fontSizeMin = 22; label.fontSizeMax = 28;
-                button.navigation = new Navigation { mode = Navigation.Mode.None };
+                var button = ReaderButton("Story choice " + i, "", 186, 912, 516, 64, () => Choose(selected));
+                var label = button.GetComponentInChildren<TMP_Text>();
+                label.rectTransform.anchoredPosition = new Vector2(76, 0);
+                label.rectTransform.sizeDelta = new Vector2(416, 64);
+                label.fontSize = 28; label.fontSizeMin = 22; label.fontSizeMax = 28;
+                var seal = Paper(button.transform, "Story choice " + i + " seal", 18, 16, 32, 32, QingshiComicPaperGraphic.Surface.Seal);
+                seal.color = UiKit.Hex("943E30"); seal.raycastTarget = false;
+                Label(seal.transform, "Story choice " + i + " seal number", new[] { "一", "二", "三" }[i],
+                    2, 1, 28, 30, 18, UiKit.Paper, TextAlignmentOptions.Center);
                 options.Add(button);
             }
             ShowPanel();
@@ -149,13 +154,31 @@ namespace TwelveJade.Presentation
             var label = ui.Label(parent, text, x, y, width, height, size, color, alignment);
             label.name = name; label.richText = false; return label;
         }
-        Button ReaderButton(string name, string text, float x, float y, float width, float height, UnityEngine.Events.UnityAction action)
+        QingshiComicPaperGraphic Paper(Transform parent, string name, float x, float y, float width, float height,
+            QingshiComicPaperGraphic.Surface surface)
         {
-            var button = ui.Button(root, text, x, y, width, height, action); button.name = name;
-            button.targetGraphic.color = new Color(.06f, .08f, .07f, .48f);
-            button.GetComponentInChildren<TMP_Text>().alignment = TextAlignmentOptions.Center;
-            // Space is owned by Advance; selected UGUI buttons must not submit it a second time.
+            var paper = ui.Rect(parent, name, x, y, width, height).gameObject.AddComponent<QingshiComicPaperGraphic>();
+            paper.Kind = surface; paper.color = Color.white; return paper;
+        }
+        Button ReaderButton(string name, string text, float x, float y, float width, float height,
+            UnityEngine.Events.UnityAction action)
+        {
+            var paper = Paper(root, name, x, y, width, height, QingshiComicPaperGraphic.Surface.Slip);
+            paper.raycastTarget = true;
+            var button = paper.gameObject.AddComponent<Button>(); button.targetGraphic = paper;
+            var colors = button.colors;
+            colors.normalColor = UiKit.Hex("EDE3CB");
+            colors.highlightedColor = UiKit.Hex("FFF4D9");
+            colors.selectedColor = UiKit.Hex("E2D1AD");
+            colors.pressedColor = UiKit.Hex("CBB98F");
+            colors.disabledColor = UiKit.Hex("D1CFC5");
+            colors.colorMultiplier = 1; colors.fadeDuration = 0; button.colors = colors;
+            var label = Label(paper.transform, name + " caption", text, 22, 0, width - 44, height,
+                25, UiKit.Hex("28382F"), TextAlignmentOptions.Center);
+            label.enableAutoSizing = true; label.fontSizeMin = 23; label.fontSizeMax = 25;
+            // Space belongs to Advance; UGUI must not submit a selected button a second time.
             button.navigation = new Navigation { mode = Navigation.Mode.None };
+            button.onClick.AddListener(() => { click?.Invoke(); action?.Invoke(); });
             return button;
         }
         QingshiComicInkGraphic Ink(Transform parent, string name, float x, float y, float width, float height, QingshiComicInkGraphic.Shape shape)
@@ -177,20 +200,34 @@ namespace TwelveJade.Presentation
             body.text = chosen ? panel.choices[selection].reply : panel.text ?? "";
             dialogue.text = chosen ? "" : panel.dialog ?? "";
             bool hasDialogue = !string.IsNullOrWhiteSpace(dialogue.text);
+            bool choicePage = (panel.choices?.Length ?? 0) > 0;
+            // Preserve these positions after selecting a reply; only the option signs disappear.
+            caption.rectTransform.anchoredPosition = new Vector2(190, choicePage ? -754 : -824);
+            body.rectTransform.anchoredPosition = new Vector2(190, choicePage ? -790 : -864);
+            body.rectTransform.sizeDelta = new Vector2(1540, choicePage ? 100 : 110);
             caption.text = chosen ? "你的回应" : hasDialogue ? "" : panel.speaker;
             bubble.gameObject.SetActive(hasDialogue);
             if (hasDialogue)
             {
                 bool right = panel.balloon == "right";
                 speaker.text = panel.speaker;
-                float height = Mathf.Clamp(dialogue.GetPreferredValues(dialogue.text, 656, 0).y + 96, 170, 340);
+                // Measure at the authored font size, not the preceding page's autosized result.
+                // Keep the authored outer edge fixed so a short right-hand reply stays by its speaker.
+                dialogue.enableAutoSizing = false; dialogue.fontSize = dialogue.fontSizeMax;
+                float textWidth = Mathf.Max(dialogue.GetPreferredValues(dialogue.text, float.PositiveInfinity, float.PositiveInfinity).x,
+                    speaker.GetPreferredValues(speaker.text, float.PositiveInfinity, float.PositiveInfinity).x);
+                float balloonWidth = Mathf.Clamp(Mathf.Ceil(textWidth) + 80, 280, 720);
+                float innerWidth = balloonWidth - 64;
+                float height = Mathf.Clamp(dialogue.GetPreferredValues(dialogue.text, innerWidth, float.PositiveInfinity).y + 100, 154, 340);
                 // Leave room for the 32px paper tail and a gap before choices or captions.
-                float lowerEdge = (panel.choices?.Length ?? 0) > 0 ? 726 : 824;
+                float lowerEdge = choicePage ? 754 : 824;
                 float y = Mathf.Min(panel.balloonY, lowerEdge - height - 48);
-                bubble.anchoredPosition = new Vector2(right ? 1104 : 96, -y);
-                bubble.sizeDelta = new Vector2(720, height);
-                dialogue.rectTransform.sizeDelta = new Vector2(656, height - 96);
-                tail.rectTransform.anchoredPosition = new Vector2(right ? 608 : 72, -height + 1);
+                bubble.anchoredPosition = new Vector2(right ? 1824 - balloonWidth : 96, -y);
+                bubble.sizeDelta = new Vector2(balloonWidth, height);
+                speaker.rectTransform.sizeDelta = new Vector2(innerWidth, 38);
+                dialogue.rectTransform.sizeDelta = new Vector2(innerWidth, height - 96);
+                dialogue.enableAutoSizing = true;
+                tail.rectTransform.anchoredPosition = new Vector2(right ? balloonWidth - 112 : 72, -height + 1);
                 tail.Kind = right ? QingshiComicInkGraphic.Shape.TailRight : QingshiComicInkGraphic.Shape.TailLeft;
                 tail.SetVerticesDirty();
             }
@@ -202,9 +239,9 @@ namespace TwelveJade.Presentation
                 options[i].gameObject.SetActive(visible);
                 if (!visible) continue;
                 var rect = (RectTransform)options[i].transform;
-                rect.anchoredPosition = new Vector2(left + i * (width + 24), -726); rect.sizeDelta = new Vector2(width, 72);
+                rect.anchoredPosition = new Vector2(left + i * (width + 24), -912); rect.sizeDelta = new Vector2(width, 64);
                 var label = options[i].GetComponentInChildren<TMP_Text>();
-                label.rectTransform.sizeDelta = new Vector2(width - 44, 72); label.text = panel.choices[i].label;
+                label.rectTransform.sizeDelta = new Vector2(width - 100, 64); label.text = panel.choices[i].label;
             }
             body.maxVisibleCharacters = dialogue.maxVisibleCharacters = int.MaxValue;
             body.ForceMeshUpdate(true); dialogue.ForceMeshUpdate(true);

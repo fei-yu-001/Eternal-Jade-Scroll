@@ -11,6 +11,8 @@ static class QingshiStoryChecks
     static int assertions;
     static readonly JsonSerializerOptions JsonOptions = new() { IncludeFields = true };
     static readonly string[] Ids = { "home", "livelihood", "tiger", "undercurrent", "tomb", "calamity", "departure" };
+    static readonly string[] JourneyNpcIds = { "npc-shitou", "npc-zhao-da", "npc-shitou", "npc-shitou", "", "", "" };
+    static string[] townNpcIds;
     static string Flag(string id) => "qingshi-v25-" + id;
     static string Snapshot(SaveData save) => JsonSerializer.Serialize(save, JsonOptions);
 
@@ -33,12 +35,13 @@ static class QingshiStoryChecks
         assertions = 0;
         var items = ItemTable.Parse(File.ReadAllText(Path.Combine(configDir, "items.json")));
         CatalogAndQueries();
+        JourneyQueries(configDir);
         RejectedInputs();
         foreach (bool legacy in new[] { false, true })
             for (int gateMode = 0; gateMode < 4; gateMode++) WalkRealSave(items, legacy, gateMode);
         FlagCapacity(items);
         PersistenceFailures(items);
-        Console.WriteLine($"PASS: QingshiStory {assertions} assertions (real SaveRepository roundtrips, rollback and capacity)");
+        Console.WriteLine($"PASS: QingshiStory {assertions} assertions (read-only journey/NPC leads, real SaveRepository roundtrips, rollback and capacity)");
     }
 
     static void CatalogAndQueries()
@@ -65,6 +68,131 @@ static class QingshiStoryChecks
         Check("isolated future flag does not advance current scene", QingshiStory.CurrentIndex(sparse) == 0 && QingshiStory.CanEnter(sparse, "home"));
         Check("isolated future flag cannot unlock replay or entry", QingshiStory.IsCompleted(sparse, "tomb") && !QingshiStory.CanReplay(sparse, "tomb") && !QingshiStory.CanEnter(sparse, "tomb"));
         Check("sparse queries keep old flags", Snapshot(sparse) == before);
+    }
+
+    static void JourneyQueries(string configDir)
+    {
+        var town = TownMap.Parse(File.ReadAllText(Path.Combine(configDir, "town-map.json")));
+        townNpcIds = town.Npcs.Select(n => n.Id).ToArray();
+        var properties = typeof(QingshiStoryLead).GetProperties();
+        Check("journey lead is a sealed read-only contract", typeof(QingshiStoryLead).IsSealed &&
+            typeof(QingshiStoryLead).GetFields().Length == 0 && properties.All(p => p.CanRead && p.GetSetMethod(true) == null));
+        Check("journey lead exposes exactly the agreed fields", properties.Select(p => p.Name).OrderBy(n => n).SequenceEqual(
+            new[] { "SceneId", "NpcId", "NpcName", "Objective", "Bridge", "Reply", "Marker" }.OrderBy(n => n)) &&
+            properties.All(p => p.PropertyType == (p.Name == "Marker" ? typeof(QuestOverheadState) : typeof(string))));
+
+        JourneyReadOnly(null, -1, false, "journey no selected save");
+        JourneyReadOnly(new SaveData(), 0, true, "journey empty save");
+        var raw = new SaveData { schemaVersion = 2, oneTimeFlags = null, chapter = null, quests = null,
+            npcs = null, bag = null, clues = null, merchants = null, updatedUtc = "untouched-old-date" };
+        JourneyReadOnly(raw, 0, true, "journey missing legacy fields");
+
+        // All combinations include holes and orphaned future flags, not just a contiguous prefix.
+        for (int mask = 0; mask < 1 << Ids.Length; mask++)
+        {
+            int firstMissing = 0;
+            while (firstMissing < Ids.Length && (mask & (1 << firstMissing)) != 0) firstMissing++;
+            var sparse = new SaveData {
+                oneTimeFlags = Ids.Where((id, i) => (mask & (1 << i)) != 0).Select(Flag)
+                    .Concat(new[] { PrologueRules.DepartureFlag, PrologueRules.InitiationFlag }).ToArray(),
+                chapter = new ChapterState { reached = (int)ChapterSegment.Departure, settled = new[] { "Prologue", "Departure" } }
+            };
+            JourneyReadOnly(sparse, firstMissing, true, "journey sparse mask=" + mask);
+        }
+
+        var leads = Ids.Select((id, i) => QingshiStoryJourney.Current(new SaveData {
+            oneTimeFlags = Ids.Take(i).Select(Flag).ToArray()
+        })).ToArray();
+        for (int i = 0; i < leads.Length; i++)
+        {
+            var lead = leads[i];
+            string copy = lead.Objective + lead.Bridge + lead.Reply;
+            Check(lead.SceneId + " lead has no premature tragic revelation",
+                new[] { "夺舍", "弑亲", "殉情", "红尘仙", "血誓", "阴谋", "黑匣", "木匣", "古冢", "情血" }.All(word => !copy.Contains(word)));
+            if (i < 4)
+            {
+                var actors = town.Npcs.Where(n => n.Id == lead.NpcId).ToArray();
+                Check(lead.SceneId + " resolves one actual town-map NPC", actors.Length == 1);
+                Check(lead.SceneId + " displayed name and objective match actual NPC",
+                    lead.NpcName == actors[0].Name && lead.Objective.Contains(actors[0].Name));
+            }
+            else
+                Check(lead.SceneId + " declares spectator view without a living-NPC errand",
+                    lead.NpcId == "" && lead.NpcName == "" && lead.Marker == QuestOverheadState.None &&
+                    QingshiStoryJourney.IsContinuous(new SaveData { oneTimeFlags = Ids.Take(i).Select(Flag).ToArray() }) && lead.Bridge.Contains("玩家") &&
+                    lead.Bridge.Contains("主角") && lead.Bridge.Contains("不知"));
+        }
+        Check("home invitation is a coming-of-age return", leads[0].Objective.Contains("回家") && leads[0].Bridge.Contains("加冠"));
+        Check("livelihood asks for medicine-money work", leads[1].Objective.Contains("药钱") && leads[1].Bridge.Contains("帮手"));
+        Check("tiger invites a companion to the back mountain", leads[2].Objective.Contains("后山") &&
+            leads[2].Objective.Contains("虎患") && leads[2].Bridge.Contains("同行"));
+        Check("undercurrent stays with visible post-hunt concerns", leads[3].Objective.Contains("围虎") &&
+            leads[3].Bridge.Contains("牲口") && leads[3].Bridge.Contains("押运") && leads[3].Bridge.Contains("点名"));
+
+        for (int i = 0; i < Ids.Length; i++)
+            foreach (int total in new[] { 30, 31, 32, 33 })
+            {
+                var full = new SaveData { oneTimeFlags = Ids.Take(i).Select(Flag).Concat(FillFlags(total - i)).ToArray() };
+                bool fits = total + (i == Ids.Length - 1 ? 2 : 1) <= 32;
+                JourneyReadOnly(full, i, fits, "journey capacity=" + total + "/" + Ids[i]);
+                var lead = QingshiStoryJourney.Current(full);
+                Check(Ids[i] + " full ledger keeps its entire visible lead", lead.Objective == leads[i].Objective &&
+                    lead.Bridge == leads[i].Bridge && lead.Reply == leads[i].Reply && lead.NpcName == leads[i].NpcName);
+                Check(Ids[i] + " journey capacity matches completion preflight", QingshiStory.CanEnter(full, Ids[i]) == fits);
+                Check(Ids[i] + " blocked query never alters shared available lead", QingshiStoryJourney.Current(new SaveData {
+                    oneTimeFlags = Ids.Take(i).Select(Flag).ToArray()
+                }).Marker == leads[i].Marker);
+            }
+        foreach (string[] flags in new[] { new string[] { null }, new[] { "" }, new[] { " " }, new[] { "old", "old" }, new[] { new string('x', 49) } })
+            JourneyReadOnly(new SaveData { oneTimeFlags = flags }, 0, false, "journey invalid flag ledger");
+        // Completed story without the old departure flag still offers no lead and does not repair it.
+        JourneyReadOnly(new SaveData { oneTimeFlags = Ids.Select(Flag).ToArray() }, Ids.Length, false, "journey completed/replay only");
+    }
+
+    static void JourneyReadOnly(SaveData save, int expectedIndex, bool canEnter, string label)
+    {
+        string before = Snapshot(save);
+        var references = save == null ? null : typeof(SaveData).GetFields()
+            .Where(f => !f.IsStatic && !f.FieldType.IsValueType).ToDictionary(f => f, f => f.GetValue(save));
+        var lead = QingshiStoryJourney.Current(save);
+        bool active = expectedIndex >= 0 && expectedIndex < Ids.Length;
+        string npcId = active ? JourneyNpcIds[expectedIndex] : "";
+        var marker = active && expectedIndex < 4 && canEnter
+            ? (expectedIndex == 3 ? QuestOverheadState.Completable : QuestOverheadState.Available) : QuestOverheadState.None;
+        Check(label + " lead exists only for an unfinished save", (lead != null) == active);
+        if (active)
+        {
+            Check(label + " follows first missing scene", lead.SceneId == Ids[expectedIndex] && lead.NpcId == npcId);
+            Check(label + " current marker respects actionability", lead.Marker == marker);
+            Check(label + " visible copy remains present", !string.IsNullOrWhiteSpace(lead.Objective) &&
+                !string.IsNullOrWhiteSpace(lead.Bridge) && !string.IsNullOrWhiteSpace(lead.Reply));
+        }
+        Check(label + " continuous only for the last three current scenes",
+            QingshiStoryJourney.IsContinuous(save) == (expectedIndex >= 4 && expectedIndex <= 6));
+        foreach (string candidate in townNpcIds.Concat(new[] { null, "", " ", "shitou", "zhao-da", "NPC-SHITOU", "npc-shitou ", " npc-zhao-da", "missing-npc" }))
+            Check(label + " overhead for " + (candidate ?? "<null>"), QingshiStoryJourney.Overhead(save, candidate) ==
+                (!string.IsNullOrEmpty(npcId) && candidate == npcId ? marker : QuestOverheadState.None));
+        foreach (string replayId in Ids.Where(id => QingshiStory.CanReplay(save, id)))
+        {
+            var afterReplayQuery = QingshiStoryJourney.Current(save);
+            Check(label + " replay query keeps current lead " + replayId,
+                afterReplayQuery?.SceneId == lead?.SceneId && afterReplayQuery?.Marker == lead?.Marker);
+        }
+        Check(label + " every saved field stays unchanged", Snapshot(save) == before);
+        Check(label + " no null-field repair or reference replacement", references == null ||
+            references.All(pair => ReferenceEquals(pair.Value, pair.Key.GetValue(save))));
+    }
+
+    static void JourneyOnDisk(Store store, SaveData save, int index, string label)
+    {
+        string file = store.FileFor(1), backupFile = file + ".bak";
+        string disk = File.ReadAllText(file), backup = File.Exists(backupFile) ? File.ReadAllText(backupFile) : null;
+        var touched = File.GetLastWriteTimeUtc(file);
+        int writes = store.Codec.Writes;
+        JourneyReadOnly(save, index, true, label + " persisted journey");
+        Check(label + " journey never writes or touches disk", writes == store.Codec.Writes &&
+            File.ReadAllText(file) == disk && File.GetLastWriteTimeUtc(file) == touched &&
+            (File.Exists(backupFile) ? File.ReadAllText(backupFile) : null) == backup);
     }
 
     static void RejectedInputs()
@@ -132,6 +260,7 @@ static class QingshiStoryChecks
             string id = Ids[index];
             string label = $"legacy={legacy}, flags={gateMode}, {id}";
             var chapter = save.chapter;
+            JourneyOnDisk(store, save, index, label);
             Check(label + " only next scene may enter", QingshiStory.CurrentIndex(save) == index && Ids.All(x => QingshiStory.CanEnter(save, x) == (x == id)));
             Check(label + " replays limited to completed prefix", Ids.Select((x, i) => QingshiStory.CanReplay(save, x) == (i < index)).All(x => x));
             if (index + 1 < Ids.Length) RefusesWithoutMutation(save, Ids[index + 1], label + " skip");
@@ -155,6 +284,7 @@ static class QingshiStoryChecks
             string before = Snapshot(save);
             Check(label + " repeated completion refused", !QingshiStory.Complete(save, id, store.Repo.Write, out reason) && reason.Length > 0);
             Check(label + " repeat does not write, grant or alter timestamp", store.Codec.Writes == writes && Snapshot(save) == before && File.ReadAllText(store.FileFor(1)) == disk);
+            JourneyOnDisk(store, save, index + 1, label + " replay");
         }
         Check("finished axis only offers replays", Ids.All(id => !QingshiStory.CanEnter(save, id) && QingshiStory.CanReplay(save, id)));
         Check("at most eight new flags", expectedFlags.Count - (legacy ? 2 : 0) - ((gateMode & 1) != 0 ? 1 : 0) - ((gateMode & 2) != 0 ? 1 : 0) == (departedBefore ? 7 : 8));

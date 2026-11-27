@@ -37,6 +37,8 @@ namespace TwelveJade.Editor
         static FrontEndController host;
         static GameObject canvasRoot;
         static bool running, finalizing;
+        static string awaitingCaptureFrame;
+        static double captureFrameStarted, nextCaptureRepaint;
         static ItemTable items;
         static MerchantTable merchants;
         static RecipeTable recipes;
@@ -52,6 +54,12 @@ namespace TwelveJade.Editor
         static readonly string[] BoundPaths = {
             "Assets/Editor/PrologueTownShot.cs", "Assets/Editor/PrologueTownShot.cs.meta", ScenePath,
             "Assets/Editor/QingshiStoryShot.cs", "Assets/Scripts/Core/QingshiStory.cs",
+            "Assets/Editor/QingshiJourneyShot.cs", "Assets/Scripts/Core/QingshiStoryJourney.cs",
+            "Assets/Scripts/Presentation/FrontEndStoryJourney.cs", "Assets/Scripts/Presentation/FrontEndDialogue.cs",
+            "Assets/Scripts/Presentation/QingshiComicPaperGraphic.cs", "Assets/Scripts/Presentation/QuestMarkerGraphic.cs",
+            "Assets/Scripts/Presentation/NpcQuestOverhead.cs", "Assets/Resources/Config/town-map.json",
+            "Assets/Resources/Config/dialogues.json", "Assets/Resources/Config/npcs.json",
+            "Assets/Scripts/Presentation/FrontEndMusic.cs", "Assets/Scripts/Presentation/FrontEndSettings.cs",
             "Assets/Scripts/Presentation/QingshiComicView.cs", "Assets/Scripts/Presentation/FrontEndQingshiStory.cs",
             "Assets/Scripts/Presentation/CharacterPreset.cs", "Assets/Scripts/Presentation/TownCharacterArt.cs",
             "Assets/Scripts/Presentation/ActionPoseGeometry.cs", "Assets/Scripts/Presentation/PosterCardView.cs",
@@ -186,7 +194,18 @@ namespace TwelveJade.Editor
                         !EditorApplication.isUpdating && EditorApplication.timeSinceStartup - state.restoreStarted > .5) Restore();
                     return;
                 }
-                if (EditorApplication.timeSinceStartup - state.started > 240) {
+                if (!string.IsNullOrEmpty(awaitingCaptureFrame)) {
+                    double now = EditorApplication.timeSinceStartup;
+                    if (now - captureFrameStarted > 8) {
+                        Check(awaitingCaptureFrame + " GameView frame", false, "No rendered frame within eight seconds.");
+                        RequestFinish(); return;
+                    }
+                    // Keep the isolated GameView rendering while its end-of-frame capture is pending.
+                    if (now >= nextCaptureRepaint) { FocusGameView(); nextCaptureRepaint = now + .25; }
+                }
+                // The expanded comic walks every page, reply, journal state and replay in a real GameView.
+                // Keep per-screen Until limits intact; allow the full screenshot tour ten minutes.
+                if (EditorApplication.timeSinceStartup - state.started > (state.story ? 600 : 240)) {
                     Check("bounded run", false, "Timed out waiting for the real FrontEnd/UI or GameView frame."); RequestFinish(); return;
                 }
                 if (!EditorApplication.isPlaying || EditorApplication.isCompiling || running) return;
@@ -529,7 +548,10 @@ namespace TwelveJade.Editor
         static IEnumerator Capture(string name, string fixture)
         {
             FocusGameView(); Canvas.ForceUpdateCanvases();
-            yield return null; yield return new WaitForEndOfFrame();
+            awaitingCaptureFrame = name; captureFrameStarted = EditorApplication.timeSinceStartup;
+            nextCaptureRepaint = captureFrameStarted + .25;
+            try { yield return null; yield return new WaitForEndOfFrame(); }
+            finally { awaitingCaptureFrame = null; }
             Texture2D texture = null;
             try {
                 texture = ScreenCapture.CaptureScreenshotAsTexture();
@@ -592,7 +614,7 @@ namespace TwelveJade.Editor
         {
             var type = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.GameView");
             if (type == null) throw new InvalidOperationException("Cannot find the real GameView.");
-            EditorWindow.GetWindow(type).Focus();
+            var gameView = EditorWindow.GetWindow(type); gameView.Focus(); gameView.Repaint();
         }
         static string ResourceText(string name)
         {

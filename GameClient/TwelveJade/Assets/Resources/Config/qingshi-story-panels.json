@@ -70,9 +70,20 @@
           "zoom": 0.84
         },
         {
+          "art": "home-coming-of-age",
+          "speaker": "阿娘",
+          "text": "今日十八。阿娘用热鸡蛋在你额上轻轻滚了一圈，盼把病痛和灾厄都滚远些。",
+          "focusX": 0.5,
+          "focusY": 0.58,
+          "zoom": 0.98,
+          "dialog": "滚过了，往后的路，平平安安。",
+          "balloon": "left",
+          "balloonY": 500
+        },
+        {
           "art": "home-egg",
           "speaker": "阿娘",
-          "text": "桌上只有一只鸡蛋。她剥掉蛋壳，把碗推到你面前。",
+          "text": "蛋还温着。阿娘这才剥掉蛋壳，把碗推到你面前。",
           "focusX": 0.5,
           "focusY": 0.5,
           "zoom": 0.98,
@@ -90,7 +101,7 @@
         },
         {
           "art": "home-tax",
-          "speaker": "门外",
+          "speaker": "石头",
           "text": "差役敲着梆子催丁税、催河工。石头站在门口，朝你偏了偏头。",
           "focusX": 0.5,
           "focusY": 0.5,
@@ -113,11 +124,11 @@
           "zoom": 0.98
         },
         {
-          "art": "livelihood-work",
+          "art": "livelihood-forge",
           "speaker": "今日先做什么",
           "text": "三处都要走，先从最急的一件做起。",
           "focusX": 0.5,
-          "focusY": 0.5,
+          "focusY": 0.58,
           "zoom": 0.98,
           "choices": [
             {
@@ -135,12 +146,37 @@
           ]
         },
         {
-          "art": "livelihood-work",
-          "speaker": "一身力气",
-          "text": "烟灰粘在汗里，药草磨得满手发苦。这里教的是谋生和防身的本事。",
+          "art": "livelihood-forge",
+          "speaker": "铁匠",
+          "text": "风箱拉得肩膀发酸，师傅让你沉住腰再落锤。收工前，他把磨刀石推过来。",
           "focusX": 0.5,
-          "focusY": 0.6,
-          "zoom": 0.86
+          "focusY": 0.58,
+          "zoom": 0.86,
+          "dialog": "刀口留三分厚。干活的家伙，结实才顶用。",
+          "balloon": "right",
+          "balloonY": 440
+        },
+        {
+          "art": "livelihood-herbs",
+          "speaker": "药铺",
+          "text": "踩碾槽，捣药泥。你把当归、透骨草分好，药老又从锅底捞出一包药渣。",
+          "focusX": 0.5,
+          "focusY": 0.58,
+          "zoom": 0.98,
+          "dialog": "拿回去，加些烧酒热敷。凉了就换，别烫着你爹。",
+          "balloon": "right",
+          "balloonY": 440
+        },
+        {
+          "art": "livelihood-tracking",
+          "speaker": "老猎户",
+          "text": "泥上的印子有深有浅。猎户领你认兽径，再把绳套拆开，一扣一扣教你重新结好。",
+          "focusX": 0.5,
+          "focusY": 0.5,
+          "zoom": 0.98,
+          "dialog": "先看脚印，再走路。山里可没人替你兜底。",
+          "balloon": "right",
+          "balloonY": 440
         },
         {
           "art": "livelihood-coins",
@@ -165,6 +201,14 @@
           "balloonY": 440
         },
         {
+          "art": "livelihood-father-care",
+          "speaker": "暮色归家",
+          "text": "药渣和烧酒裹在布里，热气慢慢透进爹的膝头。他攥了半天的手，终于松开一点。",
+          "focusX": 0.5,
+          "focusY": 0.5,
+          "zoom": 0.98
+        },
+        {
           "art": "livelihood-lovers",
           "speaker": "阿婉",
           "text": "借宿的医士给流民包伤，阿婉在旁边烧水。她望向街尾那间小屋。",
@@ -187,15 +231,39 @@
           "balloonY": 440
         },
         {
-          "art": "livelihood-hermit",
-          "speaker": "破庙老翁",
-          "text": "独臂老翁看见你身上水火相对、隐隐相生的一线根骨。你只惦记父亲的药钱，听不懂他的机锋。",
+          "art": "livelihood-roof",
+          "speaker": "破庙漏雨",
+          "text": "老翁抬不起空袖去补高处。你把芦草背上屋顶，重新扎牢绳结，替他挡住这一夜的雨。",
           "focusX": 0.5,
           "focusY": 0.5,
+          "zoom": 0.98
+        },
+        {
+          "art": "livelihood-hermit-one-arm",
+          "speaker": "破庙老翁",
+          "text": "老翁的空袖打了个结，独手晃着酒葫芦。他看了你一眼，忽然笑了。",
+          "focusX": 0.5,
+          "focusY": 0.58,
           "zoom": 0.98,
           "dialog": "水火同炉，别先把自个儿烧了。",
           "balloon": "left",
           "balloonY": 440
+        },
+        {
+          "art": "livelihood-hermit-one-arm",
+          "speaker": "灵根显影",
+          "text": "坎离水火双极灵根。水火两线在眼前一闪，随即隐去。",
+          "focusX": 0.5,
+          "focusY": 0.58,
+          "zoom": 0.94
+        },
+        {
+          "art": "livelihood-hermit-one-arm",
+          "speaker": "仍要谋生",
+          "text": "你只当老翁又说醉话，惦记着家里还缺的药钱。收好绳索，下山时天已经暗了。",
+          "focusX": 0.5,
+          "focusY": 0.58,
+          "zoom": 0.98
         }
       ]
     },
@@ -226,7 +294,7 @@
           "focusY": 0.5,
           "zoom": 0.98,
           "dialog": "莫各自逞能，守住自己的位置。",
-          "balloon": "right",
+          "balloon": "left",
           "choices": [
             {
               "label": "先帮乡亲挖陷坑",
@@ -237,7 +305,7 @@
               "reply": "你把老人和伤者安排在退路后，火把隔开人群。石头照着约好的口令举矛，谁也没有独自向前。"
             }
           ],
-          "balloonY": 440
+          "balloonY": 500
         },
         {
           "art": "tiger-struggle",
@@ -361,7 +429,7 @@
         {
           "art": "tomb-command",
           "speaker": "两边的命令",
-          "text": "两支人马堵住退路。递到他们面前的，是同一道命令。",
+          "text": "曾许他们活路的两边头目，如今都堵在石门外。那间小屋的约定，早被当作逼他们出手的饵。",
           "focusX": 0.5,
           "focusY": 0.5,
           "zoom": 0.98,
@@ -393,8 +461,24 @@
         },
         {
           "art": "tomb-farewell",
+          "speaker": "相拥赴死",
+          "text": "身后的催逼声越来越近。两人没有向对方举刀，只把彼此抱得更紧，一同倒在石阶上。",
+          "focusX": 0.5,
+          "focusY": 0.5,
+          "zoom": 0.98
+        },
+        {
+          "art": "tomb-blood-seal",
+          "speaker": "两滴情血",
+          "text": "两滴心脉之血在半空相融，轻轻落入石槽。封了多年的石门，忽然有了回应。",
+          "focusX": 0.5,
+          "focusY": 0.5,
+          "zoom": 0.96
+        },
+        {
+          "art": "tomb",
           "speaker": "红尘终叹",
-          "text": "两人相拥倒下。两滴心脉之血在空中相融，落进石槽。石门深处，传出一声长叹。",
+          "text": "一声长叹从门内传来，像在叹那未了的人间眷恋。宝光乍现，方才还在逼命的人，已争先扑向石门。",
           "focusX": 0.5,
           "focusY": 0.5,
           "zoom": 0.98
@@ -402,7 +486,7 @@
         {
           "art": "tomb-box",
           "speaker": "混战",
-          "text": "石门打开，各方争抢。黑衣修士掀开木匣，只见断簪旧物，怒而摔下。",
+          "text": "黑衣修士掀开木匣，只见断簪旧物，怒而摔下。追来的正道修士一击将他重创，他踉跄逃向山下。",
           "focusX": 0.5,
           "focusY": 0.5,
           "zoom": 0.98
@@ -430,8 +514,8 @@
       "panels": [
         {
           "art": "calamity",
-          "speaker": "石头 · 同一夜",
-          "text": "穿过这条巷子，就是你家。那扇窗还亮着。",
+          "speaker": "石头 · 另一处",
+          "text": "同一夜，石头已经冲到巷口。怀里还护着古冢拾来的破匣。再过几十步，就是你家的灯。",
           "focusX": 0.5,
           "focusY": 0.5,
           "zoom": 0.98
@@ -471,7 +555,7 @@
         {
           "art": "calamity-door",
           "speaker": "阿娘",
-          "text": "阿娘认出了这张脸，急忙拉住他的手。她以为，他也是来躲祸的。",
+          "text": "那副熟悉的身躯推门进来。阿娘认出石头，急忙伸手拉他，唯恐他在外头受了伤。",
           "focusX": 0.5,
           "focusY": 0.5,
           "zoom": 0.98,
@@ -482,7 +566,7 @@
         {
           "art": "calamity-door",
           "speaker": "门内",
-          "text": "声音戛然而止。油碟翻了，没削完的木柄滚落床边。窗纸上只剩一道晃动的影子。",
+          "text": "阿娘话未说完，胸口便挨了致命的一击。爹撑着床沿要起身，也倒了下去。油碟翻落，木柄滚进灰里。",
           "focusX": 0.53,
           "focusY": 0.57,
           "zoom": 0.84
@@ -572,7 +656,7 @@
         {
           "art": "departure-box",
           "speaker": "线索",
-          "text": "你把匣子拾起来。如今，它只是仇人留下的一条线索。",
+          "text": "你把匣子拾起来。昔日一同数铜钱的人，如今成了你认定的弑亲仇人。这只破匣，是你手头仅剩的线索。",
           "focusX": 0.5,
           "focusY": 0.55,
           "zoom": 0.84

@@ -11,15 +11,8 @@ namespace TwelveJade.Presentation
     {
         static readonly Vector2Int[] Resolutions = { new(1280, 720), new(1600, 900), new(1920, 1080), new(2560, 1440) };
 
-        // ---- C-13 / C-14 / C-23：环境底噪（程序化合成，盘上零音频文件）--------------
-        // 字段声明放在本文件（与 `music` / `effects` 是同一个 partial 类），不碰 `FrontEndController.cs`。
-        AudioSource ambience;
-        // 底噪归**"环境音乐"**那条滑杆：它和 `music`（山间琴音）同属"一直在响的环境声"，
-        // 不是"交互音效"（音效是点一下响一次的那类）。所以 `ambience.volume` 随 `musicVolume` 走，
-        // `ambienceLevel` 只是它与琴音之间的**配比**（0 = 只要琴音，1 = 贴着琴音的音量）。
-        [SerializeField, Range(0f, 1f)] float ambienceLevel = .45f;
-        [SerializeField] AmbienceKind ambienceKind = AmbienceKind.Bird;
-        [SerializeField] bool ambienceFollowDayNight = true;   // C-14：白天鸟鸣 / 夜里虫鸣
+        [SerializeField] AmbienceKind ambienceKind = AmbienceKind.Wind;
+        bool ambienceCleaned;
 
         RectTransform settingsReturnContent;
         CanvasGroup settingsReturnFade;
@@ -151,11 +144,12 @@ namespace TwelveJade.Presentation
 
         void ApplySettings(UserSettings value, bool applyDisplay)
         {
+            if (value == null) return;
+            value.Normalize();
             AudioListener.volume = value.masterVolume;
             ApplyMusicVolume(value.musicVolume);
             if (effects != null) effects.volume = value.effectsVolume * .4f;
-            // C-13：底噪随"环境音乐"滑杆（与琴音同源），`ambienceLevel` 是两者的配比。
-            if (ambience != null) ambience.volume = value.musicVolume * ambienceLevel * .6f;
+            DisableAmbience();
             if (!applyDisplay || MobileControls.Enabled) return;
 #if !UNITY_EDITOR
             Screen.SetResolution(value.fullscreen ? Display.main.systemWidth : value.width,
@@ -183,70 +177,71 @@ namespace TwelveJade.Presentation
 
         void SetupAudio()
         {
+            DisableAmbience();
             SetupMusic();
             effects = gameObject.AddComponent<AudioSource>(); effects.playOnAwake = false;
             SetupUiTones();
             SetupFootsteps();
-            // The supplied recordings provide the environment bed; do not start synthetic birds.
+            // The supplied recordings provide the environment bed; synthetic bird/insect ambience is permanently disabled.
         }
 
-        // ---- C-13 / C-14 / C-23 环境底噪 ------------------------------------------------
-        /// <summary>C-14：**与 A-09 同一套时段读取** —— 走 Core 的 `WorldClock.IsNight(存档当前时刻)`，
-        /// 不在表现层另造一个"夜里"的判断。白天鸟鸣、夜里虫鸣。</summary>
-        AmbienceKind AmbienceKindForNow()
+        void DisableAmbience()
         {
-            if (!ambienceFollowDayNight) return ambienceKind;
-            var minute = activeSave?.WorldTimeNow()?.minuteOfDay ?? -1;
-            if (minute < 0) return ambienceKind;                       // 没存档（主菜单）⇒ 用面板上选的那档
-            return WorldClock.IsNight(minute) ? AmbienceKind.Insect : AmbienceKind.Bird;
-        }
-
-        void SetupAmbience()
-        {
-            var kind = AmbienceKindForNow();
-            if (ambience == null)
+            ambienceKind = AmbienceKind.Wind;
+            foreach (var source in GetComponents<AudioSource>())
             {
-                ambience = gameObject.AddComponent<AudioSource>();
-                ambience.loop = true;
-                ambience.playOnAwake = false;
+                if (source == music || source == effects) continue;
+                if (source.clip != null && source.clip.name.StartsWith("Ambience", System.StringComparison.Ordinal))
+                {
+                    source.Stop();
+                    source.clip = null;
+                    source.volume = 0f;
+                }
             }
-            var spec = AmbienceSpec.For(kind);
-            var samples = AmbienceSynth.Render(spec);
-            var clip = AudioClip.Create("Ambience · " + kind, samples.Length, 1, spec.Rate, false);
-            clip.SetData(samples, 0);
-            ambience.clip = clip;
-            ambienceKind = kind;
-            ambience.Play();
+            ambienceCleaned = true;
         }
 
-        /// <summary>夹具 / C-23 用：手动切一档底噪（风 / 水 / 鸟 / 虫）。</summary>
-        public void SetAmbienceKind(AmbienceKind kind)
+        AudioSource FindAmbienceSource()
         {
-            ambienceFollowDayNight = false;   // 手动指定 ⇒ 不再被昼夜改回去
-            if (ambienceKind == kind && ambience != null && ambience.clip != null && ambience.isPlaying) return;
-            ambienceKind = kind;
-            SetupAmbience();
+            foreach (var source in GetComponents<AudioSource>())
+            {
+                if (source == music || source == effects) continue;
+                if (source.clip != null && source.clip.name.StartsWith("Ambience", System.StringComparison.Ordinal))
+                    return source;
+            }
+            return null;
         }
 
-        float ambienceNextCheck;
+        AmbienceKind AmbienceKindForNow() => AmbienceKind.Wind;
 
-        /// <summary>每帧一次（由城镇页 Update 里的音频调用段接进来）。
-        /// **只有昼夜真的翻过去才重合成**，否则每帧重渲 26 万采样是浪费；平时 10 秒查一次。</summary>
+        void SetupAmbience() => DisableAmbience();
+
+        public void SetAmbienceKind(AmbienceKind kind) => DisableAmbience();
+
         public void TickAmbience()
         {
-            if (ambience == null || !ambienceFollowDayNight) return;
-            if (Time.unscaledTime < ambienceNextCheck) return;
-            ambienceNextCheck = Time.unscaledTime + 10f;
-            var kind = AmbienceKindForNow();
-            if (kind == ambienceKind) return;
-            ambienceKind = kind;
-            SetupAmbience();
+            ambienceKind = AmbienceKind.Wind;
+            if (!ambienceCleaned) DisableAmbience();
         }
 
-        // 夹具口径：底噪有没有接上、当前是哪一档（0 = 没接上）
-        public int AmbienceClipLengthForCheck => ambience != null && ambience.clip != null ? ambience.clip.samples : 0;
+        // 夹具口径：真实枚举自身 AudioSource 上是否仍残留 Ambience* 片段或在播放（0 = 没接上）
+        public int AmbienceClipLengthForCheck
+        {
+            get
+            {
+                var source = FindAmbienceSource();
+                return source != null && source.clip != null ? source.clip.samples : 0;
+            }
+        }
         public AmbienceKind AmbienceKindForCheck => ambienceKind;
-        public bool AmbiencePlayingForCheck => ambience != null && ambience.isPlaying;
+        public bool AmbiencePlayingForCheck
+        {
+            get
+            {
+                var source = FindAmbienceSource();
+                return source != null && source.isPlaying;
+            }
+        }
 
         // C-17 之后交互音统一走 `UiToneSynth`（可被离线断言、且钉死了 <=120ms 的上限）。
         // 本函数**保留不删**：别的 partial 文件可能在途引用它，删掉会让人家编译断（AA-1 第 11 条的教训）。
