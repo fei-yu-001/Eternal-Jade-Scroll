@@ -123,6 +123,36 @@ def current_seam_metrics(arr):
             for i, key in enumerate(('mean', 'p95', 'max'))}
 
 
+def _verify_generation_input(proof, issues, entries):
+    compose = load_json(COMPOSE_CFG)
+    output_dir = compose.get('outputDir')
+    if not isinstance(output_dir, str) or not output_dir:
+        raise ValueError('world-compose.outputDir 缺失')
+    manifest_path = os.path.join(wp.resolve_repo_path(output_dir, allow_missing=True),
+                                 'world-build-manifest.json')
+    manifest = load_json(manifest_path)
+    generation = manifest.get('generation_input') or {}
+    inputs = generation.get('inputs')
+    if manifest.get('status') != 'complete' or not isinstance(inputs, dict):
+        raise ValueError('缺少完整的构建输入清单')
+    digest = hashlib.sha256(json.dumps(inputs, sort_keys=True, ensure_ascii=False,
+                                       separators=(',', ':')).encode('utf-8')).hexdigest()
+    if generation.get('sha256') != digest:
+        raise ValueError('构建输入清单摘要不匹配')
+    files = inputs.get('files')
+    if not isinstance(files, dict):
+        raise ValueError('构建输入缺少 files 哈希表')
+    proof.update(manifest=repo_key(manifest_path), generationInputSha256=digest)
+    for label, path, actual in entries:
+        expected = files.get(repo_key(path))
+        if not valid_sha256(expected):
+            issues.append('来源 UNKNOWN：构建输入缺少%s SHA256' % label)
+        elif expected.lower() != actual:
+            issues.append('%s SHA256 与构建输入不匹配：预期=%s 当前=%s'
+                          % (label, expected, actual))
+    return files
+
+
 def material_provenance(name, rec, final, material_sha):
     """只读核验；既不补写历史报告，也不把计算出的当前哈希当作预期哈希。"""
     proof = {'materialSha256': material_sha, 'status': 'UNKNOWN'}
@@ -149,43 +179,32 @@ def material_provenance(name, rec, final, material_sha):
             proof['sourceSha256'] = source_sha
             if source_sha != source['sha256'].lower():
                 issues.append('源 SHA256 不匹配：配置=%s 当前=%s' % (source['sha256'], source_sha))
-            compose = load_json(COMPOSE_CFG)
-            output_dir = compose.get('outputDir')
-            if not isinstance(output_dir, str) or not output_dir:
-                raise ValueError('world-compose.outputDir 缺失')
-            manifest_path = os.path.join(wp.resolve_repo_path(output_dir, allow_missing=True),
-                                         'world-build-manifest.json')
-            manifest = load_json(manifest_path)
-            generation = manifest.get('generation_input') or {}
-            inputs = generation.get('inputs')
-            if manifest.get('status') != 'complete' or not isinstance(inputs, dict):
-                raise ValueError('缺少完整的构建输入清单')
-            digest = hashlib.sha256(json.dumps(inputs, sort_keys=True, ensure_ascii=False,
-                                               separators=(',', ':')).encode('utf-8')).hexdigest()
-            if generation.get('sha256') != digest:
-                raise ValueError('构建输入清单摘要不匹配')
-            files = inputs.get('files')
-            if not isinstance(files, dict):
-                raise ValueError('构建输入缺少 files 哈希表')
-            proof.update(manifest=repo_key(manifest_path), generationInputSha256=digest,
-                         expectedMaterialSha256=files.get(repo_key(final)))
-            # 只检查材料相关三项绑定。地图/Unity 全验收由原 world-build 检查负责。
-            for label, path, actual in (('源图', source_path, source_sha),
-                                        ('材质配置', CFG, sha256_file(CFG)),
-                                        ('当前材质', final, material_sha)):
-                expected = files.get(repo_key(path))
-                if not valid_sha256(expected):
-                    issues.append('来源 UNKNOWN：构建输入缺少%s SHA256' % label)
-                elif expected.lower() != actual:
-                    issues.append('%s SHA256 与构建输入不匹配：预期=%s 当前=%s'
-                                  % (label, expected, actual))
+            files = _verify_generation_input(
+                proof, issues,
+                (('源图', source_path, source_sha),
+                 ('材质配置', CFG, sha256_file(CFG)),
+                 ('当前材质', final, material_sha)))
+            proof['expectedMaterialSha256'] = files.get(repo_key(final))
         except (OSError, ValueError, TypeError, AttributeError) as error:
             issues.append('来源 UNKNOWN：%s' % error)
         if not issues:
             proof['status'] = 'VERIFIED'
         return 'approved-user-art', proof, issues
 
-    # 没有源资产登记的旧流程，必须由报告中的预期哈希绑定当前 PNG。
+    if spec.get('useExistingFinal') is True:
+        try:
+            files = _verify_generation_input(
+                proof, issues,
+                (('材质配置', CFG, sha256_file(CFG)),
+                 ('当前材质', final, material_sha)))
+            proof['expectedMaterialSha256'] = files.get(repo_key(final))
+        except (OSError, ValueError, TypeError, AttributeError) as error:
+            issues.append('来源 UNKNOWN：%s' % error)
+        if not issues:
+            proof['status'] = 'VERIFIED'
+        return 'existing-pass', proof, issues
+
+    # 没有源资产或 useExistingFinal 登记的旧流程，必须由报告中的预期哈希绑定当前 PNG。
     # 仅有 finalStatus=PASS 或一个文件路径，不足以证明报告描述的是现在这张图。
     expected = rec.get('finalSha256')
     proof['expectedMaterialSha256'] = expected
@@ -446,28 +465,109 @@ def main():
     return 1 if bad else 0
 
 
-def selftest():
-    """自检（夜1 G-3 第 3 条，2026-10-06）：喂一个**必然缺失**的材质名，断言本门禁变红且退出码非零。
+def _run_selftest_case(tmp, label, cfg_data, setup_fn, files, want_ok):
+    global CFG, COMPOSE_CFG, MAT, PREV, LOG, FINAL_REPORT, LINES, RESULTS
+    case_dir = os.path.join(tmp, label)
+    os.makedirs(case_dir, exist_ok=True)
+    CFG = os.path.join(case_dir, 'world-material-gen.json')
+    COMPOSE_CFG = os.path.join(case_dir, 'world-compose.json')
+    MAT = os.path.join(case_dir, 'materials')
+    PREV = os.path.join(MAT, 'previews')
+    LOG = os.path.join(case_dir, 'world-materials-check.log')
+    FINAL_REPORT = os.path.join(case_dir, 'missing-final-report.json')
+    os.makedirs(PREV, exist_ok=True)
+    with open(CFG, 'w', encoding='utf-8', newline='\n') as fh:
+        json.dump(cfg_data, fh, ensure_ascii=False, indent=2)
+    if setup_fn:
+        setup_fn(case_dir)
+    LINES, RESULTS = [], []
+    sys.argv = [sys.argv[0]] + list(files)
+    rc = main()
+    ok = (rc == 0) if want_ok else (rc != 0)
+    return ok, rc, list(RESULTS)
 
-    坏法：副本配置里登记 selftest-missing.png，而 materials 目录下根本没有这张图 →
-    check() 走 'FAIL materials 缺失' 分支。**不生成、不删除任何真实美术文件**，
-    日志也改写到 .batch/night1/selftest/；判据 / 阈值 / 期望值一律未改。
-    """
-    global CFG, LOG
+
+def _write_selftest_manifest(case_dir, cfg_path, mat_path, mutate_png=False):
+    out_dir = os.path.join(case_dir, 'out')
+    os.makedirs(out_dir, exist_ok=True)
+    with open(COMPOSE_CFG, 'w', encoding='utf-8', newline='\n') as fh:
+        json.dump({'outputDir': repo_key(out_dir)}, fh, ensure_ascii=False, indent=2)
+    inputs = {
+        'files': {
+            repo_key(cfg_path): sha256_file(cfg_path),
+            repo_key(mat_path): sha256_file(mat_path),
+        }
+    }
+    digest = hashlib.sha256(json.dumps(inputs, sort_keys=True, ensure_ascii=False,
+                                       separators=(',', ':')).encode('utf-8')).hexdigest()
+    manifest = {
+        'status': 'complete',
+        'generation_input': {'sha256': digest, 'inputs': inputs},
+    }
+    with open(os.path.join(out_dir, 'world-build-manifest.json'), 'w', encoding='utf-8', newline='\n') as fh:
+        json.dump(manifest, fh, ensure_ascii=False, indent=2)
+    if mutate_png:
+        with open(mat_path, 'rb') as fh:
+            arr = np.asarray(Image.open(fh).convert('RGBA')).copy()
+        arr[128, 128, 0] ^= 0x20
+        Image.fromarray(arr, 'RGBA').save(mat_path)
+
+
+def selftest():
+    """自检：1) 缺失材质必红；2) useExistingFinal 有效 manifest+CFG+PNG 走 existing-pass 必绿；3) PNG 被篡改必红。"""
+    global CFG, COMPOSE_CFG, MAT, PREV, LOG, FINAL_REPORT, LINES, RESULTS
+    saved = (CFG, COMPOSE_CFG, MAT, PREV, LOG, FINAL_REPORT, list(sys.argv))
     tmp = os.path.join(ROOT, '.batch', 'night1', 'selftest', 'world-materials')
     os.makedirs(tmp, exist_ok=True)
-    cfg_copy = os.path.join(tmp, 'world-material-gen.json')
     src = load_json(CFG) or {}
-    with open(cfg_copy, 'w', encoding='utf-8', newline='\n') as fh:
-        json.dump({'size': src.get('size', 1024),
-                   'materials': {'selftest-missing.png': {'sourceType': 'SELFTEST'}}},
-                  fh, ensure_ascii=False, indent=2)
-    CFG, LOG = cfg_copy, os.path.join(tmp, 'world-materials-check.log')
-    sys.argv = [sys.argv[0], 'selftest-missing.png']
-    rc = main()
-    print('SELFTEST: %s rc=%d（注入：登记了不存在的 selftest-missing.png）'
-          % ('PASS 门禁确实变红' if rc != 0 else 'FAIL 缺失材质竟然没让它红', rc))
-    return 0 if rc != 0 else 1
+    size = int(src.get('size', 1024))
+    y, x = np.mgrid[0:1024, 0:1024].astype(np.float32)
+    wave = (118 + 20 * np.sin(2 * np.pi * x / 256.0) + 14 * np.cos(2 * np.pi * y / 256.0)).clip(0, 255).astype(np.uint8)
+    tile_rgba = np.dstack([wave, np.clip(wave + 12, 0, 255), np.clip(wave + 18, 0, 255),
+                           np.full((1024, 1024), 255, dtype=np.uint8)])
+
+    def _setup_water(case_dir, mutate=False):
+        mat_path = os.path.join(MAT, 'water.png')
+        Image.fromarray(tile_rgba, 'RGBA').save(mat_path)
+        prev = np.tile(tile_rgba, (2, 2, 1))
+        Image.fromarray(prev, 'RGBA').save(os.path.join(PREV, 'water.png.2x2.png'))
+        _write_selftest_manifest(case_dir, CFG, mat_path, mutate_png=mutate)
+
+    try:
+        bad = []
+        ok1, rc1, _ = _run_selftest_case(
+            tmp, 'missing',
+            {'size': size, 'materials': {'selftest-missing.png': {'sourceType': 'SELFTEST'}}},
+            None, ('selftest-missing.png',), want_ok=False)
+        if not ok1:
+            bad.append('missing rc=%d' % rc1)
+
+        water_cfg = {
+            'size': size,
+            'seamThresholds': src.get('seamThresholds'),
+            'materials': {'water.png': {'baseGenerator': None, 'overlay': {'enabled': False},
+                                        'aiDirectRetry': {'enabled': False}, 'useExistingFinal': True}},
+        }
+        ok2, rc2, res2 = _run_selftest_case(
+            tmp, 'existing-pass-ok', water_cfg, lambda d: _setup_water(d, False), ('water.png',), want_ok=True)
+        if not ok2 or not res2 or res2[0].get('sourceType') != 'existing-pass' \
+                or (res2[0].get('provenance') or {}).get('status') != 'VERIFIED':
+            bad.append('existing-pass-ok rc=%d res=%s' % (rc2, res2))
+
+        ok3, rc3, _ = _run_selftest_case(
+            tmp, 'existing-pass-tampered', water_cfg, lambda d: _setup_water(d, True), ('water.png',), want_ok=False)
+        if not ok3:
+            bad.append('existing-pass-tampered rc=%d' % rc3)
+
+        if bad:
+            print('SELFTEST: FAIL (%s)' % '; '.join(bad))
+            return 1
+        print('SELFTEST: PASS 3/3 (缺失必红 rc=%d / useExistingFinal+manifest 绿 rc=%d / PNG 篡改必红 rc=%d)'
+              % (rc1, rc2, rc3))
+        return 0
+    finally:
+        CFG, COMPOSE_CFG, MAT, PREV, LOG, FINAL_REPORT, sys.argv = saved
+        LINES, RESULTS = [], []
 
 
 if __name__ == '__main__':

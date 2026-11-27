@@ -129,7 +129,9 @@ namespace TwelveJade.Presentation
                 {
                     var inner=modal.GetComponent<MeridianSanctumView>();
                     var arts=modal.GetComponent<ArtsCodexView>();
-                    if((inner==null||!inner.TryCloseInner())&&(arts==null||!arts.TryCloseStudy()))CloseModal();
+                    var innate=InnateFateForCheck;
+                    if(innate!=null)innate.RequestClose();
+                    else if((inner==null||!inner.TryCloseInner())&&(arts==null||!arts.TryCloseStudy()))CloseModal();
                 }
                 else if (page == "trade") ShowTown();
                 else if (page == "combat") ShowTown();

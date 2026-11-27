@@ -162,9 +162,8 @@ namespace TwelveJade.Presentation
             MemoValue(paper, "realm", "修真境界", data == null ? locked : "仙途未明", x + col + 24, 170, col);
             // SaveData has no sect membership. Unknown membership must not be asserted as unaffiliated.
             MemoValue(paper, "sect", "门派宗流", data == null ? locked : "宗门未明", x, 248, col);
-            MemoValue(paper, "roots", "灵根", data == null ? locked : "天机未明", x + col + 24, 248, col);
-            DaoIdentityView.Roots(ui,paper,"Dossier roots",new Rect(x,330,width,80));
-            BuildMemoFate(paper, x, 418, width, data?.traits, data?.destiny, data == null ? locked : null, false);
+            MemoValue(paper, "roots", "灵根", data == null ? locked : InnateFateView.RootsRevealed(data) ? "水火双极" : "天机未明", x + col + 24, 248, col);
+            BuildMemoInnate(paper, x, 330, width, data, data == null ? locked : null);
             BuildMemoWealth(paper, x, 522, width, data == null ? locked : data.coins.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) + " 文",
                 data == null ? locked : "未入仙途", 24);
             BuildMemoJourney(paper, x, 584, width, data, data == null ? locked : null, 24);
@@ -196,8 +195,7 @@ namespace TwelveJade.Presentation
             MemoLabel(paper, "Dossier realm", "修真境界 · 仙途未明", x + col + 24, 346, col, 34, 22);
             MemoLabel(paper, "Dossier sect", "门派宗流 · 宗门未明", x, 386, col, 34, 22);
             MemoLabel(paper, "Dossier roots", "灵根 · 天机未明", x + col + 24, 386, col, 34, 22);
-            DaoIdentityView.Roots(ui,paper,"Draft roots",new Rect(x,426,width,80));
-            BuildMemoFate(paper, x, 508, width, draftTraits, draftDestiny, null, true);
+            BuildMemoInnate(paper, x, 422, width, DraftInnatePreview(), null, true);
             BuildMemoWealth(paper, x, 588, width, "行装待备", "未入仙途", 21);
             BuildMemoJourney(paper, x, 632, width, null, "行卷初启", 20);
         }

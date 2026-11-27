@@ -10,7 +10,8 @@ namespace TwelveJade.Core
         public static void Run(ItemTable table)
         {
             Check("item table tiers", table.Tiers.Count >= 5 && table.FindTier("fanpin")?.Name == "凡品");
-            Check("item table categories", table.Categories.Count >= 5 && table.FindCategory("yaodan")?.Name == "丹药");
+            // commit f596751 已将权威 items.json 的 yaodan 类名由“丹药”更名为“药品”（青石凡人开局口径）
+            Check("item table categories", table.Categories.Count >= 5 && table.FindCategory("yaodan")?.Name == "药品");
             Check("item table tier colors", table.Tiers.All(t => t.Color.StartsWith("#") && t.Color.Length == 7));
             Check("item table uniqueness", table.Items.Select(i => i.Id).Distinct().Count() == table.Items.Count);
             Check("item table references", table.Items.All(i =>

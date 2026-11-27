@@ -1,7 +1,7 @@
 {
   "status": "complete",
   "generation_input": {
-    "sha256": "a7a4b333ee3142a1ef0df70ebb9c49b798627ab6688ac123200f653dbe9400a9",
+    "sha256": "bbea5f0d5c091ba49503e637456f3bb6816153ed989f6d71142408649d47d0f1",
     "inputs": {
       "terrainShape": {
         "version": 1,
@@ -536,15 +536,15 @@
       },
       "files": {
         "GameClient/TwelveJade/Assets/Resources/Config/terrain-types.json": "54fd7eff0f3d445c423148b6ba8c155f36978e90461422e2b3089184d4543f22",
-        "Tools/make-world-mask.py": "78958949e6345dde8efbeed43645c08094a6923f8f1fc53c330d3f87fe6019d1",
-        "Tools/compose-world-chunks.py": "b0219a2a9c69fbf187a41ae9bcd04df8551bce09132fcbd937cdf969ae50affa",
-        "Tools/world_elevation_art.py": "809ac45ddeefc1e5e97d135ea1f9bd8f85ebcbefbfe3baba17833b811a14261e",
-        "Tools/world_geometry.py": "3451d0364c627cbf9861c90da0822599be1fa1df22c86d8f88fceb7361085134",
+        "Tools/make-world-mask.py": "bc328861b010b7603c1e71a787027f28c7dd4fafe9870076106f10a79287d751",
+        "Tools/compose-world-chunks.py": "763c4ba120b6cb70f632ca4515430e57e0e2bd34c9877768a2895a428e6d552d",
+        "Tools/world_elevation_art.py": "2873e392892526ec513dc1343b170428877de1403e5a0a23d4df5ac12ef0ad4e",
+        "Tools/world_geometry.py": "c14961f6ad448594daf13ddf7c84b2a9dc7a48e13fb7995ebc019b102e4415a6",
         "Tools/world_paths.py": "6e5b93a73e469ac6ada07b61687244affb357bd5d63256916a7a4792a1ccbafc",
-        "Tools/world_river_surface.py": "663ba765fbeba269bfc09115cac85a2a71555c07ab9f4d5a92134588b08a8ef4",
-        "Tools/world_build_manifest.py": "dc9b681e2586ff2a09af38f0450a9bfea17937d01251ae9dcaca022073c630ab",
+        "Tools/world_river_surface.py": "af57a1aabf1485e9f1c15616f71ff267ec26b8b651308d007c848f6a73eb7660",
+        "Tools/world_build_manifest.py": "5e0877036ec7e45cb4896066be2ffebb3c52c71848611fc8c72de195656cee5b",
         "GameClient/TwelveJade/Assets/ArtSource/world/masks/world-mask.png": "dd9328c86b4c51007c06e7ac62aabb7722f01dd1ce1bbef54f6b8680502de15f",
-        "GameClient/TwelveJade/Assets/Resources/Config/world-material-gen.json": "054e565858c9f0ee5d9761ca3bedf70dffdd99d3cb1af7b6dd3701654e010e92",
+        "GameClient/TwelveJade/Assets/Resources/Config/world-material-gen.json": "d1bb7c4b69b9d9ce3d503ac459a1b9e29ac0034f1da6f113fbd76b5c0196b906",
         "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/grass.png": "8eda0032b33ea56a9dee25b6c834fbae29da331be10b6297e1a82a205eb6e3c5",
         "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/stone-road.png": "234d9c58b5fb7a42ec85ae800df865f23b464067ba7977ed72025c557b44a47d",
         "GameClient/TwelveJade/Assets/Resources/Art/Textures/GroundQuality20261107/dirt-road.png": "d415f4aece4a9f7425d68a4eaf0050cfa74ff1a605b099dc1533c99c1cf34284",

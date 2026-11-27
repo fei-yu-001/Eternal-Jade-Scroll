@@ -120082,6 +120082,46 @@
     "half": 100.0,
     "y0": 2900.0,
     "y1": 3500.0
+   },
+   {
+    "id": "alley-paifang-v2",
+    "axis": "ns",
+    "x": 3742,
+    "half": 64,
+    "y0": 3860,
+    "y1": 4370
+   },
+   {
+    "id": "alley-temple-apron-v2",
+    "axis": "ns",
+    "x": 5340,
+    "half": 205,
+    "y0": 4120,
+    "y1": 4350
+   },
+   {
+    "id": "alley-temple-courtyard-v2",
+    "axis": "ns",
+    "x": 5340,
+    "half": 375,
+    "y0": 3900,
+    "y1": 4240
+   },
+   {
+    "id": "alley-ancestral-front-20261108",
+    "axis": "ew",
+    "y": 2305,
+    "half": 55,
+    "x0": 3160,
+    "x1": 4300
+   },
+   {
+    "id": "alley-ancestral-doorstep-20261108",
+    "axis": "ns",
+    "x": 3420,
+    "half": 180,
+    "y0": 2180,
+    "y1": 2350
    }
   ],
   "bridges": [
@@ -120181,20 +120221,6 @@
   ],
   "pavingRects": [
    {
-    "id": "ancestral-terrace",
-    "x0": 2580,
-    "y0": 1640,
-    "x1": 3710,
-    "y1": 2360
-   },
-   {
-    "id": "view-terrace",
-    "x0": 4760,
-    "y0": 1800,
-    "x1": 5380,
-    "y1": 2200
-   },
-   {
     "id": "market-edge",
     "x0": 2680,
     "y0": 4680,
@@ -120267,56 +120293,6 @@
     "bridgeIndex": 2,
     "level": 1,
     "feather": 160
-   },
-   {
-    "id": "ancestral-terrace",
-    "shape": "rect",
-    "rect": [
-     2580,
-     1640,
-     3710,
-     2360
-    ],
-    "level": 2,
-    "feather": 0
-   },
-   {
-    "id": "view-terrace",
-    "shape": "rect",
-    "rect": [
-     4760,
-     1800,
-     5380,
-     2200
-    ],
-    "level": 2,
-    "feather": 0
-   },
-   {
-    "id": "ancestral-steps",
-    "shape": "ramp",
-    "rect": [
-     3340,
-     2360,
-     3560,
-     2450
-    ],
-    "axis": "y",
-    "from": 2,
-    "to": 0
-   },
-   {
-    "id": "view-steps",
-    "shape": "ramp",
-    "rect": [
-     4960,
-     2200,
-     5180,
-     2320
-    ],
-    "axis": "y",
-    "from": 2,
-    "to": 0
    },
    {
     "id": "ferry-landing",

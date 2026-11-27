@@ -1497,6 +1497,12 @@ namespace TwelveJade.Economy
         // "读不到目录"糊成"0 个孤儿"）。每一档要么 measured（带规则、带当天实测数、带孤儿名单），
         // 要么 awaiting-convention（带原因、带"在等谁"，**基线必须空着**）；盘上有图没档、档在盘上没图，
         // 两类都红。未纳入的档每次跑都打印它当前套两条候选规则各判出多少孤儿——约定一到，那行数字当天就变成基线。
+        const string QingshiStoryArt = "Art/Story/Qingshi", QingshiCharacterArt = "Art/Characters/Qingshi";
+        const string QingshiReferenceRule = "qingshi-references";
+        // Explicit compatibility archive, not evidence that today's panels load all seven covers.
+        static readonly string[] QingshiCompatibilityCovers = { "home", "livelihood", "tiger", "undercurrent", "tomb", "calamity", "departure" };
+        static bool IsQingshiArt(string dir) => dir == QingshiStoryArt || dir == QingshiCharacterArt;
+
         static void CheckAssetRatchet(string configDir, ItemTable items, CheckFn check)
         {
             // configDir 是 Assets/Resources/Config ⇒ 上跳一级是 Resources（Art 在这儿），
@@ -1606,8 +1612,9 @@ namespace TwelveJade.Economy
                 check("D-49 覆盖：每一档指的目录真在盘上（幽灵档会让判据跑在不存在的路径上）",
                     ghost.Count == 0, "幽灵档：" + string.Join(" · ", ghost));
 
+                SelfProveQingshiReferences(configDir, baselineText, check);
                 var pending = new List<string>();
-                foreach (var dir in dirs.Keys)
+                foreach (var dir in dirs.Keys.OrderBy(d => IsQingshiArt(d) ? 0 : 1))
                 {
                     if (dir.StartsWith("_", StringComparison.Ordinal)) continue;
                     var entry = dirs[dir];
@@ -1623,7 +1630,20 @@ namespace TwelveJade.Economy
                             files.Count > 0, files.Count + " 个 png");
                         List<string> orphans;
                         List<string> declaredButAbsent = null;
-                        if (rule == "preset-grid")
+                        if (rule == QingshiReferenceRule && IsQingshiArt(dir))
+                        {
+                            var want = QingshiReferences(configDir, dir, out var referenceErrors);
+                            check("正向：" + dir + " 严格解析真实配置/消费代码引用（不能以空引用假绿）",
+                                referenceErrors.Count == 0 && want.Count > 0,
+                                "references=" + want.Count + "; " + string.Join(" ｜ ", referenceErrors));
+                            CompareQingshiReferences(files, want, out orphans, out declaredButAbsent);
+                            var noQingshiMeta = QingshiMissingMeta(ArtSub(artRoot, dir), files);
+                            check("正向：" + dir + " 每张 PNG 都有 meta", noQingshiMeta.Count == 0, string.Join(" · ", noQingshiMeta));
+                            check("实测：" + dir + " 基线 PNG 数与磁盘相符",
+                                entry["pngTop"].AsInt(-1) == files.Count && entry["pngRecursive"].AsInt(-1) == files.Count,
+                                "references=" + want.Count + "; disk=" + files.Count + "; orphans=" + orphans.Count);
+                        }
+                        else if (rule == "preset-grid")
                         {
                             // S-2 批准的第四种规则：预设 id × 性别 × 面容款式 × 三朝向 展开成网格。
                             // 正向只对**网格**判（那四个维度全是数据：*.asset 文件名 / SaveData.Genders /
@@ -1726,14 +1746,22 @@ namespace TwelveJade.Economy
                 var entry = directories[dir];
                 var status = entry["status"].AsString("");
                 var rule = entry["rule"].AsString("");
+                if (IsQingshiArt(dir) && (status != "measured" || rule != QingshiReferenceRule))
+                    structural.Add(dir + "（引用合同已明确，必须 measured + " + QingshiReferenceRule + "，不得降级 awaiting 或泛字面量规则）");
+                if (rule == QingshiReferenceRule && !IsQingshiArt(dir))
+                    structural.Add(dir + "（不能借用 Qingshi 专用引用合同）");
+                if (dir == QingshiStoryArt && (entry["compatibilityCovers"].kind != JsonValue.Kind.Array ||
+                    !entry["compatibilityCovers"].Items.Select(v => v.AsString("")).OrderBy(v => v, StringComparer.Ordinal)
+                        .SequenceEqual(QingshiCompatibilityCovers.OrderBy(v => v, StringComparer.Ordinal))))
+                    structural.Add(dir + "（兼容归档只能保留明确的旧七封面，不能任意加图冒充引用）");
                 if (string.IsNullOrWhiteSpace(entry["measuredAt"].AsString("")))
                     structural.Add(dir + "（没写 measuredAt＝不知道这条数哪天量的，出事没法判断它旧没旧）");
                 if (status == "measured")
                 {
                     var needsResolver = rule == "config-field" || rule == "template";
-                    if (!needsResolver && rule != "id-equality" && rule != "declared-or-literal")
+                    if (!needsResolver && rule != "id-equality" && rule != "declared-or-literal" && rule != QingshiReferenceRule)
                         structural.Add(dir + "（measured 却没有可用规则，现为「" + rule +
-                            "」；只准那四种，第五条得先有人给它下定义）");
+                            "」；只准既有四种规则及限定两目录的 Qingshi 引用合同）");
                     if (needsResolver &&
                         (string.IsNullOrWhiteSpace(entry["resolver"]["file"].AsString("")) ||
                          (string.IsNullOrWhiteSpace(entry["resolver"]["field"].AsString("")) &&
@@ -1837,6 +1865,207 @@ namespace TwelveJade.Economy
                 .Where(n => n.Length > 0).Distinct(StringComparer.Ordinal)
                 .OrderBy(n => n, StringComparer.Ordinal).ToList();
         }
+
+        // This resolver has no generic JSON/string scan: only these runtime-consumed fields count.
+        static List<string> QingshiReferences(string configDir, string dir, out List<string> errors)
+        {
+            JsonValue Config(string file) {
+                var path = Path.Combine(configDir, file);
+                return File.Exists(path) && Json.TryParse(File.ReadAllText(path), out var root, out _) ? root : JsonValue.Missing;
+            }
+            string Source(string file) => ReadAssetSource(configDir, "Scripts", "Presentation", file);
+            return ResolveQingshiReferences(dir, Config, Source, out errors);
+        }
+        static List<string> ResolveQingshiReferences(string dir, Func<string, JsonValue> config,
+            Func<string, string> source, out List<string> errors)
+        {
+            var issues = new List<string>(); errors = issues;
+            var names = new HashSet<string>(StringComparer.Ordinal);
+            if (dir == QingshiStoryArt)
+            {
+                var root = config("qingshi-story-panels.json");
+                var scenes = root["scenes"]; var seen = new HashSet<string>(StringComparer.Ordinal);
+                if (root.kind != JsonValue.Kind.Object || scenes.kind != JsonValue.Kind.Array || scenes.Count == 0)
+                    issues.Add("qingshi-story-panels.json 必须包含非空 scenes[]，七封面不能替空正文放行");
+                foreach (var scene in scenes.Items)
+                {
+                    string id = scene["id"].AsString("");
+                    if (scene.kind != JsonValue.Kind.Object || !QingshiArtId(id) || !seen.Add(id))
+                        issues.Add("scenes[] 的 id 非法或重复：" + id);
+                    var panels = scene["panels"];
+                    if (panels.kind != JsonValue.Kind.Array || panels.Count == 0) issues.Add(id + " 缺少非空 panels[]");
+                    foreach (var panel in panels.Items)
+                    {
+                        var value = panel["art"];
+                        // Match the reader's empty/missing-art fallback to the scene cover.
+                        string art = value.kind == JsonValue.Kind.Null ? id : value.AsString("");
+                        if (art.Length == 0) art = id;
+                        if (panel.kind != JsonValue.Kind.Object ||
+                            (value.kind != JsonValue.Kind.Null && value.kind != JsonValue.Kind.String) || !QingshiArtId(art))
+                            issues.Add(id + " panels[].art 必须是安全短 ID");
+                        else names.Add(LeafName(QingshiStoryArt + "/" + art));
+                    }
+                }
+                if (!seen.SetEquals(QingshiStory.Scenes.Select(s => s.Id))) issues.Add("scenes[] 必须覆盖当前 QingshiStory.Scenes 且不得伪造章节");
+                names.UnionWith(QingshiCompatibilityCovers);
+            }
+            else if (dir == QingshiCharacterArt)
+            {
+                ReadCharacters("town-character-art.json", "entries", new[] { "stand", "walk" },
+                    new[] { "male", "female" }.SelectMany(g => new[] { "front", "side", "back" }.Select(v => "hero-" + g + "-" + v)));
+                ReadCharacters("dialogue-portraits.json", "portraits", new[] { "resource" }, new[] { "hero-male", "hero-female" });
+                var poster = QingshiConsumerCode(source("PosterCardView.cs"));
+                var town = QingshiConsumerCode(source("TownCharacterArt.cs"));
+                const string posterPath = "ResourcePath=string.IsNullOrEmpty(presetId)?\"\":\"Art/Characters/Qingshi/qingshi-\"+(gender==\"female\"?\"female\":\"male\")+(cutoutComposition?\"-figure\":\"-portrait\");";
+                if (poster.Contains(posterPath) && poster.Contains("artwork.texture=ResourcePath.Length==0?null:Resources.Load<Texture2D>(ResourcePath);"))
+                    foreach (string gender in new[] { "male", "female" }) {
+                        names.Add("qingshi-" + gender + "-figure"); names.Add("qingshi-" + gender + "-portrait");
+                    }
+                else issues.Add("PosterCardView 的实际 figure/portrait 拼接与 Resources.Load 消费合同缺失或已变");
+                if (town.Contains("publicstaticTexture2DHeroStrikes(stringgender)=>Texture(\"Art/Characters/Qingshi/qingshi-\"+(gender==\"female\"?\"female\":\"male\")+\"-strikes\");") &&
+                    town.Contains("texture=Resources.Load<Texture2D>(path);"))
+                    foreach (string gender in new[] { "male", "female" }) names.Add("qingshi-" + gender + "-strikes");
+                else issues.Add("TownCharacterArt.HeroStrikes 的实际拼接与 Texture 消费合同缺失或已变");
+            }
+            else issues.Add("不是 Qingshi 引用合同目录：" + dir);
+            return names.OrderBy(n => n, StringComparer.Ordinal).ToList();
+
+            void ReadCharacters(string file, string key, string[] fields, IEnumerable<string> heroIds)
+            {
+                var root = config(file); var rows = root[key]; var seen = new HashSet<string>(StringComparer.Ordinal);
+                var heroes = new HashSet<string>(heroIds, StringComparer.Ordinal);
+                if (root.kind != JsonValue.Kind.Object || rows.kind != JsonValue.Kind.Array || rows.Count == 0)
+                    issues.Add(file + " 缺少非空 " + key + "[]");
+                foreach (var row in rows.Items)
+                {
+                    string id = row["id"].AsString("");
+                    if (row.kind != JsonValue.Kind.Object || id.Length == 0 || !seen.Add(id)) issues.Add(file + " id 缺失或重复：" + id);
+                    foreach (var field in fields)
+                    {
+                        var value = row[field]; string path = value.AsString("");
+                        bool own = path.StartsWith(QingshiCharacterArt + "/", StringComparison.Ordinal);
+                        if ((heroes.Contains(id) && !own) || (value.kind != JsonValue.Kind.Null && value.kind != JsonValue.Kind.String))
+                            issues.Add(file + " " + id + "." + field + " 缺少合法的主角资源引用");
+                        if (!own) continue;
+                        string name = path.Substring(QingshiCharacterArt.Length + 1);
+                        if (!QingshiArtId(name)) issues.Add(file + " " + id + "." + field + " 非法资源路径：" + path);
+                        else names.Add(name);
+                    }
+                }
+                if (heroes.Any(id => !seen.Contains(id))) issues.Add(file + " 缺少主角条目：" + string.Join(",", heroes.Where(id => !seen.Contains(id))));
+            }
+        }
+        static void SelfProveQingshiReferences(string configDir, string baselineText, CheckFn check)
+        {
+            JsonValue Config(string file) => Json.Parse(File.ReadAllText(Path.Combine(configDir, file)));
+            string Source(string file) => ReadAssetSource(configDir, "Scripts", "Presentation", file);
+            List<string> Story(JsonValue root, out List<string> errors) => ResolveQingshiReferences(QingshiStoryArt,
+                file => file == "qingshi-story-panels.json" ? root : Config(file), Source, out errors);
+            var artRoot = Path.GetFullPath(Path.Combine(configDir, "..", "Art"));
+            var storyFiles = PngNames(ArtSub(artRoot, QingshiStoryArt));
+            var original = Story(Config("qingshi-story-panels.json"), out var originalErrors);
+            check("SELFTEST: Qingshi 反例起点读取真实双层正文", originalErrors.Count == 0 && original.Except(QingshiCompatibilityCovers).Any());
+            string victim = original.Except(QingshiCompatibilityCovers).First();
+            var removed = Config("qingshi-story-panels.json");
+            foreach (var scene in removed["scenes"].Items)
+                foreach (var panel in scene["panels"].Items)
+                    if (panel["art"].AsString("") == victim) panel.Add("art", scene["id"]);
+            removed.Add("comment", JsonValue.String(victim));
+            var fewer = Story(removed, out var removedErrors);
+            CompareQingshiReferences(storyFiles, original, out var oldOrphans, out _);
+            CompareQingshiReferences(storyFiles, fewer, out var newOrphans, out _);
+            check("SELFTEST: Qingshi 真引用移除后该图成为孤儿，注释不能补引用",
+                removedErrors.Count == 0 && !fewer.Contains(victim) && newOrphans.Contains(victim) && newOrphans.Count == oldOrphans.Count + 1, victim);
+            var typo = Config("qingshi-story-panels.json");
+            typo["scenes"].Items[0]["panels"].Items[0].Add("art", JsonValue.String("selftest-missing-qingshi-art"));
+            var typoRefs = Story(typo, out var typoErrors);
+            CompareQingshiReferences(storyFiles, typoRefs, out _, out var missing);
+            check("SELFTEST: Qingshi 正文合法短 ID 指向不存在文件必须报告 missing",
+                typoErrors.Count == 0 && missing.Contains("selftest-missing-qingshi-art"));
+            foreach (var bad in new[] { JsonValue.String("../outside"), JsonValue.String("Art/Story/Qingshi/home"), JsonValue.Number(7) }) {
+                var root = Config("qingshi-story-panels.json"); root["scenes"].Items[0]["panels"].Items[0].Add("art", bad);
+                Story(root, out var errors);
+                check("SELFTEST: Qingshi 拒绝路径/非字符串冒充短 art ID " + bad.kind + ":" + bad.AsString("7"), errors.Count > 0);
+            }
+            var flat = Story(Json.Parse("{\"scenes[].panels[].art\":\"selftest-ghost\"}"), out var flatErrors);
+            check("SELFTEST: Qingshi 同名扁平键不能冒充双层消费结构", flatErrors.Count > 0 && !flat.Contains("selftest-ghost"));
+            Story(Json.Parse("{\"scenes\":[]}"), out var emptyErrors);
+            check("SELFTEST: Qingshi 七封面不能掩盖空正文", emptyErrors.Count > 0);
+            foreach (string configFile in new[] { "town-character-art.json", "dialogue-portraits.json" }) {
+                ResolveQingshiReferences(QingshiCharacterArt, file => file == configFile ? JsonValue.Missing : Config(file), Source, out var errors);
+                check("SELFTEST: Qingshi 缺配置不能用代码拼接补成假绿 " + configFile, errors.Count > 0);
+            }
+            foreach (string consumer in new[] { "PosterCardView.cs", "TownCharacterArt.cs" }) {
+                var refs = ResolveQingshiReferences(QingshiCharacterArt, Config,
+                    file => file == consumer ? "/*" + Source(file) + "*/" : Source(file), out var errors);
+                string suffix = consumer == "PosterCardView.cs" ? "-figure" : "-strikes";
+                check("SELFTEST: Qingshi 注释中的资源消费代码不能制造引用 " + consumer,
+                    errors.Count > 0 && !refs.Any(n => n.EndsWith(suffix, StringComparison.Ordinal)));
+            }
+            var characters = Config("town-character-art.json");
+            characters["entries"].Items.First(r => r["id"].AsString("") == "hero-male-front").Add("stand", JsonValue.Null());
+            var noStand = ResolveQingshiReferences(QingshiCharacterArt,
+                file => file == "town-character-art.json" ? characters : Config(file), Source, out var standErrors);
+            check("SELFTEST: Qingshi stand 缺引用必须同时暴露消费错误与孤儿", standErrors.Count > 0 && !noStand.Contains("qingshi-male-front"));
+
+            foreach (string dir in new[] { QingshiStoryArt, QingshiCharacterArt }) {
+                var dirs = Json.Parse(baselineText)["directories"]; var entry = dirs[dir];
+                entry.Add("status", JsonValue.String("awaiting-convention")).Add("rule", JsonValue.Null()).Add("baseline", JsonValue.Null())
+                    .Add("reason", JsonValue.String("selftest")).Add("awaiting", JsonValue.String("selftest"));
+                ValidateArtDirs(dirs, ArtDirs(artRoot), out var structural, out _, out _, out _);
+                check("SELFTEST: " + dir + " 即使填满 awaiting 理由也不得跳过实测", structural.Any(s => s.StartsWith(dir + "（引用合同已明确", StringComparison.Ordinal)));
+            }
+            var extraCover = Json.Parse(baselineText)["directories"];
+            extraCover[QingshiStoryArt].Add("compatibilityCovers", JsonValue.Array(QingshiCompatibilityCovers.Concat(new[] { victim }).Select(JsonValue.String)));
+            ValidateArtDirs(extraCover, ArtDirs(artRoot), out var archiveErrors, out _, out _, out _);
+            check("SELFTEST: Qingshi 兼容归档不能扩成任意图片豁免", archiveErrors.Any(s => s.StartsWith(QingshiStoryArt + "（兼容归档", StringComparison.Ordinal)));
+
+            // Physically remove copied PNG/meta only in an owned temp directory; source assets stay read-only.
+            var tempRoot = Path.GetFullPath(Path.GetTempPath()).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var sandbox = Path.GetFullPath(Path.Combine(tempRoot, "qingshi-art-selftest-" + Guid.NewGuid().ToString("N")));
+            try {
+                Directory.CreateDirectory(sandbox);
+                foreach (string dir in new[] { QingshiStoryArt, QingshiCharacterArt }) {
+                    var refs = QingshiReferences(configDir, dir, out var errors);
+                    string name = refs.First(n => File.Exists(Path.Combine(ArtSub(artRoot, dir), n + ".png")));
+                    string png = Path.Combine(sandbox, name + ".png"), meta = png + ".meta";
+                    File.Copy(Path.Combine(ArtSub(artRoot, dir), name + ".png"), png);
+                    File.Copy(Path.Combine(ArtSub(artRoot, dir), name + ".png.meta"), meta);
+                    var single = new List<string> { name };
+                    CompareQingshiReferences(PngNames(sandbox), single, out _, out var before);
+                    File.Delete(meta);
+                    check("SELFTEST: " + dir + " 真删副本 meta 能抓到", errors.Count == 0 && QingshiMissingMeta(sandbox, single).SequenceEqual(single));
+                    File.Delete(png);
+                    CompareQingshiReferences(PngNames(sandbox), single, out _, out var after);
+                    check("SELFTEST: " + dir + " 真删已引用 PNG 副本能抓到 missing", before.Count == 0 && after.SequenceEqual(single), name);
+                }
+            } finally {
+                if (!string.Equals(Path.GetDirectoryName(sandbox), tempRoot, StringComparison.OrdinalIgnoreCase) ||
+                    !Path.GetFileName(sandbox).StartsWith("qingshi-art-selftest-", StringComparison.Ordinal))
+                    throw new InvalidOperationException("Refusing cleanup outside the owned Qingshi self-test directory.");
+                if (Directory.Exists(sandbox)) Directory.Delete(sandbox, true);
+            }
+        }
+
+        static bool QingshiArtId(string value)
+        {
+            if (string.IsNullOrEmpty(value) || value.Length > 96 || value[0] == '-' || value[value.Length - 1] == '-') return false;
+            bool dash = false;
+            foreach (char c in value) {
+                if (c == '-') { if (dash) return false; dash = true; }
+                else { if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))) return false; dash = false; }
+            }
+            return true;
+        }
+        static string QingshiConsumerCode(string code) => Flatten(System.Text.RegularExpressions.Regex.Replace(
+            code ?? "", @"/\*[\s\S]*?\*/|//[^\r\n]*", ""));
+        static void CompareQingshiReferences(List<string> files, List<string> references, out List<string> orphans, out List<string> missing)
+        {
+            orphans = files.Except(references, StringComparer.Ordinal).OrderBy(n => n, StringComparer.Ordinal).ToList();
+            missing = references.Except(files, StringComparer.Ordinal).OrderBy(n => n, StringComparer.Ordinal).ToList();
+        }
+        static List<string> QingshiMissingMeta(string directory, List<string> files) =>
+            files.Where(n => !File.Exists(Path.Combine(directory, n + ".png.meta"))).ToList();
 
         /// <summary>读取既有顶层/数组字段，以及材质配置中有对应源文件路径的 sourceAsset.resource。</summary>
         static IEnumerable<string> ConfigArtValues(JsonValue root, string field, string fileName)

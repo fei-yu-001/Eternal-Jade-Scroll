@@ -71,6 +71,22 @@ NUM_ONLY_RE = re.compile(r'^%s$' % NUM_RE)
 STR_ONLY_RE = re.compile(r'^"(?:[^"\\]|\\.)*"$')
 VEC2_RE = re.compile(r'new\s+Vector2\s*\(\s*(%s)\s*,\s*(%s)\s*\)' % (NUM_RE, NUM_RE))
 UI_CALL_RE = re.compile(r'\bui\.(?:Panel|Rect|ChipPanel)\s*\(')
+CHILD_BG_CALL_RE = re.compile(
+    r'\b(?:ImmortalUi\.(?:Art|Texture|Silk)|ScholarScrollArt\.(?:Horizontal|WritingSilk)|'
+    r'PaintedScrollArt\.\w+|AestheticUi\.(?:CommandPlate|Command))\s*\('
+)
+INLINE_ADD_RE = re.compile(r'^\s*(?:\.gameObject\s*)?\.AddComponent\s*<\s*(\w+)\s*>\s*\(')
+ASSIGN_VAR_RE = re.compile(
+    r'(?:^|[;{}])\s*(?:(?:var|[A-Za-z_][\w.<>\[\]]*)\s+)?([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)?)\s*=\s*$'
+)
+VAR_ADD_RE = re.compile(r'\b([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)?)\s*(?:\.gameObject)?\.AddComponent\s*<\s*(\w+)\s*>\s*\(')
+CLASS_DECL_RE = re.compile(r'\bclass\s+(\w+)\s*:\s*([^{\n]+)\{')
+SOLID_BUILTIN_TYPES = {'Image', 'RawImage', 'TMP_Text', 'TextMeshProUGUI', 'Text', 'PosterCardView', 'SpriteRenderer'}
+NON_GRAPHIC_TYPES = {
+    'RectMask2D', 'Mask', 'CanvasGroup', 'HorizontalLayoutGroup', 'VerticalLayoutGroup',
+    'GridLayoutGroup', 'LayoutGroup', 'LayoutElement', 'ContentSizeFitter', 'ScrollRect',
+    'Selectable', 'Button',
+}
 # 按钮单独扫。禁止并进 UI_CALL_RE:面板内按钮会被算成面板重叠(满屏假红,T132)。
 BUTTON_CALL_RE = re.compile(r'\bui\.Button\s*\(')
 NAMED_ARG_RE = re.compile(r'^[A-Za-z_]\w*\s*:')
@@ -81,24 +97,12 @@ SETPOS_RE = re.compile(r'\b(\w+)\.SetPosition\s*\(')
 #   'red' = 判红级存量(仍违规时 WARN 放行), 缺省/'warn' = WARN 级存量(升级判红则 FAIL,不许放宽)。
 # 台账只许销账、不许放宽判据;T128(Walk sample 被 Biography 整块盖住)与
 # T127(PuppetActor.Create 正 y)是待修真缺陷,严禁登记进台账洗白。
+# (LAY-01 FrontEndController.BuildBackdrop 与 LAY-03/04 FrontEndCharacters.ShowSlots 已随 UI 重构消除重叠，按棘轮要求销账移除)
 BASELINE = {
-    # LAY-01 全屏水墨底板先挂,氛围层后挂同矩形叠印,有意分层,非遮挡
-    'A|FrontEndController.cs|BuildBackdrop|Ink base#1+Atmosphere#1':
-        {'criteria': {CRIT_OVERLAP_WARN}, 'level': 'red',
-         'note': 'LAY-01 水墨底板叠氛围层,有意叠印'},
     # LAY-02 败北结算面板被全屏渐黑罩住,有意压暗整屏
     'A|FrontEndCombat.cs|SettleDefeat|Combat settle#1+Defeat fade#1':
         {'criteria': {CRIT_OVERLAP_WARN}, 'level': 'red',
          'note': 'LAY-02 败北渐黑罩结算屏,有意压暗'},
-    # LAY-03/04 档位卡空档按钮与已有档的继续/删除写在 if/else 互斥分支
-    # (FrontEndCharacters.cs ShowSlots)。字面量矩形整块重合,运行时不同屏;判据不看控制流,
-    # 按判红级存量登记,不把互斥写成豁免,也不放宽 80% 阈值。
-    'C|FrontEndCharacters.cs|ShowSlots|写下新的人生#1+继续#1':
-        {'criteria': {CRIT_BUTTON_OVERLAP}, 'level': 'red',
-         'note': 'LAY-03 空档按钮与继续按钮互斥分支,字面量整块重合,不同时出现'},
-    'C|FrontEndCharacters.cs|ShowSlots|写下新的人生#1+删除#1':
-        {'criteria': {CRIT_BUTTON_OVERLAP}, 'level': 'red',
-         'note': 'LAY-04 空档按钮与删除按钮互斥分支,字面量整块重合,不同时出现'},
 }
 
 
@@ -218,11 +222,124 @@ def line_of(text, idx):
     return text.count('\n', 0, idx) + 1
 
 
-def scan_panels(text, fname, method_names):
-    """抓 ui.Panel/Rect/ChipPanel 的字面量坐标。返回面板列表。"""
+def _matching_brace_end(text, open_brace_idx):
+    depth = 0
+    i = open_brace_idx
+    n = len(text)
+    instr = False
+    while i < n:
+        c = text[i]
+        if instr:
+            if c == '\\':
+                i += 2
+                continue
+            if c == '"':
+                instr = False
+        elif c == '"':
+            instr = True
+        elif c == '{':
+            depth += 1
+        elif c == '}':
+            depth -= 1
+            if depth == 0:
+                return i
+        i += 1
+    return n - 1
+
+
+def build_class_catalog(texts):
+    """汇总扫描目录内的 C# 类定义，用于判断挂载组件是否会实心绘制矩形。"""
+    classes = {}
+    for text in texts:
+        for m in CLASS_DECL_RE.finditer(text):
+            name = m.group(1)
+            bases = [b.strip().split('.')[-1] for b in m.group(2).split(',') if b.strip()]
+            end = _matching_brace_end(text, m.end() - 1)
+            classes[name] = {'bases': bases, 'body': text[m.end() - 1:end + 1]}
+    cache = {}
+
+    def is_opaque_comp(comp):
+        if comp in cache:
+            return cache[comp]
+        if comp in SOLID_BUILTIN_TYPES:
+            cache[comp] = True
+            return True
+        if comp in NON_GRAPHIC_TYPES:
+            cache[comp] = False
+            return False
+        info = classes.get(comp)
+        if not info:
+            cache[comp] = False
+            return False
+        bases = info['bases']
+        if any(b in SOLID_BUILTIN_TYPES or (b in classes and is_opaque_comp(b)) for b in bases):
+            cache[comp] = True
+            return True
+        if any(b in ('MaskableGraphic', 'Graphic') for b in bases):
+            body = info['body']
+            # 只有显式声明 raycastTarget = false（且无交互指针入参覆写）且不在 OnPopulateMesh
+            # 里整框铺满 rectTransform.rect 外接板面的稀疏描边/光环，才是实际透明 Graphic 层。
+            no_hit = bool(re.search(r'\braycastTarget\s*=\s*false\b', body)) and not re.search(
+                r'\braycastTarget\s*=\s*(?!false\b)', body)
+            mesh_idx = body.find('OnPopulateMesh')
+            mesh_body = body[mesh_idx:] if mesh_idx >= 0 else ''
+            fills_full_rect = bool(re.search(
+                r'\br\.(?:xMin|xMax|yMin|yMax)\b|\b(?:Paint|Paper|Rounded|Corner|Quad)\s*\(\s*\w+\s*,\s*r\b|\bInset\s*\(\s*r\b',
+                mesh_body))
+            opaque = not (no_hit and not fills_full_rect)
+            cache[comp] = opaque
+            return opaque
+        cache[comp] = False
+        return False
+
+    return is_opaque_comp
+
+
+def _child_rect_area(args):
+    """提取常见 Helper 调用的绘制尺寸 (w * h)，无法静态判定时返回 0。"""
+    nums = [num_value(a) for a in args]
+    # 末尾至少 4 个坐标数字(..., x, y, w, h)
+    for start in range(2, len(args) - 3):
+        quad = nums[start:start + 4]
+        if all(v is not None for v in quad) and quad[2] > 0 and quad[3] > 0:
+            return quad[2] * quad[3]
+    # Rect(x, y, w, h) 字面量
+    for a in args:
+        rm = re.search(r'new\s+Rect\s*\(\s*(%s)\s*,\s*(%s)\s*,\s*(%s)\s*,\s*(%s)\s*\)'
+                       % (NUM_RE, NUM_RE, NUM_RE, NUM_RE), a)
+        if rm:
+            w, h = float(rm.group(3).rstrip('f')), float(rm.group(4).rstrip('f'))
+            if w > 0 and h > 0:
+                return w * h
+    return 0.0
+
+
+def scan_panels(text, fname, method_names, is_opaque_comp=None):
+    """抓 ui.Panel/Rect/ChipPanel 的字面量坐标，并基于实际组件/子底板判别非不透明容器。"""
+    if is_opaque_comp is None:
+        is_opaque_comp = lambda comp: comp in SOLID_BUILTIN_TYPES
+    method_adds = {}
+    for m in VAR_ADD_RE.finditer(text):
+        ln = line_of(text, m.start())
+        meth = method_names[ln - 1] if ln - 1 < len(method_names) else '<top>'
+        method_adds.setdefault((meth, m.group(1)), []).append(m.group(2))
+    child_bg_areas = {}
+    for m in CHILD_BG_CALL_RE.finditer(text):
+        args_text, _end = fold_call(text, m.end() - 1)
+        args = split_top_args(args_text)
+        if len(args) < 3:
+            continue
+        parent = args[1].strip() if args[0].strip() in ('ui', 'kit') else args[0].strip()
+        area = _child_rect_area(args)
+        if area > 0:
+            ln = line_of(text, m.start())
+            meth = method_names[ln - 1] if ln - 1 < len(method_names) else '<top>'
+            key = (meth, parent)
+            child_bg_areas[key] = max(child_bg_areas.get(key, 0.0), area)
+
     panels = []
     for m in UI_CALL_RE.finditer(text):
-        args_text, _end = fold_call(text, m.end() - 1)
+        args_text, end = fold_call(text, m.end() - 1)
         args = split_top_args(args_text)
         if len(args) < 6:
             continue
@@ -236,12 +353,51 @@ def scan_panels(text, fname, method_names):
         if w <= 0 or h <= 0:
             continue
         ln = line_of(text, m.start())
+        method = method_names[ln - 1] if ln - 1 < len(method_names) else '<top>'
+        kind = m.group(0).strip().split('(')[0].strip()
+        prefix = text[max(0, m.start() - 120):m.start()].replace('\n', ' ')
+        am = ASSIGN_VAR_RE.search(prefix)
+        var_name = am.group(1) if am else None
+        comps = []
+        im = INLINE_ADD_RE.match(text[end + 1:end + 96])
+        if im:
+            comps.append(im.group(1))
+        if var_name:
+            comps.extend(method_adds.get((method, var_name), []))
+        if kind in ('ui.Panel', 'ui.ChipPanel'):
+            opaque = True
+        else:
+            opaque = any(is_opaque_comp(c) for c in comps)
         panels.append({
             'file': fname, 'line': ln, 'name': name,
+            'parent': args[0].strip(),
             'x': x, 'y': y, 'w': w, 'h': h,
-            'method': method_names[ln - 1] if ln - 1 < len(method_names) else '<top>',
-            'kind': m.group(0).strip().split('(')[0].strip(),
+            'method': method,
+            'kind': kind,
+            'var': var_name,
+            'opaque': opaque,
+            'comps': comps,
         })
+
+    # ui.Rect 本身无 Graphic，但如果内部直接挂载了覆及 >=80% 面积的子面板/底图（如结算卷轴），
+    # 它整体上仍是一个不透明面板容器；否则只是纯逻辑/透明挂载容器。
+    changed = True
+    while changed:
+        changed = False
+        for p in panels:
+            if not p['opaque'] or not p['parent']:
+                continue
+            for host in panels:
+                if host['opaque'] or not host['var']:
+                    continue
+                if host['method'] == p['method'] and p['parent'] == host['var']:
+                    if p['w'] * p['h'] >= RED_RATIO * host['w'] * host['h']:
+                        host['opaque'] = True
+                        changed = True
+    for host in panels:
+        if not host['opaque'] and host['var']:
+            if child_bg_areas.get((host['method'], host['var']), 0.0) >= RED_RATIO * host['w'] * host['h']:
+                host['opaque'] = True
     return panels
 
 
@@ -268,6 +424,7 @@ def scan_buttons(text, fname, method_names):
         ln = line_of(text, m.start())
         buttons.append({
             'file': fname, 'line': ln, 'name': name,
+            'parent': args[0].strip(),
             'x': x, 'y': y, 'w': w, 'h': h,
             'method': method_names[ln - 1] if ln - 1 < len(method_names) else '<top>',
             'kind': 'ui.Button',
@@ -346,25 +503,31 @@ def check_dir(scan_dir, baseline=None):
     all_panels = []
     all_buttons = []
     all_pos = []
+    file_texts = []
     for path in cs_files:
         with open(path, 'r', encoding='utf-8', errors='replace') as fh:
-            text = fh.read()
-        fname = os.path.basename(path)
+            file_texts.append((os.path.basename(path), fh.read()))
+    is_opaque_comp = build_class_catalog([t for _fn, t in file_texts])
+    for fname, text in file_texts:
         lines = text.splitlines()
         method_names = method_at(lines)
-        all_panels.extend(scan_panels(text, fname, method_names))
+        all_panels.extend(scan_panels(text, fname, method_names, is_opaque_comp))
         all_buttons.extend(scan_buttons(text, fname, method_names))
         all_pos.extend(scan_position_calls(text, fname, method_names))
 
-    # ---- 判据 A:按 (文件, 方法) 归组两两重叠 ----
-    groups = {}
+    # ---- 判据 A:按 (文件, 方法, 父容器) 归组两两重叠（仅比较同父节点下的实心/不透明面板，透明或纯分组容器不计入遮挡）----
+    method_panels = {}
     for p in all_panels:
-        groups.setdefault((p['file'], p['method']), []).append(p)
-    for (fname, method), panels in sorted(groups.items()):
+        method_panels.setdefault((p['file'], p['method']), []).append(p)
+    groups = {}
+    for (fname, method), plist in sorted(method_panels.items()):
         counter = {}
-        for p in panels:
+        for p in plist:
             counter[p['name']] = counter.get(p['name'], 0) + 1
             p['occ'] = counter[p['name']]
+            if p.get('opaque', True):
+                groups.setdefault((fname, method, p['parent']), []).append(p)
+    for (fname, method, _parent), panels in sorted(groups.items()):
         for i in range(len(panels)):
             for j in range(i + 1, len(panels)):
                 a, b = panels[i], panels[j]
@@ -408,16 +571,19 @@ def check_dir(scan_dir, baseline=None):
                     else:
                         warns.append('WARN: 未登记局部遮挡(请修正布局或在 BASELINE 登记 id+理由): %s' % desc)
 
-    # ---- 判据 C:按钮 × 按钮(不沿用面板「较小者后挂就豁免」那条) ----
+    # ---- 判据 C:同父节点下按钮 × 按钮(不沿用面板「较小者后挂就豁免」那条) ----
     # 按钮本身就是命中目标:小按钮压在大按钮上照样挡点击,所以不判子节点序。
-    btn_groups = {}
+    method_btns = {}
     for p in all_buttons:
-        btn_groups.setdefault((p['file'], p['method']), []).append(p)
-    for (fname, method), buttons in sorted(btn_groups.items()):
+        method_btns.setdefault((p['file'], p['method']), []).append(p)
+    btn_groups = {}
+    for (fname, method), blist in sorted(method_btns.items()):
         counter = {}
-        for p in buttons:
+        for p in blist:
             counter[p['name']] = counter.get(p['name'], 0) + 1
             p['occ'] = counter[p['name']]
+            btn_groups.setdefault((fname, method, p['parent']), []).append(p)
+    for (fname, method, _parent), buttons in sorted(btn_groups.items()):
         for i in range(len(buttons)):
             for j in range(i + 1, len(buttons)):
                 a, b = buttons[i], buttons[j]
@@ -662,12 +828,12 @@ def selftest():
                       '        }\n')},
                   {}, 1, '可疑的 y 符号'))
 
-    # 11 ui.Rect 与 ui.ChipPanel 同样被抓
+    # 11 挂载真实图形组件的 ui.Rect 与 ui.ChipPanel 同样被抓
     cases.append(('11_Rect与ChipPanel也判_FAIL',
                   {'A.cs': wrap_cs(
                       '        public void ShowTest(SaveData data)\n'
                       '        {\n'
-                      '            ui.Rect(content, "Inner", 10, 10, 200, 200);\n'
+                      '            ui.Rect(content, "Inner", 10, 10, 200, 200).gameObject.AddComponent<Image>();\n'
                       '            ui.ChipPanel(content, "Outer", 20, 20, 210, 210);\n'
                       '        }\n')},
                   {}, 1, '整块被盖住'))
@@ -687,10 +853,10 @@ def selftest():
                   {'A.cs': wrap_cs(
                       '        public void ShowTest(SaveData data)\n'
                       '        {\n'
-                      '            ui.Rect(content, "Spread", 10, 10, 280, 280);\n'
+                      '            ui.Rect(content, "Spread", 10, 10, 280, 280).gameObject.AddComponent<Image>();\n'
                       '            ui.Rect(content,\n'
                       '                "Lid",\n'
-                      '                0, 0, 300, 300);\n'
+                      '                0, 0, 300, 300).gameObject.AddComponent<RawImage>();\n'
                       '        }\n')},
                   {}, 1, '整块被盖住'))
 
@@ -748,6 +914,68 @@ def selftest():
                       '        }\n')},
                   {}, 0, None))
 
+    # 19 不同父容器/父子局部坐标(如 plus.transform vs minus.transform, 或 parent->child(0,0))不误判重叠
+    cases.append(('19_不同父节点局部坐标不误报_PASS',
+                  {'A.cs': wrap_cs(
+                      '        public void ShowTest(SaveData data)\n'
+                      '        {\n'
+                      '            var modal = ui.Rect(content, "Modal", 580, 245, 760, 540);\n'
+                      '            ui.Rect(modal, "Modal bg", 0, 0, 760, 540).gameObject.AddComponent<RawImage>();\n'
+                      '            ui.Rect(plus.transform, "Plus icon", 23, 15, 38, 38).gameObject.AddComponent<Image>();\n'
+                      '            ui.Rect(minus.transform, "Minus icon", 23, 15, 38, 38).gameObject.AddComponent<Image>();\n'
+                      '        }\n')},
+                  {}, 0, None))
+
+    # 20 纯分组 container / RectMask2D / 稀疏 raycastTarget=false 线条叠层等实际非不透明容器不误报
+    cases.append(('20_非不透明容器与稀疏特效不误报_PASS',
+                  {'Fx.cs': (
+                      'using UnityEngine;\nusing UnityEngine.UI;\n'
+                      'namespace TwelveJade.Presentation {\n'
+                      '    public sealed class SparseFx : MaskableGraphic {\n'
+                      '        protected override void Awake() { base.Awake(); raycastTarget = false; }\n'
+                      '        protected override void OnPopulateMesh(VertexHelper v) { v.Clear(); }\n'
+                      '    }\n}\n'),
+                   'A.cs': wrap_cs(
+                       '        public void ShowTest(SaveData data)\n'
+                       '        {\n'
+                       '            var g1 = ui.Rect(content, "Tab group A", 0, 0, 1920, 1080);\n'
+                       '            ui.Panel(g1, "Small A", 100, 100, 120, 60);\n'
+                       '            var g2 = ui.Rect(content, "Tab group B", 0, 0, 1920, 1080);\n'
+                       '            ui.Panel(g2, "Small B", 300, 100, 120, 60);\n'
+                       '            ui.Rect(content, "Sparse ring", 32, 156, 484, 484).gameObject.AddComponent<SparseFx>();\n'
+                       '            var clip = ui.Rect(content, "Clipper", 30, 154, 490, 490);\n'
+                       '            clip.gameObject.AddComponent<RectMask2D>();\n'
+                       '        }\n')},
+                  {}, 0, None))
+
+    # 21 反例：不得按名字放行！即使名字叫 Effects/Boundary/Shadow，挂载实心 Graphic 覆盖同层面板必须照红
+    cases.append(('21_反例名字含FX但实心Graphic必红_FAIL',
+                  {'A.cs': wrap_cs(
+                      '        public void ShowTest(SaveData data)\n'
+                      '        {\n'
+                      '            ui.Panel(content, "Target", 100, 100, 300, 200);\n'
+                      '            ui.Rect(content, "Shadow boundary fx details", 0, 0, 1920, 1080).gameObject.AddComponent<Image>();\n'
+                      '        }\n')},
+                  {}, 1, '整块被盖住'))
+
+    # 22 反例：含实心铺满 rectTransform.rect 的自定义 MaskableGraphic 或挂满幅子底图的 ui.Rect 容器被遮挡必红
+    cases.append(('22_反例满幅自绘或含底图容器必红_FAIL',
+                  {'SolidSurface.cs': (
+                      'using UnityEngine;\nusing UnityEngine.UI;\n'
+                      'namespace TwelveJade.Presentation {\n'
+                      '    public sealed class SolidSurface : MaskableGraphic {\n'
+                      '        public void Configure(bool hit) { raycastTarget = hit; }\n'
+                      '        protected override void OnPopulateMesh(VertexHelper v) { var r = rectTransform.rect; var x = r.xMin; }\n'
+                      '    }\n}\n'),
+                   'A.cs': wrap_cs(
+                       '        public void ShowTest(SaveData data)\n'
+                       '        {\n'
+                       '            var settle = ui.Rect(content, "Settle", 460, 280, 1000, 500);\n'
+                       '            ImmortalUi.Art(ui, settle, "Scroll bg", "nov8/bg", 0, 0, 1000, 500, true);\n'
+                       '            ui.Rect(content, "Solid cover", 0, 0, 1920, 1080).gameObject.AddComponent<SolidSurface>();\n'
+                       '        }\n')},
+                  {}, 1, '整块被盖住'))
+
     bad = []
     tmp_root = os.path.join(REPO, '.batch', 'tmp')
     os.makedirs(tmp_root, exist_ok=True)
@@ -769,7 +997,8 @@ def selftest():
     print('SELFTEST: %d/%d 条用例全点火(整块盖住判红/边角重叠判绿/跨方法不判/WARN 未登记/'
           'WARN 已登记/台账升级/台账可销账/Create 正 y/负 y 与表达式/SetPosition 正 y/'
           'Rect+ChipPanel/非字面量不判/跨行折叠/正 y 存量台账/底板叠印不判/判红级存量放行/'
-          '两按钮整块重合判红/按钮在面板内不假红)'
+          '两按钮整块重合判红/按钮在面板内不假红/不同父节点局部坐标不误报/非不透明容器不误报/'
+          '名字含FX但实心Graphic必红/满幅自绘与含底图容器必红)'
           % (len(cases), len(cases)))
     print('RESULT: PASS(selftest)')
     return 0

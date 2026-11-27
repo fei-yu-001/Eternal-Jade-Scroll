@@ -188,8 +188,8 @@ namespace TwelveJade.Presentation
             ui.Panel(worldTargetHud, "Target ink", 0, 0, 650, 108, new Color(.025f, .045f, .04f, .88f));
             worldTargetName = ui.Label(worldTargetHud, worldBattle.Foe.Name, 20, 8, 610, 40, boss ? 29 : 25,
                 UiKit.Gold, TextAlignmentOptions.Center, false);
-            ui.Panel(worldTargetHud, "Target health bed", 26, 54, 598, 10, new Color(.18f, .12f, .09f, 1));
-            worldTargetFill = ui.Panel(worldTargetHud, "Target real health", 26, 54, 598, 10, UiKit.Hex("A74332"));
+            var healthBed = ui.Panel(worldTargetHud, "Target health bed", 26, 54, 598, 10, new Color(.18f, .12f, .09f, 1));
+            worldTargetFill = ui.Panel(healthBed.transform, "Target real health", 0, 0, 598, 10, UiKit.Hex("A74332"));
             worldTargetHealth = ui.Label(worldTargetHud, "", 20, 70, 610, 28, 18, UiKit.Paper, TextAlignmentOptions.Center, false);
             worldTargetName.raycastTarget = worldTargetHealth.raycastTarget = false;
         }

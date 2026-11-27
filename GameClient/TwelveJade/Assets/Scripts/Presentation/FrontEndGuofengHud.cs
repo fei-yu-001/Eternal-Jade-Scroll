@@ -209,7 +209,7 @@ namespace TwelveJade.Presentation
             DaoIdentityView.Build(ui,host,activeSave,preset?.id,preset?.displayName??"来路待访",
                 stats.hp+CultivationRules.HpBonus(activeSave)+ManualStudyRules.HpBonus(activeSave),
                 stats.stamina+CultivationRules.StaminaBonus(activeSave)+ManualStudyRules.StaminaBonus(activeSave),
-                stats.attack+ManualStudyRules.AttackBonus(activeSave),stats.defense,()=>settings.reduceMotion,CloseModal,PlayClick);
+                stats.attack+ManualStudyRules.AttackBonus(activeSave),stats.defense,()=>settings.reduceMotion,CloseModal,PlayClick,()=>ShowInnateFate(activeSave,true));
         }
         void ShowMeridianLedger() => BuildMeridianMasterpiece();
         void ShowArtsLedger() => BuildArtsMasterpiece();

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""MAP-11/12 门禁：collisionDepth 与 collisionTop 美术 alpha 实测一致性。
+"""MAP-11/12 门禁：运行时显式脚底碰撞及旧 collisionDepth/Top 实测一致性。
+
+显式 collisionCapsule/collisionRects 优先，与 WorldPropLayer 一致；核验来源SHA、
+实际底脚带、源像素投影、矩形范围与胶囊。没有显式形状时保留下述旧版全alpha判据。
 
 治的腐化：building-plots.json 里的 collisionDepth / collisionTop 是手抄/离线算的，
 美术换图（重切立绘、换净边）后忘了改深度/上沿，阻挡带就和画面再次对不上：
@@ -29,6 +32,9 @@ import json
 import os
 import sys
 import warnings
+import hashlib
+import math
+import copy
 
 # GBK 控制台下 print 中文会把门禁崩在 RESULT 之前——会崩的门禁比红的门禁危险（全仓统一守卫）。
 for _stream in (sys.stdout, sys.stderr):
@@ -77,6 +83,94 @@ def art_alpha_bounds(art_rel):
     return top * 100.0 / h, bot * 100.0 / h, h
 
 
+def explicit_footprint_issues(plot):
+    """Validate the shapes WorldPropLayer actually registers, before legacy fallbacks.
+
+    November footprints use a bottom band, measured plinth or separate gate piers.
+    collisionTop/Depth describe a full-art fallback only when no explicit shape exists.
+    Treating a roof's first alpha row as a ground collider would block walkable doors.
+    """
+    errors = []
+    def require(ok, message):
+        if not ok: errors.append(message)
+    def number(value):
+        return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+    fp = plot.get('footprint')
+    if not isinstance(fp, dict) or fp.get('version') not in (1, 2, 3, 4):
+        return ['显式碰撞缺少支持的 footprint 来源版本']
+    path = os.path.join(ARTROOT, (plot.get('art') or '') + '.png')
+    if not os.path.isfile(path): return ['显式碰撞源图不存在']
+    with open(path, 'rb') as stream: digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+    require(fp.get('sourceSha256') == digest, 'footprint 源图 SHA256 已漂移')
+    require(fp.get('alphaThreshold', ALPHA_T) == ALPHA_T, 'footprint alpha 判据不一致')
+    width, height = plot.get('width'), plot.get('height')
+    if not number(width) or not number(height) or min(width, height) <= 0:
+        return errors + ['显式碰撞画布尺寸必须为正有限数']
+    with Image.open(path) as image: alpha = image.convert('RGBA').getchannel('A')
+    iw, ih = alpha.size
+    opaque = alpha.point(lambda value: 255 if value > ALPHA_T else 0)
+    bounds = opaque.getbbox()
+    if bounds is None: return errors + ['显式碰撞源图全透明']
+    sx, sy = width / iw, height / ih
+    rects = plot.get('collisionRects')
+    if not isinstance(rects, list) or not rects: return errors + ['显式碰撞缺少来源矩形']
+    valid = []
+    for rect in rects:
+        if not isinstance(rect, dict) or not all(number(rect.get(k)) for k in ('x0','y0','x1','y1')):
+            errors.append('碰撞矩形不是有限数'); continue
+        x0,y0,x1,y1 = [rect[k] for k in ('x0','y0','x1','y1')]
+        if x1 <= x0 or y1 <= y0:
+            errors.append('碰撞矩形倒置或面积为零'); continue
+        require(x0 >= -width / 2 - TOLERANCE and x1 <= width / 2 + TOLERANCE and
+                y0 >= -TOLERANCE and y1 <= height + TOLERANCE, '碰撞矩形越出源图画布')
+        crop = (max(0, math.floor(x0 / sx + iw / 2)), max(0, math.floor(y0 / sy)),
+                min(iw, math.ceil(x1 / sx + iw / 2)), min(ih, math.ceil(y1 / sy)))
+        if crop[2] <= crop[0] or crop[3] <= crop[1] or opaque.crop(crop).getbbox() is None:
+            errors.append('碰撞矩形完全落在透明区域')
+        valid.append(rect)
+    if len(valid) != len(rects): return errors
+    band = fp.get('sourceBand')
+    if fp['version'] == 1:
+        fraction = fp.get('bottomFraction')
+        if not number(fraction) or not .10 <= fraction <= .20:
+            return errors + ['自动脚底带比例必须为10%~20%']
+        expected = [math.floor(bounds[3] - (bounds[3] - bounds[1]) * fraction), bounds[3]]
+        require(isinstance(band, list) and len(band) == 2 and all(number(v) for v in band) and
+                all(abs((actual - wanted) * sy) <= TOLERANCE for actual, wanted in zip(band, expected)),
+                '自动脚底 sourceBand 与 alpha 实测相差超过2世界单位')
+        require(all(abs(rect['y0'] - expected[0] * sy) <= TOLERANCE and
+                    abs(rect['y1'] - expected[1] * sy) <= TOLERANCE for rect in valid) if len(valid) == 1 else
+                all(rect['y0'] >= expected[0] * sy - TOLERANCE and rect['y1'] <= expected[1] * sy + TOLERANCE for rect in valid),
+                '显式碰撞越出实测底脚带')
+        require(number(plot.get('groundFootOffset')) and abs(plot['groundFootOffset'] - expected[1] * sy) <= TOLERANCE,
+                '真实落脚点未绑定实测 alpha 底边')
+    source_rects = fp.get('sourceCollisionRects')
+    if source_rects is not None:
+        crop = fp.get('sourceCrop')
+        if not isinstance(crop, list) or len(crop) != 4 or not all(number(v) for v in crop):
+            return errors + ['像素碰撞登记缺少源图裁切范围']
+        require(crop[2] - crop[0] == iw and crop[3] - crop[1] == ih, '源图裁切范围与实际PNG尺寸不符')
+        require(len(source_rects) == len(valid), '源像素碰撞与实际矩形数量不符')
+        for source, rect in zip(source_rects, valid):
+            if len(source) < 5 or not all(number(v) for v in source[:4]):
+                errors.append('源像素碰撞登记无效'); continue
+            expected = [(source[0] - crop[0] - iw / 2) * sx, (source[1] - crop[1]) * sy,
+                        (source[2] - crop[0] - iw / 2) * sx, (source[3] - crop[1]) * sy]
+            require(all(abs(rect[k] - value) <= .002 for k, value in zip(('x0','y0','x1','y1'), expected)) and
+                    rect.get('role') == source[4], '源像素碰撞投影与运行时矩形不符')
+    capsule = plot.get('collisionCapsule')
+    if fp.get('shape') == 'capsule':
+        if not isinstance(capsule, dict) or not all(number(capsule.get(k)) for k in ('x0','x1','y','radius')):
+            return errors + ['胶囊参数必须为有限数']
+        require(len(valid) == 1, '胶囊必须只有一个来源底脚矩形')
+        rect = valid[0]; radius = min((rect['x1'] - rect['x0']) / 2, (rect['y1'] - rect['y0']) / 2)
+        expected = {'x0':rect['x0'] + radius,'x1':rect['x1'] - radius,'y':(rect['y0'] + rect['y1']) / 2,'radius':radius}
+        require(radius > 0 and all(abs(capsule[k] - v) <= .002 for k,v in expected.items()), '胶囊与底脚来源矩形不一致')
+    else:
+        require(fp.get('shape') == 'rectangles' and capsule is None, '矩形脚底被遗留胶囊覆盖')
+    return errors
+
+
 def check_plots(plots, label):
     problems = []
     fallback_depth = 0
@@ -86,6 +180,10 @@ def check_plots(plots, label):
     for i, p in enumerate(plots):
         pid = p.get('id') or ('#%d' % i)
         if p.get('blocks') is False:
+            continue
+        if p.get('collisionCapsule') is not None or p.get('collisionRects'):
+            problems.extend('地块 %s: %s' % (pid, issue) for issue in explicit_footprint_issues(p))
+            checked_depth += 1; checked_top += 1
             continue
         raw_depth = p.get('collisionDepth', None)
         raw_top = p.get('collisionTop', None)
@@ -188,6 +286,23 @@ def selftest():
          'height': 250, 'collisionDepth': 248, 'collisionTop': 6}], 1))
     cases.append(('blocks:false 不参与', [
         dict(ok_plot, id='gate', blocks=False)], 0))
+    with open(PLOTS, encoding='utf-8') as stream:
+        installed = json.load(stream)['plots']
+    measured = copy.deepcopy(next(p for p in installed if p['id'] == 'plot-mountain-pine'))
+    cases.append(('已登记底脚胶囊通过', [measured], 0))
+    for label, change in (
+            ('源图hash漂移', lambda p: p['footprint'].update(sourceSha256='0'*64)),
+            ('缺来源版本', lambda p: p.pop('footprint')),
+            ('伪造底脚带', lambda p: p['footprint'].update(sourceBand=[0, 1])),
+            ('伪造完整图碰撞', lambda p: p['collisionRects'][0].update(y0=0)),
+            ('胶囊漂移', lambda p: p['collisionCapsule'].update(radius=999)),
+            ('非有限胶囊', lambda p: p['collisionCapsule'].update(y=float('nan'))),
+            ('透明区碰撞', lambda p: p['collisionRects'][0].update(x0=-125,x1=-124,y0=0,y1=1))):
+        probe = copy.deepcopy(measured); change(probe); cases.append((label, [probe], 1))
+    gate = copy.deepcopy(next(p for p in installed if p['id'] == 'plot-ancestral-hall'))
+    cases.append(('分离门墩源像素投影', [gate], 0))
+    shifted = copy.deepcopy(gate); shifted['collisionRects'][0]['x0'] += 12
+    cases.append(('门墩错误投影拒绝', [shifted], 1))
     bad = []
     for name, plots, want_fail in cases:
         problems, _ = check_plots(plots, name)
@@ -219,14 +334,14 @@ def main():
     print('BASE-FALLBACK: depth %d/%d, top %d/%d plots 走旧回退'
           % (summary['fallback_depth'], summary['plots'],
              summary['fallback_top'], summary['plots']))
-    print('checked %d 个 collisionDepth 值、%d 个 collisionTop 值，容差 %g 世界单位'
+    print('checked %d 个实际脚底/旧depth、%d 个实际脚底/旧top，容差 %g 世界单位'
           % (summary['checked_depth'], summary['checked_top'], TOLERANCE))
     for p in problems:
         print('PROBLEM: ' + p)
     if problems:
         print('RESULT: FAIL（%d 条）' % len(problems))
         return 1
-    print('RESULT: PASS（%d 个 depth / %d 个 top 与美术实测一致）'
+    print('RESULT: PASS（%d 个脚底/旧depth · %d 个脚底/旧top 与来源实测一致）'
           % (summary['checked_depth'], summary['checked_top']))
     return 0
 

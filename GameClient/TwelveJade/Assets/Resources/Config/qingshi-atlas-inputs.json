@@ -12,11 +12,11 @@
   "configInputs": [
     {
       "path": "GameClient/TwelveJade/Assets/Resources/Config/town-map.json",
-      "sha256": "86fa5c7b3b0e0a8a3c735ecfdb5f96d7ebc5455b15cb0b2d2f97dd4c15c5d548"
+      "sha256": "4e4f597124935f87bf486f8761348e02e647f9342bae1eb30d9e0228d6dfac54"
     },
     {
       "path": "GameClient/TwelveJade/Assets/Resources/Config/building-plots.json",
-      "sha256": "43dfefd84b65e5fe928596c5f03a4aee4a691eaab1569ead4a9aa1eab905272d"
+      "sha256": "0b491b065c0ce278eebc1af3295aaa70bf84359e28aa8d6ea9b761c6d5357357"
     },
     {
       "path": "GameClient/TwelveJade/Assets/Resources/Config/terrain-types.json",
@@ -2564,15 +2564,15 @@
   "outputRepresentation": "20 building feet and three through-bridges calibrated. Current99-plot list is conditioning/layout metadata; 81 original non-building props were not independently calibrated, and 2 drying-rack placements are now removed.",
   "paintingInputs": [
     {
-      "path": "output/imagegen/nov9-corrections/atlas-generated-1.png",
+      "path": "Tools/ArtSources/QingshiAtlas/painted-source.png",
       "sha256": "9ba97fd64a069b6cefc361c792d1d2d351aa46eec90caf7f3a9490a985a53f82"
     },
     {
-      "path": "Tools/logs/nov9-menu-scroll-art-correction-20261109/before/GameClient/TwelveJade/Assets/Resources/Art/UI/Nov8/qingshi-town-atlas.png",
+      "path": "Tools/ArtSources/QingshiAtlas/layout-guide.png",
       "sha256": "420e85e9273c12334bb61ef0d414a47ae603091e0dc794884500dcbbbcb60c01"
     },
     {
-      "path": "Tools/logs/nov8-screenshot-remediation-20261108/inputs/13.jpg",
+      "path": "Tools/ArtSources/QingshiAtlas/user-style-reference.jpg",
       "sha256": "006233805a5f610be69089a261ba5417c9c4bc82dc74e679eabbc99ae939d7cc"
     }
   ],
@@ -3605,5 +3605,19 @@
     "input": "Tools\\logs\\nov11-wilderness-boss-expansion\\main\\before\\GameClient\\TwelveJade\\Assets\\Resources\\Art\\UI\\Nov8\\qingshi-town-atlas.png",
     "limitation": "Ground anchors follow current layout; painterly road contours remain interpretive, not runtime collision geometry.",
     "encounters": "All three former town encounters are now western wilderness spawns. Final wolf800/5450 and mandrill580/6350 leave further clearance from the isolated western theatre. Creature coordinates do not move painted building or bridge controls."
-  }
+  },
+  "nov27SourceRecovery": {
+    "checked": "2026-11-27",
+    "configurationReview": "Parsed building-plots/terrain-types unchanged; town-map differs only in npc-shitou introductory dialogue. All painted ground-foot and bridge calibration remains unchanged. Config SHA256 refreshed after this semantic comparison.",
+    "paintingRecovery": "Three original conditioning/calibration inputs recovered from the historical workspace with exact recorded SHA256 and now versioned for clean-checkout verification.",
+    "atlasPixelsChanged": false
+  },
+  "nov27PortableLineEndings": [
+    {
+      "path": "GameClient/TwelveJade/Assets/Resources/Config/town-map.json",
+      "previousSha256": "2b1c97cb01ad4fa0d368f87f2413864dfa4a55a2a8b169c2c1e7db90bcff1ad9",
+      "sha256": "4e4f597124935f87bf486f8761348e02e647f9342bae1eb30d9e0228d6dfac54",
+      "change": "CRLF to LF only; parsed JSON unchanged"
+    }
+  ]
 }

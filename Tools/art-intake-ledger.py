@@ -7,7 +7,7 @@
 "盘上现在是什么状态"，并把答案钉成一份带生成命令与闸门指纹的文件。
 
 用法:
-  python Tools/art-intake-ledger.py            # 现跑闸门 -> 写 Tools/logs/art-intake-ledger.md
+  python Tools/art-intake-ledger.py            # 现跑闸门 -> 写 Tools/ArtSources/walk-sheet-ledger.md
   python Tools/art-intake-ledger.py --check     # 不写盘，比对盘上台账是否已过期（rc=1 表示过期）
   python Tools/art-intake-ledger.py --stdout    # 只打印，不写盘
 
@@ -31,7 +31,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 GATE = ROOT / "Tools" / "check-walk-sheet-motion.py"
 # 2026-11-03 素材整合后，运行时走帧 sheet 从 Art/Characters/ 移到 Art/Characters/Walk/。
 CHARACTERS = ROOT / "GameClient" / "TwelveJade" / "Assets" / "Resources" / "Art" / "Characters" / "Walk"
-LEDGER = ROOT / "Tools" / "logs" / "art-intake-ledger.md"
+LEDGER = ROOT / "Tools" / "ArtSources" / "walk-sheet-ledger.md"
 STAMP_PREFIX = "生成时间"
 
 # 台账里逐行记的那几条判据：键 -> 从闸门输出里抓的 (行内定位串, 数值正则)

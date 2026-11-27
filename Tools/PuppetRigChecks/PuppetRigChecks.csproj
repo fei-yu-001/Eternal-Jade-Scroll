@@ -4,6 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
+    <!-- 与 SaveChecks 同一处置：dotnet SDK 10.0.400 起缺少剪裁包数据时报错 NETSDK1226 -->
+    <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
     <!-- 与 SaveChecks 同一处置：源文件是 UTF-8 无 BOM，不钉代码页会把中文注解读成乱码 -->
     <CodePage>65001</CodePage>
     <AssemblyName>PuppetRigChecks</AssemblyName>

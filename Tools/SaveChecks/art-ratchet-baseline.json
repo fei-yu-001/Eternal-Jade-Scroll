@@ -195,12 +195,13 @@
         "file": "dialogue-portraits.json",
         "field": "portraits[].resource"
       },
-      "pngTop": 13,
-      "pngRecursive": 13,
+      "pngTop": 11,
+      "pngRecursive": 11,
       "baseline": 0,
       "orphans": [],
-      "measuredAt": "2026-11-07T03:41:19.904879+08:00",
-      "_说明": "Nov7 registration: runtime consumes this exact catalogue/configuration; declaration and disk sets measured equal. Image quality and Unity validation are separate."
+      "measuredAt": "2026-11-27T22:39:03+08:00",
+      "_说明": "Nov7 registration: runtime consumes this exact catalogue/configuration; declaration and disk sets measured equal. Image quality and Unity validation are separate.",
+      "note": "2026-11-27 主代理将无生产引用的 hero-male-bust/hero-female-bust PNG 与原 meta 归档到 Assets/ArtSource/RetiredPortraits，历史文件保留。本门禁只读复核 Resources 内剩余 11 张与 portraits[].resource 对应，原 baseline=0 不变。"
     },
     "Art/Props/Nov7": {
       "status": "measured",
@@ -267,8 +268,8 @@
         "file": "town-character-art.json",
         "field": "entries[].stand"
       },
-      "pngTop": 17,
-      "pngRecursive": 17,
+      "pngTop": 11,
+      "pngRecursive": 11,
       "baseline": 0,
       "orphans": [],
       "measuredAt": "2026-11-07T09:21:07.292062+08:00",
@@ -281,8 +282,8 @@
         "file": "town-character-art.json",
         "field": "entries[].walk"
       },
-      "pngTop": 17,
-      "pngRecursive": 17,
+      "pngTop": 11,
+      "pngRecursive": 11,
       "baseline": 0,
       "orphans": [],
       "measuredAt": "2026-11-07T09:21:07.292062+08:00",
@@ -455,6 +456,40 @@
       "orphans": [],
       "measuredAt": "2026-11-19T22:24:31.358372+08:00",
       "note": "Four exact runtime stand resources in WildCreatureArt. Each exists with a meta; WorldCreatureRig supplies distance-driven gait and combat poses. Visual checks are recorded separately in nov19-combat-feedback."
+    },
+    "Art/Characters/Qingshi": {
+      "status": "measured",
+      "rule": "qingshi-references",
+      "pngTop": 18,
+      "pngRecursive": 18,
+      "baseline": 0,
+      "orphans": [],
+      "measuredAt": "2026-11-27T22:39:03+08:00",
+      "_引用合同": "只解析 town-character-art.json 的 entries[].stand/walk 与 dialogue-portraits.json 的 portraits[].resource；另核对 PosterCardView 的 figure/portrait 拼接与实际 Resources.Load、TownCharacterArt.HeroStrikes 的 strikes 拼接与 Texture 消费。18 个唯一资源名对 18 张 PNG，缺图/缺 meta/孤儿均为 0；注释、任意字符串及磁盘文件本身不能充当引用。规则变化必须显式更新解析器，不能退回 awaiting-convention。"
+    },
+    "Art/Story/Qingshi": {
+      "status": "measured",
+      "rule": "qingshi-references",
+      "pngTop": 46,
+      "pngRecursive": 46,
+      "baseline": 2,
+      "orphans": [
+        "livelihood-hermit",
+        "livelihood-work"
+      ],
+      "measuredAt": "2026-11-27T22:39:03+08:00",
+      "compatibilityCovers": [
+        "home",
+        "livelihood",
+        "tiger",
+        "undercurrent",
+        "tomb",
+        "calamity",
+        "departure"
+      ],
+      "_引用合同": "严格逐层读取 qingshi-story-panels.json 的 scenes[].panels[].art，安全短 ID 加 Art/Story/Qingshi/ 前缀；空 art 按阅读器合同回退至本 scene.id。当前 65 页、43 个正文画面引用，与旧七封面的有限兼容清单合并后 44 个唯一资源，对磁盘 46 张。缺图/缺 meta 为 0；两张真实孤儿逐名保留在 baseline，不伪报 0。",
+      "_封面兼容归档": "旧七封面 home/livelihood/tiger/undercurrent/tomb/calamity/departure 是已经使用过的章节封面，明确作为兼容保留资源纳入期望集合；这不是宣称当前每章正文都加载该封面。当前 departure 仅由此规则保留；清单不得扩展为任意图片豁免。空正文、漏章、非法 art 仍须失败。",
+      "_孤儿说明": "livelihood-hermit 已由 livelihood-hermit-one-arm 替代；livelihood-work 当前未被正文引用。两张原图本轮不移动，按实测孤儿记账，后续如归档须同步减少基线。"
     }
   },
   "conventionGaps": {
